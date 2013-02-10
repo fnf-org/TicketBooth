@@ -1,6 +1,8 @@
 Cloudwatch::Application.routes.draw do
   root to: 'home#index'
 
+  devise_for :users
+
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
