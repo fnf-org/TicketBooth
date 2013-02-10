@@ -1,0 +1,19 @@
+defaults: &defaults
+  adapter: postgresql
+  encoding: utf8
+  host: localhost
+  username: app
+
+development:
+  <<: *defaults
+  database: cloudwatch_dev
+  password: dev_password
+
+test:
+  <<: *defaults
+  database: cloudwatch_test
+  password: dev_password
+
+production:
+  <<: *defaults
+  database: cloudwatch
