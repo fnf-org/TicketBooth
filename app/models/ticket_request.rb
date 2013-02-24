@@ -15,6 +15,8 @@ class TicketRequest < ActiveRecord::Base
   validates_length_of :notes, maximum: 500
 
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
+  validates_uniqueness_of :email, case_sensitive: false,
+    message: 'has already been registered. Did you already submit a ticket request?'
 
   validates_presence_of :name, :email, :address, :adults
 

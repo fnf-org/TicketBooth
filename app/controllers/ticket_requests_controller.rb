@@ -84,6 +84,8 @@ class TicketRequestsController < ApplicationController
   def approve
     @ticket_request = TicketRequest.find(params[:id])
     if @ticket_request.update_attributes(status: TicketRequest::STATUS_APPROVED)
+      TicketRequestMailer.request_approved(@ticket_request).deliver
+
       redirect_to ticket_requests_path,
         notice: "#{@ticket_request.name}'s request was approved"
     else
