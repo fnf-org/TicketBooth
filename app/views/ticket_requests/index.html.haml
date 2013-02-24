@@ -1,0 +1,48 @@
+%h1 Ticket Requests
+
+%table.table
+  %thead
+    %tr
+      %th Name
+      %th Adults
+      %th Kids
+      %th Cabins
+      %th Financial Aid Needed
+      %th
+      %th Status
+      %th
+  %tbody
+    - @ticket_requests.each do |ticket_request|
+      %tr{ class: class_for_table_row(ticket_request) }
+        %td= link_to ticket_request.name, ticket_request
+        %td= ticket_request.adults
+        %td= ticket_request.kids
+        %td= ticket_request.cabins
+        %td
+          - if ticket_request.assistance
+            %span.text-error Yes
+          - else
+            %span.muted No
+        %td
+          - if ticket_request.notes.present?
+            = link_to 'Additional Notes', ticket_request, class: 'btn btn-link'
+        %td
+          %span{ class: text_class_for_status(ticket_request) }
+            = text_for_status ticket_request
+        %td
+          - if ticket_request.pending?
+            = link_to approve_ticket_request_path(ticket_request),
+              method: :post,
+              class: 'btn btn-primary' do
+              Approve
+              %i.icon-ok
+            = link_to decline_ticket_request_path(ticket_request),
+              method: :post,
+              class: 'btn btn-danger',
+              confirm: "Are you sure you want to decline #{ticket_request.name}'s request?" do
+              Decline
+              %i.icon-remove
+
+= link_to new_ticket_request_path, class: 'btn' do
+  New Ticket Request
+  %i.icon-plus-sign

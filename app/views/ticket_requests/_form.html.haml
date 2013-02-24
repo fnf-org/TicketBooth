@@ -1,0 +1,75 @@
+= form_for(@ticket_request) do |f|
+  - if @ticket_request.errors.any?
+    .alert.alert-error
+      %h4
+        = pluralize(@ticket_request.errors.count, 'error')
+        need to be corrected
+      %ul
+        - @ticket_request.errors.full_messages.each do |msg|
+          %li= msg
+  - elsif f.object.new_record?
+    %p.lead
+      Every year there are a large number of people who want to attend.
+    %p
+      In order to ensure that everyone's needs are met and that tickets are
+      distributed fairly, we ask that you specify how many tickets you need,
+      whether you would like a cabin/tent, and provide your contact information
+      so we can let you know your request has been granted.
+    %hr
+
+  .field
+    = f.label :name
+    = f.text_field :name, class: 'input-xlarge', maxlength: 70
+
+  .field
+    = f.label :email
+    = f.email_field :email, class: 'input-xlarge',
+      maxlength: 254
+
+  .field
+    = f.label :address, 'Full mailing address to send your tickets to'
+    = f.text_area :address, class: 'input-xlarge',
+      rows: 3, maxlength: 150
+
+  %h4 Tickets
+
+  .field
+    = f.label :adults, 'Number of adults in your group (including you)'
+    = f.number_field :adults, class: 'input-mini',
+    value: 1, min: 1, max: 6
+
+  .field
+    = f.label :kids, 'Number of children in your group'
+    %p.muted
+      The cost of tickets for kids will be dependent on how many children you
+      bring with you. For now, tell us how many you'd like to bring so we can
+      get a head count.
+    = f.number_field :kids, class: 'input-mini',
+      value: 0, min: 0, max: 6
+
+  .field
+    = f.label :cabins, 'How many cabins/tents did you want?'
+    %p.muted
+      Due to the limited number of available cabins/tents, we will not be
+      able to grant all requests. We will contact you if this is the case.
+    = f.number_field :cabins, class: 'input-mini',
+      value: 0, min: 0, max: 2
+
+  %h4 Other
+
+  .field
+    = f.label :assistance, class: 'checkbox' do
+      = f.check_box :assistance
+      Do you require financial assistance or need to arrange a payment plan
+      to purchase your ticket?
+
+  .field
+    = f.label :notes, 'Anything else you want us to be aware of?'
+    %p.muted
+      If you checked the box above, tell us what your situation is and
+      we'll work something out.
+    = f.text_area :notes, class: 'input-xlarge',
+      rows: 3, maxlength: 500
+
+  .actions
+    = f.submit class: 'btn-primary btn-large'

@@ -1,0 +1,48 @@
+%p
+  %b Status:
+  %span{ class: text_class_for_status(@ticket_request) }
+    = text_for_status @ticket_request
+
+%p
+  %b Name:
+  = @ticket_request.name
+
+%p
+  %b Email:
+  = mail_to @ticket_request.email
+
+%p
+  %b Address:
+  %address
+    = simple_format @ticket_request.address
+
+%p
+  %b Adult Tickets:
+  = @ticket_request.adults
+
+%p
+  %b Child Tickets:
+  = @ticket_request.kids
+
+%p
+  %b Cabins:
+  = @ticket_request.cabins
+
+- if @ticket_request.assistance
+  %p.text-warning
+    %b Financial assistance or custom payment plan requested
+
+- if @ticket_request.notes.present?
+  %p
+    %b Notes:
+    = @ticket_request.notes
+
+%hr
+
+= link_to ticket_requests_path, class: 'btn' do
+  %i.icon-arrow-left
+  View All Requests
+
+= link_to edit_ticket_request_path(@ticket_request), class: 'btn btn-primary' do
+  Edit
+  %i.icon-edit

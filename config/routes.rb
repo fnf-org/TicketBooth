@@ -1,7 +1,14 @@
 Cloudwatch::Application.routes.draw do
-  root to: 'home#index'
+  root to: 'ticket_requests#new'
 
   devise_for :users
+
+  resources :ticket_requests do
+    member do
+      post :approve
+      post :decline
+    end
+  end
 
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
