@@ -24,8 +24,19 @@
     .navbar
       .navbar-inner
         .container
-          %a.brand{ href: '#' }
+          %a.brand{ href: root_path }
             = PRODUCT_NAME
+          %ul.nav.pull-right
+            - if user_signed_in?
+              %li
+                = link_to edit_user_registration_path do
+                  %i.icon-user
+                  = current_user.name
+              %li
+                = link_to 'Sign Out', destroy_user_session_path, method: :delete
+            - else
+              %li= link_to 'Sign Up', new_user_registration_path
+              %li= link_to 'Login', new_user_session_path
     .container
       = bootstrap_flash
       = yield
