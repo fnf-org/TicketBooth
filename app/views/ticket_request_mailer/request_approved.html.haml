@@ -1,23 +1,24 @@
 %p
-  Hi #{@ticket_request.name},
-
+  Hi #{@ticket_request.first_name},
 %p
   Your ticket request for
   %b Cloudwatch 2013
   has been approved!
-
 %p
-  To purchase your ticket with a credit card, go to:
-  = link_to 'cloudwatch.fm', '#'
-
+  If purchasing your
+  = 'ticket'.pluralize(@ticket_request.total_tickets)
+  with a credit card,
+  = succeed '.' do
+    = link_to 'click here', new_payment_url(ticket_request_id: @ticket_request.id)
 %p
-  If you are arranging some other method of payment, go here:
-  = link_to 'cloudwatch.fm/other', '#'
-
+  Otherwise if you intend to pay using some other method, or have made or would
+  like to make a special arrangement,
+  = succeed '.' do
+    = link_to 'click here', other_payments_url
 %p
-  We will send you an email confirmation when your payment has been received.
-
-%p
-  %i
-    To ensure you can attend, please make sure you pay for your ticket as soon
-    as possible.
+  Please purchase your
+  = 'ticket'.pluralize(@ticket_request.total_tickets)
+  as soon as possible.  Since there are a limited number of tickets, we may
+  offer your
+  = 'ticket'.pluralize(@ticket_request.total_tickets)
+  to someone else if you wait too long to purchase.

@@ -1,0 +1,8 @@
+%p
+  Hi #{@ticket_request.first_name},
+%p
+  Your payment of
+  %b= number_to_currency @ticket_request.price
+  for Cloudwatch 2013 was received.
+%p
+  We look forward to seeing you at the event!

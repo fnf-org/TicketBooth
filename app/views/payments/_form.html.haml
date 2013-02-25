@@ -1,0 +1,42 @@
+= form_for(@payment) do |f|
+  - if @payment.errors.any?
+    .alert.alert-error
+      %h4
+        = pluralize(@payment.errors.count, 'error')
+        must be corrected
+      %ul
+        - @payment.errors.full_messages.each do |msg|
+          %li= msg
+
+  = f.hidden_field :ticket_request_id, value: @payment.ticket_request_id
+  = f.hidden_field :stripe_card_token # Value set by JS
+
+  .field
+    = label_tag :card_number, 'Credit Card Number'
+    = text_field_tag :card_number, nil, name: nil, maxlength: 16, class: 'input-large'
+
+  .field
+    = label_tag :card_code, 'Card Verification Code'
+    = text_field_tag :card_code, nil, name: nil, class: 'input-mini', maxlength: 6,
+      placeholder: 'XXX'
+
+  .field
+    = label_tag :card_month, 'Expiration Date'
+    = select_month nil, { add_month_numbers: true },
+      { name: nil, id: 'card_month', class: 'input-medium' }
+    = select_year nil, { start_year: Date.today.year, end_year: Date.today.year + 15 },
+      { name: nil, id: 'card_year', class: 'input-small' }
+
+  %p
+    Clicking submit will charge
+    %span.text-success
+      = number_to_currency(@payment.ticket_request.price)
+    to the card entered above.
+
+  .actions
+    = f.submit 'Submit', class: 'btn btn-primary'
+
+    %span.text-error#stripe-error
+      %noscript
+        JavaScript is not enabled and is required for this form. Enable it in
+        your web browser settings and refresh the page to continue.

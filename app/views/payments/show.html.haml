@@ -1,0 +1,7 @@
+%p.lead
+  Thank you for your payment
+%p
+  %b Amount Charged:
+  %span.text-success= number_to_currency(@payment.ticket_request.price)
+%p
+  You will receive a confirmation email shortly.

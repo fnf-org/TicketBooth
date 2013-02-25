@@ -1,0 +1,22 @@
+%p.lead
+  Hi #{@ticket_request.name},
+%p
+  If
+  = link_to 'paying via credit card',
+    new_payment_path(ticket_request_id: @ticket_request.id)
+  is not an option, you can mail a check or other form of payment to:
+%address
+  %b Cloudwatch
+  %br
+  444 Fluffy Clouds Lane
+  %br
+  San Francisco, CA
+  %br
+  94108
+
+%p
+  We will send you a confirmation email when your payment has been received.
+%p
+  If you haven't heard from us and you think you should have by now, contact us at:
+%p
+  = mail_to 'payments@cloudwatch.fm'

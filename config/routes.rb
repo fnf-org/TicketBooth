@@ -10,6 +10,12 @@ Cloudwatch::Application.routes.draw do
     end
   end
 
+  resources :payments, only: [:new, :create, :show] do
+    collection do
+      get :other
+    end
+  end
+
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action

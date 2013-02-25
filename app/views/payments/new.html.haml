@@ -1,0 +1,17 @@
+- content_for(:meta) do
+  %meta{ name: 'stripe-key', content: STRIPE_PUBLIC_KEY }
+
+- content_for(:head) do
+  = javascript_include_tag 'https://js.stripe.com/v1/'
+
+%p.lead
+  Hi #{@payment.ticket_request.first_name},
+%p.lead.text-success
+  Your ticket request has been approved!
+%p
+  If you are paying via credit card, fill out the form below.
+  = link_to 'I am not paying via credit card',
+    other_payments_path(ticket_request_id: @payment.ticket_request.id)
+%hr
+
+= render 'form'

@@ -5,6 +5,8 @@ class TicketRequest < ActiveRecord::Base
     STATUS_DECLINED = 'D',
   ]
 
+  has_one :payment
+
   attr_accessible :name, :email, :address, :adults, :kids, :cabins, :assistance,
                   :notes, :status
 
@@ -26,5 +28,17 @@ class TicketRequest < ActiveRecord::Base
 
   def pending?
     status == STATUS_PENDING
+  end
+
+  def price
+    adults * 100 + kids * 50 # In dollars
+  end
+
+  def first_name
+    name.split(' ').first
+  end
+
+  def total_tickets
+    adults + kids
   end
 end

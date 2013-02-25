@@ -3,6 +3,8 @@
   %head
     %meta{ charset: 'utf-8' }
     %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1.0' }
+    = csrf_meta_tags
+    = yield :meta
 
     %title
       = PRODUCT_NAME
@@ -10,28 +12,27 @@
         &mdash;
         = yield(:title)
 
-    = csrf_meta_tags
-
     /[if lt IE9]
       %script{ src: '//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js',
                type: 'text/javascript' }
 
     = stylesheet_link_tag 'application', media: 'all'
 
-  %body
+    = yield :head
 
+  %body
     .navbar
       .navbar-inner
         .container
           %a.brand{ href: '#' }
             = PRODUCT_NAME
-
     .container
       = bootstrap_flash
       = yield
 
       %footer
         %hr
-        %p &copy; #{PRODUCT_NAME} 2013
+        %p.muted
+          &copy; #{PRODUCT_NAME} 2013 &mdash; A community-organized event
 
     = javascript_include_tag 'application'
