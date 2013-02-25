@@ -19,17 +19,18 @@
 
   .field
     = f.label :name
-    = f.text_field :name, class: 'input-xlarge', maxlength: 70
+    = f.text_field :name, class: 'input-xlarge', maxlength: 70, required: true,
+      placeholder: 'First and last name'
 
   .field
     = f.label :email
     = f.email_field :email, class: 'input-xlarge',
-      maxlength: 254
+      maxlength: 254, required: true, placeholder: 'email@example.com'
 
   .field
     = f.label :address, 'Full mailing address to send your tickets to'
     = f.text_area :address, class: 'input-xlarge',
-      rows: 3, maxlength: 150
+      rows: 3, maxlength: 150, required: true
 
   %h4 Tickets
 
@@ -72,4 +73,4 @@
       rows: 3, maxlength: 500
 
   .actions
-    = f.submit class: 'btn-primary btn-large'
+    = f.submit class: 'btn btn-primary'
