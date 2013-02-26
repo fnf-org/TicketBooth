@@ -3,7 +3,6 @@
     .alert.alert-error
       %h4
         = pluralize(@site_admin.errors.count, 'error')
-        require your attention
       %ul
         - @site_admin.errors.full_messages.each do |msg|
           %li= msg

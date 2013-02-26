@@ -1,34 +1,23 @@
 class SiteAdminsController < ApplicationController
+  before_filter :authenticate_user!
+  before_filter :require_site_admin
+
   def index
     @site_admins = SiteAdmin.includes(:user).all
-
-    respond_to do |format|
-      format.html
-      format.json { render json: @site_admins }
-    end
   end
 
   def new
     @site_admin = SiteAdmin.new
-
-    respond_to do |format|
-      format.html
-      format.json { render json: @site_admin }
-    end
   end
 
   def create
     @site_admin = SiteAdmin.new(params[:site_admin])
 
-    respond_to do |format|
-      if @site_admin.save
-        format.html { redirect_to site_admins_path,
-                        notice: "#{@site_admin.user.name} is now a site admin." }
-        format.json { render json: @site_admin, status: :created, location: @site_admin }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @site_admin.errors, status: :unprocessable_entity }
-      end
+    if @site_admin.save
+      flash[:notice] = "#{@site_admin.user.name} is now a site admin."
+      redirect_to site_admins_path
+    else
+      render action: 'new'
     end
   end
 
@@ -36,9 +25,6 @@ class SiteAdminsController < ApplicationController
     @site_admin = SiteAdmin.find(params[:id])
     @site_admin.destroy
 
-    respond_to do |format|
-      format.html { redirect_to site_admins_url }
-      format.json { head :no_content }
-    end
+    redirect_to site_admins_url
   end
 end
