@@ -1,0 +1,24 @@
+%h1 Site Administrators
+
+%table.table
+  %thead
+    %tr
+      %th User ID
+      %th Name
+      %th Email
+      %th
+  %tbody
+    - @site_admins.each do |site_admin|
+      - user = site_admin.user
+      %tr
+        %td= user.id
+        %td= user.name
+        %td= mail_to user.email
+        %td
+          = link_to site_admin_path(site_admin), method: :delete,
+            data: { confirm: "Remove #{user.name} as a site admin?" },
+            class: 'btn btn-danger' do
+            Remove
+            %i.icon-remove
+
+= link_to 'Add Site Admin', new_site_admin_path, class: 'btn btn-primary'

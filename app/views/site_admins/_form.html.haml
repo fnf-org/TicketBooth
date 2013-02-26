@@ -1,0 +1,16 @@
+= form_for(@site_admin) do |f|
+  - if @site_admin.errors.any?
+    .alert.alert-error
+      %h4
+        = pluralize(@site_admin.errors.count, 'error')
+        require your attention
+      %ul
+        - @site_admin.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :user_id
+    = f.number_field :user_id, class: 'input-small', min: 1, max: User.last.id, required: true
+
+  .actions
+    = f.submit 'Add Site Admin', class: 'btn btn-primary'
