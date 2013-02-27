@@ -23,6 +23,27 @@ class TicketRequestsController < ApplicationController
   def create
     @ticket_request = TicketRequest.new(params[:ticket_request])
 
+    unless signed_in?
+      # User parameters are included separately
+      user = User.new(params.slice(:name, :email, :password, :password_confirmation))
+
+      if user.save
+        @ticket_request.user_id = user.id
+
+        # Automatically sign in so that if there's something wrong with the
+        # ticket request we don't need to create another user.
+        sign_in(:user, user)
+      else
+        # Add user errors to ticket validation since we're piggy-backing on the
+        # ticket form
+        user.errors.full_messages.each do |error|
+          @ticket_request.errors[:base] << error
+        end
+
+        return render action: 'new'
+      end
+    end
+
     if @ticket_request.save
       flash[:notice] = 'Your ticket request was successfully recorded.'
       redirect_to @ticket_request

@@ -5,14 +5,14 @@
 
 %p
   %b Name:
-  = @ticket_request.name
+  = @ticket_request.user.name
 
 %p
   %b Email:
-  = mail_to @ticket_request.email
+  = mail_to @ticket_request.user.email
 
 %p
-  %b Address:
+  %b Mailing Address:
   %address
     = simple_format @ticket_request.address
 

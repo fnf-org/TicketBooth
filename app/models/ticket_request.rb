@@ -5,24 +5,18 @@ class TicketRequest < ActiveRecord::Base
     STATUS_DECLINED = 'D',
   ]
 
+  belongs_to :user
   has_one :payment
 
-  attr_accessible :name, :email, :address, :adults, :kids, :cabins, :assistance,
-                  :notes, :status
-
-  validates_length_of :name, in: 2..70,
-    too_short: 'is too short. Did you forget to enter it?',
-    too_long: 'is too long. Perhaps remove middle names?'
+  attr_accessible :user_id, :address, :adults, :kids, :cabins, :assistance, :notes, :status
 
   validates_length_of :notes, maximum: 500
 
-  validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
-  validates_uniqueness_of :email, case_sensitive: false,
-    message: 'has already been registered. Did you already submit a ticket request?'
-
-  validates_presence_of :name, :email, :address, :adults
+  validates_presence_of :address, :adults
 
   validates_inclusion_of :status, in: STATUSES
+  validates_uniqueness_of :user_id,
+    message: 'has already recorded a ticket request.'
 
   validates_numericality_of :adults, :kids, :cabins, only_integer: true
 
