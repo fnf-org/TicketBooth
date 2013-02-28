@@ -13,6 +13,11 @@ class TicketRequestsController < ApplicationController
   end
 
   def new
+    if signed_in?
+      existing_request = TicketRequest.where(user_id: current_user).first
+      return redirect_to existing_request if existing_request.present?
+    end
+
     @ticket_request = TicketRequest.new
   end
 
