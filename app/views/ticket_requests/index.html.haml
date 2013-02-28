@@ -3,6 +3,57 @@
 %table.table
   %thead
     %tr
+      %th
+      %th Requests
+      %th Adults
+      %th Kids
+      %th Cabins
+      %th Potential Earn
+  %tbody
+    %tr
+      %td
+        %b Total
+      %td= @stats[:potential][:requests]
+      %td= @stats[:potential][:adults]
+      %td= @stats[:potential][:kids]
+      %td= @stats[:potential][:cabins]
+      %td
+        %span.label
+          = number_to_currency(@stats[:potential][:raised], precision: 0)
+    %tr.warning
+      %td
+        %b Pending
+      %td= @stats[:pending][:requests]
+      %td= @stats[:pending][:adults]
+      %td= @stats[:pending][:kids]
+      %td= @stats[:pending][:cabins]
+      %td
+        %span.label.label-warning
+          = number_to_currency(@stats[:pending][:raised], precision: 0)
+    %tr.success
+      %td
+        %b Approved
+      %td= @stats[:approved][:requests]
+      %td= @stats[:approved][:adults]
+      %td= @stats[:approved][:kids]
+      %td= @stats[:approved][:cabins]
+      %td
+        %span.label.label-success
+          = number_to_currency(@stats[:approved][:raised], precision: 0)
+    %tr.error
+      %td
+        %b Declined
+      %td= @stats[:declined][:requests]
+      %td= @stats[:declined][:adults]
+      %td= @stats[:declined][:kids]
+      %td= @stats[:declined][:cabins]
+      %td
+        %span.label.label-important
+          = number_to_currency(@stats[:declined][:raised], precision: 0)
+
+%table.table
+  %thead
+    %tr
       %th Name
       %th Adults
       %th Kids

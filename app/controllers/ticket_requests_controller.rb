@@ -6,6 +6,39 @@ class TicketRequestsController < ApplicationController
 
   def index
     @ticket_requests = TicketRequest.all.sort_by(&:created_at).reverse
+    @stats = {
+      potential: {
+        requests: @ticket_requests.count,
+        adults:   TicketRequest.sum('adults'),
+        kids:     TicketRequest.sum('kids'),
+        cabins:   TicketRequest.sum('cabins'),
+        raised:   @ticket_requests.inject(0) { |sum, tr| sum + tr.price }
+      },
+      pending: {
+        requests: TicketRequest.pending.count,
+        adults:   TicketRequest.pending.sum('adults'),
+        kids:     TicketRequest.pending.sum('kids'),
+        cabins:   TicketRequest.pending.sum('cabins'),
+        raised:   @ticket_requests.select { |tr| tr.pending? }.
+                                 inject(0) { |sum, tr| sum + tr.price }
+      },
+      approved: {
+        requests: TicketRequest.approved.count,
+        adults:   TicketRequest.approved.sum('adults'),
+        kids:     TicketRequest.approved.sum('kids'),
+        cabins:   TicketRequest.approved.sum('cabins'),
+        raised:   @ticket_requests.select { |tr| tr.approved? }.
+                                 inject(0) { |sum, tr| sum + tr.price }
+      },
+      declined: {
+        requests: TicketRequest.declined.count,
+        adults:   TicketRequest.declined.sum('adults'),
+        kids:     TicketRequest.declined.sum('kids'),
+        cabins:   TicketRequest.declined.sum('cabins'),
+        raised:   @ticket_requests.select { |tr| tr.declined? }.
+                                 inject(0) { |sum, tr| sum + tr.price }
+      }
+    }
   end
 
   def show

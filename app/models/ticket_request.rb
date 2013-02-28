@@ -22,12 +22,24 @@ class TicketRequest < ActiveRecord::Base
   validates_numericality_of :adults, :kids, :cabins, only_integer: true
   validates_numericality_of :special_price, allow_blank: true
 
+  scope :pending,  where(status: STATUS_PENDING)
+  scope :approved, where(status: STATUS_APPROVED)
+  scope :declined, where(status: STATUS_DECLINED)
+
   def can_view?(user)
     user && (user.site_admin? || user.id == user_id)
   end
 
   def pending?
     status == STATUS_PENDING
+  end
+
+  def approved?
+    status == STATUS_APPROVED
+  end
+
+  def declined?
+    status == STATUS_DECLINED
   end
 
   def price
