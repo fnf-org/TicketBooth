@@ -10,6 +10,7 @@ class TicketRequestsController < ApplicationController
 
   def show
     @ticket_request = TicketRequest.find(params[:id])
+    return redirect_to root_path unless @ticket_request.can_view?(current_user)
   end
 
   def new
@@ -37,7 +38,7 @@ class TicketRequestsController < ApplicationController
 
         # Automatically sign in so that if there's something wrong with the
         # ticket request we don't need to create another user.
-        sign_in(:user, user)
+        sign_in(user)
       else
         # Add user errors to ticket validation since we're piggy-backing on the
         # ticket form

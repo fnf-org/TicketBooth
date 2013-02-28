@@ -20,6 +20,10 @@ class TicketRequest < ActiveRecord::Base
 
   validates_numericality_of :adults, :kids, :cabins, only_integer: true
 
+  def can_view?(user)
+    user && (user.site_admin? || user.id == user_id)
+  end
+
   def pending?
     status == STATUS_PENDING
   end
