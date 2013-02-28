@@ -31,4 +31,8 @@ class Payment < ActiveRecord::Base
     errors.add :base, e.message
     false
   end
+
+  def can_view?(user)
+    ticket_request.can_view?(user)
+  end
 end
