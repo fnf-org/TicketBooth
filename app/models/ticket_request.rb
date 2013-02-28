@@ -8,7 +8,8 @@ class TicketRequest < ActiveRecord::Base
   belongs_to :user
   has_one :payment
 
-  attr_accessible :user_id, :address, :adults, :kids, :cabins, :assistance, :notes, :status
+  attr_accessible :user_id, :address, :adults, :kids, :cabins, :assistance,
+                  :notes, :status, :special_price
 
   validates_length_of :notes, maximum: 500
 
@@ -19,6 +20,7 @@ class TicketRequest < ActiveRecord::Base
     message: 'has already recorded a ticket request.'
 
   validates_numericality_of :adults, :kids, :cabins, only_integer: true
+  validates_numericality_of :special_price, allow_blank: true
 
   def can_view?(user)
     user && (user.site_admin? || user.id == user_id)
@@ -29,7 +31,7 @@ class TicketRequest < ActiveRecord::Base
   end
 
   def price
-    adults * 100 + kids * 50 # In dollars
+    special_price || adults * 100 + kids * 50 # In dollars
   end
 
   def first_name

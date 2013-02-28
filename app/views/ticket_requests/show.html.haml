@@ -28,6 +28,12 @@
   %b Cabins:
   = @ticket_request.cabins
 
+- if current_user.site_admin?
+  %p
+    %b Ticket Price:
+    %span{ class: ('label label-info' if @ticket_request.special_price) }
+      = number_to_currency(@ticket_request.price, precision: 0)
+
 - if @ticket_request.assistance
   %p.text-warning
     %b Financial assistance or custom payment plan requested

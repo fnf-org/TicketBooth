@@ -18,7 +18,7 @@ class Payment < ActiveRecord::Base
   def save_and_charge
     if valid?
       charge = Stripe::Charge.create(
-        amount: ticket_request.price * 100, # in cents
+        amount: (ticket_request.price * 100).to_i, # in cents
         currency: 'usd',
         card: stripe_card_token,
         description: 'Cloudwatch 2013 Ticket',

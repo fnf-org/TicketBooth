@@ -8,9 +8,9 @@
         - @ticket_request.errors.full_messages.each do |msg|
           %li= msg
 
-  - if signed_in?
-    %h3 Ticket Request for #{current_user.name}
-    = f.hidden_field :user_id, value: current_user.id
+  - if @user
+    %h3 Ticket Request for #{@user.name}
+    = f.hidden_field :user_id, value: @user.id
   - else
     %p
       Already have an account?
@@ -33,10 +33,16 @@
       = password_field_tag :password_confirmation, nil, placeholder: '',
         maxlength: 255, required: true, class: 'input-xlarge'
 
+  - if signed_in? && current_user.site_admin?
+    .field.well
+      = f.label :special_price, 'Special Ticket Price ($)'
+      %p.text-error
+        Editable by site-admins only. Leave blank to use default price.
+      = f.number_field :special_price, class: 'input-small', min: 0
+
   .field
     = f.label :adults, 'Number of adults in your group (including you)'
-    = f.number_field :adults, class: 'input-mini',
-    value: 1, min: 1, max: 6
+    = f.number_field :adults, class: 'input-mini', min: 1, max: 6
 
   .field
     = f.label :kids, 'Number of children in your group (babes in arms are free)'
@@ -46,8 +52,7 @@
       %br
       For now, tell us how many you would like to bring so we can
       get a head count.
-    = f.number_field :kids, class: 'input-mini',
-      value: 0, min: 0, max: 6
+    = f.number_field :kids, class: 'input-mini', min: 0, max: 6
 
   .field
     = f.label :cabins, 'How many cabins/tents did you want?'
@@ -56,8 +61,7 @@
       able to grant all requests.
       %br
       We will contact you if this is the case.
-    = f.number_field :cabins, class: 'input-mini',
-      value: 0, min: 0, max: 2
+    = f.number_field :cabins, class: 'input-mini', min: 0, max: 2
 
   .field
     = f.label :address, 'Mailing Address'

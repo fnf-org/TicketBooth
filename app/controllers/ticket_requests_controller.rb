@@ -17,6 +17,9 @@ class TicketRequestsController < ApplicationController
     if signed_in?
       existing_request = TicketRequest.where(user_id: current_user).first
       return redirect_to existing_request if existing_request.present?
+
+      # Otherwise we're creating a ticket request as the signed-in user
+      @user = current_user
     end
 
     @ticket_request = TicketRequest.new
@@ -24,6 +27,7 @@ class TicketRequestsController < ApplicationController
 
   def edit
     @ticket_request = TicketRequest.find(params[:id])
+    @user = @ticket_request.user
   end
 
   def create

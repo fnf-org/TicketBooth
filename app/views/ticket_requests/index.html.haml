@@ -7,7 +7,8 @@
       %th Adults
       %th Kids
       %th Cabins
-      %th Financial Aid Needed
+      %th Price
+      %th
       %th
       %th Status
       %th
@@ -19,13 +20,14 @@
         %td= ticket_request.kids
         %td= ticket_request.cabins
         %td
+          %span.label{ class: ('label-info' if ticket_request.special_price) }
+            = number_to_currency(ticket_request.price, precision: 0)
+        %td
           - if ticket_request.assistance
-            %span.text-error Yes
-          - else
-            %span.muted No
+            %span.text-error Financial Aid Needed
         %td
           - if ticket_request.notes.present?
-            = link_to 'Additional Notes', ticket_request, class: 'btn btn-link'
+            = link_to 'Additional Notes', ticket_request
         %td
           %span{ class: text_class_for_status(ticket_request) }
             = text_for_status ticket_request
