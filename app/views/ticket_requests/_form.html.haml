@@ -12,32 +12,26 @@
     %h3 Ticket Request for #{current_user.name}
     = f.hidden_field :user_id, value: current_user.id
   - else
-    .row
-      .span3
-        .field
-          = label_tag :name, 'Name'
-          = text_field_tag :name, nil, class: 'input-block-level', maxlength: 70,
-            required: true, placeholder: 'First and last name'
-
-        .field
-          = label_tag :email, 'Email'
-          = email_field_tag :email, nil, class: 'input-block-level',
-            maxlength: 254, required: true, placeholder: 'email@example.com'
-
-        .field
-          = label_tag :password, 'Password'
-          = password_field_tag :password, nil,
-            placeholder: 'Must be at least 8 characters', required: true,
-            maxlength: 255, class: 'input-block-level'
-
-        .field
-          = label_tag :password_confirmation, 'Confirm Password'
-          = password_field_tag :password_confirmation, nil, placeholder: '',
-            maxlength: 255, required: true, class: 'input-block-level'
-      .span1
-      .span8
-        %p.lead.text-center Already have an account?
-        = link_to 'Login', new_user_session_path, class: 'btn btn-primary btn-large'
+    %p
+      Already have an account?
+      = link_to 'Login', new_user_session_path, class: 'btn btn-primary'
+    .field
+      = label_tag :name, 'Name'
+      = text_field_tag :name, nil, class: 'input-xlarge', maxlength: 70,
+        required: true, placeholder: 'First and last name'
+    .field
+      = label_tag :email, 'Email'
+      = email_field_tag :email, nil, class: 'input-xlarge',
+        maxlength: 254, required: true, placeholder: 'email@example.com'
+    .field
+      = label_tag :password, 'Password'
+      = password_field_tag :password, nil,
+        placeholder: 'Must be at least 8 characters', required: true,
+        maxlength: 255, class: 'input-xlarge'
+    .field
+      = label_tag :password_confirmation, 'Confirm Password'
+      = password_field_tag :password_confirmation, nil, placeholder: '',
+        maxlength: 255, required: true, class: 'input-xlarge'
 
   .field
     = f.label :adults, 'Number of adults in your group (including you)'
