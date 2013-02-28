@@ -75,10 +75,10 @@ class TicketRequestsController < ApplicationController
     if @ticket_request.update_attributes(status: TicketRequest::STATUS_APPROVED)
       TicketRequestMailer.request_approved(@ticket_request).deliver
 
-      flash[:notice] = "#{@ticket_request.name}'s request was approved"
+      flash[:notice] = "#{@ticket_request.user.name}'s request was approved"
       redirect_to ticket_requests_path
     else
-      flash[:error] = "Unable to approve #{@ticket_request.name}'s request"
+      flash[:error] = "Unable to approve #{@ticket_request.user.name}'s request"
       redirect_to ticket_requests_path
     end
   end
@@ -87,10 +87,10 @@ class TicketRequestsController < ApplicationController
     @ticket_request = TicketRequest.find(params[:id])
 
     if @ticket_request.update_attributes(status: TicketRequest::STATUS_DECLINED)
-      flash[:notice] = "#{@ticket_request.name}'s request was declined"
+      flash[:notice] = "#{@ticket_request.user.name}'s request was declined"
       redirect_to ticket_requests_path
     else
-      flash[:error] = "Unable to decline #{@ticket_request.name}'s request"
+      flash[:error] = "Unable to decline #{@ticket_request.user.name}'s request"
       redirect_to ticket_requests_path
     end
   end

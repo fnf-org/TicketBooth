@@ -42,6 +42,19 @@
     %i.icon-arrow-left
     View All Requests
 
-  = link_to edit_ticket_request_path(@ticket_request), class: 'btn btn-primary' do
+  = link_to edit_ticket_request_path(@ticket_request), class: 'btn' do
     Edit
     %i.icon-edit
+
+  - if @ticket_request.pending?
+    = link_to approve_ticket_request_path(@ticket_request),
+      method: :post,
+      class: 'btn btn-primary' do
+      Approve
+      %i.icon-ok
+    = link_to decline_ticket_request_path(@ticket_request),
+      method: :post,
+      class: 'btn btn-danger',
+      confirm: "Are you sure you want to decline #{@ticket_request.user.name}'s request?" do
+      Decline
+      %i.icon-remove
