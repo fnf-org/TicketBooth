@@ -1,6 +1,7 @@
 jQuery ->
-  Stripe.setPublishableKey($('meta[name="stripe-key"]').attr('content'))
-  payment.setupForm()
+  if Stripe? # Load if we're on a page that requires Stripe
+    Stripe.setPublishableKey($('meta[name="stripe-key"]').attr('content'))
+    payment.setupForm()
 
 payment =
   setupForm: ->
