@@ -16,6 +16,8 @@ Cloudwatch::Application.routes.draw do
     end
   end
 
+  resources :events
+
   resources :site_admins, only: [:index, :new, :create, :destroy]
 
   # Sample of regular route:
