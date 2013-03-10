@@ -1,0 +1,27 @@
+- form_action_name = action_name == 'edit' ? :update : :create
+= form_for(@time_slot, url: { controller: :time_slots, action: form_action_name }) do |f|
+  - if @time_slot.errors.any?
+    .alert.alert-error
+      %h4
+        = pluralize(@time_slot.errors.count, 'error')
+        must be corrected
+      %ul
+        - @time_slot.errors.full_messages.each do |msg|
+          %li= msg
+
+  = f.hidden_field :job_id, value: @job.id
+
+  .field
+    = f.label :start_time
+    = f.text_field :start_time, required: true
+
+  .field
+    = f.label :end_time
+    = f.text_field :end_time, required: true
+
+  .field
+    = f.label :slots
+    = f.number_field :slots, class: 'input-mini', required: true, min: 1
+
+  .actions
+    = f.submit class: 'btn btn-primary'

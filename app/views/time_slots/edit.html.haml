@@ -1,0 +1,6 @@
+%h1= @job.name
+%h2 Edit Time Slot
+
+= render 'form'
+
+= link_to 'Back', event_job_path(@event, @job)

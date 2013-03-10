@@ -1,0 +1,36 @@
+%h1= @job.name
+
+%p.lead
+  = @job.description
+
+%h2 Time Slots
+
+%table.table
+  %thead
+    %tr
+      %th Time
+      %th People Required
+      %th
+  %tbody
+    - @time_slots.each do |time_slot|
+      %tr
+        %td
+          #{time_slot.start_time.to_s(:time)} &ndash; #{time_slot.end_time.to_s(:time)}
+        %td= time_slot.slots
+        %td
+          = link_to edit_event_job_time_slot_path(@event, @job, time_slot), class: 'btn' do
+            Edit
+            %i.icon-edit
+    %tr
+      %td{ colspan: 3 }
+        = link_to new_event_job_time_slot_path(@event, @job), class: 'btn btn-primary' do
+          New Time Slot
+          %i.icon-plus-sign
+
+.actions
+  = link_to event_jobs_path(@event), class: 'btn' do
+    %i.icon-arrow-left
+    All Jobs
+  = link_to edit_event_job_path(@event, @job), class: 'btn' do
+    Edit
+    %i.icon-edit

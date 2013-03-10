@@ -1,0 +1,47 @@
+%h1 #{@event.name} Staff Sheet
+
+%p.lead
+  This is a community event. Without your help, it can't happen.
+
+%p
+  Volunteering for shifts helps make this event possible, and gives you an
+  opportunity to meet new people and contribute to the community.
+  Signing up for multiple shifts is encouraged, ideally one shift per ticket.
+
+%hr
+
+- @jobs.each do |job|
+  %h3= job.name
+  %p= job.description
+
+  %table.table.table-bordered.table-striped.time-slots
+    %thead
+      %tr
+        %th Time
+        %th Spots Left
+        %th Volunteers
+    %tbody
+      - job.time_slots.each do |time_slot|
+        %tr{ class: ('success' if time_slot.volunteered?(current_user)) }
+          %td
+            #{time_slot.start_time.to_s(:time)} &ndash; #{time_slot.end_time.to_s(:time)}
+          %td
+            - if time_slot.slots_left?
+              = time_slot.slots_left
+          %td
+            .volunteers
+              - time_slot.shifts.each do |shift|
+                %span.label{ class: ('label-success' if shift.user == current_user) }
+                  = shift.volunteer_name
+            .volunteer-form
+              - if time_slot.volunteered?(current_user)
+                = link_to 'Unvolunteer',
+                  event_shift_path(@event, time_slot.shifts.where(user_id: current_user.id).first),
+                  method: :delete,
+                  class: 'btn btn-link'
+              - elsif time_slot.slots_left?
+                = link_to event_shifts_path(shift: { time_slot_id: time_slot.id,
+                                                     user_id: current_user.id }),
+                  method: :post,
+                  class: 'volunteer-btn btn btn-success' do
+                  Volunteer

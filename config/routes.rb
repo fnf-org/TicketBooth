@@ -16,7 +16,12 @@ Cloudwatch::Application.routes.draw do
     end
   end
 
-  resources :events
+  resources :events do
+    resources :jobs do
+      resources :time_slots, only: [:new, :create, :edit, :update, :destroy]
+    end
+    resources :shifts, only: [:index, :create, :destroy]
+  end
 
   resources :site_admins, only: [:index, :new, :create, :destroy]
 

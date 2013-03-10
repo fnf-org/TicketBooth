@@ -1,0 +1,25 @@
+%h1
+  Jobs for #{@event.name}
+
+%table.table
+  %thead
+    %tr
+      %th Name
+      %th Description
+  %tbody
+    - @jobs.each do |job|
+      %tr
+        %td= link_to job.name, event_job_path(@event, job)
+        %td= simple_format(job.description)
+        %td
+          = link_to edit_event_job_path(@event, job), class: 'btn' do
+            Edit
+            %i.icon-edit
+
+.actions
+  = link_to event_path(@event), class: 'btn' do
+    %i.icon-arrow-left
+    Event
+  = link_to new_event_job_path(@event), class: 'btn' do
+    New Job
+    %i.icon-plus-sign

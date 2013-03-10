@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130228052958) do
+ActiveRecord::Schema.define(:version => 20130304022508) do
 
   create_table "events", :force => true do |t|
     t.string   "name"
@@ -21,12 +21,28 @@ ActiveRecord::Schema.define(:version => 20130228052958) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "jobs", :force => true do |t|
+    t.integer  "event_id",                   :null => false
+    t.string   "name",        :limit => 100, :null => false
+    t.string   "description", :limit => 512, :null => false
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+  end
+
   create_table "payments", :force => true do |t|
     t.integer  "ticket_request_id",                               :null => false
     t.string   "stripe_charge_id"
     t.string   "status",            :limit => 1, :default => "P", :null => false
     t.datetime "created_at",                                      :null => false
     t.datetime "updated_at",                                      :null => false
+  end
+
+  create_table "shifts", :force => true do |t|
+    t.integer  "time_slot_id",               :null => false
+    t.integer  "user_id",                    :null => false
+    t.string   "name",         :limit => 70
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
   end
 
   create_table "site_admins", :force => true do |t|
@@ -47,6 +63,15 @@ ActiveRecord::Schema.define(:version => 20130228052958) do
     t.datetime "updated_at",                                                                    :null => false
     t.integer  "user_id",                                                                       :null => false
     t.decimal  "special_price",                :precision => 8, :scale => 2
+  end
+
+  create_table "time_slots", :force => true do |t|
+    t.integer  "job_id",     :null => false
+    t.datetime "start_time", :null => false
+    t.datetime "end_time",   :null => false
+    t.integer  "slots",      :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "users", :force => true do |t|
