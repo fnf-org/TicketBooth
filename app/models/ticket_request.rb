@@ -6,10 +6,11 @@ class TicketRequest < ActiveRecord::Base
   ]
 
   belongs_to :user
+  belongs_to :event
   has_one :payment
 
   attr_accessible :user_id, :address, :adults, :kids, :cabins, :assistance,
-                  :notes, :status, :special_price
+                  :notes, :status, :special_price, :event_id
 
   validates_length_of :notes, maximum: 500
 

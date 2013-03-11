@@ -3,9 +3,14 @@ class TicketRequestsController < ApplicationController
     only: [:index, :show, :edit, :update, :approve, :decline]
   before_filter :require_site_admin,
     only: [:index, :edit, :update, :approve, :decline]
+  before_filter :set_event
 
   def index
-    @ticket_requests = TicketRequest.all.sort_by(&:created_at).reverse
+    @ticket_requests = TicketRequest.
+      where(event_id: @event.id).
+      order('created_at DESC').
+      all
+
     @stats = {
       potential: {
         requests: @ticket_requests.count,
@@ -89,7 +94,7 @@ class TicketRequestsController < ApplicationController
 
     if @ticket_request.save
       flash[:notice] = 'Your ticket request was successfully recorded.'
-      redirect_to @ticket_request
+      redirect_to event_ticket_request_path(@event, @ticket_request)
     else
       render action: 'new'
     end
@@ -100,7 +105,7 @@ class TicketRequestsController < ApplicationController
 
     if @ticket_request.update_attributes(params[:ticket_request])
       flash[:notice] = 'Ticket request was successfully updated.'
-      redirect_to @ticket_request
+      redirect_to event_ticket_request_path(@event, @ticket_request)
     else
       render action: 'edit'
     end
@@ -111,13 +116,12 @@ class TicketRequestsController < ApplicationController
 
     if @ticket_request.update_attributes(status: TicketRequest::STATUS_APPROVED)
       TicketRequestMailer.request_approved(@ticket_request).deliver
-
       flash[:notice] = "#{@ticket_request.user.name}'s request was approved"
-      redirect_to ticket_requests_path
     else
       flash[:error] = "Unable to approve #{@ticket_request.user.name}'s request"
-      redirect_to ticket_requests_path
     end
+
+    redirect_to event_ticket_requests_path(@event)
   end
 
   def decline
@@ -125,10 +129,16 @@ class TicketRequestsController < ApplicationController
 
     if @ticket_request.update_attributes(status: TicketRequest::STATUS_DECLINED)
       flash[:notice] = "#{@ticket_request.user.name}'s request was declined"
-      redirect_to ticket_requests_path
     else
       flash[:error] = "Unable to decline #{@ticket_request.user.name}'s request"
-      redirect_to ticket_requests_path
     end
+
+    redirect_to event_ticket_requests_path(@event)
+  end
+
+private
+
+  def set_event
+    @event = Event.find(params[:event_id])
   end
 end

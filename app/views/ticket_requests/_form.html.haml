@@ -1,4 +1,6 @@
-= form_for(@ticket_request) do |f|
+- form_action_name = action_name == 'edit' ? :update : :create
+= form_for(@ticket_request,
+           url: { controller: :ticket_requests, action: form_action_name }) do |f|
   - if @ticket_request.errors.any?
     .alert.alert-error
       %h4
@@ -8,12 +10,14 @@
         - @ticket_request.errors.full_messages.each do |msg|
           %li= msg
 
+  = f.hidden_field :event_id, value: @event.id
+
   - if @user
     %h3 Ticket Request for #{@user.name}
     = f.hidden_field :user_id, value: @user.id
   - else
     %p
-      Already have an account?
+      Already requested a ticket?
       = link_to 'Login', new_user_session_path, class: 'btn btn-primary'
     .field
       = label_tag :name, 'Name'

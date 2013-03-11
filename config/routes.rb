@@ -1,14 +1,7 @@
 Cloudwatch::Application.routes.draw do
-  root to: 'ticket_requests#new'
+  root to: 'home#index'
 
   devise_for :users
-
-  resources :ticket_requests do
-    member do
-      post :approve
-      post :decline
-    end
-  end
 
   resources :payments, only: [:new, :create, :show] do
     collection do
@@ -21,6 +14,13 @@ Cloudwatch::Application.routes.draw do
       resources :time_slots, only: [:new, :create, :edit, :update, :destroy]
     end
     resources :shifts, only: [:index, :create, :destroy]
+
+    resources :ticket_requests do
+      member do
+        post :approve
+        post :decline
+      end
+    end
   end
 
   resources :site_admins, only: [:index, :new, :create, :destroy]

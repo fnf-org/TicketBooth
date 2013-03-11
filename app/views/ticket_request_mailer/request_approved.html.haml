@@ -2,7 +2,7 @@
   Hi #{@ticket_request.user.first_name},
 %p
   Your ticket request for
-  %b Cloudwatch 2013
+  %b #{@event.name}
   has been approved!
 %p
   If purchasing your
@@ -14,11 +14,14 @@
   Otherwise if you intend to pay using some other method, or have made or would
   like to make a special arrangement,
   = succeed '.' do
-    = link_to 'click here', other_payments_url
+    = link_to 'click here', other_payments_url(ticket_request_id: @ticket_request.id)
 %p
   Please purchase your
   = 'ticket'.pluralize(@ticket_request.total_tickets)
-  as soon as possible.  Since there are a limited number of tickets, we may
+  as soon as possible. Since there are a limited number of tickets, we may
   offer your
   = 'ticket'.pluralize(@ticket_request.total_tickets)
   to someone else if you wait too long to purchase.
+%p
+  Thanks,
+  = @event.name

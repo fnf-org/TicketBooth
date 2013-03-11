@@ -1,4 +1,4 @@
-%h1 Ticket Requests
+%h1 #{@event.name} Ticket Requests
 
 %table.table
   %thead
@@ -66,7 +66,7 @@
   %tbody
     - @ticket_requests.each do |ticket_request|
       %tr{ class: class_for_table_row(ticket_request) }
-        %td= link_to ticket_request.user.name, ticket_request
+        %td= link_to ticket_request.user.name, event_ticket_request_path(@event, ticket_request)
         %td= ticket_request.adults
         %td= ticket_request.kids
         %td= ticket_request.cabins
@@ -78,24 +78,24 @@
             %span.text-error Financial Aid Needed
         %td
           - if ticket_request.notes.present?
-            = link_to 'Additional Notes', ticket_request
+            = link_to 'Additional Notes', event_ticket_request_path(@event, ticket_request)
         %td
           %span{ class: text_class_for_status(ticket_request) }
             = text_for_status ticket_request
         %td
           - if ticket_request.pending?
-            = link_to approve_ticket_request_path(ticket_request),
+            = link_to approve_event_ticket_request_path(@event, ticket_request),
               method: :post,
               class: 'btn btn-primary' do
               Approve
               %i.icon-ok
-            = link_to decline_ticket_request_path(ticket_request),
+            = link_to decline_event_ticket_request_path(@event, ticket_request),
               method: :post,
               class: 'btn btn-danger',
               confirm: "Are you sure you want to decline #{ticket_request.user.name}'s request?" do
               Decline
               %i.icon-remove
 
-= link_to new_ticket_request_path, class: 'btn' do
+= link_to new_event_ticket_request_path(@event), class: 'btn' do
   New Ticket Request
   %i.icon-plus-sign
