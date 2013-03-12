@@ -1,5 +1,5 @@
 %p
-  Hi #{@ticket_request.first_name},
+  Hi #{@ticket_request.user.first_name},
 %p
   Your payment of
   %b= number_to_currency @ticket_request.price

@@ -1,7 +1,25 @@
 %p.lead
-  Thank you for your payment
-%p
-  %b Amount Charged:
-  %span.text-success= number_to_currency(@payment.ticket_request.price)
-%p
-  You will receive a confirmation email shortly.
+  Hi #{@payment.ticket_request.user.first_name},
+
+- if @payment.received?
+  %p.lead
+    Thank you for your payment of
+    %span.text-success= number_to_currency(@payment.ticket_request.price)
+  %p
+    We look forward to seeing you at the event!
+- else
+  - due_date = @payment.created_at + 2.weeks
+  %p.lead
+    You've indicated that you're paying via another form of payment.
+  %p
+    You will receive a confirmation email when your payment of
+    %span.text-success= number_to_currency(@payment.ticket_request.price)
+    is received.
+  %p
+    If your payment isn't received by
+    %strong= @payment.due_date.to_s(:long_ordinal)
+    we'll follow up with you to figure out what happened.
+
+%p.lead
+  If you have any other questions, don't hesitate to contact us at
+  = mail_to 'payments@cloudwatch.fm'

@@ -4,7 +4,10 @@
   If
   = link_to 'paying via credit card',
     new_payment_path(ticket_request_id: @ticket_request.id)
-  is not an option, you can mail a check or other form of payment to:
+  is not an option, you can mail a check or other form of payment of
+  %strong.text-success= number_to_currency(@ticket_request.price)
+  to:
+
 %address
   %b Cloudwatch
   %br
@@ -14,9 +17,19 @@
   %br
   94108
 
+%p.lead.text-error
+  Click the following button if you've sent your payment via some
+  other method
+  = link_to sent_payments_path(ticket_request_id: @ticket_request.id),
+    method: :post,
+    class: 'btn btn-primary' do
+    I've Sent My Payment
+    %i.icon-check
+%p
+  This lets us know your payment is en route, so we won't give your ticket
+  away to someone else.
+
 %p
   We will send you a confirmation email when your payment has been received.
-%p
-  If you haven't heard from us and you think you should have by now, contact us at:
-%p
+  If you haven't heard from us and you think you should have by now, contact us at
   = mail_to 'payments@cloudwatch.fm'

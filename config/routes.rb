@@ -6,6 +6,7 @@ Cloudwatch::Application.routes.draw do
   resources :payments, only: [:new, :create, :show] do
     collection do
       get :other
+      post :sent
     end
   end
 

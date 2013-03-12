@@ -47,10 +47,6 @@ class TicketRequest < ActiveRecord::Base
     special_price || adults * 100 + kids * 50 # In dollars
   end
 
-  def first_name
-    name.split(' ').first
-  end
-
   def total_tickets
     adults + kids
   end

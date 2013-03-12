@@ -21,7 +21,7 @@ class Payment < ActiveRecord::Base
         amount: (ticket_request.price * 100).to_i, # in cents
         currency: 'usd',
         card: stripe_card_token,
-        description: 'Cloudwatch 2013 Ticket',
+        description: "#{ticket_request.event.name} Ticket",
       )
       self.stripe_charge_id = charge.id
       self.status = STATUS_RECEIVED
@@ -34,5 +34,17 @@ class Payment < ActiveRecord::Base
 
   def can_view?(user)
     ticket_request.can_view?(user)
+  end
+
+  def due_date
+    (created_at + 2.weeks).to_date
+  end
+
+  def in_progress?
+    status == STATUS_IN_PROGRESS
+  end
+
+  def received?
+    status == STATUS_RECEIVED
   end
 end
