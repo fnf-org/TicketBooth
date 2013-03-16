@@ -73,5 +73,6 @@ Cloudwatch::Application.configure do
     address: '127.0.0.1',
     port:    25,
     domain: 'cloudwatch.fm',
+    openssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,
   }
 end

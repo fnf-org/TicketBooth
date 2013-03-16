@@ -1,3 +1,5 @@
+# Copy this file to config/database.yml and edit it so you can access the DB on
+# your local development environment
 defaults: &defaults
   adapter: postgresql
   encoding: utf8
@@ -13,7 +15,3 @@ test:
   <<: *defaults
   database: cloudwatch_test
   password: dev_password
-
-production:
-  <<: *defaults
-  database: cloudwatch
