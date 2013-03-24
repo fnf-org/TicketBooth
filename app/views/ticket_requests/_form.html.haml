@@ -1,14 +1,7 @@
 - form_action_name = action_name == 'edit' ? :update : :create
-= form_for(@ticket_request,
-           url: { controller: :ticket_requests, action: form_action_name }) do |f|
-  - if @ticket_request.errors.any?
-    .alert.alert-error
-      %h4
-        = pluralize(@ticket_request.errors.count, 'error')
-        need to be corrected
-      %ul
-        - @ticket_request.errors.full_messages.each do |msg|
-          %li= msg
+= form_for @ticket_request,
+           url: { controller: :ticket_requests, action: form_action_name } do |f|
+  = render 'shared/form_errors', resource: @ticket_request
 
   = f.hidden_field :event_id, value: @event.id
 

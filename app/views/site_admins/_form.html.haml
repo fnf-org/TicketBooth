@@ -1,11 +1,5 @@
 = form_for(@site_admin) do |f|
-  - if @site_admin.errors.any?
-    .alert.alert-error
-      %h4
-        = pluralize(@site_admin.errors.count, 'error')
-      %ul
-        - @site_admin.errors.full_messages.each do |msg|
-          %li= msg
+  = render 'shared/form_errors', resource: @site_admin
 
   .field
     = f.label :user_id

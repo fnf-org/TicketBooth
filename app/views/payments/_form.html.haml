@@ -1,12 +1,5 @@
 = form_for(@payment) do |f|
-  - if @payment.errors.any?
-    .alert.alert-error
-      %h4
-        = pluralize(@payment.errors.count, 'error')
-        must be corrected
-      %ul
-        - @payment.errors.full_messages.each do |msg|
-          %li= msg
+  = render 'shared/form_errors', resource: @payment
 
   = f.hidden_field :ticket_request_id, value: @payment.ticket_request_id
   = f.hidden_field :stripe_card_token # Value set by JS

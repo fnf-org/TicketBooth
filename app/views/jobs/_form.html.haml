@@ -1,13 +1,6 @@
 - form_action_name = action_name == 'edit' ? :update : :create
 = form_for(@job, url: { controller: :jobs, action: form_action_name }) do |f|
-  - if @job.errors.any?
-    .alert.alert-error
-      %h4
-        = pluralize(@job.errors.count, 'error')
-        must be corrected
-      %ul
-        - @job.errors.full_messages.each do |msg|
-          %li= msg
+  = render 'shared/form_errors', resource: @job
 
   .field
     = f.label :name

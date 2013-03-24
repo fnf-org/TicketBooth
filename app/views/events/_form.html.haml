@@ -1,12 +1,5 @@
 = form_for(@event) do |f|
-  - if @event.errors.any?
-    .alert.alert-error
-      %h4
-        = pluralize(@event.errors.count, 'error')
-        must be corrected
-      %ul
-        - @event.errors.full_messages.each do |msg|
-          %li= msg
+  = render 'shared/form_errors', resource: @event
 
   .field
     = f.label :name, 'Event Name'

@@ -1,13 +1,6 @@
 - form_action_name = action_name == 'edit' ? :update : :create
 = form_for(@time_slot, url: { controller: :time_slots, action: form_action_name }) do |f|
-  - if @time_slot.errors.any?
-    .alert.alert-error
-      %h4
-        = pluralize(@time_slot.errors.count, 'error')
-        must be corrected
-      %ul
-        - @time_slot.errors.full_messages.each do |msg|
-          %li= msg
+  = render 'shared/form_errors', resource: @time_slot
 
   = f.hidden_field :job_id, value: @job.id
 
