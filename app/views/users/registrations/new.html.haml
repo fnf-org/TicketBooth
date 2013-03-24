@@ -1,28 +1,33 @@
 = form_for resource, as: resource_name, url: registration_path(resource_name) do |f|
   = devise_error_messages!
 
-  %h2 Create an Account
+  %h2 Register an account
 
-  = f.label :name
+  %p.lead
+    Having an account allows you to request tickets and receive status
+    updates on your requests.
+
+  = f.label :name, 'Full Name'
   = f.text_field :name, autofocus: true, placeholder: 'First and last name',
     maxlength: 70, required: true,
-    class: 'input-block-level'
+    class: 'input-xlarge'
 
   = f.label :email
   = f.email_field :email, placeholder: 'email@example.com', maxlength: 254,
     required: true,
-    class: 'input-block-level'
+    class: 'input-xlarge'
 
   = f.label :password
   = f.password_field :password, placeholder: 'Must be at least 8 characters',
     required: true,
-    maxlength: 255, class: 'input-block-level'
+    maxlength: 255, class: 'input-xlarge'
 
   = f.label :password_confirmation
   = f.password_field :password_confirmation, placeholder: '',
     maxlength: 255, required: true,
-    class: 'input-block-level'
+    class: 'input-xlarge'
 
-  = f.submit 'Sign up', class: 'btn btn-primary'
+  .actions
+    = f.submit 'Register', class: 'btn btn-primary btn-large'
 
-= render 'devise/shared/links'
+= render 'users/shared/links'

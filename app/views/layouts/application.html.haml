@@ -31,12 +31,14 @@
               %li
                 = link_to edit_user_registration_path do
                   %i.icon-user
-                  = current_user.name
+                  = current_user.first_name
               %li
-                = link_to 'Sign Out', destroy_user_session_path, method: :delete
+                = link_to destroy_user_session_path, method: :delete do
+                  Sign Out
+                  %i.icon-off
             - else
-              %li= link_to 'Sign Up', new_user_registration_path
-              %li= link_to 'Login', new_user_session_path
+              %li= link_to 'Register', new_user_registration_path
+              %li= link_to 'Sign in', new_user_session_path
     .container
       = bootstrap_flash
       = yield
