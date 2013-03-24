@@ -1,0 +1,23 @@
+= form_for resource, as: resource_name, url: unlock_path(resource_name),
+  html: { method: :post } do |f|
+  - if resource.errors.any?
+    .alert.alert-error
+      %h4
+        = pluralize(resource.errors.count, 'error')
+        must be corrected
+      %ul
+        - resource.errors.full_messages.each do |msg|
+          %li= msg
+
+  %h2 Were you told that your account was locked?
+
+  %p.lead
+    Fill out the form below and we'll resend you instructions for unlocking your account.
+
+  = f.label :email
+  = f.email_field :email, autofocus: true, placeholder: 'email@example.com'
+
+  .actions
+    = f.submit 'Resend email', class: 'btn btn-primary btn-large'
+
+= render 'users/shared/links'
