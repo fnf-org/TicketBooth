@@ -5,13 +5,12 @@ defaults: &defaults
   encoding: utf8
   host: localhost
   username: app
+  password: dev_password
 
 development:
   <<: *defaults
   database: cloudwatch_dev
-  password: dev_password
 
 test:
   <<: *defaults
   database: cloudwatch_test
-  password: dev_password
