@@ -1,6 +1,6 @@
 = form_for resource, as: resource_name, url: password_path(resource_name),
   html: { method: :put } do |f|
-  = devise_error_messages!
+  = render 'shared/form_errors', resource: resource
 
   %h2 Change your Password
 

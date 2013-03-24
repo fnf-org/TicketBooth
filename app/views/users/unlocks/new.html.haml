@@ -1,13 +1,6 @@
 = form_for resource, as: resource_name, url: unlock_path(resource_name),
   html: { method: :post } do |f|
-  - if resource.errors.any?
-    .alert.alert-error
-      %h4
-        = pluralize(resource.errors.count, 'error')
-        must be corrected
-      %ul
-        - resource.errors.full_messages.each do |msg|
-          %li= msg
+  = render 'shared/form_errors', resource: resource
 
   %h2 Were you told that your account was locked?
 

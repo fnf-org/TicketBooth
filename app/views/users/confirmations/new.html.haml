@@ -1,9 +1,8 @@
 = form_for resource, as: resource_name, url: confirmation_path(resource_name),
   html: { method: :post } do |f|
-  = devise_error_messages!
+  = render 'shared/form_errors', resource: resource
 
-  %h2
-    Didn't receive a confirmation email?
+  %h2 Didn't receive a confirmation email?
 
   %p.lead
     Fill out the form below with the
