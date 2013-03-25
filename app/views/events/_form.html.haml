@@ -3,7 +3,8 @@
 
   .field
     = f.label :name, 'Event Name'
-    = f.text_field :name, class: 'input-large', maxlength: 100, require: true
+    = f.text_field :name, class: 'input-large',
+      maxlength: Event::MAX_NAME_LENGTH, require: true
 
   - prefilled_start_time = (Time.now + 1.day).beginning_of_day
   .field
