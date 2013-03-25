@@ -1,12 +1,29 @@
 %h1= @event.name
 
-%p
-  %b Start Time:
-  = @event.start_time
+%dl.dl-horizontal
+  %dt Start Time
+  %dd= @event.start_time
+  %dt End Time
+  %dd= @event.end_time
+  %dt Adult Ticket Price
+  %dd
+    = number_to_currency(@event.adult_ticket_price)
+    - if @event.max_adult_tickets_per_request
+      %span.muted
+        (max #{@event.max_adult_tickets_per_request} tickets per request)
+  %dt Kid Ticket Price
+  %dd
+    = number_to_currency(@event.kid_ticket_price)
+    - if @event.max_kid_tickets_per_request
+      %span.muted
+        (max #{@event.max_kid_tickets_per_request} tickets per request)
+  %dt Cabin Price
+  %dd
+    = number_to_currency(@event.cabin_price)
+    - if @event.max_cabins_per_request
+      %span.muted
+        (max #{@event.max_cabins_per_request} cabins per request)
 
-%p
-  %b End Time:
-  = @event.end_time
 
 - if current_user.site_admin?
   = link_to events_path, class: 'btn' do

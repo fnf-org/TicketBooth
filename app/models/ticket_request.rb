@@ -59,7 +59,10 @@ class TicketRequest < ActiveRecord::Base
   end
 
   def price
-    special_price || adults * 100 + kids * 50 # In dollars
+    special_price ||
+      adults * event.adult_ticket_price +
+      kids * event.kid_ticket_price +
+      cabins * event.cabin_price
   end
 
   def total_tickets

@@ -69,5 +69,140 @@ describe Event do
       let(:event) { Event.make start_time: 1.day.from_now, end_time: Time.now }
       it { should_not be_valid }
     end
+
+    describe '#adult_ticket_price' do
+      let(:event) { Event.make adult_ticket_price: adult_ticket_price }
+
+      context 'when not present' do
+        let(:adult_ticket_price) { nil }
+        it { should_not be_valid }
+      end
+
+      context 'when set to a number' do
+        let(:adult_ticket_price) { 50 }
+        it { should be_valid }
+      end
+
+      context 'when set to a negative number' do
+        let(:adult_ticket_price) { -1 }
+        it { should_not be_valid }
+      end
+    end
+
+    describe '#kid_ticket_price' do
+      let(:event) { Event.make kid_ticket_price: kid_ticket_price }
+
+      context 'when not present' do
+        let(:kid_ticket_price) { nil }
+        it { should be_valid }
+      end
+
+      context 'when set to a number' do
+        let(:kid_ticket_price) { 50 }
+        it { should be_valid }
+      end
+
+      context 'when set to a negative number' do
+        let(:kid_ticket_price) { -1 }
+        it { should_not be_valid }
+      end
+    end
+
+    describe '#cabin_price' do
+      let(:event) { Event.make cabin_price: cabin_price }
+
+      context 'when not present' do
+        let(:cabin_price) { nil }
+        it { should be_valid }
+      end
+
+      context 'when set to a number' do
+        let(:cabin_price) { 50 }
+        it { should be_valid }
+      end
+
+      context 'when set to a negative number' do
+        let(:cabin_price) { -1 }
+        it { should_not be_valid }
+      end
+    end
+
+    describe '#max_adult_tickets_per_request' do
+      let(:event) do
+        Event.make max_adult_tickets_per_request: max_adult_tickets_per_request
+      end
+
+      context 'when not present' do
+        let(:max_adult_tickets_per_request) { nil }
+        it { should be_valid }
+      end
+
+      context 'when set to a number' do
+        let(:max_adult_tickets_per_request) { 5 }
+        it { should be_valid }
+      end
+
+      context 'when set to a negative number' do
+        let(:max_adult_tickets_per_request) { -1 }
+        it { should_not be_valid }
+      end
+    end
+
+    describe '#max_kid_tickets_per_request' do
+      let(:kid_ticket_price) { 10 }
+      let(:event) do
+        Event.make kid_ticket_price: kid_ticket_price,
+                   max_kid_tickets_per_request: max_kid_tickets_per_request
+      end
+
+      context 'when not present' do
+        let(:max_kid_tickets_per_request) { nil }
+        it { should be_valid }
+      end
+
+      context 'when set to a number' do
+        let(:max_kid_tickets_per_request) { 5 }
+
+        it { should be_valid }
+
+        context 'and a kid ticket price is not set' do
+          let(:kid_ticket_price) { nil }
+          it { should_not be_valid }
+        end
+      end
+
+      context 'when set to a negative number' do
+        let(:max_kid_tickets_per_request) { -1 }
+        it { should_not be_valid }
+      end
+    end
+
+    describe '#max_cabins_per_request' do
+      let(:cabin_price) { 150 }
+      let(:event) do
+        Event.make cabin_price: cabin_price,
+                   max_cabins_per_request: max_cabins_per_request
+      end
+
+      context 'when not present' do
+        let(:max_cabins_per_request) { nil }
+        it { should be_valid }
+      end
+
+      context 'when set to a number' do
+        let(:max_cabins_per_request) { 5 }
+        it { should be_valid }
+
+        context 'and cabin price is not set' do
+          let(:cabin_price) { nil }
+          it { should_not be_valid }
+        end
+      end
+
+      context 'when set to a negative number' do
+        let(:max_cabins_per_request) { -1 }
+        it { should_not be_valid }
+      end
+    end
   end
 end

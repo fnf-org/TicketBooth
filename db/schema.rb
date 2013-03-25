@@ -11,14 +11,20 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130311213508) do
+ActiveRecord::Schema.define(:version => 20130325024448) do
 
   create_table "events", :force => true do |t|
     t.string   "name"
     t.datetime "start_time"
     t.datetime "end_time"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                                                  :null => false
+    t.datetime "updated_at",                                                  :null => false
+    t.decimal  "adult_ticket_price",            :precision => 8, :scale => 2
+    t.decimal  "kid_ticket_price",              :precision => 8, :scale => 2
+    t.decimal  "cabin_price",                   :precision => 8, :scale => 2
+    t.integer  "max_adult_tickets_per_request"
+    t.integer  "max_kid_tickets_per_request"
+    t.integer  "max_cabins_per_request"
   end
 
   create_table "jobs", :force => true do |t|

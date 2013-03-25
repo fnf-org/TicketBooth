@@ -1,22 +1,52 @@
 = form_for(@event) do |f|
   = render 'shared/form_errors', resource: @event
 
-  .field
+  %fieldset
+    %legend Event Details
     = f.label :name, 'Event Name'
-    = f.text_field :name, class: 'input-large',
-      maxlength: Event::MAX_NAME_LENGTH, require: true
+    = f.text_field :name, class: 'input-large', required: true,
+      maxlength: Event::MAX_NAME_LENGTH
 
-  - prefilled_start_time = (Time.now + 1.day).beginning_of_day
-  .field
+    - prefilled_start_time = (Time.now + 1.day).beginning_of_day
     = f.label :start_time, 'Start Time'
     = select_date prefilled_start_time, prefix: :start_time
     = select_time prefilled_start_time, prefix: :start_time
 
-  - prefilled_end_time = prefilled_start_time + 3.hours
-  .field
+    - prefilled_end_time = prefilled_start_time + 3.hours
     = f.label :end_time, 'End Time'
     = select_date prefilled_end_time, prefix: :end_time
     = select_time prefilled_end_time, prefix: :end_time
 
+  %fieldset
+    %legend Ticket Limits and Pricing
+    = f.label :adult_ticket_price, 'Adult Ticket Price ($)'
+    = f.number_field :adult_ticket_price, class: 'input-small', required: true,
+      min: 0
+
+    = f.label :max_adult_tickets_per_request do
+      Maximum number of adult tickets allowed per ticket request?
+      %p.muted Leave blank for no limit
+    = f.number_field :max_adult_tickets_per_request, class: 'input-mini', min: 1
+
+    = f.label :kid_ticket_price do
+      Kid Ticket Price ($)
+      %p.muted Keep blank if you only want to sell adult tickets
+    = f.number_field :kid_ticket_price, class: 'input-small', min: 0
+
+    = f.label :max_kid_tickets_per_request do
+      Maximum number of kid tickets allowed per ticket request?
+      %p.muted Leave blank for no limit
+    = f.number_field :max_kid_tickets_per_request, class: 'input-mini', min: 1
+
+    = f.label :cabin_price do
+      Cabin Price ($)
+      %p.muted Keep blank if there are no cabins or you aren't charging separately for them
+    = f.number_field :cabin_price, class: 'input-small', min: 0
+
+    = f.label :max_cabins_per_request do
+      Maximum number of cabins allowed per ticket request?
+      %p.muted Leave blank for no limit
+    = f.number_field :max_cabins_per_request, class: 'input-mini', min: 1
+
   .actions
-    = f.submit class: 'btn btn-primary'
+    = f.submit class: 'btn btn-primary btn-large'

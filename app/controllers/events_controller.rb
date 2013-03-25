@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :require_site_admin, except: :show
+  before_filter :require_site_admin
 
   def index
     @events = Event.all
@@ -36,8 +36,8 @@ class EventsController < ApplicationController
   def update
     @event = Event.find(params[:id])
 
-    if @job.update_attributes(params[:job])
-      redirect_to @job, notice: 'Event was successfully updated.'
+    if @event.update_attributes(params[:event])
+      redirect_to @event
     else
       render action: 'edit'
     end
