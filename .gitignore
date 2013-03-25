@@ -4,3 +4,6 @@
 
 # Ignore the database.yml file so production passwords aren't stored
 /config/database.yml
+
+# Zeus config files might vary greatly between developers
+/zeus*
