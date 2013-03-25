@@ -14,21 +14,23 @@
       = link_to 'Login', new_user_session_path, class: 'btn btn-primary'
     .field
       = label_tag :name, 'Name'
-      = text_field_tag :name, nil, class: 'input-xlarge', maxlength: 70,
-        required: true, placeholder: 'First and last name'
+      = text_field_tag :name, nil, class: 'input-xlarge',
+        maxlength: User::MAX_NAME_LENGTH, required: true,
+        placeholder: 'First and last name'
     .field
       = label_tag :email, 'Email'
       = email_field_tag :email, nil, class: 'input-xlarge',
-        maxlength: 254, required: true, placeholder: 'email@example.com'
+        maxlength: User::MAX_EMAIL_LENGTH, required: true,
+        placeholder: 'email@example.com'
     .field
       = label_tag :password, 'Password'
       = password_field_tag :password, nil,
         placeholder: 'Must be at least 8 characters', required: true,
-        maxlength: 255, class: 'input-xlarge'
+        maxlength: User::MAX_PASSWORD_LENGTH, class: 'input-xlarge'
     .field
       = label_tag :password_confirmation, 'Confirm Password'
       = password_field_tag :password_confirmation, nil, placeholder: '',
-        maxlength: 255, required: true, class: 'input-xlarge'
+        maxlength: User::MAX_PASSWORD_LENGTH, required: true, class: 'input-xlarge'
 
   - if signed_in? && current_user.site_admin?
     .field.well

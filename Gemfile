@@ -15,10 +15,10 @@ gem 'unicorn', '~> 4.6.2'
 
 group :development do
   gem 'capistrano', '~> 2.14.2'
-  gem 'rspec-rails', '~> 2.6.1'
 end
 
 group :test do
+  gem 'factory_girl_rails', '~> 4.2.1'
   gem 'rspec-rails', '~> 2.6.1'
 end
 

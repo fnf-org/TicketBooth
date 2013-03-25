@@ -4,38 +4,39 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :confirmable, :lockable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  MAX_NAME_LENGTH = 70
+  MAX_EMAIL_LENGTH = 254 # Based on RFC 3696; see http://isemail.info/about
+  MAX_PASSWORD_LENGTH = 255
+
   # Setup accessible (or protected) attributes for your model
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me
 
   before_validation :strip_whitespace, :normalize_spaces
 
-  validates_presence_of :name, :email
+  validates :name, presence: true,
+    length: { maximum: MAX_NAME_LENGTH },
+    format: { with: /[^\s]+\s[^\s]+(\s[^\s]+)*/i }
 
-  validates_length_of :name, in: 2..70,
-    too_short: 'is too short. Did you forget to enter it?',
-    too_long: 'is too long. Perhaps remove middle names?'
-
-  validates_format_of :name, with: /[^\s]+\s[^\s]+(\s[^\s]+)*/i,
-    message: 'must include at least first and last name'
-
-  validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i }
+  validates :email, presence: true,
+    format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i },
+    length: { maximum: MAX_EMAIL_LENGTH }
 
   def first_name
     name.split(' ').first
   end
 
   def site_admin?
-    SiteAdmin.where(user_id: self).first.present?
+    SiteAdmin.where(user_id: self).exists?
   end
 
 private
 
   def strip_whitespace
-    self.name.strip
-    self.email.strip
+    self.name.strip! if self.name.present?
+    self.email.strip! if self.email.present?
   end
 
   def normalize_spaces
-    self.name.gsub!(/\s+/, ' ')
+    self.name.gsub!(/\s+/, ' ') if self.name.present?
   end
 end

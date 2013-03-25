@@ -9,22 +9,22 @@
 
   = f.label :name, 'Full Name'
   = f.text_field :name, autofocus: true, placeholder: 'First and last name',
-    maxlength: 70, required: true,
+    maxlength: User::MAX_NAME_LENGTH, required: true,
     class: 'input-xlarge'
 
   = f.label :email
-  = f.email_field :email, placeholder: 'email@example.com', maxlength: 254,
-    required: true,
+  = f.email_field :email, placeholder: 'email@example.com',
+    maxlength: User::MAX_EMAIL_LENGTH, required: true,
     class: 'input-xlarge'
 
   = f.label :password
   = f.password_field :password, placeholder: 'Must be at least 8 characters',
     required: true,
-    maxlength: 255, class: 'input-xlarge'
+    maxlength: User::MAX_PASSWORD_LENGTH, class: 'input-xlarge'
 
   = f.label :password_confirmation
   = f.password_field :password_confirmation, placeholder: '',
-    maxlength: 255, required: true,
+    maxlength: User::MAX_PASSWORD_LENGTH, required: true,
     class: 'input-xlarge'
 
   .actions
