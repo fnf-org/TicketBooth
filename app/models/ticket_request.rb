@@ -9,7 +9,7 @@ class TicketRequest < ActiveRecord::Base
   belongs_to :event
   has_one :payment
 
-  attr_accessible :user_id, :address, :adults, :kids, :cabins, :assistance,
+  attr_accessible :user_id, :address, :adults, :kids, :cabins, :needs_assistance,
                   :notes, :status, :special_price, :event_id
 
   before_validation :convert_blanks_to_nil

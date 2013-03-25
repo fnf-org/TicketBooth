@@ -74,7 +74,7 @@
           %span.label{ class: ('label-info' if ticket_request.special_price) }
             = number_to_currency(ticket_request.price, precision: 0)
         %td
-          - if ticket_request.assistance
+          - if ticket_request.needs_assistance
             %span.text-error Financial Aid Needed
         %td
           - if ticket_request.notes.present?

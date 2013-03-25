@@ -5,7 +5,7 @@ FactoryGirl.define do
     adults { Random.rand(1..4) }
     kids { Random.rand(0..2) }
     cabins { Random.rand(0..2) }
-    assistance { [true, false].sample }
+    needs_assistance { [true, false].sample }
     notes { Sham.words(10) }
 
     association :user
