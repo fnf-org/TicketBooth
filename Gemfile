@@ -12,6 +12,7 @@ gem 'stripe', '~> 1.7.11'
 gem 'thin', '~> 1.5.1'
 gem 'twitter-bootstrap-rails', '2.2.4'
 gem 'unicorn', '~> 4.6.2'
+gem 'validates_existence'
 
 group :development do
   gem 'capistrano', '~> 2.14.2'
