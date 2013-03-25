@@ -69,8 +69,8 @@ module Sham
   end
 end
 
-Sham.email_address do |n|
-  "#{Sham.word.downcase}#{n}@example.com"
+def Sham.email_address
+  "#{Sham.string(12)}@#{Sham.string(10)}.com"
 end
 
 Sham.positive_integer { |n| n }
