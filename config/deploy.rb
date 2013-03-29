@@ -41,7 +41,8 @@ namespace :deploy do
   end
 end
 
-after 'deploy:update_code', 'bundle:install'
+# Ensure we have the latest gems before our asset pipeline tries to load them
+before 'deploy:assets:precompile', 'bundle:install'
 namespace :bundle do
   desc 'Install all gem dependencies'
   task :install, roles: :app do
