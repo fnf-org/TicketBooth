@@ -2,9 +2,9 @@
 
 %dl.dl-horizontal
   %dt Start Time
-  %dd= @event.start_time
+  %dd= @event.start_time.localtime.to_s(:friendly)
   %dt End Time
-  %dd= @event.end_time
+  %dd= @event.end_time.localtime.to_s(:friendly)
   %dt Adult Ticket Price
   %dd
     = number_to_currency(@event.adult_ticket_price)
@@ -23,7 +23,6 @@
     - if @event.max_cabins_per_request
       %span.muted
         (max #{@event.max_cabins_per_request} cabins per request)
-
 
 - if current_user.site_admin?
   = link_to events_path, class: 'btn' do

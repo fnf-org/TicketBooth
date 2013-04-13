@@ -10,8 +10,8 @@
     - @events.each do |event|
       %tr
         %td= link_to event.name, event
-        %td= event.start_time
-        %td= event.end_time
+        %td= event.start_time.localtime.to_s(:friendly)
+        %td= event.end_time.localtime.to_s(:friendly)
         %td
           = link_to edit_event_path(event), class: 'btn' do
             Edit

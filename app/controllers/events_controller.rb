@@ -19,11 +19,9 @@ class EventsController < ApplicationController
   end
 
   def create
-    # TODO: Figure out ideal way to manage datetimes
-    start_time = Time.now + 100.days
-    end_time = start_time + 4.days
-    params[:event][:start_time] = start_time
-    params[:event][:end_time] = end_time
+    params[:event][:start_time] = Time.from_picker(params.delete(:start_time))
+    params[:event][:end_time] = Time.from_picker(params.delete(:end_time))
+
     @event = Event.new(params[:event])
 
     if @event.save
@@ -35,6 +33,9 @@ class EventsController < ApplicationController
 
   def update
     @event = Event.find(params[:id])
+
+    params[:event][:start_time] = Time.from_picker(params.delete(:start_time))
+    params[:event][:end_time] = Time.from_picker(params.delete(:end_time))
 
     if @event.update_attributes(params[:event])
       redirect_to @event

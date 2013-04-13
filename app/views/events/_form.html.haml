@@ -7,15 +7,11 @@
     = f.text_field :name, class: 'input-large', required: true,
       maxlength: Event::MAX_NAME_LENGTH
 
-    - prefilled_start_time = (Time.now + 1.day).beginning_of_day
     = f.label :start_time, 'Start Time'
-    = select_date prefilled_start_time, prefix: :start_time
-    = select_time prefilled_start_time, prefix: :start_time
+    = datetimepicker(:start_time, @event.start_time)
 
-    - prefilled_end_time = prefilled_start_time + 3.hours
     = f.label :end_time, 'End Time'
-    = select_date prefilled_end_time, prefix: :end_time
-    = select_time prefilled_end_time, prefix: :end_time
+    = datetimepicker(:end_time, @event.end_time)
 
   %fieldset
     %legend Ticket Limits and Pricing

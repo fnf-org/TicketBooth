@@ -12,4 +12,5 @@
  *= require_tree .
  *
  *= require bootstrap_and_overrides
+ *= require bootstrap-datetimepicker.min
  */
