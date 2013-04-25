@@ -8,10 +8,10 @@
       maxlength: Event::MAX_NAME_LENGTH
 
     = f.label :start_time, 'Start Time'
-    = datetimepicker(:start_time, @event.start_time)
+    = datetimepicker(:start_time, @event.start_time || 1.day.from_now.beginning_of_day)
 
     = f.label :end_time, 'End Time'
-    = datetimepicker(:end_time, @event.end_time)
+    = datetimepicker(:end_time, @event.end_time || 1.day.from_now.beginning_of_day)
 
   %fieldset
     %legend Ticket Limits and Pricing
