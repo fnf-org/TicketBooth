@@ -63,6 +63,9 @@
     = f.number_field :cabins, class: 'input-mini', min: 0,
       max: @event.max_cabins_per_request
 
+  = f.label :volunteer_shifts, 'How many volunteer shifts are you willing to sign up for?'
+  = f.number_field :volunteer_shifts, class: 'input-mini', min: 0, required: true
+
   = f.label :address, 'Mailing Address'
   %p.muted We'll mail your tickets to this address
   = f.text_area :address, class: 'input-xlarge',

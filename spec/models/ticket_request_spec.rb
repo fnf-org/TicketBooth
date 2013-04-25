@@ -151,6 +151,25 @@ describe TicketRequest do
       end
     end
 
+    describe '#volunteer_shifts' do
+      let(:ticket_request) { TicketRequest.make volunteer_shifts: shifts }
+
+      context 'when not present' do
+        let(:shifts) { nil }
+        it { should be_valid }
+      end
+
+      context 'when not a number' do
+        let(:shifts) { 'not a number' }
+        it { should_not be_valid }
+      end
+
+      context 'when a number' do
+        let(:shifts) { 2 }
+        it { should be_valid }
+      end
+    end
+
     describe '#notes' do
       let(:ticket_request) { TicketRequest.make notes: notes }
 

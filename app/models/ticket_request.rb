@@ -33,6 +33,9 @@ class TicketRequest < ActiveRecord::Base
   validates :cabins, allow_nil: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :volunteer_shifts, allow_nil: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :notes, length: { maximum: 500 }
 
   validates :special_price, allow_nil: true,
