@@ -6,14 +6,14 @@
 
   .field
     = f.label :start_time
-    = f.text_field :start_time, required: true
+    = datetimepicker(:start_time, @time_slot.start_time || @event.start_time)
 
   .field
     = f.label :end_time
-    = f.text_field :end_time, required: true
+    = datetimepicker(:end_time, @time_slot.end_time || @event.end_time)
 
   .field
-    = f.label :slots
+    = f.label :slots, 'People per shift'
     = f.number_field :slots, class: 'input-mini', required: true, min: 1
 
   .actions

@@ -13,6 +13,9 @@
 
 %h2 Time Slots
 
+%p
+  A list of times where this job needs to have one or more people working.
+
 %table.table
   %thead
     %tr
@@ -23,7 +26,7 @@
     - @time_slots.each do |time_slot|
       %tr
         %td
-          #{time_slot.start_time.to_s(:time)} &ndash; #{time_slot.end_time.to_s(:time)}
+          #{time_slot.start_time.localtime.to_s(:hmm)} &ndash; #{time_slot.end_time.localtime.to_s(:hmm)}
         %td= time_slot.slots
         %td
           = link_to edit_event_job_time_slot_path(@event, @job, time_slot), class: 'btn' do

@@ -1,21 +1,26 @@
 %h1
   Jobs for #{@event.name}
 
+%p.lead
+  View and manage all jobs that need to happen during the event.
+
 .btn-group
   = link_to event_path(@event), class: 'btn' do
     %i.icon-arrow-left
     Event
-  = link_to new_event_job_path(@event), class: 'btn btn-primary' do
-    New Job
-    %i.icon-plus-sign
 
 %table.table
   %thead
     %tr
-      %th Name
+      %th Job
       %th Description
   %tbody
     - @jobs.each do |job|
       %tr
         %td= link_to job.name, event_job_path(@event, job)
         %td= simple_format(job.description)
+    %tr
+      %td{ colspan: 2 }
+        = link_to new_event_job_path(@event), class: 'btn btn-primary' do
+          New Job
+          %i.icon-plus-sign
