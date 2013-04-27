@@ -19,6 +19,7 @@ group :development do
 end
 
 group :test do
+  gem 'accept_values_for'
   gem 'factory_girl_rails', '~> 4.2.1'
   gem 'rspec-rails', '~> 2.6.1'
 end
