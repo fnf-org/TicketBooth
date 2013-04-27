@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :confirmable, :lockable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  has_one :site_admin, dependent: :destroy
+
   MAX_NAME_LENGTH = 70
   MAX_EMAIL_LENGTH = 254 # Based on RFC 3696; see http://isemail.info/about
   MAX_PASSWORD_LENGTH = 255
@@ -26,6 +28,6 @@ class User < ActiveRecord::Base
   end
 
   def site_admin?
-    SiteAdmin.where(user_id: self).exists?
+    !!site_admin
   end
 end

@@ -121,4 +121,19 @@ describe User do
       end
     end
   end
+
+  describe '#destroy' do
+    before do
+      user.destroy
+    end
+
+    context 'when user is a site admin' do
+      let(:user) { User.make! :site_admin }
+      let(:site_admin) { user.site_admin }
+
+      it 'destroys the associated site admin' do
+        site_admin.should be_destroyed
+      end
+    end
+  end
 end
