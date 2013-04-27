@@ -1,6 +1,6 @@
 class TimeSlot < ActiveRecord::Base
   belongs_to :job
-  has_many :shifts
+  has_many :shifts, dependent: :destroy
 
   attr_accessible :end_time, :job_id, :slots, :start_time
 
