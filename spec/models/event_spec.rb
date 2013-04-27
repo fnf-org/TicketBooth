@@ -5,6 +5,12 @@ describe Event do
     Event.make.should be_valid
   end
 
+  describe 'normalization' do
+    it { should normalize(:name) }
+    it { should normalize(:name).from('  Trim Spaces  ').to('Trim Spaces')}
+    it { should normalize(:name).from('Squish  Spaces').to('Squish Spaces')}
+  end
+
   describe 'validations' do
     describe '#name' do
       it { should accept_values_for(:name, 'Cloudwatch 2013') }
