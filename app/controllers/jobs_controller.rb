@@ -25,8 +25,7 @@ class JobsController < ApplicationController
     @job = Job.new(params[:job])
 
     if @job.save
-      redirect_to event_job_path(@event, @job),
-        notice: 'Job was successfully created.'
+      redirect_to event_job_path(@event, @job)
     else
       render action: 'new'
     end
