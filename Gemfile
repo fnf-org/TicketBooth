@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.13'
 
+gem 'attribute_normalizer'
 gem 'devise', '~> 2.2.3'
 gem 'haml', '~> 3.1.7'
 gem 'jquery-rails', '~> 2.2.1'

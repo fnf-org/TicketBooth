@@ -32,6 +32,7 @@ GEM
       i18n (= 0.6.1)
       multi_json (~> 1.0)
     arel (3.0.2)
+    attribute_normalizer (1.1.0)
     bcrypt-ruby (3.0.1)
     builder (3.0.4)
     capistrano (2.14.2)
@@ -184,6 +185,7 @@ PLATFORMS
 
 DEPENDENCIES
   accept_values_for
+  attribute_normalizer
   capistrano (~> 2.14.2)
   coffee-rails (~> 3.2.1)
   commonjs (~> 0.2.6)

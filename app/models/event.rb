@@ -8,6 +8,8 @@ class Event < ActiveRecord::Base
     :kid_ticket_price, :cabin_price, :max_adult_tickets_per_request,
     :max_kid_tickets_per_request, :max_cabins_per_request
 
+  normalize_attributes :name
+
   validates :name, presence: true, length: { maximum: MAX_NAME_LENGTH }
   validates :start_time, presence: true
   validates :end_time, presence: true
@@ -36,11 +38,11 @@ private
 
   def ensure_prices_set_if_maximum_specified
     if self.max_kid_tickets_per_request && self.kid_ticket_price.blank?
-      errors.add(:kid_ticket_price, 'must be set if a limit is specified')
+      errors.add(:max_kid_tickets_per_request, 'can be set only if a kid ticket price is set')
     end
 
     if self.max_cabins_per_request && self.cabin_price.blank?
-      errors.add(:cabin_price, 'must be set if a limit is specified')
+      errors.add(:max_cabins_per_request, 'can be set only if a cabin price is set')
     end
   end
 end
