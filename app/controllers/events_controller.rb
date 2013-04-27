@@ -59,8 +59,7 @@ class EventsController < ApplicationController
     @event.admins << user
 
     if @event.save
-      redirect_to @event,
-        notice: "#{user.name} was added as an admin for #{@event.name}"
+      redirect_to @event
     else
       redirect_to :back,
         error: "There was a problem adding #{email} as an admin"
