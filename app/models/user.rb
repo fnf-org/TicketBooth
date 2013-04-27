@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   # Setup accessible (or protected) attributes for your model
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me
 
-  before_validation :strip_whitespace, :normalize_spaces
+  normalize_attributes :name, :email
 
   validates :name, presence: true,
     length: { maximum: MAX_NAME_LENGTH },
@@ -27,16 +27,5 @@ class User < ActiveRecord::Base
 
   def site_admin?
     SiteAdmin.where(user_id: self).exists?
-  end
-
-private
-
-  def strip_whitespace
-    self.name.strip! if self.name.present?
-    self.email.strip! if self.email.present?
-  end
-
-  def normalize_spaces
-    self.name.gsub!(/\s+/, ' ') if self.name.present?
   end
 end
