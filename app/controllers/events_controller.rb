@@ -84,8 +84,4 @@ private
   def set_event
     @event = Event.find(params[:id])
   end
-
-  def require_event_admin
-    redirect_to :root unless @event.admin?(current_user)
-  end
 end

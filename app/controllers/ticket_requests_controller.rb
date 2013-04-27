@@ -1,9 +1,9 @@
 class TicketRequestsController < ApplicationController
   before_filter :authenticate_user!,
     only: [:index, :show, :edit, :update, :approve, :decline]
-  before_filter :require_site_admin,
-    only: [:index, :edit, :update, :approve, :decline]
   before_filter :set_event
+  before_filter :require_event_admin,
+    only: [:index, :edit, :update, :approve, :decline]
 
   def index
     @ticket_requests = TicketRequest.
