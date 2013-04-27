@@ -1,10 +1,16 @@
 class EventsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :require_site_admin, only: [:index, :create]
+  before_filter :require_site_admin, only: [:create]
   before_filter :set_event, :require_event_admin, except: [:index, :new, :create]
 
   def index
-    @events = Event.all
+    if current_user.site_admin?
+      @events = Event.all
+    elsif current_user.event_admin?
+      @events = current_user.events_administrated
+    else
+      redirect_to :root
+    end
   end
 
   def show

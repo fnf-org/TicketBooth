@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :confirmable, :lockable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  has_many :event_admins, dependent: :destroy
+  has_many :events_administrated, through: :event_admins, source: :event
   has_one :site_admin, dependent: :destroy
 
   MAX_NAME_LENGTH = 70
@@ -29,5 +31,9 @@ class User < ActiveRecord::Base
 
   def site_admin?
     !!site_admin
+  end
+
+  def event_admin?
+    event_admins.exists?
   end
 end
