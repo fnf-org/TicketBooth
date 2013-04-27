@@ -1,4 +1,5 @@
 class Event < ActiveRecord::Base
+  has_many :event_admins
   has_many :jobs, dependent: :destroy
   has_many :ticket_requests, dependent: :destroy
 

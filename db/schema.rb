@@ -11,7 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130425052112) do
+ActiveRecord::Schema.define(:version => 20130427054403) do
+
+  create_table "event_admins", :force => true do |t|
+    t.integer  "event_id"
+    t.integer  "user_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "event_admins", ["event_id", "user_id"], :name => "index_event_admins_on_event_id_and_user_id", :unique => true
+  add_index "event_admins", ["user_id"], :name => "index_event_admins_on_user_id"
 
   create_table "events", :force => true do |t|
     t.string   "name"
