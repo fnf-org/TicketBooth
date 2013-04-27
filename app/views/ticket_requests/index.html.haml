@@ -84,18 +84,15 @@
             = text_for_status ticket_request
         %td
           - if ticket_request.pending?
-            = link_to approve_event_ticket_request_path(@event, ticket_request),
-              method: :post,
-              class: 'btn btn-primary' do
-              Approve
-              %i.icon-ok
-            = link_to decline_event_ticket_request_path(@event, ticket_request),
-              method: :post,
-              class: 'btn btn-danger',
-              confirm: "Are you sure you want to decline #{ticket_request.user.name}'s request?" do
-              Decline
-              %i.icon-remove
-
-= link_to new_event_ticket_request_path(@event), class: 'btn' do
-  New Ticket Request
-  %i.icon-plus-sign
+            .btn-group
+              = link_to approve_event_ticket_request_path(@event, ticket_request),
+                method: :post,
+                class: 'btn btn-primary' do
+                Approve
+                %i.icon-ok
+              = link_to decline_event_ticket_request_path(@event, ticket_request),
+                method: :post,
+                class: 'btn btn-danger',
+                confirm: "Are you sure you want to decline #{ticket_request.user.name}'s request?" do
+                Decline
+                %i.icon-remove
