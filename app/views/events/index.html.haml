@@ -12,10 +12,6 @@
         %td= link_to event.name, event
         %td= event.start_time.localtime.to_s(:friendly)
         %td= event.end_time.localtime.to_s(:friendly)
-        %td
-          = link_to edit_event_path(event), class: 'btn' do
-            Edit
-            %i.icon-edit
 
 = link_to new_event_path, class: 'btn btn-primary' do
   New Event
