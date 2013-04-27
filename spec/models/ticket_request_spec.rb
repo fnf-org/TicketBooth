@@ -238,14 +238,61 @@ describe TicketRequest do
   end
 
   describe '#price' do
-    subject { TicketRequest.make(special_price: special_price).price }
+    let(:adult_price) { 10 }
+    let(:adults) { 2 }
+    let(:kid_price) { nil }
+    let(:kids) { nil }
+    let(:cabin_price) { nil }
+    let(:cabins) { nil }
+    let(:special_price) { nil }
+    let(:event) do
+      Event.make!(
+        adult_ticket_price: adult_price,
+        kid_ticket_price: kid_price,
+        cabin_price: cabin_price,
+      )
+    end
+    let(:ticket_request) do
+      TicketRequest.make(
+        event: event,
+        adults: adults,
+        kids: kids,
+        cabins: cabins,
+        special_price: special_price,
+      )
+    end
+    subject { ticket_request.price  }
+
+    context 'when kid ticket price is not set on the event' do
+      it { should == adult_price * adults }
+    end
+
+    context 'when the ticket request includes kids' do
+      let(:kids) { 2 }
+      let(:kid_price) { 10 }
+      it { should == adult_price * adults + kid_price * kids }
+    end
+
+    context 'when the ticket request does not include kids' do
+      let(:kids) { nil }
+      it { should == adult_price * adults }
+    end
+
+    context 'when the ticket request includes cabins' do
+      let(:cabins) { 2 }
+      let(:cabin_price) { 100 }
+      it { should == adult_price * adults + cabin_price * cabins }
+    end
+
+    context 'when the ticket request does not include cabins' do
+      let(:cabins) { nil }
+      it { should == adult_price * adults }
+    end
 
     context 'when a special price is set' do
       let(:special_price) { 99.99 }
       it { should == special_price }
     end
-
-    # TODO: Add more specs once we include adult/kid ticket prices in event info
   end
 
   describe '#total_tickets' do

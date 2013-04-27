@@ -10,7 +10,7 @@ class TicketRequest < ActiveRecord::Base
   has_one :payment
 
   attr_accessible :user_id, :address, :adults, :kids, :cabins, :needs_assistance,
-                  :notes, :status, :special_price, :event_id
+                  :notes, :status, :special_price, :event_id, :volunteer_shifts
 
   before_validation :convert_blanks_to_nil
 
@@ -62,10 +62,13 @@ class TicketRequest < ActiveRecord::Base
   end
 
   def price
-    special_price ||
-      adults * event.adult_ticket_price +
-      kids * event.kid_ticket_price +
-      cabins * event.cabin_price
+    return special_price if special_price
+
+    total = adults * event.adult_ticket_price
+    total += kids * event.kid_ticket_price if event.kid_ticket_price
+    total += cabins * event.cabin_price if event.cabin_price
+
+    total
   end
 
   def total_tickets
