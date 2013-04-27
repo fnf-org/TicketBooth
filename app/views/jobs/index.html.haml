@@ -19,7 +19,3 @@
       %tr
         %td= link_to job.name, event_job_path(@event, job)
         %td= simple_format(job.description)
-        %td
-          = link_to edit_event_job_path(@event, job), class: 'btn' do
-            Edit
-            %i.icon-edit
