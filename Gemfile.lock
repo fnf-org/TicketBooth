@@ -186,24 +186,24 @@ PLATFORMS
 DEPENDENCIES
   accept_values_for
   attribute_normalizer
-  capistrano (~> 2.14.2)
-  coffee-rails (~> 3.2.1)
-  commonjs (~> 0.2.6)
-  devise (~> 2.2.3)
-  factory_girl_rails (~> 4.2.1)
-  haml (~> 3.1.7)
-  jquery-rails (~> 2.2.1)
-  less (~> 2.3.1)
-  less-rails (~> 2.3.2)
-  libv8 (~> 3.11.8)
-  pg (~> 0.14.1)
-  rails (= 3.2.13)
-  rspec-rails (~> 2.6.1)
-  sass-rails (~> 3.2.3)
-  stripe (~> 1.7.11)
+  capistrano
+  coffee-rails
+  commonjs
+  devise
+  factory_girl_rails
+  haml
+  jquery-rails
+  less
+  less-rails
+  libv8
+  pg
+  rails
+  rspec-rails
+  sass-rails
+  stripe
   therubyracer
-  thin (~> 1.5.1)
-  twitter-bootstrap-rails (= 2.2.4)
-  uglifier (>= 1.0.3)
-  unicorn (~> 4.6.2)
+  thin
+  twitter-bootstrap-rails
+  uglifier
+  unicorn
   validates_existence

@@ -1,35 +1,35 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.13'
+gem 'rails'
 
 gem 'attribute_normalizer'
-gem 'devise', '~> 2.2.3'
-gem 'haml', '~> 3.1.7'
-gem 'jquery-rails', '~> 2.2.1'
-gem 'less-rails', '~> 2.3.2'
-gem 'libv8', '~> 3.11.8'
-gem 'pg', '~> 0.14.1'
-gem 'stripe', '~> 1.7.11'
-gem 'thin', '~> 1.5.1'
-gem 'twitter-bootstrap-rails', '2.2.4'
-gem 'unicorn', '~> 4.6.2'
+gem 'devise'
+gem 'haml'
+gem 'jquery-rails'
+gem 'less-rails'
+gem 'libv8'
+gem 'pg'
+gem 'stripe'
+gem 'thin'
+gem 'twitter-bootstrap-rails'
+gem 'unicorn'
 gem 'validates_existence'
 
 group :development do
-  gem 'capistrano', '~> 2.14.2'
+  gem 'capistrano'
 end
 
 group :test do
   gem 'accept_values_for'
-  gem 'factory_girl_rails', '~> 4.2.1'
-  gem 'rspec-rails', '~> 2.6.1'
+  gem 'factory_girl_rails'
+  gem 'rspec-rails'
 end
 
 group :assets do
-  gem 'sass-rails', '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
-  gem 'less', '~> 2.3.1'
-  gem 'commonjs', '~> 0.2.6'
+  gem 'sass-rails'
+  gem 'coffee-rails'
+  gem 'less'
+  gem 'commonjs'
   gem 'therubyracer', platforms: :ruby
-  gem 'uglifier', '>= 1.0.3'
+  gem 'uglifier'
 end
