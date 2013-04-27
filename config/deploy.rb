@@ -29,7 +29,11 @@ namespace :deploy do
 
   desc 'Zero-downtime restart of Unicorn to load new code'
   task :restart, roles: :app do
-    run "kill -s USR2 `cat #{shared_path}/pids/unicorn.#{application}.pid`"
+    # XXX: There are problems with the zero-downtime deploys. In the interest
+    # of having something working, just kill and start the server for now.
+    #run "kill -s USR2 `cat #{shared_path}/pids/unicorn.#{application}.pid`"
+    run "kill -s QUIT `cat #{shared_path}/pids/unicorn.#{application}.pid`"
+    run "cd #{current_path} && bundle exec unicorn_rails -c config/unicorn.rb -D"
   end
 
   task :start, roles: :app do
