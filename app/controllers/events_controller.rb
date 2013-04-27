@@ -1,13 +1,14 @@
 class EventsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :require_site_admin
+  before_filter :require_site_admin, only: [:index, :create]
+  before_filter :set_event, :require_event_admin, except: [:index, :new, :create]
 
   def index
     @events = Event.all
   end
 
   def show
-    @event = Event.find(params[:id])
+    render
   end
 
   def new
@@ -15,7 +16,7 @@ class EventsController < ApplicationController
   end
 
   def edit
-    @event = Event.find(params[:id])
+    render
   end
 
   def create
@@ -32,8 +33,6 @@ class EventsController < ApplicationController
   end
 
   def update
-    @event = Event.find(params[:id])
-
     params[:event][:start_time] = Time.from_picker(params.delete(:start_time))
     params[:event][:end_time] = Time.from_picker(params.delete(:end_time))
 
@@ -45,9 +44,48 @@ class EventsController < ApplicationController
   end
 
   def destroy
-    @event = Event.find(params[:id])
     @event.destroy
 
     redirect_to events_url
+  end
+
+  def add_admin
+    return redirect_to :back unless @event.admin?(current_user)
+
+    email = params[:user_email]
+    user = User.find_by_email(email)
+    return redirect_to :back, notice: "No user with email '#{email}' exists" unless user
+
+    @event.admins << user
+
+    if @event.save
+      redirect_to @event,
+        notice: "#{user.name} was added as an admin for #{@event.name}"
+    else
+      redirect_to :back,
+        error: "There was a problem adding #{email} as an admin"
+    end
+  end
+
+  def remove_admin
+    return redirect_to :back unless @event.admin?(current_user)
+
+    user_id = params[:user_id]
+    event_admin = EventAdmin.where(event_id: @event, user_id: user_id).first
+    return redirect_to :back, notice: "No user with id #{user_id} exists" unless event_admin
+    event_admin.destroy
+
+    redirect_to @event,
+      notice: "#{event_admin.user.name} is no longer an admin of #{@event.name}"
+  end
+
+private
+
+  def set_event
+    @event = Event.find(params[:id])
+  end
+
+  def require_event_admin
+    redirect_to :root unless @event.admin?(current_user)
   end
 end

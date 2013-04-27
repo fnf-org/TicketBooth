@@ -1,5 +1,6 @@
 class Event < ActiveRecord::Base
   has_many :event_admins
+  has_many :admins, through: :event_admins, source: :user
   has_many :jobs, dependent: :destroy
   has_many :ticket_requests, dependent: :destroy
 
@@ -28,6 +29,10 @@ class Event < ActiveRecord::Base
     numericality: { only_integer: true, greater_than: 0 }
 
   validate :end_time_after_start_time, :ensure_prices_set_if_maximum_specified
+
+  def admin?(user)
+    user.site_admin? || admins.where(id: user).exists?
+  end
 
 private
 

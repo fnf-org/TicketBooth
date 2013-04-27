@@ -83,4 +83,29 @@ describe Event do
       end
     end
   end
+
+  describe '#admin?' do
+    let(:event) { Event.make! }
+    subject { event.admin?(user) }
+
+    context 'when given a normal user' do
+      let(:user) { User.make! }
+      it { should be_false }
+    end
+
+    context 'when given a site admin' do
+      let(:user) { User.make! :site_admin }
+      it { should be_true }
+    end
+
+    context 'when given an event admin' do
+      let(:user) { EventAdmin.make!(event: event).user }
+      it { should be_true }
+    end
+
+    context 'when given an admin of another event' do
+      let(:user) { EventAdmin.make!.user }
+      it { should be_false }
+    end
+  end
 end
