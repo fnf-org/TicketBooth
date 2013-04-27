@@ -31,11 +31,11 @@
     = password_field_tag :password_confirmation, nil, placeholder: '',
       maxlength: User::MAX_PASSWORD_LENGTH, required: true, class: 'input-xlarge'
 
-  - if signed_in? && current_user.site_admin?
+  - if signed_in? && @event.admin?(current_user)
     .well
       = f.label :special_price, 'Special Ticket Price ($)'
       %p.text-error
-        Editable by site-admins only. Leave blank to use default price.
+        Editable by event admins only. Leave blank to use default price.
       = f.number_field :special_price, class: 'input-small', min: 0
 
   = f.label :adults, 'Number of adults in your group (including you)'
@@ -73,8 +73,8 @@
 
   = f.label :needs_assistance, class: 'checkbox' do
     = f.check_box :needs_assistance
-    Do you require financial assistance or need to arrange a payment plan
-    to purchase your ticket?
+    I need financial assistance or need to arrange a payment plan
+    to purchase my ticket
   %p.muted
     We never turn anyone away, and will work with you to figure
     something out.

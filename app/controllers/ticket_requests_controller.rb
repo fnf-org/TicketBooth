@@ -104,7 +104,6 @@ class TicketRequestsController < ApplicationController
     @ticket_request = TicketRequest.find(params[:id])
 
     if @ticket_request.update_attributes(params[:ticket_request])
-      flash[:notice] = 'Ticket request was successfully updated.'
       redirect_to event_ticket_request_path(@event, @ticket_request)
     else
       render action: 'edit'

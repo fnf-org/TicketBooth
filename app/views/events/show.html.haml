@@ -39,6 +39,12 @@
       %span.muted
         (max #{@event.max_cabins_per_request} cabins per request)
 
+%p
+  %span.help-inline
+    Share this link so people can create ticket requests
+  %code
+    = new_event_ticket_request_url(@event)
+
 .well
   %h2 Event Admins
   %p
