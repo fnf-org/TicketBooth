@@ -9,7 +9,9 @@
 %p.lead.text-success
   Your ticket request has been approved!
 %p
+  Now all that's left is to pay for your tickets.
   If you are paying via credit card, fill out the form below.
+  %br
   = link_to 'I am not paying via credit card',
     other_payments_path(ticket_request_id: @ticket_request.id)
 %hr

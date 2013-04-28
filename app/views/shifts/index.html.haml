@@ -1,4 +1,4 @@
-%h1 #{@event.name} Staff Sheet
+%h2 #{@event.name} Staff Sheet
 
 %p.lead
   This is a community event. Without your help, it can't happen.
@@ -6,7 +6,13 @@
 %p
   Volunteering for shifts helps make this event possible, and gives you an
   opportunity to meet new people and contribute to the community.
-  Signing up for multiple shifts is encouraged, ideally one shift per ticket.
+  You are welcome to sign up for multiple shifts.
+
+%p<>
+  Once you're done, you can go ahead and
+  %b
+    = link_to new_payment_url(ticket_request_id: @ticket_request) do
+      purchase your ticket
 
 %hr
 
@@ -24,7 +30,9 @@
       - job.time_slots.each do |time_slot|
         %tr{ class: ('success' if time_slot.volunteered?(current_user)) }
           %td
-            #{time_slot.start_time.to_s(:time)} &ndash; #{time_slot.end_time.to_s(:time)}
+            =time_slot.start_time.localtime.to_s(:hmm)
+            &ndash;
+            =time_slot.end_time.localtime.to_s(:hmm)
           %td
             - if time_slot.slots_left?
               = time_slot.slots_left

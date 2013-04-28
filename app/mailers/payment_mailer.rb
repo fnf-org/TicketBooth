@@ -6,7 +6,8 @@ class PaymentMailer < ActionMailer::Base
     @payment = payment
     @ticket_request = @payment.ticket_request
     @event = @ticket_request.event
-    mail to: "#{@ticket_request.name} <#{@ticket_request.email}>",
+    @user = @ticket_request.user
+    mail to: "#{@user.name} <#{@user.email}>",
          subject: "Your payment for #{@event.name} has been received"
   end
 end

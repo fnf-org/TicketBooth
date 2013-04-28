@@ -4,6 +4,8 @@ class TicketRequestsController < ApplicationController
   before_filter :set_event
   before_filter :require_event_admin,
     only: [:index, :edit, :update, :approve, :decline]
+  before_filter :set_ticket_request,
+    only: [:show, :edit, :update, :approve, :decline]
 
   def index
     @ticket_requests = TicketRequest.
@@ -47,14 +49,16 @@ class TicketRequestsController < ApplicationController
   end
 
   def show
-    @ticket_request = TicketRequest.find(params[:id])
     return redirect_to root_path unless @ticket_request.can_view?(current_user)
+    @payment = @ticket_request.payment
   end
 
   def new
     if signed_in?
       existing_request = TicketRequest.where(user_id: current_user).first
-      return redirect_to existing_request if existing_request.present?
+      if existing_request.present?
+        return redirect_to event_ticket_request_path(@event, existing_request)
+      end
 
       # Otherwise we're creating a ticket request as the signed-in user
       @user = current_user
@@ -64,7 +68,6 @@ class TicketRequestsController < ApplicationController
   end
 
   def edit
-    @ticket_request = TicketRequest.find(params[:id])
     @user = @ticket_request.user
   end
 
@@ -101,8 +104,6 @@ class TicketRequestsController < ApplicationController
   end
 
   def update
-    @ticket_request = TicketRequest.find(params[:id])
-
     if @ticket_request.update_attributes(params[:ticket_request])
       redirect_to event_ticket_request_path(@event, @ticket_request)
     else
@@ -111,8 +112,6 @@ class TicketRequestsController < ApplicationController
   end
 
   def approve
-    @ticket_request = TicketRequest.find(params[:id])
-
     if @ticket_request.update_attributes(status: TicketRequest::STATUS_APPROVED)
       TicketRequestMailer.request_approved(@ticket_request).deliver
       flash[:notice] = "#{@ticket_request.user.name}'s request was approved"
@@ -124,8 +123,6 @@ class TicketRequestsController < ApplicationController
   end
 
   def decline
-    @ticket_request = TicketRequest.find(params[:id])
-
     if @ticket_request.update_attributes(status: TicketRequest::STATUS_DECLINED)
       flash[:notice] = "#{@ticket_request.user.name}'s request was declined"
     else
@@ -139,5 +136,10 @@ private
 
   def set_event
     @event = Event.find(params[:event_id])
+  end
+
+  def set_ticket_request
+    @ticket_request = TicketRequest.find(params[:id])
+    redirect_to @event unless @ticket_request.event == @event
   end
 end

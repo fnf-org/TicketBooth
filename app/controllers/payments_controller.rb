@@ -3,6 +3,8 @@ class PaymentsController < ApplicationController
 
   def show
     @payment = Payment.find(params[:id])
+    @ticket_request = @payment.ticket_request
+    @event = @ticket_request.event
     return redirect_to root_path unless @payment.can_view?(current_user)
   end
 
@@ -22,6 +24,8 @@ class PaymentsController < ApplicationController
       PaymentMailer.payment_received(@payment).deliver
       redirect_to @payment, notice: 'Payment was successfully received.'
     else
+      @ticket_request = @payment.ticket_request
+      @user = @ticket_request.user
       render action: 'new'
     end
   end

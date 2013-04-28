@@ -1,10 +1,24 @@
-%h2 Ticket Request for #{@ticket_request.user.name}
+%h2 #{@event.name} Ticket Request
 
--if @ticket_request.user == current_user
-  %p.lead
-    Thanks for requesting a ticket, #{@ticket_request.user.first_name}!
-    %br
-    You'll be notified via email when your request is approved.
+%p.lead
+  Hi #{@ticket_request.user.first_name},
+
+- if @ticket_request.user == current_user
+  - if @ticket_request.pending?
+    %p.lead
+      Thanks for requesting a ticket!
+      %br
+      You'll receive an email when your request is approved.
+  - elsif @payment
+    %p.lead
+      Thanks for paying for your
+      = succeed '!' do
+        = 'ticket'.pluralize(@ticket_request.total_tickets)
+    %p
+      You're all set. If you get a chance, we could really use some
+      = link_to 'volunteers', event_shifts_path(@event)
+      to help run the event.
+  %hr
 
 %p
   %b Status:
@@ -23,6 +37,16 @@
         confirm: "Are you sure you want to decline #{@ticket_request.user.name}'s request?" do
         Decline
         %i.icon-remove
+
+- if @ticket_request.approved?
+  %p
+    %b Payment:
+    - if @payment
+      = link_to 'Received', payment_path(@payment)
+    - else
+      Not yet received.
+      = link_to 'Purchase your ticket now',
+        new_payment_path(ticket_request_id: @ticket_request)
 
 %p
   %b Email:

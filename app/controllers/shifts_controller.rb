@@ -3,6 +3,12 @@ class ShiftsController < ApplicationController
   before_filter :set_event
 
   def index
+    @ticket_request = @event.ticket_requests.where(user_id: current_user).first
+    unless @ticket_request
+      flash[:error] = 'The user you are logged in with has not requested a ticket for this event'
+      return redirect_to :root
+    end
+
     @jobs = Job.where(event_id: @event.id).
       includes(:time_slots => :shifts).
       select { |job| job.time_slots.any? }

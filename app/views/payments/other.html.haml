@@ -18,13 +18,13 @@
   94108
 
 %p.lead.text-error
-  Click the following button if you've sent your payment via some
-  other method
+  Click the following button once you've sent your payment via some other method
+  %br
   = link_to sent_payments_path(ticket_request_id: @ticket_request.id),
     method: :post,
     class: 'btn btn-primary' do
-    I've Sent My Payment
     %i.icon-check
+    I've sent my payment
 %p
   This lets us know your payment is en route, so we won't give your ticket
   away to someone else.

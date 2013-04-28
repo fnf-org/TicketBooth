@@ -6,6 +6,6 @@ class TicketRequestMailer < ActionMailer::Base
     @ticket_request = ticket_request
     @event = @ticket_request.event
     mail to: "#{@ticket_request.user.name} <#{@ticket_request.user.email}>",
-         subject: 'Your Cloudwatch ticket request has been approved!'
+         subject: "Your #{@event.name} ticket request has been approved!"
   end
 end

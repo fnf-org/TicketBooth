@@ -3,9 +3,13 @@
 
 - if @payment.received?
   %p.lead
-    Thank you for your payment of
-    %span.text-success= number_to_currency(@payment.ticket_request.price)
+    Thanks for purchasing your ticket for #{@event.name}!
   %p
+    You can
+    = link_to 'review your ticket status and payment information',
+      event_ticket_request_path(@event, @ticket_request)
+    at any time
+    %br
     We look forward to seeing you at the event!
 - else
   - due_date = @payment.created_at + 2.weeks
@@ -20,6 +24,6 @@
     %strong= @payment.due_date.to_s(:long_ordinal)
     we'll follow up with you to figure out what happened.
 
-%p.lead
+%p
   If you have any other questions, don't hesitate to contact us at
   = mail_to 'payments@cloudwatch.fm'

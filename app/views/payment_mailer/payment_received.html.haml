@@ -1,5 +1,5 @@
 %p
-  Hi #{@ticket_request.user.first_name},
+  Hi #{@user.first_name},
 %p
   Your payment of
   %b= number_to_currency @ticket_request.price
@@ -10,4 +10,10 @@
   We look forward to seeing you at the event!
 %p
   Thanks,
-  = @event.name
+  %br
+  The #{@event.name} team
+%p
+  %i
+    P.S. When you get a chance, would could really use some
+    = link_to 'volunteers', event_shifts_url(@event)
+    to help run the event.

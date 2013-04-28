@@ -4,17 +4,13 @@
   Your ticket request for
   %b #{@event.name}
   has been approved!
+
 %p
-  If purchasing your
-  = 'ticket'.pluralize(@ticket_request.total_tickets)
-  with a credit card,
-  = succeed '.' do
-    = link_to 'click here', new_payment_url(ticket_request_id: @ticket_request.id)
-%p
-  Otherwise if you intend to pay using some other method, or have made or would
-  like to make a special arrangement,
-  = succeed '.' do
-    = link_to 'click here', other_payments_url(ticket_request_id: @ticket_request.id)
+  You can now
+  = link_to event_shifts_url(@event) do
+    volunteer for shifts and purchase your
+    = 'ticket'.pluralize(@ticket_request.total_tickets)
+
 %p
   Please purchase your
   = 'ticket'.pluralize(@ticket_request.total_tickets)
@@ -24,4 +20,5 @@
   to someone else if you wait too long to purchase.
 %p
   Thanks,
-  = @event.name
+  %br
+  The #{@event.name} team
