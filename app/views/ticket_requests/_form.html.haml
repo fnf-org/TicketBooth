@@ -18,6 +18,9 @@
       placeholder: 'First and last name'
 
     = label_tag :email, 'Email'
+    %p.muted
+      You will use this email to sign in to your account when your tickets are ready
+      to be purchased.
     = email_field_tag :email, nil, class: 'input-xlarge',
       maxlength: User::MAX_EMAIL_LENGTH, required: true,
       placeholder: 'email@example.com'
@@ -41,17 +44,24 @@
   = f.label :adults, 'Number of adults in your group (including you)'
   = f.number_field :adults, class: 'input-mini', min: 1,
     max: @event.max_adult_tickets_per_request
+  %span.help-inline #{number_to_currency(@event.adult_ticket_price, precision: 0)} / ticket
 
   - if @event.kid_ticket_price
     = f.label :kids, 'Number of children in your group (babes in arms are free)'
     %p.muted
-      The cost of tickets for kids will be dependent on how many you
-      bring with you.
-      %br
-      For now, tell us how many you would like to bring so we can
-      get a head count.
+      -# HACK: This copy is specific for Cloudwatch--we'll have to add a customization
+      -# so that this can be set on a per-event basis
+      The cost of tickets for kids will be dependent on how many you bring.
+      Unfortunately, kids count against our limit capacity with our contract
+      at the site.  As much as we would like to allow kids in for free, we
+      simply cannot afford it. However, we know we start excluding families
+      from attending if we charge too much for kids to attend, and so we've
+      attempted to create a pricing model that is reasonable and well-balanced.
+      If anyone needs further assistance, check the financial assistance
+      checkbox below, and give us a brief explanation of what your needs are.
     = f.number_field :kids, class: 'input-mini', min: 0,
       max: @event.max_kid_tickets_per_request
+    %span.help-inline 1 child = $75, 2 = $125, 3 = $175, 4 or more = $50 / child
 
   - if @event.cabin_price
     = f.label :cabins, 'How many cabins/tents did you want?'
@@ -62,6 +72,7 @@
       We will contact you if this is the case.
     = f.number_field :cabins, class: 'input-mini', min: 0,
       max: @event.max_cabins_per_request
+    %span.help-inline #{number_to_currency(@event.cabin_price, precision: 0)} / cabin
 
   = f.label :volunteer_shifts, 'How many volunteer shifts are you willing to sign up for?'
   = f.number_field :volunteer_shifts, class: 'input-mini', min: 0, required: true
@@ -81,7 +92,7 @@
 
   = f.label :notes, 'Anything else you want us to be aware of?'
   %p.muted
-    For example, if you checked the box above, tell us what your situation is.
+    For example, if you checked the box above, tell us what your needs are.
   = f.text_area :notes, class: 'input-xxlarge',
     rows: 3, maxlength: 500
 
