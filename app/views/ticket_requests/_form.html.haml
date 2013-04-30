@@ -27,7 +27,7 @@
 
     = label_tag :password, 'Password'
     = password_field_tag :password, nil,
-      placeholder: 'Must be at least 8 characters', required: true,
+      placeholder: 'Must be at least 5 characters', required: true,
       maxlength: User::MAX_PASSWORD_LENGTH, class: 'input-xlarge'
 
     = label_tag :password_confirmation, 'Confirm Password'
