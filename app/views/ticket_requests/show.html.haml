@@ -1,8 +1,6 @@
 %h2 #{@event.name} Ticket Request
 
 %p.lead
-  Hi #{@ticket_request.user.first_name},
-
 - if @ticket_request.user == current_user
   - if @ticket_request.pending?
     %p.lead
@@ -19,6 +17,10 @@
       = link_to 'volunteers', event_shifts_path(@event)
       to help run the event.
   %hr
+
+%p
+  %b Name:
+  = @ticket_request.user.name
 
 %p
   %b Status:
