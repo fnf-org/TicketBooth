@@ -97,6 +97,7 @@ class TicketRequestsController < ApplicationController
 
     if @ticket_request.save
       redirect_to event_ticket_request_path(@event, @ticket_request)
+      TicketRequestMailer.request_received(@ticket_request).deliver
     else
       render action: 'new'
     end
