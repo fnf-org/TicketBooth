@@ -96,7 +96,6 @@ class TicketRequestsController < ApplicationController
     end
 
     if @ticket_request.save
-      flash[:notice] = 'Your ticket request was successfully recorded.'
       redirect_to event_ticket_request_path(@event, @ticket_request)
     else
       render action: 'new'
