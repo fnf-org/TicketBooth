@@ -75,6 +75,12 @@
     %span.help-inline #{number_to_currency(@event.cabin_price, precision: 0)} / cabin
 
   = f.label :volunteer_shifts, 'How many volunteer shifts are you willing to sign up for?'
+  %p.muted
+    Shifts will be between 1&#xbd; &ndash; 2 hours long, with a variety of jobs
+    to choose from: driving shuttles, directing people at the gate, helping in
+    the kitchen, etc. No experience is required as you'll be working with
+    people that will show you the ropes. You'll be able to sign up for shifts
+    once your ticket request is approved.
   = f.number_field :volunteer_shifts, class: 'input-mini', min: 0, required: true
 
   = f.label :address, 'Mailing Address'
@@ -87,8 +93,8 @@
     I need financial assistance or need to arrange a payment plan
     to purchase my ticket
   %p.muted
-    We never turn anyone away, and will work with you to figure
-    something out.
+    We never turn anyone away for financial reasons, and will work with you to
+    figure something out.
 
   = f.label :notes, 'Anything else you want us to be aware of?'
   %p.muted
