@@ -10,7 +10,5 @@ module AttributeNormalizer::RSpecMatcher
 end
 
 RSpec.configure do |config|
-  config.color_enabled = true # Use color in STDOUT
-
   include AttributeNormalizer::RSpecMatcher
 end
