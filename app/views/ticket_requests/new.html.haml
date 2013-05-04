@@ -1,15 +1,13 @@
 %h1 Request Tickets for #{@event.name}
 
-%h2
+%p.lead
   %i.icon-calendar
   = @event.start_time.localtime.to_s(:month_day)
   &ndash;
   = @event.end_time.localtime.to_s(:month_day)
 
-%p.lead
-  Every year there are a large number of people who want to attend.
 %p
-  Please fill out the form below to request your tickets.
+  Please fill out the form below to request your tickets. Availability is limited.
 %hr
 
 = render 'form'
