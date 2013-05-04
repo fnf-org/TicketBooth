@@ -1,0 +1,10 @@
+.help-popover {
+  color: #ccc;
+  vertical-align: top;
+
+  &:focus,
+  &:hover {
+    color: #333;
+    text-decoration: none;
+  }
+}
