@@ -11,14 +11,14 @@ need to do in order to get started.
 
   * Clone this repository: `git clone git@github.com:sds/cloudwatch.git`
 
-  * Ensure Ruby 1.9.3p327 is installed; you can check this by running
+  * Ensure Ruby 1.9.3p392 is installed; you can check this by running
     `ruby --version` from the command-line. The easiest way to install this
     specific version of Ruby (and to manage multiple versions of Ruby on a
     single system if you're developing other projects on different Ruby
     versions) is to use [rbenv](https://github.com/sstephenson/rbenv/).
     However, if you have a clean system and don't intend on doing anything
     except do Cloudwatch development on it, you can get away with upgrading
-    your system-wide Ruby to 1.9.3p327.
+    your system-wide Ruby.
 
   * Install Bundler, which manages the gems (Ruby libraries) that Cloudwatch
     uses: `gem install bundler`
@@ -28,25 +28,26 @@ need to do in order to get started.
   * Install Postgres 9.1.3; you can check this by running `psql --version`
 
   * Create a database user for the Cloudwatch Rails application to use when
-    connecting to Postgres. Connect as the `postgres` admin user using the
-    `psql` utility, and then run:
+    connecting to Postgres. Connect as the `postgres` (or whatever user has
+    admin privileges) user using the `psql` utility, and then run:
     `CREATE ROLE app WITH CREATEDB LOGIN PASSWORD 'dev_password';`
     The `app` and `dev_password` are up to you.
 
   * Copy the `config/database.yml.example` file to `config/database.yml`, and
     edit the `username` and `password` fields to match the user/password you
-    chose in the previous step.
+    chose in the previous step (you can use the defaults if you want).
 
   * Create the databases using the information you defined in
     `config/database.yml` by running `rake db:create:all`
 
   * Fill the database with tables by running the database migrations:
-    `rake db:migrate`.
+    `rake db:migrate db:test:prepare` (the `db:test:prepare` is necessary
+    only if you want to run the tests)
 
 You should now be all set. Try spinning up a local development server by
 running:
 
-    rails server
+    bundle exec rails server
 
 This should run an all-in-one server that you can access from your browser
 at `http://localhost:3000`. It will also automatically load any changes
@@ -68,15 +69,17 @@ but you can look at the repository history for some examples using `git log`.
 ### Write tests
 
 Automated tests are your friend. See the `spec` directory for examples.
-You can run the automated tests by running `rspec` in the repostory.
+You can run the automated tests by running `bundle exec rspec spec`
+(where `spec` is the directory of specs, or individual list of specs, that you
+want to run) in the repository.
 
 ## Deploying
 
 If your SSH public key has been added to the production server's list of
 authorized keys, you can deploy the latest version of the code to the
 production site using `cap deploy`. Before you do this, remember to push
-your local changes to the `origin` repository, as the deploy process can
-only deploy code from that canonical source.
+your local changes to the `origin` repository with `git push origin master`,
+as the deploy process can only deploy code from that canonical source.
 
 If you don't have permission to deploy, you can submit a pull request to
 the repository and someone will review your code and merge it if it's good
