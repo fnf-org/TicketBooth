@@ -1,0 +1,17 @@
+.help-inline {
+  line-height: 30px;
+  vertical-align: top;
+}
+
+.help-popover {
+  color: #ccc;
+  font-size: 15px;
+  line-height: normal;
+  vertical-align: top;
+
+  &:focus,
+  &:hover {
+    color: #333;
+    text-decoration: none;
+  }
+}

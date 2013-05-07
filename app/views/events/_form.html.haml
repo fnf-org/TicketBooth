@@ -34,6 +34,17 @@
       %p.muted Leave blank for no limit
     = f.number_field :max_kid_tickets_per_request, class: 'input-mini', min: 1
 
+    = f.label :max_cabin_requests do
+      Maximum number of cabins that can be requested in total
+      %p.muted
+        Once more than this number of cabins is requested, subsequent ticket
+        requesters will not have the option to request cabins. You'll probably
+        want to set this value to be a little bit higher than the actual number
+        of cabins at your site, and then manually email the few individuals who
+        requested a cabin but won't get one. Leave blank for no limit (probably
+        not a good idea).
+    = f.number_field :max_cabin_requests, class: 'input-mini', min: 1
+
     = f.label :cabin_price do
       Cabin Price ($)
       %p.muted Keep blank if there are no cabins or you aren't charging separately for them

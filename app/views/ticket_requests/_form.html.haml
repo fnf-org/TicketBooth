@@ -58,8 +58,12 @@
       How many cabins did you want?
       = help_mark help_text_for(:cabins)
     = f.number_field :cabins, class: 'input-mini', min: 0,
-      max: @event.max_cabins_per_request
-    %span.help-inline #{number_to_currency(@event.cabin_price, precision: 0)} / cabin
+      max: @event.max_cabins_per_request, disabled: !@event.cabins_available?
+    %span.help-inline
+      - if @event.cabins_available?
+        #{number_to_currency(@event.cabin_price, precision: 0)} / cabin
+      - else
+        Sorry, we are sold out of cabins at this point in time.
 
   = f.label :volunteer_shifts do
     Approximately how many volunteer shifts would you sign up for?

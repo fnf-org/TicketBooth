@@ -8,7 +8,7 @@ class Event < ActiveRecord::Base
 
   attr_accessible :name, :start_time, :end_time, :adult_ticket_price,
     :kid_ticket_price, :cabin_price, :max_adult_tickets_per_request,
-    :max_kid_tickets_per_request, :max_cabins_per_request
+    :max_kid_tickets_per_request, :max_cabins_per_request, :max_cabin_requests
 
   normalize_attributes :name
 
@@ -27,11 +27,19 @@ class Event < ActiveRecord::Base
     numericality: { only_integer: true, greater_than: 0 }
   validates :max_cabins_per_request, allow_nil: true,
     numericality: { only_integer: true, greater_than: 0 }
+  validates :max_cabin_requests, allow_nil: true,
+    numericality: { only_integer: true, greater_than: 0 }
 
   validate :end_time_after_start_time, :ensure_prices_set_if_maximum_specified
 
   def admin?(user)
     user.site_admin? || admins.where(id: user).exists?
+  end
+
+  def cabins_available?
+    return false unless cabin_price
+    return true unless max_cabin_requests
+    ticket_requests.not_declined.sum(:cabins) < max_cabin_requests
   end
 
 private
@@ -43,12 +51,16 @@ private
   end
 
   def ensure_prices_set_if_maximum_specified
-    if self.max_kid_tickets_per_request && self.kid_ticket_price.blank?
+    if max_kid_tickets_per_request && kid_ticket_price.blank?
       errors.add(:max_kid_tickets_per_request, 'can be set only if a kid ticket price is set')
     end
 
-    if self.max_cabins_per_request && self.cabin_price.blank?
+    if max_cabins_per_request && cabin_price.blank?
       errors.add(:max_cabins_per_request, 'can be set only if a cabin price is set')
+    end
+
+    if max_cabin_requests && cabin_price.blank?
+      errors.add(:max_cabin_requests, 'can be set only if a cabin price is set')
     end
   end
 end

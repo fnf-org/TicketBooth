@@ -82,6 +82,20 @@ describe Event do
         it { should_not accept_values_for(:max_cabins_per_request, 10) }
       end
     end
+
+    describe '#max_cabin_requests' do
+      context 'when cabin_price is set' do
+        subject { Event.make cabin_price: 10 }
+        it { should accept_values_for(:max_cabin_requests, nil, '', 10) }
+        it { should_not accept_values_for(:max_cabin_requests, 0, -1) }
+      end
+
+      context 'when cabin_price is not set' do
+        subject { Event.make cabin_price: nil }
+        it { should accept_values_for(:max_cabin_requests, nil, '') }
+        it { should_not accept_values_for(:max_cabin_requests, 10) }
+      end
+    end
   end
 
   describe '#admin?' do
@@ -106,6 +120,45 @@ describe Event do
     context 'when given an admin of another event' do
       let(:user) { EventAdmin.make!.user }
       it { should be_false }
+    end
+  end
+
+  describe '#cabins_available?' do
+    let(:cabin_price) { nil }
+    let(:max_cabin_requests) { nil }
+    let(:event) do
+      Event.make! cabin_price: cabin_price, max_cabin_requests: max_cabin_requests
+    end
+    subject { event.cabins_available? }
+
+    context 'when no cabin price is set' do
+      let(:cabin_price) { nil }
+      it { should be_false }
+    end
+
+    context 'when cabin price is set' do
+      let(:cabin_price) { 100 }
+
+      context 'when no maximum specified for the number of cabin requests' do
+        let(:max_cabin_requests) { nil }
+        it { should be_true }
+      end
+
+      context 'when a maximum is specified for the number of cabin requests' do
+        let(:max_cabin_requests) { 10 }
+
+        context 'when there are fewer cabins requested than the maximum' do
+          it { should be_true }
+        end
+
+        context 'when the number of cabins requested has met or exceeded the maximum' do
+          before do
+            TicketRequest.make! event: event, cabins: max_cabin_requests
+          end
+
+          it { should be_false }
+        end
+      end
     end
   end
 end
