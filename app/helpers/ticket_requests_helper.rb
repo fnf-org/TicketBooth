@@ -83,9 +83,8 @@ module TicketRequestsHelper
       HELP
     when :notes
       <<-HELP
-      For example, if you checked the box above, tell us what your needs are. We
-      can't promise that we'll be able to satisfy every request, but we'll do
-      our best.
+      For example, if you checked the box above, tell us what your needs are. If
+      you are bringing kids, please include their ages.
       HELP
     end
   end
