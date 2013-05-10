@@ -42,16 +42,19 @@
 
   = f.label :adults, 'Number of adults in your group (including you)'
   = f.number_field :adults, class: 'input-mini', min: 1,
-    max: @event.max_adult_tickets_per_request
-  %span.help-inline #{number_to_currency(@event.adult_ticket_price, precision: 0)} / ticket
+    max: @event.max_adult_tickets_per_request,
+    data: { default_price: @event.adult_ticket_price.to_i }
+  %span.help-inline.inline-price
 
   - if @event.kid_ticket_price
     = f.label :kids do
       Number of children you are bringing with you (babes in arms are free)
       = help_mark help_text_for(:kids)
     = f.number_field :kids, class: 'input-mini', min: 0,
-      max: @event.max_kid_tickets_per_request
-    %span.help-inline 1 child = $75, 2 = $125, 3 = $175, 4 or more = $50 / child
+      max: @event.max_kid_tickets_per_request,
+      data: { default_price: @event.kid_ticket_price.to_i,
+              custom_prices: price_rules_to_json(@event) }
+    %span.help-inline.inline-price
     %p.help-inline-block.muted
       Please include the ages of the children you are bringing with you in the notes below.
 
@@ -60,11 +63,11 @@
       How many cabins did you want?
       = help_mark help_text_for(:cabins)
     = f.number_field :cabins, class: 'input-mini', min: 0,
-      max: @event.max_cabins_per_request, disabled: !@event.cabins_available?
-    %span.help-inline
-      - if @event.cabins_available?
-        #{number_to_currency(@event.cabin_price, precision: 0)} / cabin
-      - else
+      max: @event.max_cabins_per_request,
+      data: { default_price: @event.cabin_price.to_i },
+      disabled: !@event.cabins_available?
+    %span.help-inline.inline-price
+      - unless @event.cabins_available?
         Sorry, we are sold out of cabins at this point in time.
 
   = f.label :volunteer_shifts do

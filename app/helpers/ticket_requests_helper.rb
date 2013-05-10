@@ -33,6 +33,14 @@ module TicketRequestsHelper
     end
   end
 
+  def price_rules_to_json(event)
+    Hash[
+      event.price_rules.map do |price_rule|
+        [ price_rule.trigger_value, price_rule.price.to_i ]
+      end
+    ].to_json
+  end
+
   def help_text_for(sym)
     case sym
     when :email
@@ -52,6 +60,7 @@ module TicketRequestsHelper
       attempted to create a pricing model that is reasonable and well-balanced.
       If anyone needs further assistance, check the financial assistance
       checkbox below, and give us a brief explanation of what your needs are.
+      We'll do our best to work with you to figure something out.
       HELP
     when :cabins
       <<-HELP

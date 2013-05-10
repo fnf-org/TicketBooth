@@ -66,7 +66,15 @@ class TicketRequest < ActiveRecord::Base
     return special_price if special_price
 
     total = adults * event.adult_ticket_price
-    total += kids * event.kid_ticket_price if event.kid_ticket_price
+
+    if event.kid_ticket_price
+      custom_price = event.price_rules.map do |price_rule|
+        price_rule.calc_price(self)
+      end.compact.min
+
+      total += custom_price ? custom_price : kids * event.kid_ticket_price
+    end
+
     total += cabins * event.cabin_price if event.cabin_price
 
     total

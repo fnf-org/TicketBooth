@@ -3,6 +3,7 @@ class Event < ActiveRecord::Base
   has_many :admins, through: :event_admins, source: :user
   has_many :jobs, dependent: :destroy
   has_many :ticket_requests, dependent: :destroy
+  has_many :price_rules, dependent: :destroy
 
   MAX_NAME_LENGTH = 100
 

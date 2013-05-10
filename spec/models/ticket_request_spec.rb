@@ -293,6 +293,28 @@ describe TicketRequest do
       let(:special_price) { 99.99 }
       it { should == special_price }
     end
+
+    context 'when custom price rules are defined' do
+      let(:kid_price) { 10 }
+      let(:trigger_value) { 3 }
+      let(:custom_price) { 5 }
+
+      before do
+        PriceRule::KidsEqualTo.create! event: event,
+                                       trigger_value: trigger_value,
+                                       price: custom_price
+      end
+
+      context 'and the rule does not apply' do
+        let(:kids) { trigger_value - 1 }
+        it { should == (adult_price * adults) + (kid_price * kids) }
+      end
+
+      context 'and the rule applies' do
+        let(:kids) { trigger_value }
+        it { should == (adult_price * adults) + 5 }
+      end
+    end
   end
 
   describe '#total_tickets' do
