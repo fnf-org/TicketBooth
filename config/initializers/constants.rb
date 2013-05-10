@@ -1,1 +1,1 @@
-PRODUCT_NAME = 'Cloudwatch'
+PRODUCT_NAME = 'CloudWatch'

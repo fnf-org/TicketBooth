@@ -13,7 +13,7 @@ describe Event do
 
   describe 'validations' do
     describe '#name' do
-      it { should accept_values_for(:name, 'Cloudwatch 2013') }
+      it { should accept_values_for(:name, 'CloudWatch 2013') }
       it { should_not accept_values_for(:name, nil, '', Sham.string(101)) }
     end
 
