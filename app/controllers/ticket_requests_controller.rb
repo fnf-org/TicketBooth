@@ -9,39 +9,38 @@ class TicketRequestsController < ApplicationController
 
   def index
     @ticket_requests = TicketRequest.
-      where(event_id: @event.id).
-      order('created_at DESC').
-      all
+      where(event_id: @event).
+      order('created_at DESC')
 
     @stats = {
       potential: {
         requests: @ticket_requests.count,
-        adults:   TicketRequest.sum('adults'),
-        kids:     TicketRequest.sum('kids'),
-        cabins:   TicketRequest.sum('cabins'),
+        adults:   @ticket_requests.sum('adults'),
+        kids:     @ticket_requests.sum('kids'),
+        cabins:   @ticket_requests.sum('cabins'),
         raised:   @ticket_requests.inject(0) { |sum, tr| sum + tr.price }
       },
       pending: {
-        requests: TicketRequest.pending.count,
-        adults:   TicketRequest.pending.sum('adults'),
-        kids:     TicketRequest.pending.sum('kids'),
-        cabins:   TicketRequest.pending.sum('cabins'),
+        requests: @ticket_requests.pending.count,
+        adults:   @ticket_requests.pending.sum('adults'),
+        kids:     @ticket_requests.pending.sum('kids'),
+        cabins:   @ticket_requests.pending.sum('cabins'),
         raised:   @ticket_requests.select { |tr| tr.pending? }.
                                  inject(0) { |sum, tr| sum + tr.price }
       },
       approved: {
-        requests: TicketRequest.approved.count,
-        adults:   TicketRequest.approved.sum('adults'),
-        kids:     TicketRequest.approved.sum('kids'),
-        cabins:   TicketRequest.approved.sum('cabins'),
+        requests: @ticket_requests.approved.count,
+        adults:   @ticket_requests.approved.sum('adults'),
+        kids:     @ticket_requests.approved.sum('kids'),
+        cabins:   @ticket_requests.approved.sum('cabins'),
         raised:   @ticket_requests.select { |tr| tr.approved? }.
                                  inject(0) { |sum, tr| sum + tr.price }
       },
       declined: {
-        requests: TicketRequest.declined.count,
-        adults:   TicketRequest.declined.sum('adults'),
-        kids:     TicketRequest.declined.sum('kids'),
-        cabins:   TicketRequest.declined.sum('cabins'),
+        requests: @ticket_requests.declined.count,
+        adults:   @ticket_requests.declined.sum('adults'),
+        kids:     @ticket_requests.declined.sum('kids'),
+        cabins:   @ticket_requests.declined.sum('cabins'),
         raised:   @ticket_requests.select { |tr| tr.declined? }.
                                  inject(0) { |sum, tr| sum + tr.price }
       }
