@@ -2,15 +2,39 @@
 = form_for(@job, url: { controller: :jobs, action: form_action_name }) do |f|
   = render 'shared/form_errors', resource: @job
 
-  .field
-    = f.label :name
-    = f.text_field :name, class: 'input-large',
-      maxlength: 100, required: true
+  = f.label :name
+  = f.text_field :name, class: 'input-large',
+    maxlength: 100, required: true
 
-  .field
-    = f.label :description
-    = f.text_area :description, class: 'input-xxlarge',
-      rows: 4, maxlength: 512, required: true
+  = f.label :description
+  = f.text_area :description, class: 'input-xxlarge',
+    rows: 4, maxlength: 512, required: true
+
+  -# Show quick-generate options on creation only
+  - if action_name == 'new'
+    %legend
+      Shift Creation Wizard
+    = label_tag :start_time, 'Job Start Time'
+    %p.muted When the first shift for this job starts
+    = datetimepicker(:start_time, @event.start_time)
+
+    = label_tag :end_time, 'Job End Time'
+    %p.muted When the last shift for this job ends
+    = datetimepicker(:end_time, @event.end_time)
+
+    = label_tag :shift_length, 'Shift Length'
+    = select_tag :shift_length, shift_length_options, class: 'input-medium'
+
+    = label_tag :shift_overlap, 'Shift Overlap'
+    %p.muted
+      How many minutes you want to extend the previous shift by so it overlaps
+      with the next shift
+    = select_tag :shift_overlap, shift_overlap_options, class: 'input-medium'
+
+    = label_tag :people_per_shift, 'People Per Shift'
+    %p.muted
+      How many slots need to be filled for each shift
+    = number_field_tag :people_per_shift, 1, min: 1, step: 1, class: 'input-mini'
 
   .actions
     = f.submit class: 'btn btn-primary'
