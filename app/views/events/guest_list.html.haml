@@ -1,0 +1,34 @@
+%h1 #{@event.name} Guest List
+
+.btn-group
+  = link_to event_path(@event), class: 'btn' do
+    %i.icon-arrow-left
+    Event
+
+%table.table
+  %thead
+    %tr
+      %th Name
+      %th Adults
+      %th Kids
+      %th Cabins
+      %th Status
+      %th Paid
+  %tbody
+    - @ticket_requests.each do |ticket_request|
+      %tr
+        %td= link_to ticket_request.user.name, event_ticket_request_path(@event, ticket_request)
+        %td= ticket_request.adults
+        %td= ticket_request.kids
+        %td= ticket_request.cabins
+        %td
+          %span{ class: text_class_for_status(ticket_request) }
+            = text_for_status ticket_request
+        %td
+          - if ticket_request.payment
+            - if ticket_request.payment.in_progress?
+              %span In Progress
+            - elsif ticket_request.payment.received?
+              %span Yes
+          - else
+            %span No

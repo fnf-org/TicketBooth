@@ -84,6 +84,15 @@ class EventsController < ApplicationController
       notice: "#{event_admin.user.name} is no longer an admin of #{@event.name}"
   end
 
+  def guest_list
+    @ticket_requests = TicketRequest.
+      includes(:payment, :user).
+      where(event_id: @event.id).
+      order('created_at DESC').
+      approved.
+      sort_by { |ticket_request| ticket_request.user.name }
+  end
+
 private
 
   def set_event

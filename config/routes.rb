@@ -14,6 +14,7 @@ Cloudwatch::Application.routes.draw do
     member do
       post :add_admin
       post :remove_admin
+      get :guest_list
     end
 
     resources :jobs do
