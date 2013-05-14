@@ -14,10 +14,15 @@
     = link_to new_payment_url(ticket_request_id: @ticket_request) do
       purchase your ticket
 
+%h4 Overview
+%ul
+  - @jobs.each_with_index do |job, index|
+    %li= link_to job.name, "#job-#{index}"
+
 %hr
 
-- @jobs.each do |job|
-  %h3= job.name
+- @jobs.each_with_index do |job, index|
+  %h3{ id: "job-#{index}"}= job.name
   %p= job.description
 
   %table.table.table-bordered.table-striped.time-slots
