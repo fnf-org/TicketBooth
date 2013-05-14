@@ -60,34 +60,32 @@
   %thead
     %tr
       %th Name
+      %th
       %th Adults
       %th Kids
       %th Cabins
       %th Price
-      %th
-      %th
       %th Status
       %th
   %tbody
     - @ticket_requests.each do |ticket_request|
       %tr{ class: class_for_table_row(ticket_request) }
         %td
-          = link_to ticket_request.user.name, event_ticket_request_path(@event, ticket_request)
-          - if !ticket_request.performer
-            = link_to event_ticket_request_path(@event, ticket_request) do
-              %i.icon-star.hover-tooltip{ title: 'User has indicated they are a DJ or performer of some kind' }
+          = link_to event_ticket_request_path(@event, ticket_request) do
+            = ticket_request.user.name
+        %td
+          - if ticket_request.performer
+            %i.icon-star.hover-tooltip{ title: 'User has indicated they are a DJ or performer of some kind' }
+          - if ticket_request.needs_assistance
+            %i.icon-flag.hover-tooltip{ title: 'User has indicated they need financial assistance' }
+          - if ticket_request.notes.present?
+            %i.icon-comment.hover-tooltip{ title: 'User has left additional notes' }
         %td= ticket_request.adults
         %td= ticket_request.kids
         %td= ticket_request.cabins
         %td
           %span.label{ class: ('label-info' if ticket_request.special_price) }
             = number_to_currency(ticket_request.price, precision: 0)
-        %td
-          - if ticket_request.needs_assistance
-            %span.text-error Financial Aid Needed
-        %td
-          - if ticket_request.notes.present?
-            = link_to 'Additional Notes', event_ticket_request_path(@event, ticket_request)
         %td
           %span{ class: text_class_for_status(ticket_request) }
             = text_for_status ticket_request
