@@ -6,7 +6,7 @@
 %p
   Volunteering for shifts helps make this event possible, and gives you an
   opportunity to meet new people and contribute to the community.
-  You are welcome to sign up for multiple shifts.
+  You are welcome to sign up for multiple shifts (but don't stretch yourself too thin!)
 
 %p<>
   Once you're done, you can go ahead and
@@ -48,13 +48,16 @@
                   = shift.volunteer_name
             .volunteer-form
               - if time_slot.volunteered?(current_user)
-                = link_to 'Unvolunteer',
-                  event_shift_path(@event, time_slot.shifts.where(user_id: current_user.id).first),
+                = link_to event_shift_path(@event,
+                                           time_slot.shifts.where(user_id: current_user.id).first),
                   method: :delete,
-                  class: 'btn btn-link'
+                  class: 'btn btn-link hover-tooltip',
+                  title: 'Remove yourself from this volunteer position' do
+                  Unvolunteer
               - elsif time_slot.slots_left?
                 = link_to event_shifts_path(shift: { time_slot_id: time_slot.id,
                                                      user_id: current_user.id }),
                   method: :post,
-                  class: 'volunteer-btn btn btn-success' do
+                  class: 'volunteer-btn btn btn-success hover-tooltip',
+                  title: 'Add yourself as a volunteer. You can unvolunteer at any time.' do
                   Volunteer
