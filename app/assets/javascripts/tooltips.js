@@ -1,0 +1,1 @@
+$('.hover-tooltip').tooltip();

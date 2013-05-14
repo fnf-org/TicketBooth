@@ -90,6 +90,11 @@ module TicketRequestsHelper
       or allowing you to pay for your ticket in installments, or something else,
       check this box and explain what your needs are below.
       HELP
+    when :performer
+      <<-HELP
+      Please include what kind of performance you were asked to do in the notes
+      below.
+      HELP
     when :notes
       <<-HELP
       For example, if you checked the box above, tell us what your needs are. If

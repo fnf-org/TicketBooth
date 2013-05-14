@@ -86,6 +86,11 @@
     I need financial assistance to purchase my ticket
     = help_mark help_text_for(:needs_assistance)
 
+  = f.label :performer, class: 'checkbox' do
+    = f.check_box :performer
+    I've been asked to perform for this event (DJ, lighting, etc.)
+    = help_mark help_text_for(:performer)
+
   = f.label :notes do
     Any special requests or things you want to mention?
     = help_mark help_text_for(:notes)

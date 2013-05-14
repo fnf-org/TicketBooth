@@ -71,7 +71,11 @@
   %tbody
     - @ticket_requests.each do |ticket_request|
       %tr{ class: class_for_table_row(ticket_request) }
-        %td= link_to ticket_request.user.name, event_ticket_request_path(@event, ticket_request)
+        %td
+          = link_to ticket_request.user.name, event_ticket_request_path(@event, ticket_request)
+          - if !ticket_request.performer
+            = link_to event_ticket_request_path(@event, ticket_request) do
+              %i.icon-star.hover-tooltip{ title: 'User has indicated they are a DJ or performer of some kind' }
         %td= ticket_request.adults
         %td= ticket_request.kids
         %td= ticket_request.cabins

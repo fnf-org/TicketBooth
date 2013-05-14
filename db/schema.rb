@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130509021514) do
+ActiveRecord::Schema.define(:version => 20130514035306) do
 
   create_table "event_admins", :force => true do |t|
     t.integer  "event_id"
@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(:version => 20130509021514) do
     t.decimal  "special_price",                   :precision => 8, :scale => 2
     t.integer  "event_id",                                                                         :null => false
     t.integer  "volunteer_shifts"
+    t.boolean  "performer",                                                     :default => false, :null => false
   end
 
   create_table "time_slots", :force => true do |t|
