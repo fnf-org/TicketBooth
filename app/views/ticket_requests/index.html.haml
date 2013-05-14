@@ -91,7 +91,7 @@
             = text_for_status ticket_request
         %td
           - if ticket_request.pending?
-            .btn-group
+            .btn-group.pull-right
               = link_to approve_event_ticket_request_path(@event, ticket_request),
                 method: :post,
                 class: 'btn btn-primary' do
