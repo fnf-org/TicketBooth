@@ -11,6 +11,9 @@
   = link_to event_jobs_path(@event), class: 'btn' do
     Jobs
     %i.icon-list-alt
+  = link_to guest_list_event_path(@event), class: 'btn' do
+    Guest List
+    %i.icon-print
   = link_to edit_event_path(@event), class: 'btn' do
     Edit
     %i.icon-edit
