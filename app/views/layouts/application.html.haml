@@ -37,7 +37,8 @@
                   Sign Out
                   %i.icon-off
             - else
-              %li= link_to 'Register', new_user_registration_path
+              -# HACK: route to last event while we only have one event in the system
+              %li= link_to 'Request Tickets', new_event_ticket_request_path(Event.last)
               %li= link_to 'Sign in', new_user_session_path
     .container
       = bootstrap_flash
