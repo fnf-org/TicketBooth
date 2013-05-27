@@ -3,7 +3,7 @@ set :user                  , application
 set :domain                , 'cloudwatch.fm'
 set :use_sudo              , false
 set :ssh_options           , { forward_agent: true, compression: 'none' }
-set :keep_releases         , 5 # Keep the last 5 releases
+set :keep_releases         , 20 # Keep the last N releases
 
 # Source code repository
 set :repository            , 'git@github.com:sds/cloudwatch.git'
