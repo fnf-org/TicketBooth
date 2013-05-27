@@ -1,9 +1,11 @@
-# Ignore all logfiles and tempfiles.
+# Ignore all logfiles and tempfiles
 /log
 /tmp
 
-# Ignore the database.yml file so production passwords aren't stored
+# Ignore various config files so production passwords/keys aren't stored in
+# source control
 /config/database.yml
+/config/stripe.yml
 
 # Zeus config files might vary greatly between developers
 /zeus*

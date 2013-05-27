@@ -1,2 +1,3 @@
-Stripe.api_key = 'sk_test_Tz2o8c6VFlldtHUcuhUlhgIL'
-STRIPE_PUBLIC_KEY = 'pk_test_JmDxKSl33hQqkqivA1NhgFdc'
+stripe_config = YAML.load_file(Rails.root + 'config/stripe.yml')
+Stripe.api_key = stripe_config['secret_key']
+STRIPE_PUBLIC_KEY = stripe_config['public_key']

@@ -44,6 +44,11 @@ need to do in order to get started.
     `rake db:migrate db:test:prepare` (the `db:test:prepare` is necessary
     only if you want to run the tests)
 
+  * Copy the `config/stripe.yml.example` file to `config/stripe.yml`. If you
+    have your own Stripe account that you want to test with, use the secret
+    key and public key from that account instead (but the defaults will work
+    out of the box if you don't want to use your own Stripe account).
+
 You should now be all set. Try spinning up a local development server by
 running:
 

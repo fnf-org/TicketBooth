@@ -25,6 +25,7 @@ namespace :deploy do
   desc 'Symlinks production config files'
   task :symlink_configs, roles: :app do
     run "ln -nfs #{deploy_to}/shared/config/database.yml #{release_path}/config/database.yml"
+    run "ln -nfs #{deploy_to}/shared/config/stripe.yml #{release_path}/config/stripe.yml"
   end
 
   desc 'Zero-downtime restart of Unicorn to load new code'
