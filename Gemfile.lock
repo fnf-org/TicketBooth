@@ -85,6 +85,7 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    method_source (0.8.1)
     mime-types (1.21)
     multi_json (1.7.2)
     net-scp (1.1.0)
@@ -181,6 +182,8 @@ GEM
     validates_existence (0.8.0)
     warden (1.2.1)
       rack (>= 1.0)
+    zeus (0.13.3)
+      method_source (>= 0.6.7)
 
 PLATFORMS
   ruby
@@ -209,3 +212,4 @@ DEPENDENCIES
   uglifier
   unicorn
   validates_existence
+  zeus

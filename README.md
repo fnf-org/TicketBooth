@@ -62,6 +62,26 @@ require you to restart the server.
 If you want to work within a Ruby console, `rails console` is incredibly
 useful for playing around in the Rails environment.
 
+## Faster Development
+
+If you're tired of waiting for Rails to load up every time you type
+`bundle exec rails server`, you should use [zeus](https://github.com/burke/zeus).
+Zeus preloads Rails in a separate process so you don't have to wait for it to
+load each time. To use zeus, just run:
+
+    zeus start
+
+to start the Zeus server and preload the Rails app. Any time you want to spin
+up a server or run tests, you can then do:
+
+    zeus server
+
+or:
+
+    zeus test [directory or spec file(s) to run]
+
+respectively. See the output of `zeus start` for other commands you can run.
+
 ## Contributing
 
 ### Write helpful commit messages

@@ -6,6 +6,3 @@
 # source control
 /config/database.yml
 /config/stripe.yml
-
-# Zeus config files might vary greatly between developers
-/zeus*

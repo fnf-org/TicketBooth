@@ -17,6 +17,7 @@ gem 'validates_existence'
 
 group :development do
   gem 'capistrano'
+  gem 'zeus'
 end
 
 group :test do
