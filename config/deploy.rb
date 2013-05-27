@@ -51,6 +51,6 @@ before 'deploy:assets:precompile', 'bundle:install'
 namespace :bundle do
   desc 'Install all gem dependencies'
   task :install, roles: :app do
-    run "cd #{release_path} && bundle install"
+    run "cd #{release_path} && bundle install --without development test"
   end
 end
