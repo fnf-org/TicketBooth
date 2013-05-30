@@ -80,7 +80,7 @@
           - if ticket_request.needs_assistance
             %i.icon-flag.hover-tooltip{ title: 'User has indicated they need financial assistance' }
           - if ticket_request.notes.present?
-            %i.icon-comment.hover-tooltip{ title: 'User has left additional notes' }
+            %i.icon-comment.hover-tooltip{ title: ticket_request.notes }
         %td= ticket_request.adults
         %td= ticket_request.kids
         %td= ticket_request.cabins

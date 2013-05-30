@@ -10,7 +10,8 @@ class TicketRequest < ActiveRecord::Base
   has_one :payment
 
   attr_accessible :user_id, :address, :adults, :kids, :cabins, :needs_assistance,
-                  :notes, :status, :special_price, :event_id, :volunteer_shifts
+                  :notes, :status, :special_price, :event_id, :volunteer_shifts,
+                  :performer
 
   before_validation :convert_blanks_to_nil
 
