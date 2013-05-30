@@ -7,6 +7,9 @@
   .field
     = label_tag :card_number, 'Credit Card Number'
     = text_field_tag :card_number, nil, name: nil, maxlength: 16, class: 'input-large'
+    %span.help-inline
+      - %w[visa mastercard american_express discover jcb].each do |company|
+        = image_tag "credit-cards/#{company}_32.png"
 
   .field
     = label_tag :card_code, 'Card Verification Code'
@@ -21,13 +24,13 @@
       { name: nil, id: 'card_year', class: 'input-small' }
 
   %p
-    Clicking submit will charge
+    Clicking "Pay Now" will charge
     %span.text-success
       = number_to_currency(@payment.ticket_request.price)
     to the card entered above.
 
   .actions
-    = f.submit 'Submit', class: 'btn btn-primary'
+    = f.submit 'Pay Now', class: 'btn btn-primary'
 
     %span.text-error#stripe-error
       %noscript
