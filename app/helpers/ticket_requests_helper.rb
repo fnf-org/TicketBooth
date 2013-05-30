@@ -86,9 +86,9 @@ module TicketRequestsHelper
     when :needs_assistance
       <<-HELP
       We never turn anyone away for financial reasons, and will work with you to
-      figure something out. Whether that's making you work more volunteer shifts
-      or allowing you to pay for your ticket in installments, or something else,
-      check this box and explain what your needs are below.
+      figure something out. Volunteering for some extra shifts, making payments
+      in installments, or requesting a scholarship for a free ticket are
+      examples of payment arrangements we've made in the past.
       HELP
     when :performer
       <<-HELP
