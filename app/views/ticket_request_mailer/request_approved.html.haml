@@ -6,10 +6,12 @@
   has been approved!
 
 %p
-  You can now
-  = link_to event_shifts_url(@event) do
-    volunteer for shifts and purchase your
+  You can now volunteer for shifts and purchase your
+  = succeed '.' do
     = 'ticket'.pluralize(@ticket_request.total_tickets)
+%p
+  = link_to event_shifts_url(@event) do
+    Purchase #{'Ticket'.pluralize(@ticket_request.total_tickets)}
 
 %p
   Please purchase your
