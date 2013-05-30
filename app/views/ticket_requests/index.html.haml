@@ -65,6 +65,7 @@
       %th Kids
       %th Cabins
       %th Price
+      %th Date Requested
       %th Status
       %th
   %tbody
@@ -86,6 +87,8 @@
         %td
           %span.label{ class: ('label-info' if ticket_request.special_price) }
             = number_to_currency(ticket_request.price, precision: 0)
+        %td
+          = ticket_request.created_at.localtime.to_s(:month_day)
         %td
           %span{ class: text_class_for_status(ticket_request) }
             = text_for_status ticket_request

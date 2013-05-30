@@ -23,6 +23,10 @@
   = @ticket_request.user.name
 
 %p
+  %b Date Requested:
+  = @ticket_request.created_at.localtime.to_s(:friendly)
+
+%p
   %b Status:
   %span{ class: text_class_for_status(@ticket_request) }
     = text_for_status @ticket_request
