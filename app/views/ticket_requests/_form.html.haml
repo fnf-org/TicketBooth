@@ -48,7 +48,7 @@
 
   - if @event.kid_ticket_price
     = f.label :kids do
-      Number of children you are bringing with you (babes in arms are free)
+      Number of children you are bringing with you (not transferable to adults; babes in arms are free)
       = help_mark help_text_for(:kids)
     = f.number_field :kids, class: 'input-mini', min: 0,
       max: @event.max_kid_tickets_per_request,
@@ -56,7 +56,8 @@
               custom_prices: price_rules_to_json(@event) }
     %span.help-inline.inline-price
     %p.help-inline-block.muted
-      Please include the ages of the children you are bringing with you in the notes below.
+      Please include the ages of the children (including infants) you are
+      bringing with you in the notes below.
 
   - if @event.cabin_price
     = f.label :cabins do
