@@ -5,7 +5,7 @@ module TicketRequestsHelper
     when 'P'
       'warning'
     when 'A'
-      'success'
+      ticket_request.payment ? '' : 'success'
     when 'D'
       'error'
     end
@@ -27,7 +27,7 @@ module TicketRequestsHelper
     when 'P'
       'Pending'
     when 'A'
-      'Approved'
+      ticket_request.payment ? 'Paid' : 'Approved'
     when 'D'
       'Declined'
     end
