@@ -2,7 +2,7 @@ class TimeSlot < ActiveRecord::Base
   belongs_to :job
   has_many :shifts, dependent: :destroy
 
-  attr_accessible :end_time, :job, :slots, :start_time
+  attr_accessible :end_time, :job, :job_id, :slots, :start_time
 
   validates :start_time, presence: true
   validates :end_time, presence: true
