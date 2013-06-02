@@ -42,8 +42,7 @@ class TimeSlotsController < ApplicationController
     params[:time_slot][:end_time] = Time.from_picker(params.delete(:end_time))
 
     if @time_slot.update_attributes(params[:time_slot])
-      redirect_to event_job_path(@event, @job),
-        notice: 'Time slot was successfully updated.'
+      redirect_to event_job_path(@event, @job)
     else
       render action: 'edit'
     end
