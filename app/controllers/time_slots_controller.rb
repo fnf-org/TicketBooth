@@ -6,7 +6,18 @@ class TimeSlotsController < ApplicationController
   before_filter :set_time_slot, only: [:edit, :update, :destroy]
 
   def new
-    @time_slot = TimeSlot.new
+    # If a previous time slot exists, pre-populate info to match that one, but
+    # for the next slot
+    if @job.time_slots.any?
+      last_time_slot = @job.time_slots.last
+      start_time = last_time_slot.end_time
+      end_time = last_time_slot.end_time + (last_time_slot.end_time - last_time_slot.start_time)
+      slots = last_time_slot.slots
+    end
+
+    @time_slot = TimeSlot.new start_time: start_time,
+                              end_time: end_time,
+                              slots: slots
   end
 
   def edit
