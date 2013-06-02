@@ -4,7 +4,7 @@ class ShiftsController < ApplicationController
 
   def index
     @ticket_request = @event.ticket_requests.where(user_id: current_user).first
-    unless @ticket_request
+    if !@ticket_request.present? && !current_user.site_admin?
       flash[:error] = 'The user you are logged in with has not requested a ticket for this event'
       return redirect_to :root
     end
