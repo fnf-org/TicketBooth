@@ -10,6 +10,7 @@ class ShiftsController < ApplicationController
     end
 
     @jobs = Job.where(event_id: @event.id).
+      order(:id).
       includes(:time_slots => :shifts).
       select { |job| job.time_slots.any? }
   end

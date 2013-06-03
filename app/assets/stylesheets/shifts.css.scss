@@ -3,6 +3,15 @@ p {
 }
 
 table.time-slots {
+  .col-time-of-shift {
+    width: 250px;
+  }
+
+  .col-shifts-filled {
+    text-align: center;
+    width: 100px;
+  }
+
   td {
     vertical-align: middle;
   }

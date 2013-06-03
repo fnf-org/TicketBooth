@@ -4,7 +4,7 @@ class JobsController < ApplicationController
   before_filter :require_event_admin
 
   def index
-    @jobs = Job.where(event_id: @event)
+    @jobs = Job.where(event_id: @event).order(:id)
   end
 
   def show
