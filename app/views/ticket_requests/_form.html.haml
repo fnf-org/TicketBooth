@@ -12,7 +12,7 @@
     %p
       Already requested a ticket?
       = link_to 'Sign in', new_user_session_path
-    = label_tag :name, 'Name'
+    = label_tag :name, 'Full Name'
     = text_field_tag :name, nil, class: 'input-xlarge',
       maxlength: User::MAX_NAME_LENGTH, required: true,
       placeholder: 'First and last name'
