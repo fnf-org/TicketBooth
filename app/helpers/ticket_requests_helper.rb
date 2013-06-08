@@ -15,10 +15,10 @@ module TicketRequestsHelper
     case ticket_request.status
     when 'P'
       'muted'
-    when 'A'
-      'text-success'
     when 'D'
       'text-error'
+    when 'C'
+      'text-success'
     end
   end
 
@@ -27,9 +27,11 @@ module TicketRequestsHelper
     when 'P'
       'Pending'
     when 'A'
-      ticket_request.payment ? 'Paid' : 'Approved'
+      'Approved'
     when 'D'
       'Declined'
+    when 'C'
+      ticket_request.payment ? 'Paid' : 'Completed'
     end
   end
 

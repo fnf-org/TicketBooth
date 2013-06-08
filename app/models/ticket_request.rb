@@ -3,6 +3,7 @@ class TicketRequest < ActiveRecord::Base
     STATUS_PENDING = 'P',
     STATUS_APPROVED = 'A',
     STATUS_DECLINED = 'D',
+    STATUS_COMPLETED = 'C',
   ]
 
   belongs_to :user
@@ -42,6 +43,7 @@ class TicketRequest < ActiveRecord::Base
   validates :special_price, allow_nil: true,
     numericality: { greater_than_or_equal_to: 0 }
 
+  scope :completed, where(status: STATUS_COMPLETED)
   scope :pending,  where(status: STATUS_PENDING)
   scope :approved, where(status: STATUS_APPROVED)
   scope :declined, where(status: STATUS_DECLINED)
@@ -51,12 +53,20 @@ class TicketRequest < ActiveRecord::Base
     self.user == user || event.admin?(user)
   end
 
+  def completed?
+    status == STATUS_COMPLETED
+  end
+
   def pending?
     status == STATUS_PENDING
   end
 
   def approved?
     status == STATUS_APPROVED
+  end
+
+  def approve
+    update_attributes status: (free? ? STATUS_COMPLETED : STATUS_APPROVED)
   end
 
   def declined?
@@ -79,6 +89,10 @@ class TicketRequest < ActiveRecord::Base
     total += cabins * event.cabin_price if event.cabin_price
 
     total
+  end
+
+  def free?
+    price == 0
   end
 
   def total_tickets

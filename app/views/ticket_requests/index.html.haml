@@ -13,18 +13,18 @@
       %th Adults
       %th Kids
       %th Cabins
-      %th Potential Earn
+      %th Earn
   %tbody
     %tr
       %td
-        %b Total
-      %td= @stats[:potential][:requests]
-      %td= @stats[:potential][:adults]
-      %td= @stats[:potential][:kids]
-      %td= @stats[:potential][:cabins]
+        %b Completed
+      %td= @stats[:completed][:requests]
+      %td= @stats[:completed][:adults]
+      %td= @stats[:completed][:kids]
+      %td= @stats[:completed][:cabins]
       %td
         %span.label
-          = number_to_currency(@stats[:potential][:raised], precision: 0)
+          = number_to_currency(@stats[:completed][:raised], precision: 0)
     %tr.warning
       %td
         %b Pending

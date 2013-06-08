@@ -230,6 +230,24 @@ describe TicketRequest do
     end
   end
 
+  describe '#approve' do
+    subject { TicketRequest.make(:pending, special_price: price) }
+
+    before do
+      subject.approve
+    end
+
+    context 'when the ticket request has a price of zero dollars' do
+      let(:price) { 0 }
+      it { should be_completed }
+    end
+
+    context 'when the ticket request has a price greater than zero dollars' do
+      let(:price) { 10 }
+      it { should be_approved }
+    end
+  end
+
   describe '#declined?' do
     context 'when the ticket request is declined' do
       subject { TicketRequest.make(:declined).declined? }
