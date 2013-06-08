@@ -57,6 +57,10 @@ class TicketRequest < ActiveRecord::Base
     status == STATUS_COMPLETED
   end
 
+  def mark_complete
+    update_attributes status: STATUS_COMPLETED
+  end
+
   def pending?
     status == STATUS_PENDING
   end

@@ -22,6 +22,7 @@ class PaymentsController < ApplicationController
 
     if @payment.save_and_charge
       PaymentMailer.payment_received(@payment).deliver
+      @payment.ticket_request.mark_complete
       redirect_to @payment, notice: 'Payment was successfully received.'
     else
       @ticket_request = @payment.ticket_request
