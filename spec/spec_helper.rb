@@ -1,8 +1,7 @@
-ENV['RAILS_ENV'] = 'test'
+ENV['RAILS_ENV'] ||= 'test'
 
 require File.expand_path('../../config/environment', __FILE__)
-require 'rspec'
-require 'rails/test_help'
+require 'rspec/rails'
 require 'factory_girl_helper'
 
 module AttributeNormalizer::RSpecMatcher
