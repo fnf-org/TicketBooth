@@ -11,11 +11,12 @@
     stretch yourself too thin! This is a party and people need to have fun,
     both while working and playing!
 
-  %p<>
-    When you're ready, please go ahead and
-    %b
-      = link_to new_payment_url(ticket_request_id: @ticket_request) do
-        purchase your ticket
+  - unless @ticket_request.free?
+    %p<>
+      When you're ready, please go ahead and
+      %b
+        = link_to new_payment_url(ticket_request_id: @ticket_request) do
+          purchase your ticket
 
 - if current_user.site_admin?
   %h4 Overview
