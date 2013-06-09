@@ -29,3 +29,18 @@ table.time-slots {
     float: right;
   }
 }
+
+.schedule {
+  .time-column {
+    width: 150px;
+    text-align: right;
+  }
+
+  .job-name {
+    text-align: center;
+  }
+
+  .nothing {
+    background: #fafafa;
+  }
+}

@@ -2,6 +2,7 @@ class Event < ActiveRecord::Base
   has_many :event_admins
   has_many :admins, through: :event_admins, source: :user
   has_many :jobs, dependent: :destroy
+  has_many :time_slots, through: :jobs
   has_many :ticket_requests, dependent: :destroy
   has_many :price_rules, dependent: :destroy
 
