@@ -1,5 +1,5 @@
 class TicketRequestMailer < ActionMailer::Base
-  DEFAULT_SENDER_EMAIL = 'no-reply@cloudwatch.fm'
+  DEFAULT_SENDER_EMAIL = 'events@cloudwatch.fm'
 
   layout 'email'
 
