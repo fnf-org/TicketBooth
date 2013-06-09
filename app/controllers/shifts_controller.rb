@@ -13,7 +13,7 @@ class ShiftsController < ApplicationController
 
     @jobs = Job.where(event_id: @event.id).
       order(:id).
-      includes(:time_slots => :shifts).
+      includes(:time_slots => [{:shifts => :user }, :job]).
       select { |job| job.time_slots.any? }
   end
 

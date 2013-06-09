@@ -9,8 +9,8 @@ module ShiftsHelper
 
   def schedule_matrix
     interval = 30.minutes
-    earliest = @event.time_slots.minimum(:start_time)
-    latest = @event.time_slots.maximum(:end_time)
+    earliest = @event.time_slots.min_by(&:start_time).start_time #.minimum(:start_time)
+    latest = @event.time_slots.max_by(&:end_time).end_time #.maximum(:end_time)
     blocks = (latest - earliest) / interval
     rows = Array.new(blocks) { [] }
 

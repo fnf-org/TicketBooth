@@ -14,7 +14,7 @@ class TimeSlot < ActiveRecord::Base
     numericality: { only_integer: true, greater_than: 0 }
 
   def slots_left
-    slots - shifts.count
+    slots - shifts.size
   end
 
   def slots_left?
@@ -22,7 +22,7 @@ class TimeSlot < ActiveRecord::Base
   end
 
   def volunteered?(user)
-    shifts.where(user_id: user.id).exists?
+    shifts.any? { |shift| shift.user == user }
   end
 
 private

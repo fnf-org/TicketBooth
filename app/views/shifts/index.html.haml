@@ -26,8 +26,7 @@
         - @jobs.each do |job|
           %th.job-name= job.name
     %tbody
-      - earliest_start_time = @event.time_slots.minimum(:start_time)
-      - cur_time = earliest_start_time
+      - cur_time = @event.time_slots.minimum(:start_time)
       - schedule_matrix.each do |cells|
         %tr
           %td.time-column
@@ -51,7 +50,7 @@
                   %br
                   - if time_slot.volunteered?(current_user)
                     = link_to event_shift_path(@event,
-                                               time_slot.shifts.where(user_id: current_user.id).first),
+                                               time_slot.shifts.select { |shift| shift.user == current_user }.first),
                       method: :delete,
                       class: 'btn btn-link hover-tooltip',
                       title: 'Remove yourself from this volunteer position' do
