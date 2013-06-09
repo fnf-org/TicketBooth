@@ -1,4 +1,6 @@
 class JobsController < ApplicationController
+  force_ssl
+
   before_filter :authenticate_user!
   before_filter :set_event
   before_filter :require_event_admin

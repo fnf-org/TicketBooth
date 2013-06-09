@@ -1,4 +1,6 @@
 class ShiftsController < ApplicationController
+  force_ssl
+
   before_filter :authenticate_user!
   before_filter :set_event
 

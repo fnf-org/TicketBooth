@@ -1,4 +1,6 @@
 class SiteAdminsController < ApplicationController
+  force_ssl
+
   before_filter :authenticate_user!
   before_filter :require_site_admin
 

@@ -1,4 +1,6 @@
 class TicketRequestsController < ApplicationController
+  force_ssl
+
   before_filter :authenticate_user!,
     only: [:index, :show, :edit, :update, :approve, :decline]
   before_filter :set_event
