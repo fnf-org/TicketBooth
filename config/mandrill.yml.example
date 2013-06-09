@@ -1,0 +1,5 @@
+# Loaded by the production environment
+address: smtp.mandrillapp.com
+port: 587
+user_name: account_email@example.com
+password: super_secret_password

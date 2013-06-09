@@ -26,6 +26,7 @@ namespace :deploy do
   task :symlink_configs, roles: :app do
     run "ln -nfs #{deploy_to}/shared/config/database.yml #{release_path}/config/database.yml"
     run "ln -nfs #{deploy_to}/shared/config/stripe.yml #{release_path}/config/stripe.yml"
+    run "ln -nfs #{deploy_to}/shared/config/mandrill.yml #{release_path}/config/mandrill.yml"
   end
 
   desc 'Zero-downtime restart of Unicorn to load new code'
