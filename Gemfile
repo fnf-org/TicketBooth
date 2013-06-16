@@ -30,6 +30,7 @@ group :test do
 end
 
 group :assets do
+  gem 'compass-rails'
   gem 'sass-rails'
   gem 'coffee-rails'
   gem 'less'
