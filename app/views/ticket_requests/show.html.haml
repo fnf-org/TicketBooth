@@ -52,7 +52,8 @@
     - else
       Not yet received.
       = link_to 'Purchase your ticket now',
-        new_payment_path(ticket_request_id: @ticket_request)
+        new_payment_path(ticket_request_id: @ticket_request),
+        class: 'btn btn-small btn-primary'
 
 %p
   %b Email:
