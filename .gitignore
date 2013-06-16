@@ -6,3 +6,6 @@
 # source control
 /config/database.yml
 /config/stripe.yml
+
+# Ignore file uploads in development
+/public/uploads

@@ -10,7 +10,10 @@ class Event < ActiveRecord::Base
 
   attr_accessible :name, :start_time, :end_time, :adult_ticket_price,
     :kid_ticket_price, :cabin_price, :max_adult_tickets_per_request,
-    :max_kid_tickets_per_request, :max_cabins_per_request, :max_cabin_requests
+    :max_kid_tickets_per_request, :max_cabins_per_request, :max_cabin_requests,
+    :photo, :photo_cache
+
+  mount_uploader :photo, PhotoUploader
 
   normalize_attributes :name
 

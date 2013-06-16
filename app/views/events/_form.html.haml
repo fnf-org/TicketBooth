@@ -1,4 +1,4 @@
-= form_for(@event) do |f|
+= form_for @event, html: { multipart: true } do |f|
   = render 'shared/form_errors', resource: @event
 
   %fieldset
@@ -55,5 +55,13 @@
       %p.muted Leave blank for no limit
     = f.number_field :max_cabins_per_request, class: 'input-mini', min: 1
 
-  .actions
-    = f.submit class: 'btn btn-primary btn-large'
+  %fieldset
+    %legend Photos and Media
+    = f.label :photo do
+      Event Photo
+      %p.muted A photo or logo that represents this event.
+      = image_tag @event.photo_url(:jumbo) if @event.photo?
+    = f.file_field :photo
+    = f.hidden_field :photo_cache
+
+  = f.submit class: 'btn btn-primary btn-large'

@@ -13,20 +13,22 @@ set :scm                   , :git
 set :git_enable_submodules , 1
 
 set :deploy_via, :remote_cache
-set :deploy_to, "/home/#{application}/deploy"
+set :deploy_to, "/home/#{user}/deploy"
+set :uploads_directory, "/home/#{user}/uploads"
 
 server domain, :app, :web, :db, primary: true
 
 # Technically could break site for a short time, but that's OK for our scale
 before 'deploy:restart', 'deploy:migrate'
 
-after 'deploy:update_code', 'deploy:symlink_configs'
+after 'deploy:update_code', 'deploy:create_symlinks'
 namespace :deploy do
-  desc 'Symlinks production config files'
-  task :symlink_configs, roles: :app do
+  desc 'Symlinks production config files and directories'
+  task :create_symlinks, roles: :app do
     run "ln -nfs #{deploy_to}/shared/config/database.yml #{release_path}/config/database.yml"
     run "ln -nfs #{deploy_to}/shared/config/stripe.yml #{release_path}/config/stripe.yml"
     run "ln -nfs #{deploy_to}/shared/config/mandrill.yml #{release_path}/config/mandrill.yml"
+    run "ln -nfs #{uploads_directory} #{release_path}/public/uploads"
   end
 
   desc 'Zero-downtime restart of Unicorn to load new code'
