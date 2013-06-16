@@ -41,6 +41,9 @@ GEM
       net-sftp (>= 2.0.0)
       net-ssh (>= 2.0.14)
       net-ssh-gateway (>= 1.1.0)
+    carrierwave (0.8.0)
+      activemodel (>= 3.2.0)
+      activesupport (>= 3.2.0)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
       railties (~> 3.2.0)
@@ -89,6 +92,8 @@ GEM
       activesupport (>= 3.0.3)
     method_source (0.8.1)
     mime-types (1.21)
+    mini_magick (3.6.0)
+      subexec (~> 0.2.1)
     multi_json (1.7.2)
     net-scp (1.1.0)
       net-ssh (>= 2.6.5)
@@ -157,6 +162,7 @@ GEM
     stripe (1.7.11)
       multi_json (>= 1.0.4, < 2)
       rest-client (~> 1.4)
+    subexec (0.2.3)
     therubyracer (0.11.4)
       libv8 (~> 3.11.8.12)
       ref
@@ -194,6 +200,7 @@ DEPENDENCIES
   accept_values_for
   attribute_normalizer
   capistrano
+  carrierwave
   coffee-rails
   commonjs
   devise
@@ -204,6 +211,7 @@ DEPENDENCIES
   less-rails
   libv8
   mandrill-rails
+  mini_magick
   pg
   rails
   rspec-rails
