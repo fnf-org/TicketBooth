@@ -1,3 +1,5 @@
+@import 'compass/css3';
+
 .event-admins {
   margin-left: 0;
   max-width: 400px;
@@ -14,5 +16,17 @@
 }
 
 .remove-admin {
+  float: right;
+}
+
+.event-photo {
+  @include border-radius(3px);
+  height: 50px;
+  margin-right: 10px;
+  width: 50px;
+}
+
+.event-preview {
+  @include border-radius(3px);
   float: right;
 }

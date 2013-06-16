@@ -18,6 +18,8 @@
     Edit
     %i.icon-edit
 
+= image_tag @event.photo_url(:jumbo), class: 'event-preview' if @event.photo?
+
 %dl.dl-horizontal
   %dt Start Time
   %dd= @event.start_time.localtime.to_s(:friendly)
