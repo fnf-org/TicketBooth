@@ -9,10 +9,12 @@ class PhotoUploader < CarrierWave::Uploader::Base
 
   version :jumbo do
     process resize_to_limit: [640, 480]
+    process quality: 65
   end
 
   version :thumb do
     process resize_to_fill: [50, 50]
+    process quality: 50
   end
 
   # Directory where uploaded files will be stored.
