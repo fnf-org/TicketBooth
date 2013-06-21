@@ -1,1 +1,1 @@
-PRODUCT_NAME = 'CloudWatch'
+PRODUCT_NAME = 'Helping Culture'
