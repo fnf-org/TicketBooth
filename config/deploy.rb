@@ -26,8 +26,9 @@ namespace :deploy do
   desc 'Symlinks production config files and directories'
   task :create_symlinks, roles: :app do
     run "ln -nfs #{deploy_to}/shared/config/database.yml #{release_path}/config/database.yml"
-    run "ln -nfs #{deploy_to}/shared/config/stripe.yml #{release_path}/config/stripe.yml"
     run "ln -nfs #{deploy_to}/shared/config/mandrill.yml #{release_path}/config/mandrill.yml"
+    run "ln -nfs #{deploy_to}/shared/config/sentry.yml #{release_path}/config/sentry.yml"
+    run "ln -nfs #{deploy_to}/shared/config/stripe.yml #{release_path}/config/stripe.yml"
     run "ln -nfs #{uploads_directory} #{release_path}/public/uploads"
   end
 

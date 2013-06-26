@@ -12,6 +12,8 @@ gem 'libv8'
 gem 'mandrill-rails'
 gem 'mini_magick'
 gem 'pg'
+gem 'sentry-raven', git: 'git@github.com:getsentry/raven-ruby.git',
+                    ref: '4efeeb5e7812b9852a407e910d8fcf1dd5e1809a'
 gem 'stripe'
 gem 'thin'
 gem 'twitter-bootstrap-rails'

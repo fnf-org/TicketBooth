@@ -1,3 +1,14 @@
+GIT
+  remote: git@github.com:getsentry/raven-ruby.git
+  revision: 4efeeb5e7812b9852a407e910d8fcf1dd5e1809a
+  ref: 4efeeb5e7812b9852a407e910d8fcf1dd5e1809a
+  specs:
+    sentry-raven (0.4.8)
+      faraday (>= 0.7.6)
+      hashie (>= 1.1.0)
+      multi_json (~> 1.0)
+      uuidtools
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -75,8 +86,11 @@ GEM
     factory_girl_rails (4.2.1)
       factory_girl (~> 4.2.0)
       railties (>= 3.0.0)
+    faraday (0.8.7)
+      multipart-post (~> 1.1)
     fssm (0.2.10)
     haml (3.1.8)
+    hashie (2.0.5)
     highline (1.6.16)
     hike (1.2.2)
     i18n (0.6.1)
@@ -103,6 +117,7 @@ GEM
     mini_magick (3.6.0)
       subexec (~> 0.2.1)
     multi_json (1.7.2)
+    multipart-post (1.2.0)
     net-scp (1.1.0)
       net-ssh (>= 2.6.5)
     net-sftp (2.1.1)
@@ -195,6 +210,7 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    uuidtools (2.1.4)
     validates_existence (0.8.0)
     warden (1.2.1)
       rack (>= 1.0)
@@ -225,6 +241,7 @@ DEPENDENCIES
   rails
   rspec-rails
   sass-rails
+  sentry-raven!
   stripe
   therubyracer
   thin
