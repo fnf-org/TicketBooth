@@ -36,6 +36,7 @@ class PhotoUploader < CarrierWave::Uploader::Base
   # Randomly generate filename for uploaded photos.
   # This prevents someone from guessing the URL of another event's photos.
   def filename
+    return unless file
     extension = file.extension == 'jpeg' ? 'jpg' : file.extension
     "#{secure_token(10)}.#{extension}"
   end
