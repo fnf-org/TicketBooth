@@ -26,7 +26,7 @@ class PhotoUploader < CarrierWave::Uploader::Base
   # Directory where uploaded files are stored temporarily until model is saved,
   # at which point they are moved to the final storage directory.
   def cache_dir
-    '/tmp/uploads'
+    "uploads/cache/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
   def extension_white_list
@@ -37,8 +37,13 @@ class PhotoUploader < CarrierWave::Uploader::Base
   # This prevents someone from guessing the URL of another event's photos.
   def filename
     return unless file
-    extension = file.extension == 'jpeg' ? 'jpg' : file.extension
-    "#{secure_token(10)}.#{extension}"
+    if model.send("#{mounted_as}_changed?")
+      # Generate a secure name for the new file
+      extension = file.extension == 'jpeg' ? 'jpg' : file.extension
+      "#{secure_token}.#{extension}"
+    else
+      super
+    end
   end
 
 protected
