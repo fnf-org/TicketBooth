@@ -47,7 +47,7 @@ class TicketRequest < ActiveRecord::Base
   scope :pending,  where(status: STATUS_PENDING)
   scope :approved, where(status: STATUS_APPROVED)
   scope :declined, where(status: STATUS_DECLINED)
-  scope :not_declined, where(status: [STATUS_PENDING, STATUS_APPROVED])
+  scope :not_declined, -> { where('status != ?', STATUS_DECLINED) }
 
   def can_view?(user)
     self.user == user || event.admin?(user)
