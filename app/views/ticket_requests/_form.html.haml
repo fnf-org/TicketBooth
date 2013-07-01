@@ -83,10 +83,11 @@
     = f.text_area :address, class: 'input-xlarge',
       rows: 3, maxlength: 150, required: true
 
-  = f.label :needs_assistance, class: 'checkbox' do
-    = f.check_box :needs_assistance
-    I need financial assistance to purchase my ticket
-    = help_mark help_text_for(:needs_assistance)
+  - if @event.allow_financial_assistance
+    = f.label :needs_assistance, class: 'checkbox' do
+      = f.check_box :needs_assistance
+      I need financial assistance to purchase my ticket
+      = help_mark help_text_for(:needs_assistance)
 
   = f.label :performer, class: 'checkbox' do
     = f.check_box :performer

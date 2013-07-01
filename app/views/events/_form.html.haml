@@ -28,6 +28,14 @@
       %p.muted
         Check if you want to collect mailing addresses for mailing tickets.
 
+    = f.label :allow_financial_assistance, class: 'checkbox' do
+      = f.check_box :allow_financial_assistance
+      Allow Requesters to ask for Financial Assistance
+      %p.muted
+        Check if you want to show a checkbox on the request form to allow
+        a ticket requester to ask for financial assistance with paying for
+        their ticket.
+
     = f.label :adult_ticket_price, 'Adult Ticket Price ($)'
     = f.number_field :adult_ticket_price, class: 'input-small', required: true,
       min: 0
