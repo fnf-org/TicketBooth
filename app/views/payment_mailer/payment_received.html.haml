@@ -12,8 +12,10 @@
   Thanks,
   %br
   The #{@event.name} team
-%p
-  %i
-    P.S. When you get a chance, would could really use some
-    = link_to 'volunteers', event_shifts_url(@event)
-    to help run the event.
+
+- if @event.time_slots.any?
+  %p
+    %i
+      P.S. When you get a chance, would could really use some
+      = link_to 'volunteers', event_shifts_url(@event)
+      to help run the event.

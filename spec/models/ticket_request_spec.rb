@@ -196,6 +196,26 @@ describe TicketRequest do
     end
   end
 
+  describe '#create' do
+    let(:ticket_request) { TicketRequest.make! event: event }
+
+    context 'when the event requires approval for tickets' do
+      let(:event) { Event.make! tickets_require_approval: true }
+
+      it 'sets the default status to pending' do
+        ticket_request.status.should == TicketRequest::STATUS_PENDING
+      end
+    end
+
+    context 'when the event does not require approval for tickets' do
+      let(:event) { Event.make! tickets_require_approval: false }
+
+      it 'sets the default status to awaiting payment' do
+        ticket_request.status.should == TicketRequest::STATUS_AWAITING_PAYMENT
+      end
+    end
+  end
+
   describe '#can_view?' do
     let(:requester) { User.make! }
     subject { TicketRequest.make(user: requester).can_view?(user) }

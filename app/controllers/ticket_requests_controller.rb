@@ -82,7 +82,12 @@ class TicketRequestsController < ApplicationController
     end
 
     if @ticket_request.save
-      redirect_to event_ticket_request_path(@event, @ticket_request)
+      if @event.tickets_require_approval || @ticket_request.free?
+        redirect_to event_ticket_request_path(@event, @ticket_request)
+      else
+        redirect_to new_payment_url(ticket_request_id: @ticket_request)
+      end
+
       TicketRequestMailer.request_received(@ticket_request).deliver
     else
       render action: 'new'

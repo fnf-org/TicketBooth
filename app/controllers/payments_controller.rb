@@ -14,6 +14,7 @@ class PaymentsController < ApplicationController
     @ticket_request = TicketRequest.find(params[:ticket_request_id])
     return redirect_to root_path unless @ticket_request.can_view?(current_user)
     return redirect_to payment_path(@ticket_request.payment) if @ticket_request.payment
+    @event = @ticket_request.event
     @user = @ticket_request.user
     @payment = Payment.new(ticket_request: @ticket_request)
   end

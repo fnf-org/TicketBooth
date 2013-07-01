@@ -14,7 +14,14 @@
     = datetimepicker(:end_time, @event.end_time || 1.day.from_now.beginning_of_day)
 
   %fieldset
-    %legend Ticket Limits and Pricing
+    %legend Ticket Details
+    = f.label :tickets_require_approval do
+      Ticket Requests Require Approval
+      %p.muted
+        Select if you want to manually approve all requests before allowing
+        ticket to be purchased.
+    = f.check_box :tickets_require_approval
+
     = f.label :adult_ticket_price, 'Adult Ticket Price ($)'
     = f.number_field :adult_ticket_price, class: 'input-small', required: true,
       min: 0

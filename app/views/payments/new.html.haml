@@ -6,14 +6,22 @@
 
 %p.lead
   Hi #{@user.first_name},
-%p.lead.text-success
-  Your ticket request has been approved!
-%p
-  Now all that's left is to pay for your tickets.
-  If you are paying via credit card, fill out the form below.
-  %br
-  = link_to 'I am not paying via credit card',
-    other_payments_path(ticket_request_id: @ticket_request.id)
+
+-# HACK: Temporarily hide this for Mo's event
+- if @event.tickets_require_approval
+  %p.lead.text-success
+    Your ticket request has been approved!
+  %p
+    Now all that's left is to pay for your tickets.
+    If you are paying via credit card, fill out the form below.
+    %br
+    = link_to 'I am not paying via credit card',
+      other_payments_path(ticket_request_id: @ticket_request.id)
+- else
+  %p.lead.text-success
+    You're almost done! All that's left is to purchase your
+    = succeed '.' do
+      = 'ticket'.pluralize(@ticket_request.total_tickets)
 %hr
 
 = render 'form'

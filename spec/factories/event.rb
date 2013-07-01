@@ -10,6 +10,7 @@ FactoryGirl.define do
     max_adult_tickets_per_request { Random.rand(1..4) }
     max_kid_tickets_per_request nil
     max_cabins_per_request nil
+    tickets_require_approval true
 
     trait :kids_tickets_available do
       kid_ticket_price { Random.rand(0..10) }

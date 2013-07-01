@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130616002401) do
+ActiveRecord::Schema.define(:version => 20130628050717) do
 
   create_table "event_admins", :force => true do |t|
     t.integer  "event_id"
@@ -27,8 +27,8 @@ ActiveRecord::Schema.define(:version => 20130616002401) do
     t.string   "name"
     t.datetime "start_time"
     t.datetime "end_time"
-    t.datetime "created_at",                                                  :null => false
-    t.datetime "updated_at",                                                  :null => false
+    t.datetime "created_at",                                                                    :null => false
+    t.datetime "updated_at",                                                                    :null => false
     t.decimal  "adult_ticket_price",            :precision => 8, :scale => 2
     t.decimal  "kid_ticket_price",              :precision => 8, :scale => 2
     t.decimal  "cabin_price",                   :precision => 8, :scale => 2
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(:version => 20130616002401) do
     t.integer  "max_cabins_per_request"
     t.integer  "max_cabin_requests"
     t.string   "photo"
+    t.boolean  "tickets_require_approval",                                    :default => true, :null => false
   end
 
   create_table "jobs", :force => true do |t|
@@ -87,7 +88,7 @@ ActiveRecord::Schema.define(:version => 20130616002401) do
     t.integer  "cabins",                                                        :default => 0,     :null => false
     t.boolean  "needs_assistance",                                              :default => false, :null => false
     t.string   "notes",            :limit => 500
-    t.string   "status",           :limit => 1,                                 :default => "P",   :null => false
+    t.string   "status",           :limit => 1,                                                    :null => false
     t.datetime "created_at",                                                                       :null => false
     t.datetime "updated_at",                                                                       :null => false
     t.integer  "user_id",                                                                          :null => false

@@ -4,16 +4,27 @@
   This is a confirmation that we have received your ticket request for
   = @event.name
 
-%p
-  You'll receive a follow-up email when your request has been approved, at
-  which point you'll be able purchase your tickets and sign up for volunteer
-  shifts at the event.
-
-%p
-  You can also view the
-  = link_to 'status of your request',
-    event_ticket_request_url(@event, @ticket_request)
-  at any time.
+- if @event.tickets_require_approval
+  %p
+    - if @ticket_request.free?
+      You'll receive a follow-up email when your request has been approved.
+    - else
+      You'll receive a follow-up email when your request has been approved,
+      at which point you'll be able to purchase your tickets and sign up
+      for volunteer shifts at the event.
+  %p
+    You can also view the
+    = link_to 'status of your request',
+      event_ticket_request_url(@event, @ticket_request)
+    at any time.
+- else
+  %p
+    You can review the
+    = link_to 'details of your request',
+      event_ticket_request_url(@event, @ticket_request)
+    at any time, and pay for your tickets if you haven't already.
+  %p
+    We look forward to seeing you at the event!
 
 %p
   Thanks,

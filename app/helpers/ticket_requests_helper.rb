@@ -27,11 +27,11 @@ module TicketRequestsHelper
     when 'P'
       'Pending'
     when 'A'
-      'Approved'
+      'Awaiting Payment'
     when 'D'
       'Declined'
     when 'C'
-      ticket_request.payment ? 'Paid' : 'Completed'
+      'Completed'
     end
   end
 

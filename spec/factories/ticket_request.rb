@@ -1,6 +1,5 @@
 FactoryGirl.define do
   factory :ticket_request do
-    status TicketRequest::STATUS_PENDING
     address { Sham.street_address }
     adults { Random.rand(1..4) }
     kids { Random.rand(0..2) }
@@ -16,7 +15,7 @@ FactoryGirl.define do
     end
 
     trait :approved do |ticket_request|
-      status TicketRequest::STATUS_APPROVED
+      status TicketRequest::STATUS_AWAITING_PAYMENT
     end
 
     trait :declined do |ticket_request|

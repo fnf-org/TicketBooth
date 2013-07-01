@@ -1,7 +1,7 @@
 class TicketRequest < ActiveRecord::Base
   STATUSES = [
     STATUS_PENDING = 'P',
-    STATUS_APPROVED = 'A',
+    STATUS_AWAITING_PAYMENT = 'A',
     STATUS_DECLINED = 'D',
     STATUS_COMPLETED = 'C',
   ]
@@ -22,7 +22,7 @@ class TicketRequest < ActiveRecord::Base
 
   validates :event_id, presence: true, existence: true
 
-  validates :status, inclusion: { in: STATUSES }
+  validates :status, presence: true, inclusion: { in: STATUSES }
 
   validates :address, presence: true
 
@@ -45,9 +45,17 @@ class TicketRequest < ActiveRecord::Base
 
   scope :completed, where(status: STATUS_COMPLETED)
   scope :pending,  where(status: STATUS_PENDING)
-  scope :approved, where(status: STATUS_APPROVED)
+  scope :awaiting_payment, where(status: STATUS_AWAITING_PAYMENT)
+  scope :approved, -> { awaiting_payment }
   scope :declined, where(status: STATUS_DECLINED)
   scope :not_declined, -> { where('status != ?', STATUS_DECLINED) }
+
+  before_validation do
+    if event
+      self.status ||= event.tickets_require_approval ? STATUS_PENDING
+                                                     : STATUS_AWAITING_PAYMENT
+    end
+  end
 
   def can_view?(user)
     self.user == user || event.admin?(user)
@@ -66,11 +74,15 @@ class TicketRequest < ActiveRecord::Base
   end
 
   def approved?
-    status == STATUS_APPROVED
+    awaiting_payment?
+  end
+
+  def awaiting_payment?
+    status == STATUS_AWAITING_PAYMENT
   end
 
   def approve
-    update_attributes status: (free? ? STATUS_COMPLETED : STATUS_APPROVED)
+    update_attributes status: (free? ? STATUS_COMPLETED : STATUS_AWAITING_PAYMENT)
   end
 
   def declined?

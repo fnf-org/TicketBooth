@@ -37,7 +37,7 @@
           = number_to_currency(@stats[:pending][:raised], precision: 0)
     %tr.success
       %td
-        %b Approved
+        %b Awaiting Payment
       %td= @stats[:approved][:requests]
       %td= @stats[:approved][:adults]
       %td= @stats[:approved][:kids]
@@ -93,7 +93,7 @@
           %span{ class: text_class_for_status(ticket_request) }
             = text_for_status ticket_request
         %td
-          - if ticket_request.pending?
+          - if @event.tickets_require_approval && ticket_request.pending?
             .btn-group.pull-right
               = link_to approve_event_ticket_request_path(@event, ticket_request),
                 method: :post,
