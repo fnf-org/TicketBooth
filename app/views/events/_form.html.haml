@@ -17,24 +17,32 @@
     %legend Ticket Details
     = f.label :tickets_require_approval, class: 'checkbox' do
       = f.check_box :tickets_require_approval
-      Ticket Requests Require Approval
+      Ticket requests require approval
       %p.muted
         Select if you want to manually approve all requests before allowing
         ticket to be purchased.
 
     = f.label :require_mailing_address, class: 'checkbox' do
       = f.check_box :require_mailing_address
-      Mailing Address Required
+      Mailing address required
       %p.muted
         Check if you want to collect mailing addresses for mailing tickets.
 
     = f.label :allow_financial_assistance, class: 'checkbox' do
       = f.check_box :allow_financial_assistance
-      Allow Requesters to ask for Financial Assistance
+      Allow requesters to ask for financial assistance
       %p.muted
         Check if you want to show a checkbox on the request form to allow
         a ticket requester to ask for financial assistance with paying for
         their ticket.
+
+    = f.label :ask_how_many_shifts, class: 'checkbox' do
+      = f.check_box :ask_how_many_shifts
+      Ask how many volunteer shifts a requester is willing to sign up for
+      %p.muted
+        If your event is going to have volunteer shifts, you can use this
+        to get a sense of how many volunteers you are going to have (or
+        use that to decide whether or not to approve the ticket).
 
     = f.label :adult_ticket_price, 'Adult Ticket Price ($)'
     = f.number_field :adult_ticket_price, class: 'input-small', required: true,

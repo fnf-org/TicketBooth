@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130701045629) do
+ActiveRecord::Schema.define(:version => 20130701054452) do
 
   create_table "event_admins", :force => true do |t|
     t.integer  "event_id"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(:version => 20130701045629) do
     t.boolean  "tickets_require_approval",                                    :default => true,  :null => false
     t.boolean  "require_mailing_address",                                     :default => false, :null => false
     t.boolean  "allow_financial_assistance",                                  :default => false, :null => false
+    t.boolean  "ask_how_many_shifts",                                         :default => false, :null => false
   end
 
   create_table "jobs", :force => true do |t|
