@@ -5,14 +5,13 @@
     %i.icon-arrow-left
     Event
 
-%table.table
+%table.table.table-condensed
   %thead
     %tr
       %th Name
       %th Adults
       %th Kids
       %th Cabins
-      %th Status
       %th Paid
   %tbody
     - @ticket_requests.each do |ticket_request|
@@ -21,9 +20,6 @@
         %td= ticket_request.adults
         %td= ticket_request.kids
         %td= ticket_request.cabins
-        %td
-          %span{ class: text_class_for_status(ticket_request) }
-            = text_for_status ticket_request
         %td
           - if ticket_request.payment
             - if ticket_request.payment.in_progress?

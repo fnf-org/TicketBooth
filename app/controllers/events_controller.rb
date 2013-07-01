@@ -89,10 +89,10 @@ class EventsController < ApplicationController
   def guest_list
     @ticket_requests = TicketRequest.
       includes(:payment, :user).
-      where(event_id: @event.id).
+      where(event_id: @event).
       order('created_at DESC').
-      approved.
-      sort_by { |ticket_request| ticket_request.user.name }
+      completed.
+      sort_by { |ticket_request| ticket_request.user.name.upcase }
   end
 
 private
