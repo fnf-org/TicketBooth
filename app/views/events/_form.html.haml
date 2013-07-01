@@ -15,12 +15,18 @@
 
   %fieldset
     %legend Ticket Details
-    = f.label :tickets_require_approval do
+    = f.label :tickets_require_approval, class: 'checkbox' do
+      = f.check_box :tickets_require_approval
       Ticket Requests Require Approval
       %p.muted
         Select if you want to manually approve all requests before allowing
         ticket to be purchased.
-    = f.check_box :tickets_require_approval
+
+    = f.label :require_mailing_address, class: 'checkbox' do
+      = f.check_box :require_mailing_address
+      Mailing Address Required
+      %p.muted
+        Check if you want to collect mailing addresses for mailing tickets.
 
     = f.label :adult_ticket_price, 'Adult Ticket Price ($)'
     = f.number_field :adult_ticket_price, class: 'input-small', required: true,

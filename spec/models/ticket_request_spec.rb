@@ -81,11 +81,21 @@ describe TicketRequest do
     end
 
     describe '#address' do
-      let(:ticket_request) { TicketRequest.make address: address }
+      let(:event) { Event.make! }
+      let(:ticket_request) { TicketRequest.make event: event, address: address }
 
       context 'when not present' do
         let(:address) { nil }
-        it { should_not be_valid }
+
+        context 'and the event requires a mailing address' do
+          let(:event) { Event.make! require_mailing_address: true }
+          it { should_not be_valid }
+        end
+
+        context 'and the event does not require a mailing address' do
+          let(:event) { Event.make! require_mailing_address: false }
+          it { should be_valid }
+        end
       end
 
       context 'when present' do

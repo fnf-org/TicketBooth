@@ -24,7 +24,7 @@ class TicketRequest < ActiveRecord::Base
 
   validates :status, presence: true, inclusion: { in: STATUSES }
 
-  validates :address, presence: true
+  validates :address, presence: { if: -> { event.try(:require_mailing_address) } }
 
   validates :adults, presence: true,
     numericality: { only_integer: true, greater_than: 0 }

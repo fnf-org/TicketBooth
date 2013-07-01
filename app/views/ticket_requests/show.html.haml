@@ -59,10 +59,11 @@
   %b Email:
   = mail_to @ticket_request.user.email
 
-%p
-  %b Mailing Address:
-  %address
-    = simple_format @ticket_request.address
+- if @event.require_mailing_address
+  %p
+    %b Mailing Address:
+    %address
+      = simple_format @ticket_request.address
 
 %p
   %b Adult Tickets:

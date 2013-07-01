@@ -76,11 +76,12 @@
     = help_mark help_text_for(:volunteer_shifts)
   = f.number_field :volunteer_shifts, class: 'input-mini', min: 0, required: true
 
-  = f.label :address do
-    Mailing Address
-    = help_mark help_text_for(:address)
-  = f.text_area :address, class: 'input-xlarge',
-    rows: 3, maxlength: 150, required: true
+  - if @event.require_mailing_address
+    = f.label :address do
+      Mailing Address
+      = help_mark help_text_for(:address)
+    = f.text_area :address, class: 'input-xlarge',
+      rows: 3, maxlength: 150, required: true
 
   = f.label :needs_assistance, class: 'checkbox' do
     = f.check_box :needs_assistance
