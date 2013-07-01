@@ -18,47 +18,52 @@
         = link_to new_payment_url(ticket_request_id: @ticket_request) do
           purchase your ticket
 
-%table.table.table-bordered.schedule
-  %thead
-    %tr
-      %th.time-column Time
-      - @jobs.each do |job|
-        %th.job-name= job.name
-  %tbody
-    - cur_time = @event.time_slots.minimum(:start_time)
-    - schedule_matrix.each do |cells|
+- if @event.time_slots.any?
+  %table.table.table-bordered.schedule
+    %thead
       %tr
-        %td.time-column
-          = cur_time.localtime.to_s(:dhmm)
-        - cells.each do |cell|
-          %td{ rowspan: cell[:rowspan], class: ('nothing' unless cell[:time_slot]) }
-            - time_slot = cell[:time_slot]
-            - if time_slot
-              %p.text-center
-                %span.muted
-                  = time_slot.start_time.localtime.to_s(:dhmm)
-                  &mdash;
-                  = time_slot.end_time.localtime.to_s(:hmm)
+        %th.time-column Time
+        - @jobs.each do |job|
+          %th.job-name= job.name
+    %tbody
+      - cur_time = @event.time_slots.minimum(:start_time)
+      - schedule_matrix.each do |cells|
+        %tr
+          %td.time-column
+            = cur_time.localtime.to_s(:dhmm)
+          - cells.each do |cell|
+            %td{ rowspan: cell[:rowspan], class: ('nothing' unless cell[:time_slot]) }
+              - time_slot = cell[:time_slot]
+              - if time_slot
+                %p.text-center
+                  %span.muted
+                    = time_slot.start_time.localtime.to_s(:dhmm)
+                    &mdash;
+                    = time_slot.end_time.localtime.to_s(:hmm)
+                    %br
+                    %small= time_slot.job.name
+                    %br
+                  - time_slot.shifts.each do |shift|
+                    %span.lead{ class: ('hover-tooltip' if shift.name),
+                                 title: "Member of #{shift.user.name}'s party" }
+                      = shift.volunteer_name
                   %br
-                  %small= time_slot.job.name
-                  %br
-                - time_slot.shifts.each do |shift|
-                  %span.lead{ class: ('hover-tooltip' if shift.name),
-                               title: "Member of #{shift.user.name}'s party" }
-                    = shift.volunteer_name
-                %br
-                - if time_slot.volunteered?(current_user)
-                  = link_to event_shift_path(@event,
-                                             time_slot.shifts.select { |shift| shift.user == current_user }.first),
-                    method: :delete,
-                    class: 'btn btn-link hover-tooltip',
-                    title: 'Remove yourself from this volunteer position' do
-                    Unvolunteer
-                - elsif time_slot.slots_left?
-                  = link_to event_shifts_path(shift: { time_slot_id: time_slot.id,
-                                                       user_id: current_user.id }),
-                    method: :post,
-                    class: 'volunteer-btn btn hover-tooltip',
-                    title: volunteer_button_hover_text do
-                    Volunteer
-      - cur_time += 30.minutes
+                  - if time_slot.volunteered?(current_user)
+                    = link_to event_shift_path(@event,
+                                               time_slot.shifts.select { |shift| shift.user == current_user }.first),
+                      method: :delete,
+                      class: 'btn btn-link hover-tooltip',
+                      title: 'Remove yourself from this volunteer position' do
+                      Unvolunteer
+                  - elsif time_slot.slots_left?
+                    = link_to event_shifts_path(shift: { time_slot_id: time_slot.id,
+                                                         user_id: current_user.id }),
+                      method: :post,
+                      class: 'volunteer-btn btn hover-tooltip',
+                      title: volunteer_button_hover_text do
+                      Volunteer
+        - cur_time += 30.minutes
+- else
+  %p.lead
+    There are currently no volunteer positions posted for this event. Check
+    back later!
