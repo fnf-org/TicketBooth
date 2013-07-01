@@ -20,6 +20,11 @@ class ActiveRecord::Base
       factory_girl_delegate :build, factory_name, *args, &block
     end
 
+    # Wrapper for FactoryGirl.build_list
+    def make_list(count, *args, &block)
+      factory_girl_delegate :build_list, name.underscore, count, *args, &block
+    end
+
     # Wrapper for FactoryGirl.create
     def make!(*args, &block)
       make_with!(name.underscore, *args, &block)
@@ -28,6 +33,11 @@ class ActiveRecord::Base
     # Like #make!, but allows the caller to explicitly specify a factory name.
     def make_with!(factory_name, *args, &block)
       factory_girl_delegate :create, factory_name, *args, &block
+    end
+
+    # Wrapper for FactoryGirl.build_list
+    def make_list!(count, *args, &block)
+      factory_girl_delegate :create_list, name.underscore, count, *args, &block
     end
 
     # Wrapper for FactoryGirl.attributes_for
