@@ -188,20 +188,25 @@ describe TicketRequest do
         it { should be_valid }
       end
 
-      context 'when empty' do
-        let(:notes) { '' }
-
-        it { should be_valid }
-
-        it 'replaces the empty string with nil' do
-          ticket_request.valid?
-          ticket_request.notes.should be_nil
-        end
-      end
-
       context 'when longer than 500 characters' do
         let(:notes) { Sham.string(501) }
         it { should_not be_valid }
+      end
+
+      describe 'normalization' do
+        subject { TicketRequest.new }
+        it { should normalize(:notes) }
+        it { should normalize(:notes).from(' Blah ').to('Blah') }
+        it { should normalize(:notes).from('Blah  Blah').to('Blah Blah') }
+      end
+    end
+
+    describe '#special_price' do
+      let(:ticket_request) { TicketRequest.make special_price: special_price }
+
+      context 'when not present' do
+        let(:special_price) { nil }
+        it { should be_valid }
       end
     end
   end

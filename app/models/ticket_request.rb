@@ -14,7 +14,7 @@ class TicketRequest < ActiveRecord::Base
                   :notes, :status, :special_price, :event_id, :volunteer_shifts,
                   :performer
 
-  before_validation :convert_blanks_to_nil
+  normalize_attributes :notes
 
   validates :user_id, presence: true, existence: true,
     uniqueness: { scope: :event_id,
@@ -113,12 +113,5 @@ class TicketRequest < ActiveRecord::Base
 
   def total_tickets
     adults + kids
-  end
-
-private
-
-  def convert_blanks_to_nil
-    self.notes = nil if self.notes.blank?
-    self.special_price = nil if self.special_price.blank?
   end
 end
