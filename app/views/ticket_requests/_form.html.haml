@@ -7,31 +7,31 @@
 
   - if @user
     %h3 Ticket Request for #{@user.name}
-    = f.hidden_field :user_id, value: @user.id
   - else
-    %p
-      Already requested a ticket?
-      = link_to 'Sign in', new_user_session_path
-    = label_tag :name, 'Full Name'
-    = text_field_tag :name, nil, class: 'input-xlarge',
-      maxlength: User::MAX_NAME_LENGTH, required: true,
-      placeholder: 'First and last name'
+    = f.fields_for :user, @ticket_request.user || User.new do |ff|
+      %p
+        Already requested a ticket?
+        = link_to 'Sign in', new_user_session_path
+      = ff.label :name, 'Full Name'
+      = ff.text_field :name, class: 'input-xlarge',
+        maxlength: User::MAX_NAME_LENGTH, required: true,
+        placeholder: 'First and last name'
 
-    = label_tag :email do
-      Email
-      = help_mark help_text_for(:email)
-    = email_field_tag :email, nil, class: 'input-xlarge',
-      maxlength: User::MAX_EMAIL_LENGTH, required: true,
-      placeholder: 'email@example.com'
+      = ff.label :email do
+        Email
+        = help_mark help_text_for(:email)
+      = ff.email_field :email, class: 'input-xlarge',
+        maxlength: User::MAX_EMAIL_LENGTH, required: true,
+        placeholder: 'email@example.com'
 
-    = label_tag :password, 'Password'
-    = password_field_tag :password, nil,
-      placeholder: 'Must be at least 5 characters', required: true,
-      maxlength: User::MAX_PASSWORD_LENGTH, class: 'input-xlarge'
+      = ff.label :password, 'Password'
+      = ff.password_field :password,
+        placeholder: 'Must be at least 5 characters', required: true,
+        maxlength: User::MAX_PASSWORD_LENGTH, class: 'input-xlarge'
 
-    = label_tag :password_confirmation, 'Confirm Password'
-    = password_field_tag :password_confirmation, nil, placeholder: '',
-      maxlength: User::MAX_PASSWORD_LENGTH, required: true, class: 'input-xlarge'
+      = ff.label :password_confirmation, 'Confirm Password'
+      = ff.password_field :password_confirmation, placeholder: '',
+        maxlength: User::MAX_PASSWORD_LENGTH, required: true, class: 'input-xlarge'
 
   - if signed_in? && @event.admin?(current_user)
     .well

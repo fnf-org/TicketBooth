@@ -40,16 +40,7 @@ class TicketRequestsController < ApplicationController
   end
 
   def new
-    if signed_in?
-      existing_request = TicketRequest.where(event_id: @event, user_id: current_user).first
-      if existing_request.present?
-        return redirect_to event_ticket_request_path(@event, existing_request)
-      end
-
-      # Otherwise we're creating a ticket request as the signed-in user
-      @user = current_user
-    end
-
+    @user = current_user if signed_in?
     @ticket_request = TicketRequest.new
   end
 
@@ -58,30 +49,15 @@ class TicketRequestsController < ApplicationController
   end
 
   def create
-    @ticket_request = TicketRequest.new(params[:ticket_request])
-
-    unless signed_in?
-      # User parameters are included separately
-      user = User.new(params.slice(:name, :email, :password, :password_confirmation))
-
-      if user.save
-        @ticket_request.user_id = user.id
-
-        # Automatically sign in so that if there's something wrong with the
-        # ticket request we don't need to create another user.
-        sign_in(user)
-      else
-        # Add user errors to ticket validation since we're piggy-backing on the
-        # ticket form
-        user.errors.full_messages.each do |error|
-          @ticket_request.errors[:base] << error
-        end
-
-        return render action: 'new'
-      end
+    unless params[:ticket_request][:user]
+      params[:ticket_request][:user] = current_user
     end
 
+    @ticket_request = TicketRequest.new(params[:ticket_request])
+
     if @ticket_request.save
+      sign_in(@ticket_request.user) unless signed_in?
+
       if @event.tickets_require_approval || @ticket_request.free?
         redirect_to event_ticket_request_path(@event, @ticket_request)
       else

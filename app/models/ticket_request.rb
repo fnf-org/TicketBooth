@@ -12,13 +12,13 @@ class TicketRequest < ActiveRecord::Base
 
   attr_accessible :user_id, :address, :adults, :kids, :cabins, :needs_assistance,
                   :notes, :status, :special_price, :event_id, :volunteer_shifts,
-                  :performer
+                  :performer, :user_attributes, :user
 
   normalize_attributes :notes
 
-  validates :user_id, presence: true, existence: true,
-    uniqueness: { scope: :event_id,
-                  message: 'has already requested a ticket for this event' }
+  accepts_nested_attributes_for :user
+
+  validates :user, presence: true
 
   validates :event_id, presence: true, existence: true
 
