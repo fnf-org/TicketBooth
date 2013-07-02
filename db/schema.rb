@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130701054452) do
+ActiveRecord::Schema.define(:version => 20130702041357) do
 
   create_table "event_admins", :force => true do |t|
     t.integer  "event_id"
@@ -85,7 +85,7 @@ ActiveRecord::Schema.define(:version => 20130701054452) do
   end
 
   create_table "ticket_requests", :force => true do |t|
-    t.string   "address",          :limit => 150,                                                  :null => false
+    t.string   "address",          :limit => 150
     t.integer  "adults",                                                        :default => 1,     :null => false
     t.integer  "kids",                                                          :default => 0,     :null => false
     t.integer  "cabins",                                                        :default => 0,     :null => false
