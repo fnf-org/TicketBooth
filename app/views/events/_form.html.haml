@@ -19,22 +19,30 @@
       = f.check_box :tickets_require_approval
       Ticket requests require approval
       %p.muted
-        Select if you want to manually approve all requests before allowing
-        ticket to be purchased.
+        Check this box if you want to manually approve all requests before
+        allowing ticket to be purchased.
 
     = f.label :require_mailing_address, class: 'checkbox' do
       = f.check_box :require_mailing_address
       Mailing address required
       %p.muted
-        Check if you want to collect mailing addresses for mailing tickets.
+        Check this box if you want to collect mailing addresses for mailing
+        tickets.
 
     = f.label :allow_financial_assistance, class: 'checkbox' do
       = f.check_box :allow_financial_assistance
       Allow requesters to ask for financial assistance
       %p.muted
-        Check if you want to show a checkbox on the request form to allow
-        a ticket requester to ask for financial assistance with paying for
-        their ticket.
+        Check this box if you want to show a checkbox on the request form to
+        allow a ticket requester to ask for financial assistance with paying
+        for their ticket.
+
+    = f.label :allow_donations, class: 'checkbox' do
+      = f.check_box :allow_donations
+      Allow donations
+      %p.muted
+        Check this box if you want to allow people to make an additional donation
+        on top of their ticket price when purchasing their tickets.
 
     = f.label :ask_how_many_shifts, class: 'checkbox' do
       = f.check_box :ask_how_many_shifts

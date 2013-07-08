@@ -13,6 +13,13 @@ payment =
       else
         true
 
+    $('.donation-option input[type=radio]').on('change', ( ->
+      $totalPrice = $('#total-price')
+      addedPrice = parseFloat($(this).val(), 10) +
+                   parseFloat($totalPrice.data('price'), 10)
+      $totalPrice.text('$' + addedPrice.toFixed(2))
+    ))
+
   processCard: ->
     card =
       number: $('#card_number').val()

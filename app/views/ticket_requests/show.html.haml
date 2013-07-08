@@ -44,7 +44,7 @@
         Decline
         %i.icon-remove
 
-- if @ticket_request.approved?
+- if @ticket_request.approved? || @ticket_request.completed?
   %p
     %b Payment:
     - if @payment

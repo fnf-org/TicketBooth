@@ -4,28 +4,29 @@ class Payment < ActiveRecord::Base
     STATUS_RECEIVED = 'R',
   ]
 
-  attr_accessible :ticket_request, :ticket_request_id, :status,
-    :stripe_charge_id, :stripe_card_token
+  belongs_to :ticket_request
+
+  attr_accessible :ticket_request_id, :ticket_request_attributes, :status, :stripe_card_token
+
+  accepts_nested_attributes_for :ticket_request,
+                                reject_if: :modifying_forbidden_attributes?
 
   attr_accessor :stripe_card_token
 
-  validates_presence_of :ticket_request_id, :status
+  validates :ticket_request, presence: true, existence: true
+  validates :status, presence: true, inclusion: { in: STATUSES }
 
-  validates_inclusion_of :status, in: STATUSES
-
-  belongs_to :ticket_request
-
-  def save_and_charge
+  def save_and_charge!
     if valid?
       charge = Stripe::Charge.create(
-        amount: (ticket_request.price * 100).to_i, # in cents
+        amount: (ticket_request.cost * 100).to_i, # in cents
         currency: 'usd',
         card: stripe_card_token,
         description: "#{ticket_request.event.name} Ticket",
       )
       self.stripe_charge_id = charge.id
       self.status = STATUS_RECEIVED
-      save!
+      save
     end
   rescue Stripe::StripeError => e
     errors.add :base, e.message
@@ -46,5 +47,14 @@ class Payment < ActiveRecord::Base
 
   def received?
     status == STATUS_RECEIVED
+  end
+
+private
+
+  def modifying_forbidden_attributes?(attributed)
+    # Only allow donation field to be updated
+    attributed.any? do |attribute, value|
+      !%w[donation id].include?(attribute.to_s)
+    end
   end
 end

@@ -4,9 +4,24 @@
 - if @payment.received?
   %p.lead
     Thanks for purchasing your ticket for #{@event.name}!
+
+  %p
+    %b Amount Paid:
+    = number_to_currency(@charge.amount / 100.0)
+    - if @ticket_request.donation > 0
+      (including #{number_to_currency(@ticket_request.donation)} donation)
+
+  %p
+    %b Card # Ending In:
+    = @charge.card.last4
+
+  %p
+    %b Card Expiration Date:
+    #{@charge.card.exp_month} / #{@charge.card.exp_year}
+
   %p
     You can
-    = link_to 'review your ticket status and payment information',
+    = link_to 'review your ticket information',
       event_ticket_request_path(@event, @ticket_request)
     at any time
     %br
@@ -26,4 +41,4 @@
 
 %p
   If you have any other questions, don't hesitate to contact us at
-  = mail_to 'payments@cloudwatch.fm'
+  = mail_to 'payments@helpingculture.com'

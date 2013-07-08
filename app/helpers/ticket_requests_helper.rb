@@ -102,6 +102,18 @@ module TicketRequestsHelper
       For example, if you checked the box above, tell us what your needs are. If
       you are bringing kids, please include their ages.
       HELP
+    when :community_fund_donation
+      <<-HELP
+      We are a community of individuals from a wide range of socioeconomic
+      classes. This diversity contributes to the spirit of the event and ensures
+      that it is attended by helping, good-willed, and unique people. Every
+      year, there are individuals in this community who are not able to afford
+      the full price of a ticket. As a community, we have chosen to come
+      together and help these individuals by subsidizing the cost of their
+      ticket. By donating to this fund, you are preserving the culture of the
+      community by enabling these individuals to attend. Donating is entirely
+      voluntary, but anything you can provide helps.
+      HELP
     end
   end
 end

@@ -12,7 +12,7 @@ class Event < ActiveRecord::Base
     :kid_ticket_price, :cabin_price, :max_adult_tickets_per_request,
     :max_kid_tickets_per_request, :max_cabins_per_request, :max_cabin_requests,
     :photo, :photo_cache, :tickets_require_approval, :require_mailing_address,
-    :allow_financial_assistance
+    :allow_financial_assistance, :ask_how_many_shifts, :allow_donations
 
   mount_uploader :photo, PhotoUploader
 

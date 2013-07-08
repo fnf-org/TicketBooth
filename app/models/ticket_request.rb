@@ -12,7 +12,7 @@ class TicketRequest < ActiveRecord::Base
 
   attr_accessible :user_id, :address, :adults, :kids, :cabins, :needs_assistance,
                   :notes, :status, :special_price, :event_id, :volunteer_shifts,
-                  :performer, :user_attributes, :user
+                  :performer, :user_attributes, :user, :donation
 
   normalize_attributes :notes
 
@@ -42,6 +42,8 @@ class TicketRequest < ActiveRecord::Base
 
   validates :special_price, allow_nil: true,
     numericality: { greater_than_or_equal_to: 0 }
+
+  validates :donation, numericality: { greater_than_or_equal_to: 0 }
 
   scope :completed, where(status: STATUS_COMPLETED)
   scope :pending,  where(status: STATUS_PENDING)
@@ -105,6 +107,10 @@ class TicketRequest < ActiveRecord::Base
     total += cabins * event.cabin_price if event.cabin_price
 
     total
+  end
+
+  def cost
+    price + donation
   end
 
   def free?

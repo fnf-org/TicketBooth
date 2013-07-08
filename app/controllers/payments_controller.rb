@@ -5,6 +5,7 @@ class PaymentsController < ApplicationController
 
   def show
     @payment = Payment.find(params[:id])
+    @charge = Stripe::Charge.retrieve(@payment.stripe_charge_id)
     @ticket_request = @payment.ticket_request
     @event = @ticket_request.event
     return redirect_to root_path unless @payment.can_view?(current_user)
@@ -16,19 +17,20 @@ class PaymentsController < ApplicationController
     return redirect_to payment_path(@ticket_request.payment) if @ticket_request.payment
     @event = @ticket_request.event
     @user = @ticket_request.user
-    @payment = Payment.new(ticket_request: @ticket_request)
+    @payment = Payment.new.tap { |p| p.ticket_request = @ticket_request }
   end
 
   def create
     @payment = Payment.new(params[:payment])
     return redirect_to root_path unless @payment.can_view?(current_user)
 
-    if @payment.save_and_charge
+    if @payment.save_and_charge!
       PaymentMailer.payment_received(@payment).deliver
       @payment.ticket_request.mark_complete
       redirect_to @payment, notice: 'Payment was successfully received.'
     else
       @ticket_request = @payment.ticket_request
+      @event = @ticket_request.event
       @user = @ticket_request.user
       render action: 'new'
     end

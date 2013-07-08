@@ -1,7 +1,7 @@
 = form_for(@payment) do |f|
   = render 'shared/form_errors', resource: @payment
 
-  = f.hidden_field :ticket_request_id, value: @payment.ticket_request_id
+  = f.hidden_field :ticket_request_id, value: @ticket_request.id
   = f.hidden_field :stripe_card_token # Value set by JS
 
   .field
@@ -23,9 +23,22 @@
     = select_year nil, { start_year: Date.today.year, end_year: Date.today.year + 15 },
       { name: nil, id: 'card_year', class: 'input-small' }
 
+  - if @event.allow_donations
+    = f.fields_for :ticket_request, @ticket_request do |ff|
+      .field
+        = label_tag :donation do
+          Community Fund Donation
+          = help_mark help_text_for(:community_fund_donation)
+        - [0, 10, 25, 50, 100].each do |amount|
+          .donation-option
+            = ff.radio_button :donation, amount, checked: amount == 0
+            = ff.label :donation, "$#{amount}", value: amount, class: 'radio inline'
+
+  %hr
+
   %p
     Clicking "Pay Now" will charge
-    %span.text-success
+    %span.text-success#total-price{ data: { price: @ticket_request.price } }
       = number_to_currency(@payment.ticket_request.price)
     to the card entered above.
 
