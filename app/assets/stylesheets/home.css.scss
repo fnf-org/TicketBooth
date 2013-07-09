@@ -1,8 +1,20 @@
-.splash {
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 100%;
-  z-index: -1;
+.hero-unit {
+  background-color: #fff;
+  text-align: center;
+}
+
+.marketing {
+  color: #5a5a5a;
+
+  .feature {
+    text-align: center;
+
+    img {
+      width: 40%;
+    }
+  }
+
+  .contact {
+    text-align: center;
+  }
 }
