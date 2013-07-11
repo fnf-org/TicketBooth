@@ -1,6 +1,4 @@
 class EventsController < ApplicationController
-  force_ssl
-
   before_filter :authenticate_user!
   before_filter :require_site_admin, only: [:create]
   before_filter :set_event, :require_event_admin, except: [:index, :new, :create]

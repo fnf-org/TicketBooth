@@ -1,6 +1,4 @@
 class HomeController < ApplicationController
-  force_ssl
-
   def index
     if signed_in?
       if current_user.site_admin? || current_user.event_admin?
