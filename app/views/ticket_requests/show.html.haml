@@ -77,6 +77,10 @@
   %b Cabins:
   = @ticket_request.cabins
 
+= link_to new_event_ticket_request_path(@event), class: 'btn' do
+  %i.icon-plus-sign-alt
+  Request More Tickets
+
 - if current_user.site_admin?
   %p
     %b Total Ticket Price:
