@@ -11,5 +11,7 @@ $('.input-datetimepicker').each(function(index, el) {
   });
 
   // Rails returns a UTC date, so need to convert it to local time
-  $el.data('datetimepicker').setLocalDate(new Date(date));
+  if (date) {
+    $el.data('datetimepicker').setLocalDate(new Date(date));
+  }
 });
