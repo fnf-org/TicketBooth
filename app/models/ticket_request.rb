@@ -18,7 +18,7 @@ class TicketRequest < ActiveRecord::Base
 
   accepts_nested_attributes_for :user
 
-  validates :user, presence: true
+  validates :user, presence: true, existence: true
 
   validates :event_id, presence: true, existence: true
 

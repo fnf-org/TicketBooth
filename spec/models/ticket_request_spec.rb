@@ -18,17 +18,12 @@ describe TicketRequest do
 
       context 'when user exists' do
         let(:user) { User.make! }
-
         it { should be_valid }
       end
 
       context 'when user does not exist' do
         let(:user) { User.make! }
-
-        before do
-          user.delete
-        end
-
+        before { user.delete }
         it { should_not be_valid }
       end
 
@@ -42,7 +37,9 @@ describe TicketRequest do
             TicketRequest.make! event: event, user: user
           end
 
-          it { should_not be_valid }
+          # TODO: Decide whether we would rather allow editing of ticket
+          # requests instead of making multiple requests
+          it { should be_valid }
         end
 
         context 'and they have created requests only for other events' do
