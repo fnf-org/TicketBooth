@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130707222903) do
+ActiveRecord::Schema.define(:version => 20130803212458) do
 
   create_table "event_admins", :force => true do |t|
     t.integer  "event_id"
@@ -42,6 +42,8 @@ ActiveRecord::Schema.define(:version => 20130707222903) do
     t.boolean  "allow_financial_assistance",                                  :default => false, :null => false
     t.boolean  "ask_how_many_shifts",                                         :default => false, :null => false
     t.boolean  "allow_donations",                                             :default => false, :null => false
+    t.datetime "ticket_sales_start_time"
+    t.datetime "ticket_sales_end_time"
   end
 
   create_table "jobs", :force => true do |t|

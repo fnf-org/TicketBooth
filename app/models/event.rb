@@ -12,7 +12,8 @@ class Event < ActiveRecord::Base
     :kid_ticket_price, :cabin_price, :max_adult_tickets_per_request,
     :max_kid_tickets_per_request, :max_cabins_per_request, :max_cabin_requests,
     :photo, :photo_cache, :tickets_require_approval, :require_mailing_address,
-    :allow_financial_assistance, :ask_how_many_shifts, :allow_donations
+    :allow_financial_assistance, :ask_how_many_shifts, :allow_donations,
+    :ticket_sales_start_time, :ticket_sales_end_time
 
   mount_uploader :photo, PhotoUploader
 
@@ -36,7 +37,8 @@ class Event < ActiveRecord::Base
   validates :max_cabin_requests, allow_nil: true,
     numericality: { only_integer: true, greater_than: 0 }
 
-  validate :end_time_after_start_time, :ensure_prices_set_if_maximum_specified
+  validate :end_time_after_start_time, :sales_end_time_after_start_time,
+           :ensure_prices_set_if_maximum_specified
 
   def admin?(user)
     user.site_admin? || admins.where(id: user).exists?
@@ -48,11 +50,25 @@ class Event < ActiveRecord::Base
     ticket_requests.not_declined.sum(:cabins) < max_cabin_requests
   end
 
+  def ticket_sales_open?
+    return false if Time.now >= end_time
+    return false if ticket_sales_start_time && Time.now < ticket_sales_start_time
+    return Time.now < ticket_sales_end_time if ticket_sales_end_time
+    true
+  end
+
 private
 
   def end_time_after_start_time
     if start_time && end_time && end_time <= start_time
       errors.add(:end_time, 'must be after start time')
+    end
+  end
+
+  def sales_end_time_after_start_time
+    if ticket_sales_start_time && ticket_sales_end_time &&
+      ticket_sales_end_time <= ticket_sales_start_time
+      errors.add(:ticket_sales_end_time, 'must be after start time')
     end
   end
 

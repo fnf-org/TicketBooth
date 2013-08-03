@@ -37,6 +37,30 @@ describe Event do
       it { should_not be_valid }
     end
 
+    describe '#ticket_sales_start_time' do
+      it { should accept_values_for(:ticket_sales_start_time, Time.now, nil, '') }
+    end
+
+    describe '#ticket_sales_end_time' do
+      it { should accept_values_for(:ticket_sales_start_time, Time.now, nil, '') }
+    end
+
+    context 'when ticket sales start time is before end time' do
+      subject do
+        Event.make ticket_sales_start_time: Time.now, ticket_sales_end_time: 1.day.from_now
+      end
+
+      it { should be_valid }
+    end
+
+    context 'when ticket sales start time is after end time' do
+      subject do
+        Event.make ticket_sales_start_time: 1.day.from_now, ticket_sales_end_time: Time.now
+      end
+
+      it { should_not be_valid }
+    end
+
     describe '#adult_ticket_price' do
       it { should accept_values_for(:adult_ticket_price, 0, 50) }
       it { should_not accept_values_for(:adult_ticket_price, nil, '', -1) }

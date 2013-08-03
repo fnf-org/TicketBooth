@@ -15,6 +15,18 @@
 
   %fieldset
     %legend Ticket Details
+    = f.label :ticket_sales_start_time do
+      Ticket Sales Opening Time
+      %p.muted
+        Leave blank to begin selling tickets right away
+    = datetimepicker(:ticket_sales_start_time, @event.ticket_sales_start_time)
+
+    = f.label :ticket_sales_end_time do
+      Ticket Sales Closing Time
+      %p.muted
+        Leave blank to allow selling tickets up to the end of the event
+    = datetimepicker(:ticket_sales_end_time, @event.ticket_sales_end_time)
+
     = f.label :tickets_require_approval, class: 'checkbox' do
       = f.check_box :tickets_require_approval
       Ticket requests require approval

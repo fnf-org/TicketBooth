@@ -1,13 +1,20 @@
-%h1 Request Tickets for #{@event.name}
+- if @event.ticket_sales_open?
+  %h1 Request Tickets for #{@event.name}
 
-%p.lead
-  %i.icon-calendar
-  = @event.start_time.localtime.to_s(:month_day)
-  &ndash;
-  = @event.end_time.localtime.to_s(:month_day)
+  %p.lead
+    %i.icon-calendar
+    = @event.start_time.localtime.to_s(:month_day)
+    &ndash;
+    = @event.end_time.localtime.to_s(:month_day)
 
-%p
-  Please fill out the form below to request your tickets. Availability is limited.
-%hr
+  %p
+    Please fill out the form below to request your tickets. Availability is limited.
+  %hr
 
-= render 'form'
+  = render 'form'
+- else
+  %h1 Ticket sales for #{@event.name} have closed
+  %p.lead
+    If you already purchased a ticket,
+    = link_to 'sign in', new_user_session_path
+    to your account to review the details

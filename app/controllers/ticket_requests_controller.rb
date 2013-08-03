@@ -53,6 +53,11 @@ class TicketRequestsController < ApplicationController
 
     @ticket_request = TicketRequest.new(params[:ticket_request])
 
+    unless @event.ticket_sales_open?
+      flash[:error] = 'Sorry, but ticket sales have closed'
+      return render action: 'new'
+    end
+
     if @ticket_request.save
       sign_in(@ticket_request.user) unless signed_in?
 
