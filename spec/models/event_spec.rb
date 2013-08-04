@@ -185,4 +185,69 @@ describe Event do
       end
     end
   end
+
+  describe '#ticket_sales_open?' do
+    let(:start_time) { 1.day.from_now }
+    let(:end_time) { 2.days.from_now }
+    let(:ticket_sale_start_time) { nil }
+    let(:ticket_sale_end_time) { nil }
+
+    let(:event) do
+      Event.make! start_time: start_time,
+                  end_time: end_time,
+                  ticket_sales_start_time: ticket_sale_start_time,
+                  ticket_sales_end_time: ticket_sale_end_time
+    end
+
+    subject { event.ticket_sales_open? }
+
+    context 'when the event has ended' do
+      let(:start_time) { 2.days.ago }
+      let(:end_time) { 1.days.ago }
+      it { should be_false }
+    end
+
+    context 'when the ticket sale start time is specified' do
+      context 'and the ticket sale start time has passed' do
+        let(:ticket_sale_start_time) { 1.day.ago }
+
+        context 'and the ticket sale end time is not specified' do
+          it { should be_true }
+        end
+
+        context 'and the ticket sale end time has not passed' do
+          let(:ticket_sale_end_time) { 1.day.from_now }
+          it { should be_true }
+        end
+
+        context 'and the ticket sale end time has passed' do
+          let(:ticket_sale_end_time) { 1.hour.ago }
+          it { should be_false }
+        end
+      end
+
+      context 'and the start time has not passed' do
+        let(:ticket_sale_start_time) { 1.day.from_now }
+        it { should be_false }
+      end
+    end
+
+    context 'when the ticket sale start time is not specified' do
+      context 'and the ticket sale end time is not specified' do
+        it { should be_true }
+      end
+
+      context 'and the ticket sale end time is specified' do
+        context 'and the ticket sale end time has passed' do
+          let(:ticket_sale_end_time) { 1.day.ago }
+          it { should be_false }
+        end
+
+        context 'and the ticket sale end time has not passed' do
+          let(:ticket_sale_end_time) { 1.hour.from_now }
+          it { should be_true }
+        end
+      end
+    end
+  end
 end
