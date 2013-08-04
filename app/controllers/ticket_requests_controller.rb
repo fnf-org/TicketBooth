@@ -1,18 +1,15 @@
 class TicketRequestsController < ApplicationController
-  before_filter :authenticate_user!,
-    only: [:index, :show, :edit, :update, :approve, :decline]
+  before_filter :authenticate_user!, except: %i[new create]
   before_filter :set_event
-  before_filter :require_event_admin,
-    only: [:index, :edit, :update, :approve, :decline]
-  before_filter :set_ticket_request,
-    only: [:show, :edit, :update, :approve, :decline]
+  before_filter :require_event_admin, only: %i[index edit update approve decline]
+  before_filter :set_ticket_request, only: %i[show edit update approve decline]
 
   def index
-    @ticket_requests = TicketRequest.
-      includes({ event: [ :price_rules ] }, :payment, :user).
-      where(event_id: @event).
-      order('created_at DESC').
-      to_a
+    @ticket_requests = TicketRequest
+      .includes({ event: [:price_rules] }, :payment, :user)
+      .where(event_id: @event)
+      .order('created_at DESC')
+      .to_a
 
     @stats = %i[pending awaiting_payment completed].reduce({}) do |stats, status|
       requests = @ticket_requests.select { |tr| tr.send(status.to_s + '?') }
