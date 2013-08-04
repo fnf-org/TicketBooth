@@ -110,4 +110,74 @@ describe TicketRequestsController do
       it { succeeds }
     end
   end
+
+  describe 'POST #create' do
+    let(:event) { Event.make! }
+    let(:valid_params) { TicketRequest.valid_attributes event_id: event.to_param }
+
+    def make_request
+      post :create, event_id: event.to_param, ticket_request: valid_params
+    end
+
+    context 'when event ticket sales are closed' do
+      before do
+        Time.warp(event.end_time + 1.hour) { make_request }
+      end
+
+      it 'renders an error message' do
+        flash[:error].should_not be_nil
+      end
+    end
+
+    context 'when viewer already signed in' do
+      let(:user) { User.make! }
+      let(:viewer) { user }
+
+      it 'creates a ticket request' do
+        expect { make_request }.to change { TicketRequest.count }.by(1)
+      end
+
+      it 'assigned the ticket request to the viewer' do
+        expect { make_request }.to change { viewer.ticket_requests.count }.by(1)
+      end
+    end
+
+    context 'when viewer is not signed in' do
+      let(:email) { Sham.email_address.downcase }
+      let(:password) { Sham.string(8) }
+
+      let(:user_attributes) do
+        {
+          name: Sham.words(2),
+          email: email,
+          password: password,
+          password_confirmation: password,
+        }
+      end
+
+      let(:valid_params) do
+        TicketRequest.valid_attributes event_id: event.to_param,
+                                       user_attributes: user_attributes
+      end
+
+      it 'creates a user with the specified email address' do
+        make_request
+        User.find_by_email(email).should_not be_nil
+      end
+
+      it 'creates a ticket request' do
+        expect { make_request }.to change { TicketRequest.count }.by(1)
+      end
+
+      it 'assigns the ticket request to the created user' do
+        make_request
+        User.find_by_email(email).ticket_requests.count.should == 1
+      end
+
+      it 'signs in the created user' do
+        make_request
+        subject.current_user.should == User.find_by_email(email)
+      end
+    end
+  end
 end

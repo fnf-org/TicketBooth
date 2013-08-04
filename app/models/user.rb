@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
 
   has_many :event_admins, dependent: :destroy
   has_many :events_administrated, through: :event_admins, source: :event
+  has_many :ticket_requests
   has_one :site_admin, dependent: :destroy
 
   MAX_NAME_LENGTH = 70

@@ -48,16 +48,13 @@ class TicketRequestsController < ApplicationController
   end
 
   def create
-    unless params[:ticket_request][:user]
-      params[:ticket_request][:user] = current_user
-    end
-
-    @ticket_request = TicketRequest.new(params[:ticket_request])
-
     unless @event.ticket_sales_open?
       flash[:error] = 'Sorry, but ticket sales have closed'
       return render action: 'new'
     end
+
+    params[:ticket_request][:user] = current_user if signed_in?
+    @ticket_request = TicketRequest.new(params[:ticket_request])
 
     if @ticket_request.save
       sign_in(@ticket_request.user) unless signed_in?
