@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :event_admin do
-    association :event
-    association :user
+    event
+    user
   end
 end

@@ -6,9 +6,8 @@ FactoryGirl.define do
     cabins { Random.rand(0..2) }
     needs_assistance { [true, false].sample }
     notes { Sham.words(10) }
-
-    association :user
-    association :event
+    user
+    event
 
     trait :pending do |ticket_request|
       status TicketRequest::STATUS_PENDING
