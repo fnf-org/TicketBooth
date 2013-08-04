@@ -97,7 +97,7 @@ end
 # Generate a random string of length k.
 def Sham.string(k)
   chars =  ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a
-  1.upto(k).inject('') { |string, _| string + chars[rand(chars.size - 1)] }
+  1.upto(k).reduce('') { |string, _| string + chars[rand(chars.size - 1)] }
 end
 
 # Generate a random but prounounceable word.
@@ -107,7 +107,7 @@ def Sham.word(n = [2,4,6].sample)
       %w(ch cr fr ph pr sh sl sp st th tr)
   v = %w(a e i o u y)
   e = %w(ch nd ng nk nt ph rd sh sp st)
-  suf = (rand > 0.5) ? e.sample : ''
+  suf = rand > 0.5 ? e.sample : ''
   f = false
   (0...n).map { (f = !f) ? c.sample : v.sample }.join + suf
 end
