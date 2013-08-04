@@ -1,14 +1,10 @@
 class ApplicationController < ActionController::Base
-  force_ssl
-
   protect_from_forgery
 
 protected
 
   def require_site_admin
-    unless current_user.site_admin?
-      redirect_to root_path
-    end
+    redirect_to root_path unless current_user.site_admin?
   end
 
   def require_event_admin
