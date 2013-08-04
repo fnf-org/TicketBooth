@@ -2,7 +2,7 @@ ENV['RAILS_ENV'] ||= 'test'
 
 require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
-require 'factory_girl_helper'
+Dir[File.dirname(__FILE__) + '/support/**/*.rb'].each { |f| require f }
 
 module AttributeNormalizer::RSpecMatcher
   alias :normalize :normalize_attribute
