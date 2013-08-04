@@ -27,6 +27,11 @@ describe TicketRequest do
         it { should_not be_valid }
       end
 
+      context 'when user is new' do
+        let(:user) { User.make }
+        it { should be_valid }
+      end
+
       context 'when the user has other ticket requests' do
         let(:event) { Event.make! }
         let(:user) { User.make! }
