@@ -13,7 +13,7 @@ module TicketRequestsHelper
 
   def text_class_for_status(ticket_request)
     case ticket_request.status
-    when 'P'
+    when 'P', 'A'
       'muted'
     when 'D'
       'text-error'
@@ -25,7 +25,7 @@ module TicketRequestsHelper
   def text_for_status(ticket_request)
     case ticket_request.status
     when 'P'
-      'Pending'
+      'Pending Approval'
     when 'A'
       'Awaiting Payment'
     when 'D'

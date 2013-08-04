@@ -14,11 +14,7 @@ class TicketRequestsController < ApplicationController
       order('created_at DESC').
       to_a
 
-    @stats = [:completed,
-              :pending,
-              :approved,
-              :declined,
-             ].inject({}) do |stats, status|
+    @stats = %i[pending awaiting_payment completed].reduce({}) do |stats, status|
       requests = @ticket_requests.select { |tr| tr.send(status.to_s + '?') }
 
       stats[status] = {
@@ -28,7 +24,15 @@ class TicketRequestsController < ApplicationController
         cabins:   requests.sum(&:cabins),
         raised:   requests.sum(&:price),
       }
+
       stats
+    end
+
+    @stats[:total] ||= Hash.new { |h, k| h[k] = 0 }
+    %i[requests adults kids cabins raised].each do |measure|
+      %i[pending awaiting_payment completed].each do |status|
+        @stats[:total][measure] += @stats[status][measure]
+      end
     end
   end
 

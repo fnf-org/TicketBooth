@@ -15,46 +15,48 @@
       %th Cabins
       %th Earn
   %tbody
-    %tr
-      %td
-        %b Completed
-      %td= @stats[:completed][:requests]
-      %td= @stats[:completed][:adults]
-      %td= @stats[:completed][:kids]
-      %td= @stats[:completed][:cabins]
-      %td
-        %span.label
-          = number_to_currency(@stats[:completed][:raised], precision: 0)
     %tr.warning
       %td
-        %b Pending
+        Pending Approval
       %td= @stats[:pending][:requests]
       %td= @stats[:pending][:adults]
       %td= @stats[:pending][:kids]
       %td= @stats[:pending][:cabins]
       %td
-        %span.label.label-warning
+        %span.muted
           = number_to_currency(@stats[:pending][:raised], precision: 0)
+          %small (potential)
     %tr.success
       %td
-        %b Awaiting Payment
-      %td= @stats[:approved][:requests]
-      %td= @stats[:approved][:adults]
-      %td= @stats[:approved][:kids]
-      %td= @stats[:approved][:cabins]
+        Awaiting Payment
+      %td= @stats[:awaiting_payment][:requests]
+      %td= @stats[:awaiting_payment][:adults]
+      %td= @stats[:awaiting_payment][:kids]
+      %td= @stats[:awaiting_payment][:cabins]
+      %td
+        %span.muted
+          = number_to_currency(@stats[:awaiting_payment][:raised], precision: 0)
+          %small (potential)
+    %tr
+      %td
+        Paid
+      %td= @stats[:completed][:requests]
+      %td= @stats[:completed][:adults]
+      %td= @stats[:completed][:kids]
+      %td= @stats[:completed][:cabins]
       %td
         %span.label.label-success
-          = number_to_currency(@stats[:approved][:raised], precision: 0)
-    %tr.error
+          = number_to_currency(@stats[:completed][:raised], precision: 0)
+    %tr.muted
       %td
-        %b Declined
-      %td= @stats[:declined][:requests]
-      %td= @stats[:declined][:adults]
-      %td= @stats[:declined][:kids]
-      %td= @stats[:declined][:cabins]
+        Total
+      %td= @stats[:total][:requests]
+      %td= @stats[:total][:adults]
+      %td= @stats[:total][:kids]
+      %td= @stats[:total][:cabins]
       %td
-        %span.label.label-important
-          = number_to_currency(@stats[:declined][:raised], precision: 0)
+        = number_to_currency(@stats[:total][:raised], precision: 0)
+        %small (potential)
 
 %table.table
   %thead
@@ -85,7 +87,7 @@
         %td= ticket_request.kids
         %td= ticket_request.cabins
         %td
-          %span.label{ class: ('label-info' if ticket_request.special_price) }
+          %span{ class: ('label label-info' if ticket_request.special_price) }
             = number_to_currency(ticket_request.price, precision: 0)
         %td
           = ticket_request.created_at.localtime.to_s(:month_day)
