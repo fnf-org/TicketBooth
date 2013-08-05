@@ -1,9 +1,6 @@
-@import 'compass/css3';
-
 a {
   &:focus,
   &:hover {
-    @include transition(.3s);
     color: #ffbd24;
     text-decoration: none;
   }
