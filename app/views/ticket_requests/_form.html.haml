@@ -102,4 +102,5 @@
     rows: 3, maxlength: 500
 
   .actions
-    = f.submit class: 'btn btn-primary btn-large', disable_with: 'Creating request...'
+    = f.submit class: 'btn btn-primary btn-large',
+               data: { disable_with: 'Creating request...' }

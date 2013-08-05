@@ -28,14 +28,15 @@
             Edit
             %i.icon-edit
           = link_to 'Delete', event_job_time_slot_path(@event, @job, time_slot),
-            method: :delete,
-            confirm: 'Are you sure you want to delete this time slot?',
-            class: 'btn btn-link delete-time-slot'
+                    method: :delete,
+                    class: 'btn btn-link delete-time-slot',
+                    data: { confirm: 'Are you sure you want to delete this time slot?' }
 
 .clearfix
   = link_to new_event_job_time_slot_path(@event, @job), class: 'btn btn-primary' do
     New Time Slot
     %i.icon-plus-sign
-  = link_to 'Delete Job', event_job_path(@event, @job), method: :delete,
-    confirm: 'Are you sure you want to delete this job?',
-    class: 'btn btn-link delete-job'
+      = link_to 'Delete Job', event_job_path(@event, @job),
+                method: :delete,
+                class: 'btn btn-link delete-job',
+                data: { confirm: 'Are you sure you want to delete this job?' }
