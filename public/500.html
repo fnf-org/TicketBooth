@@ -1,25 +1,52 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>We're sorry, but something went wrong (500)</title>
-  <style type="text/css">
-    body { background-color: #fff; color: #666; text-align: center; font-family: arial, sans-serif; }
-    div.dialog {
-      width: 25em;
-      padding: 0 4em;
-      margin: 4em auto 0 auto;
-      border: 1px solid #ccc;
-      border-right-color: #999;
-      border-bottom-color: #999;
-    }
-    h1 { font-size: 100%; color: #f00; line-height: 1.5em; }
-  </style>
-</head>
-
-<body>
-  <!-- This file lives in public/500.html -->
-  <div class="dialog">
-    <h1>We're sorry, but something went wrong.</h1>
-  </div>
-</body>
+  <head>
+    <style type="text/css">
+      body {
+        font-family: "HelveticaNeue", "Helvetica Neue", "HelveticaNeueRoman", "HelveticaNeue-Roman", "Helvetica Neue Roman", 'TeXGyreHerosRegular', "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;
+        color: #666;
+        width: 660px;
+        margin: 70px auto;
+        text-align: center;
+      }
+      h1 {
+        font-size: 26px;
+        color: #333;
+        margin: 24px auto 12px;
+      }
+      h2 {
+        font-size: 18px;
+        margin: 16px 0 24px;
+      }
+      p {
+        font-size: 16px;
+        line-height: 18px;
+        margin-bottom: 28px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>We're sorry.</h1>
+    <p>
+      Something went wrong. We've received a notification and will be looking into it.
+    </p>
+    <p>
+      <h2>In the meantime, here's a cat video for your trouble:</h2>
+      <iframe id="video-frame" src="http://www.youtube.com/embed/Vw4KVoEVcr0?rel=0"
+              width="360" height="218" frameborder="0" allowfullscreen>
+      </iframe>
+    </p>
+    <script type="text/javascript">
+      var videoHashes = [
+            'http://www.youtube.com/embed/Vw4KVoEVcr0?rel=0',
+            'http://www.youtube.com/embed/OQzJR3BqS7o?rel=0',
+            'http://www.youtube.com/embed/rHZUPJji6w8?rel=0',
+            'http://www.youtube.com/embed/yDVNjvb5qEo?rel=0',
+            'http://www.youtube.com/embed/oKI-tD0L18A?rel=0',
+            'http://www.youtube.com/embed/C_S5cXbXe-4?rel=0',
+            'http://www.youtube.com/embed/D36JUfE1oYk?rel=0'];
+      document.getElementById('video-frame').src =
+        videoHashes[Math.floor(Math.random() * videoHashes.length)];
+    </script>
+  </body>
 </html>
