@@ -9,6 +9,13 @@ GIT
       multi_json (~> 1.0)
       uuidtools
 
+GIT
+  remote: git@github.com:perfectline/validates_existence
+  revision: e6fe0854c7e60e4b0cdc7f49f70cd2bc051e0bc1
+  ref: e6fe0854c7e60e4b0cdc7f49f70cd2bc051e0bc1
+  specs:
+    validates_existence (0.8.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -201,7 +208,6 @@ GEM
       rack
       raindrops (~> 0.7)
     uuidtools (2.1.4)
-    validates_existence (0.8.0)
     warden (1.2.3)
       rack (>= 1.0)
     zeus (0.13.3)
@@ -238,5 +244,5 @@ DEPENDENCIES
   twitter-bootstrap-rails
   uglifier
   unicorn
-  validates_existence
+  validates_existence!
   zeus
