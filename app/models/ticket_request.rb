@@ -45,11 +45,11 @@ class TicketRequest < ActiveRecord::Base
 
   validates :donation, numericality: { greater_than_or_equal_to: 0 }
 
-  scope :completed, where(status: STATUS_COMPLETED)
-  scope :pending,  where(status: STATUS_PENDING)
-  scope :awaiting_payment, where(status: STATUS_AWAITING_PAYMENT)
+  scope :completed, -> { where(status: STATUS_COMPLETED) }
+  scope :pending,  -> { where(status: STATUS_PENDING) }
+  scope :awaiting_payment, -> { where(status: STATUS_AWAITING_PAYMENT) }
   scope :approved, -> { awaiting_payment }
-  scope :declined, where(status: STATUS_DECLINED)
+  scope :declined, -> { where(status: STATUS_DECLINED) }
   scope :not_declined, -> { where('status != ?', STATUS_DECLINED) }
 
   before_validation do
