@@ -21,7 +21,10 @@ server domain, :app, :web, :db, primary: true
 # Technically could break site for a short time, but that's OK for our scale
 before 'deploy:restart', 'deploy:migrate'
 
-after 'deploy:update_code', 'deploy:create_symlinks'
+# Asset precompilation is the first step that needs to load Rails (and hence
+# YAML config files), so create symlinks before we run the precompilation step.
+before 'deploy:assets:precompile', 'deploy:create_symlinks'
+
 namespace :deploy do
   desc 'Symlinks production config files and directories'
   task :create_symlinks, roles: :app do
