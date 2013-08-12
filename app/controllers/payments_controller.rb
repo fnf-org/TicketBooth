@@ -14,6 +14,12 @@ class PaymentsController < ApplicationController
     return redirect_to root_path unless @ticket_request.can_view?(current_user)
     return redirect_to payment_path(@ticket_request.payment) if @ticket_request.payment
     @event = @ticket_request.event
+
+    unless @event.ticket_sales_open?
+      return redirect_to event_ticket_request_path(@event, @ticket_request),
+             alert: "Sorry, ticket sales for #{@event.name} have closed."
+    end
+
     @user = @ticket_request.user
     @payment = Payment.new.tap { |p| p.ticket_request = @ticket_request }
   end

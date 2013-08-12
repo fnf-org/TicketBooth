@@ -51,9 +51,15 @@
       = link_to 'Received', payment_path(@payment)
     - else
       Not yet received.
-      = link_to 'Purchase your ticket now',
-        new_payment_path(ticket_request_id: @ticket_request),
-        class: 'btn btn-small btn-primary'
+      - if @event.ticket_sales_open?
+        = link_to 'Purchase your ticket now',
+          new_payment_path(ticket_request_id: @ticket_request),
+          class: 'btn btn-small btn-primary'
+      - else
+        %span.text-warning
+          Unfortunately, ticket sales are now closed. You can no longer purchase your
+          = succeed '.' do
+            = 'ticket'.pluralize(@ticket_request.total_tickets)
 
 %p
   %b Email:
@@ -77,9 +83,10 @@
   %b Cabins:
   = @ticket_request.cabins
 
-= link_to new_event_ticket_request_path(@event), class: 'btn' do
-  %i.icon-plus-sign-alt
-  Request More Tickets
+- if @event.ticket_sales_open?
+  = link_to new_event_ticket_request_path(@event), class: 'btn' do
+    %i.icon-plus-sign-alt
+    Request More Tickets
 
 - if current_user.site_admin?
   %p
