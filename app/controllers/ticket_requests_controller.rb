@@ -1,8 +1,9 @@
 class TicketRequestsController < ApplicationController
   before_filter :authenticate_user!, except: %i[new create]
   before_filter :set_event
-  before_filter :require_event_admin, only: %i[index edit update approve decline]
-  before_filter :set_ticket_request, only: %i[show edit update approve decline]
+  before_filter :require_event_admin,
+                only: %i[index edit update approve decline refund]
+  before_filter :set_ticket_request, only: %i[show edit update approve decline refund]
 
   def index
     @ticket_requests = TicketRequest
@@ -98,6 +99,16 @@ class TicketRequestsController < ApplicationController
     end
 
     redirect_to event_ticket_requests_path(@event)
+  end
+
+  def refund
+    if @ticket_request.refund
+      return redirect_to event_ticket_request_path(@event, @ticket_request),
+             notice: 'Ticket request was refunded'
+    else
+      return redirect_to event_ticket_request_path(@event, @ticket_request),
+             alert: @ticket_request.errors.full_messages.join('. ')
+    end
   end
 
 private

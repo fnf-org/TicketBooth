@@ -4,6 +4,7 @@ class TicketRequest < ActiveRecord::Base
     STATUS_AWAITING_PAYMENT = 'A',
     STATUS_DECLINED = 'D',
     STATUS_COMPLETED = 'C',
+    STATUS_REFUNDED = 'R',
   ]
 
   belongs_to :user
@@ -89,6 +90,32 @@ class TicketRequest < ActiveRecord::Base
 
   def declined?
     status == STATUS_DECLINED
+  end
+
+  def refunded?
+    status == STATUS_REFUNDED
+  end
+
+  def refund
+    if refunded?
+      errors.add(:base, 'Cannot refund a ticket that has already been refunded')
+      return false
+    end
+
+    unless payment
+      errors.add(:base, 'Cannot refund a ticket that has not been purchased')
+      return false
+    end
+
+    begin
+      TicketRequest.transaction do
+        Stripe::Charge.retrieve(payment.stripe_charge_id).refund
+        return update_attributes(status: STATUS_REFUNDED)
+      end
+    rescue Stripe::StripeError => e
+      errors.add(:base, "Cannot refund ticket: #{e.message}")
+      return false
+    end
   end
 
   def price

@@ -6,7 +6,7 @@ module TicketRequestsHelper
       'warning'
     when 'A'
       ticket_request.payment ? '' : 'success'
-    when 'D'
+    when 'D', 'R'
       'error'
     end
   end
@@ -15,7 +15,7 @@ module TicketRequestsHelper
     case ticket_request.status
     when 'P', 'A'
       'muted'
-    when 'D'
+    when 'D', 'R'
       'text-error'
     when 'C'
       'text-success'
@@ -30,6 +30,8 @@ module TicketRequestsHelper
       'Awaiting Payment'
     when 'D'
       'Declined'
+    when 'R'
+      'Refunded'
     when 'C'
       'Completed'
     end

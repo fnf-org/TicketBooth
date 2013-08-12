@@ -48,7 +48,16 @@
   %p
     %b Payment:
     - if @payment
-      = link_to 'Received', payment_path(@payment)
+      - if @ticket_request.refunded?
+        %span.text-warning Refunded
+      - else
+        = link_to 'Received', payment_path(@payment)
+        - if @event.admin?(current_user)
+          = link_to 'Refund', refund_event_ticket_request_path(@event, @ticket_request),
+            method: :post,
+            class: 'btn btn-small btn-danger',
+            data: { confirm: "Are you sure you want to refund #{@ticket_request.user.name}'s ticket?'",
+                    disable_with: 'Refunding...'}
     - else
       Not yet received.
       - if @event.ticket_sales_open?

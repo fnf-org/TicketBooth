@@ -27,6 +27,7 @@ Cloudwatch::Application.routes.draw do
       member do
         post :approve
         post :decline
+        post :refund
       end
     end
   end
