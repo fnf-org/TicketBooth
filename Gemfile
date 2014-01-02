@@ -25,8 +25,7 @@ gem 'thin'
 gem 'twitter-bootstrap-rails'
 gem 'uglifier'
 gem 'unicorn'
-gem 'validates_existence', git: 'git@github.com:perfectline/validates_existence',
-                           ref: 'e6fe0854c7e60e4b0cdc7f49f70cd2bc051e0bc1'
+gem 'validates_existence'
 
 group :development do
   gem 'capistrano'
