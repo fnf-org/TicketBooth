@@ -1,5 +1,5 @@
 class Shift < ActiveRecord::Base
-  belongs_to :time_slot, include: :job
+  belongs_to :time_slot
   belongs_to :user
 
   attr_accessible :name, :time_slot_id, :user_id
