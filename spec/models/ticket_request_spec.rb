@@ -345,7 +345,7 @@ describe TicketRequest do
     end
 
     context 'when a special price is set' do
-      let(:special_price) { 99.99 }
+      let(:special_price) { BigDecimal.new(99.99, 10) }
       it { should == special_price }
     end
 
