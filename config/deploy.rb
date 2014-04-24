@@ -6,14 +6,17 @@ set :ssh_options           , { forward_agent: true, compression: 'none' }
 set :keep_releases         , 20 # Keep the last N releases
 
 # Source code repository
-set :repository            , 'git@github.com:sds/cloudwatch.git'
+set :repository            , '.'
 set :branch                , 'master'
 set :migrate_target        , :current
 set :scm                   , :git
 set :git_enable_submodules , 1
 
-set :deploy_via, :remote_cache
+set :deploy_via, :copy
 set :deploy_to, "/home/#{user}/deploy"
+set :copy_dir, '/tmp/capistrano'
+set :copy_remote_dir, "#{deploy_to}/capistrano"
+
 set :uploads_directory, "/home/#{user}/uploads"
 
 server domain, :app, :web, :db, primary: true
@@ -52,6 +55,10 @@ namespace :deploy do
   task :stop, roles: :app do
     run "kill -s QUIT `cat #{shared_path}/pids/unicorn.#{application}.pid`"
   end
+end
+
+before 'deploy' do
+  `mkdir -p /tmp/capistrano`
 end
 
 # Ensure we have the latest gems before our asset pipeline tries to load them
