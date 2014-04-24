@@ -1,5 +1,5 @@
 class TicketRequestMailer < ActionMailer::Base
-  DEFAULT_SENDER_EMAIL = 'events@cloudwatch.fm'
+  DEFAULT_SENDER_EMAIL = 'events@helpingculture.com'
 
   layout 'email'
 

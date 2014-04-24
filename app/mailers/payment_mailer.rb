@@ -1,5 +1,5 @@
 class PaymentMailer < ActionMailer::Base
-  DEFAULT_SENDER_EMAIL = 'payments@cloudwatch.fm'
+  DEFAULT_SENDER_EMAIL = 'payments@helpingculture.com'
 
   layout 'email'
 
