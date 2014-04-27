@@ -84,18 +84,15 @@
   %b Adult Tickets:
   = @ticket_request.adults
 
-%p
-  %b Child Tickets:
-  = @ticket_request.kids
+- if @event.kid_ticket_price
+  %p
+    %b Child Tickets:
+    = @ticket_request.kids
 
-%p
-  %b Cabins:
-  = @ticket_request.cabins
-
-- if @event.ticket_sales_open?
-  = link_to new_event_ticket_request_path(@event), class: 'btn' do
-    %i.icon-plus-sign-alt
-    Request More Tickets
+- if @event.cabin_price
+  %p
+    %b Cabins:
+    = @ticket_request.cabins
 
 - if current_user.site_admin?
   %p
