@@ -94,7 +94,7 @@
     %b Cabins:
     = @ticket_request.cabins
 
-- if current_user.site_admin?
+- if @event.admin?(current_user)
   %p
     %b Total Ticket Price:
     %span{ class: ('label label-info' if @ticket_request.special_price) }

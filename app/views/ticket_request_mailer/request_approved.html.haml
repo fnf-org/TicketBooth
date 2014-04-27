@@ -6,31 +6,15 @@
   has been approved!
 
 %p<>
-  You can now volunteer for shifts
   - if @ticket_request.free?
-    to help out at the event. Other than that, you're good to go!
+    You're good to go!
   - else
-    and purchase your
+    You can now
     = succeed '.' do
-      = 'ticket'.pluralize(@ticket_request.total_tickets)
+      = link_to new_payment_url(ticket_request_id: @ticket_request) do
+        purchase your
+        = 'ticket'.pluralize(@ticket_request.total_tickets)
 
-%p
-  = link_to event_shifts_url(@event) do
-    - if @ticket_request.free?
-      Volunteer for shifts
-    - else
-      Purchase #{'Ticket'.pluralize(@ticket_request.total_tickets)}
-
-- if @ticket_request.free?
-  We look forward to seeing you at the event!
-- else
-  %p
-    Please purchase your
-    = 'ticket'.pluralize(@ticket_request.total_tickets)
-    as soon as possible. Since there are a limited number of tickets, we may
-    offer your
-    = 'ticket'.pluralize(@ticket_request.total_tickets)
-    to someone else if you wait too long to purchase.
 %p
   Thanks,
   %br
