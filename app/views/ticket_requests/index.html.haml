@@ -11,8 +11,10 @@
       %th
       %th Requests
       %th Adults
-      %th Kids
-      %th Cabins
+      - if @event.kid_ticket_price
+        %th Kids
+      - if @event.cabin_price
+        %th Cabins
       %th Earn
   %tbody
     %tr.warning
@@ -20,8 +22,10 @@
         Pending Approval
       %td= @stats[:pending][:requests]
       %td= @stats[:pending][:adults]
-      %td= @stats[:pending][:kids]
-      %td= @stats[:pending][:cabins]
+      - if @event.kid_ticket_price
+        %td= @stats[:pending][:kids]
+      - if @event.cabin_price
+        %td= @stats[:pending][:cabins]
       %td
         %span.muted
           = number_to_currency(@stats[:pending][:raised], precision: 0)
@@ -31,8 +35,10 @@
         Awaiting Payment
       %td= @stats[:awaiting_payment][:requests]
       %td= @stats[:awaiting_payment][:adults]
-      %td= @stats[:awaiting_payment][:kids]
-      %td= @stats[:awaiting_payment][:cabins]
+      - if @event.kid_ticket_price
+        %td= @stats[:awaiting_payment][:kids]
+      - if @event.cabin_price
+        %td= @stats[:awaiting_payment][:cabins]
       %td
         %span.muted
           = number_to_currency(@stats[:awaiting_payment][:raised], precision: 0)
@@ -42,8 +48,10 @@
         Paid
       %td= @stats[:completed][:requests]
       %td= @stats[:completed][:adults]
-      %td= @stats[:completed][:kids]
-      %td= @stats[:completed][:cabins]
+      - if @event.kid_ticket_price
+        %td= @stats[:completed][:kids]
+      - if @event.cabin_price
+        %td= @stats[:completed][:cabins]
       %td
         %span.label.label-success
           = number_to_currency(@stats[:completed][:raised], precision: 0)
@@ -52,8 +60,10 @@
         Total
       %td= @stats[:total][:requests]
       %td= @stats[:total][:adults]
-      %td= @stats[:total][:kids]
-      %td= @stats[:total][:cabins]
+      - if @event.kid_ticket_price
+        %td= @stats[:total][:kids]
+      - if @event.cabin_price
+        %td= @stats[:total][:cabins]
       %td
         = number_to_currency(@stats[:total][:raised], precision: 0)
         %small (potential)
@@ -64,8 +74,10 @@
       %th Name
       %th
       %th Adults
-      %th Kids
-      %th Cabins
+      - if @event.kid_ticket_price
+        %th Kids
+      - if @event.cabin_price
+        %th Cabins
       %th Price
       %th Date Requested
       %th Status
@@ -84,8 +96,10 @@
           - if ticket_request.notes.present?
             %i.icon-comment.hover-tooltip{ title: ticket_request.notes }
         %td= ticket_request.adults
-        %td= ticket_request.kids
-        %td= ticket_request.cabins
+        - if @event.kid_ticket_price
+          %td= ticket_request.kids
+        - if @event.cabin_price
+          %td= ticket_request.cabins
         %td
           %span{ class: ('label label-info' if ticket_request.special_price) }
             = number_to_currency(ticket_request.price, precision: 0)
