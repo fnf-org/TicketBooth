@@ -2,7 +2,7 @@
 # write.
 module ResponseHelpers
   def succeeds
-    response.should be_success
+    response.status.should eq 200
   end
 
   def redirects

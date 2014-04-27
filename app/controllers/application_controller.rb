@@ -11,7 +11,7 @@ protected
   end
 
   def require_event_admin
-    redirect_to :root unless @event.admin?(current_user)
+    redirect_to new_event_ticket_request_path(@event) unless @event.admin?(current_user)
   end
 
   def configure_permitted_parameters

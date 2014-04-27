@@ -41,7 +41,7 @@ class Event < ActiveRecord::Base
            :ensure_prices_set_if_maximum_specified
 
   def admin?(user)
-    user.site_admin? || admins.where(id: user).exists?
+    user && (user.site_admin? || admins.where(id: user).exists?)
   end
 
   def cabins_available?
