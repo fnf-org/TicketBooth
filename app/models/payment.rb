@@ -1,4 +1,6 @@
 class Payment < ActiveRecord::Base
+  include PaymentsHelper
+
   STATUSES = [
     STATUS_IN_PROGRESS = 'P',
     STATUS_RECEIVED = 'R',
@@ -18,12 +20,17 @@ class Payment < ActiveRecord::Base
 
   def save_and_charge!
     if valid?
+      cost = ticket_request.cost
+      amount_to_charge = cost + extra_amount_to_charge(cost)
+      amount_to_charge_cents = (amount_to_charge * 100).to_i
+
       charge = Stripe::Charge.create(
-        amount: (ticket_request.cost * 100).to_i, # in cents
+        amount: amount_to_charge_cents,
         currency: 'usd',
         card: stripe_card_token,
         description: "#{ticket_request.event.name} Ticket",
       )
+
       self.stripe_charge_id = charge.id
       self.status = STATUS_RECEIVED
       save

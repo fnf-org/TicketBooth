@@ -38,9 +38,14 @@
 
   %p
     Clicking "Pay Now" will charge
-    %span.text-success#total-price{ data: { price: @ticket_request.price } }
+    %strong.text-success#total_price{ data: { price: @ticket_request.price } }
       = number_to_currency(@payment.ticket_request.price)
+    +
+    %strong.text-success
+      = number_to_currency(extra_amount_to_charge(@payment.ticket_request.price))
+    processing fee
     to the card entered above.
+    = help_mark 'This fee covers the the fees charged by our credit card processor, Stripe.'
 
   .actions
     = f.submit 'Pay Now', class: 'btn btn-primary btn-large'
