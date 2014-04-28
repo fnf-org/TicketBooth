@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
 
   validates :name, presence: true,
     length: { maximum: MAX_NAME_LENGTH },
-    format: { with: /[^\s]+\s[^\s]+(\s[^\s]+)*/i }
+    format: { with: /[^\s]+\s[^\s]+(\s[^\s]+)*/i, message: 'must contain first and last name' }
 
   validates :email, presence: true,
     format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i },
