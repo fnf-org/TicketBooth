@@ -107,6 +107,10 @@ class TicketRequest < ActiveRecord::Base
     status == STATUS_REFUNDED
   end
 
+  def paid_via_credit?
+    payment.try(:stripe_charge_id)
+  end
+
   def refund
     if refunded?
       errors.add(:base, 'Cannot refund a ticket that has already been refunded')
