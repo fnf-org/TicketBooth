@@ -5,7 +5,7 @@ module TicketRequestsHelper
     when 'P'
       'warning'
     when 'A'
-      ticket_request.payment ? '' : 'success'
+      ticket_request.payment ? 'info' : 'success'
     when 'D', 'R'
       'error'
     end
