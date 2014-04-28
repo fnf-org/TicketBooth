@@ -72,6 +72,7 @@
   %thead
     %tr
       %th Name
+      %th Role
       %th
       %th Tickets
       - if @event.kid_ticket_price
@@ -88,6 +89,8 @@
         %td
           = link_to event_ticket_request_path(@event, ticket_request) do
             = ticket_request.user.name
+        %td.muted
+          = ticket_request.role.capitalize
         %td
           - if ticket_request.performer
             %i.icon-star.hover-tooltip{ title: 'User has indicated they are a DJ or performer of some kind' }
