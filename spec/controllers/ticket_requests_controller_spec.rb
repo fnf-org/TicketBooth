@@ -92,12 +92,12 @@ describe TicketRequestsController do
 
     context 'when viewer is not owner of the ticket request' do
       let(:viewer) { User.make! }
-      it { redirects_to root_path }
+      it { redirects_to new_event_ticket_request_path(ticket_request.event) }
     end
 
     context 'when viewer is owner of the ticket request' do
       let(:viewer) { user }
-      it { redirects_to root_path }
+      it { redirects_to new_event_ticket_request_path(ticket_request.event) }
     end
 
     context 'when viewer is the event admin' do

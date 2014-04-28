@@ -55,10 +55,6 @@ describe TicketRequestMailer do
       body.should match('Test Event')
     end
 
-    it "includes a link to the volunteer sign-up page" do
-      mail.body.encoded.should match(event_shifts_url(event))
-    end
-
     context 'when the ticket request is free' do
       let(:price) { 0 }
 
