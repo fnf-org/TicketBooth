@@ -7,6 +7,7 @@ Cloudwatch::Application.routes.draw do
     collection do
       get :other
       post :sent
+      post :mark_received
     end
   end
 

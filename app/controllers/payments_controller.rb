@@ -61,4 +61,20 @@ class PaymentsController < ApplicationController
       redirect_to :back
     end
   end
+
+  def mark_received
+    @ticket_request = TicketRequest.find(params[:ticket_request_id])
+    return redirect_to root_path unless @ticket_request.can_view?(current_user)
+
+    @payment = Payment.where(ticket_request_id: @ticket_request.id,
+                             status: Payment::STATUS_IN_PROGRESS)
+                      .first
+
+    if @payment
+      @payment.mark_received
+      @payment.ticket_request.mark_complete
+      PaymentMailer.payment_received(@payment).deliver
+      redirect_to :back
+    end
+  end
 end

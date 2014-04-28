@@ -40,6 +40,12 @@ class Payment < ActiveRecord::Base
     false
   end
 
+  # Manually mark that a payment was received.
+  def mark_received
+    self.status = STATUS_RECEIVED
+    save!
+  end
+
   def can_view?(user)
     ticket_request.can_view?(user)
   end

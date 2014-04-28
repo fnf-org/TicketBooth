@@ -122,3 +122,10 @@
                 data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s request?" } do
                 Decline
                 %i.icon-remove
+          - elsif ticket_request.payment && !ticket_request.payment.received?
+            .btn-group.pull-right
+              = link_to mark_received_payments_path(ticket_request_id: ticket_request),
+                method: :post,
+                class: 'btn btn-primary' do
+                Mark Payment Received
+                %i.icon-ok
