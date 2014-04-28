@@ -7,15 +7,22 @@ class TicketRequest < ActiveRecord::Base
     STATUS_REFUNDED = 'R',
   ]
 
+  ROLES = [
+    ROLE_COORDINATOR = 'coordinator',
+    ROLE_VOLUNTEER = 'volunteer',
+    ROLE_OTHER = 'other',
+  ]
+
   belongs_to :user
   belongs_to :event
   has_one :payment
 
   attr_accessible :user_id, :address, :adults, :kids, :cabins, :needs_assistance,
                   :notes, :status, :special_price, :event_id, :volunteer_shifts,
-                  :performer, :user_attributes, :user, :donation
+                  :performer, :user_attributes, :user, :donation, :role,
+                  :role_explanation
 
-  normalize_attributes :notes
+  normalize_attributes :notes, :role_explanation
 
   accepts_nested_attributes_for :user
 
@@ -35,6 +42,10 @@ class TicketRequest < ActiveRecord::Base
 
   validates :cabins, allow_nil: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :role, presence: true, inclusion: { in: ROLES }
+  validates :role_explanation, presence: { if: -> { role == ROLE_OTHER } },
+                               length: { maximum: 200 }
 
   validates :volunteer_shifts, allow_nil: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }

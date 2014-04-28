@@ -33,6 +33,23 @@
       = ff.password_field :password_confirmation, placeholder: '',
         maxlength: User::MAX_PASSWORD_LENGTH, required: true, class: 'input-xlarge'
 
+  %fieldset
+    %p
+      How are you contributing to the campout?
+      %br
+      = f.label :role_coordinator, class: 'radio inline' do
+        = f.radio_button :role, TicketRequest::ROLE_COORDINATOR
+        Coordinator
+      = f.label :role_volunteer, class: 'radio inline' do
+        = f.radio_button :role, TicketRequest::ROLE_VOLUNTEER
+        Volunteer
+      = f.label :role_other, class: 'radio inline' do
+        = f.radio_button :role, TicketRequest::ROLE_OTHER
+        Other
+    = f.text_area :role_explanation, class: 'input-xlarge hidden',
+      placeholder: 'Briefly describe your role',
+      rows: 2, maxlength: 200, required: false
+
   - if signed_in? && @event.admin?(current_user)
     .well
       = f.label :special_price, 'Special Ticket Price ($)'
@@ -40,7 +57,7 @@
         Editable by event admins only. Leave blank to use default price.
       = f.number_field :special_price, class: 'input-small', min: 0
 
-  = f.label :adults, 'Number of adults in your group (including you)'
+  = f.label :adults, 'Number of tickets'
   = f.number_field :adults, class: 'input-mini', min: 1,
     max: @event.max_adult_tickets_per_request,
     data: { default_price: @event.adult_ticket_price.to_i }

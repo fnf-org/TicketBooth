@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140428041744) do
+ActiveRecord::Schema.define(version: 20140428045329) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,20 +93,22 @@ ActiveRecord::Schema.define(version: 20140428041744) do
 
   create_table "ticket_requests", force: true do |t|
     t.string   "address",          limit: 150
-    t.integer  "adults",                                               default: 1,     null: false
-    t.integer  "kids",                                                 default: 0,     null: false
-    t.integer  "cabins",                                               default: 0,     null: false
-    t.boolean  "needs_assistance",                                     default: false, null: false
+    t.integer  "adults",                                               default: 1,           null: false
+    t.integer  "kids",                                                 default: 0,           null: false
+    t.integer  "cabins",                                               default: 0,           null: false
+    t.boolean  "needs_assistance",                                     default: false,       null: false
     t.string   "notes",            limit: 500
-    t.string   "status",           limit: 1,                                           null: false
+    t.string   "status",           limit: 1,                                                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id",                                                              null: false
+    t.integer  "user_id",                                                                    null: false
     t.decimal  "special_price",                precision: 8, scale: 2
-    t.integer  "event_id",                                                             null: false
+    t.integer  "event_id",                                                                   null: false
     t.integer  "volunteer_shifts"
-    t.boolean  "performer",                                            default: false, null: false
+    t.boolean  "performer",                                            default: false,       null: false
     t.decimal  "donation",                     precision: 8, scale: 2, default: 0.0
+    t.string   "role",                                                 default: "volunteer", null: false
+    t.string   "role_explanation", limit: 200
   end
 
   create_table "time_slots", force: true do |t|

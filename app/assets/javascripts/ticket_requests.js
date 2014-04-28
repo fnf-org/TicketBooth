@@ -17,3 +17,17 @@ $('#ticket_request_adults, #ticket_request_kids, #ticket_request_cabins')
       $el.change();
     }
   });
+
+$('input[name="ticket_request[role]"]')
+  .on('change', function(evt) {
+    var $radioBtn = $(this),
+        role = $radioBtn.val();
+        $roleExplanation = $('textarea[name="ticket_request[role_explanation]"]');
+
+    $roleExplanation.toggleClass('hidden', role != 'other');
+
+    // Don't require explanation if role is not "Other"
+    $roleExplanation.attr('required', function(idx, oldAttr) {
+      return role == 'other';
+    });
+  });
