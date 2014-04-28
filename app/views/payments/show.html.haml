@@ -29,14 +29,18 @@
 - else
   %p.lead
     You've indicated that you're paying via another form of payment.
+
+  %p
+    The explanation we have on file for the type of payment to be expecting
+    from you is below:
+
+  %blockquote
+    %em= @payment.explanation
+
   %p
     You will receive a confirmation email when your payment of
     %span.text-success= number_to_currency(@payment.ticket_request.price)
     is received.
-  %p
-    If your payment isn't received by
-    %strong= @payment.due_date.to_s(:long_ordinal)
-    we'll follow up with you to figure out what happened.
 
 %p
   If you have any other questions, don't hesitate to contact us at

@@ -52,6 +52,7 @@ class PaymentsController < ApplicationController
     return redirect_to root_path unless @ticket_request.can_view?(current_user)
 
     @payment = Payment.new(ticket_request_id: @ticket_request.id,
+                           explanation: params[:explanation],
                            status: Payment::STATUS_IN_PROGRESS)
     if @payment.save
       flash[:notice] = "We've recorded that your payment is en route"

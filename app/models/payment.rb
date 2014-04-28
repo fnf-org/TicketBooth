@@ -8,7 +8,8 @@ class Payment < ActiveRecord::Base
 
   belongs_to :ticket_request
 
-  attr_accessible :ticket_request_id, :ticket_request_attributes, :status, :stripe_card_token
+  attr_accessible :ticket_request_id, :ticket_request_attributes, :status,
+                  :stripe_card_token, :explanation
 
   accepts_nested_attributes_for :ticket_request,
                                 reject_if: :modifying_forbidden_attributes?

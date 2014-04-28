@@ -17,19 +17,19 @@
   %br
   94114
 
-%p.lead.text-error
-  Click the following button once you've sent your payment via some other method
-  %br
-  = link_to sent_payments_path(ticket_request_id: @ticket_request.id),
-    method: :post,
-    class: 'btn btn-primary' do
-    %i.icon-check
-    I've sent my payment
-%p
-  This lets us know your payment is en route, so we won't give your ticket
-  away to someone else.
+= form_tag sent_payments_path(ticket_request_id: @ticket_request.id) do
+  %p
+    Briefly describe how you intend to pay for your ticket, then click the button
+    once you've sent it.
+
+  = text_area_tag(:explanation, nil, class: 'input-xxlarge', rows: 4, required: true)
+
+  .actions
+    = submit_tag("✓ I've sent my payment", class: 'btn btn-primary')
+
+%p.lead
+  We will send you a confirmation email when your payment has been received.
 
 %p
-  We will send you a confirmation email when your payment has been received.
-  If you haven't heard from us and you think you should have by now, contact us at
+  If you don't receive confirmation within a week or two, contact us at:
   = mail_to 'payments@helpingculture.com'
