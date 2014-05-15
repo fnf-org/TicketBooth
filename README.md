@@ -1,15 +1,16 @@
-# Cloudwatch
+# HelpingCulture
 
-This is the Cloudwatch web application. Hang on tight.
+**HelpingCulture** is an application that aims to make ticket and volunteer
+management for community events easier.
 
 ## Getting Started
 
-If you want to contribute to the Cloudwatch codebase, there's a few things you
-need to do in order to get started.
+If you want to contribute to the HelpingCulture codebase, there's a few things
+you need to do in order to get started.
 
   * Run a Mac or Linux operating system
 
-  * Clone this repository: `git clone git@github.com:sds/cloudwatch.git`
+  * Clone this repository: `git clone git@github.com:sds/helpingculture.git`
 
   * Ensure Ruby 2.1.1 is installed; you can check this by running
     `ruby --version` from the command-line. The easiest way to install this
@@ -17,17 +18,17 @@ need to do in order to get started.
     single system if you're developing other projects on different Ruby
     versions) is to use [rbenv](https://github.com/sstephenson/rbenv/).
     However, if you have a clean system and don't intend on doing anything
-    except do Cloudwatch development on it, you can get away with upgrading
+    except do HelpingCulture development on it, you can get away with upgrading
     your system-wide Ruby.
 
-  * Install Bundler, which manages the gems (Ruby libraries) that Cloudwatch
-    uses: `gem install bundler`
+  * Install Bundler, which manages the gems (Ruby libraries) that
+    HelpingCulture uses: `gem install bundler`
 
   * Install all gem dependencies using Bundler: `bundle install`
 
   * Install Postgres 9.1.3; you can check this by running `psql --version`
 
-  * Create a database user for the Cloudwatch Rails application to use when
+  * Create a database user for the HelpingCulture Rails application to use when
     connecting to Postgres. Connect as the `postgres` (or whatever user has
     admin privileges) user using the `psql` utility, and then run:
     `CREATE ROLE app WITH CREATEDB LOGIN PASSWORD 'dev_password';`
