@@ -92,8 +92,6 @@
         %td.muted
           = ticket_request.role.capitalize
         %td
-          - if ticket_request.performer
-            %i.icon-star.hover-tooltip{ title: 'User has indicated they are a DJ or performer of some kind' }
           - if ticket_request.needs_assistance
             %i.icon-flag.hover-tooltip{ title: 'User has indicated they need financial assistance' }
           - if ticket_request.notes.present?

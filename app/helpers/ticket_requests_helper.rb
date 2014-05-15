@@ -98,11 +98,6 @@ module TicketRequestsHelper
       in installments, or requesting a scholarship for a free ticket are
       examples of payment arrangements we've made in the past.
       HELP
-    when :performer
-      <<-HELP
-      Please include what kind of performance you were asked to do in the notes
-      below.
-      HELP
     when :notes
       <<-HELP
       For example, if you checked the box above, tell us what your needs are. If
