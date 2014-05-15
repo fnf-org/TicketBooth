@@ -7,10 +7,20 @@ class TicketRequest < ActiveRecord::Base
     STATUS_REFUNDED = 'R',
   ]
 
+  TICKET_LIMITS = {
+    (ROLE_UBER_COORDINATOR = 'uber_coordinator') => 8,
+    (ROLE_COORDINATOR = 'coordinator') => 6,
+    (ROLE_CONTRIBUTOR = 'contributor') => 4,
+    (ROLE_VOLUNTEER = 'volunteer') => 2,
+    (ROLE_OTHER = 'other') => 2,
+  }
+
   ROLES = [
-    ROLE_COORDINATOR = 'coordinator',
-    ROLE_VOLUNTEER = 'volunteer',
-    ROLE_OTHER = 'other',
+    ROLE_UBER_COORDINATOR,
+    ROLE_COORDINATOR,
+    ROLE_CONTRIBUTOR,
+    ROLE_VOLUNTEER,
+    ROLE_OTHER,
   ]
 
   belongs_to :user

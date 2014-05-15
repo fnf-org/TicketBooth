@@ -37,18 +37,37 @@
     %p
       How are you contributing to the campout?
       %br
-      = f.label :role_coordinator, class: 'radio inline' do
-        = f.radio_button :role, TicketRequest::ROLE_COORDINATOR
-        Coordinator
       = f.label :role_volunteer, class: 'radio inline' do
-        = f.radio_button :role, TicketRequest::ROLE_VOLUNTEER
-        Volunteer
+        = f.radio_button :role, TicketRequest::ROLE_VOLUNTEER,
+          data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_VOLUNTEER] }
+        Working Shifts
+      = f.label :role_contributor, class: 'radio inline' do
+        = f.radio_button :role, TicketRequest::ROLE_CONTRIBUTOR,
+          data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_CONTRIBUTOR] }
+        Major Contributor
+      = f.label :role_coordinator, class: 'radio inline' do
+        = f.radio_button :role, TicketRequest::ROLE_COORDINATOR,
+          data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_COORDINATOR] }
+        Coordinator
+      = f.label :role_uber_coordinator, class: 'radio inline' do
+        = f.radio_button :role, TicketRequest::ROLE_UBER_COORDINATOR,
+          data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_UBER_COORDINATOR] }
+        Uber Coordinator
       = f.label :role_other, class: 'radio inline' do
-        = f.radio_button :role, TicketRequest::ROLE_OTHER
+        = f.radio_button :role, TicketRequest::ROLE_OTHER,
+          data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_OTHER] }
         Other
     = f.text_area :role_explanation, class: 'input-xlarge hidden',
       placeholder: 'Briefly describe your role',
       rows: 2, maxlength: 200, required: false
+    %p.muted.role-explanation{ class: TicketRequest::ROLE_VOLUNTEER }
+      I plan to help out by working one or more shifts at the event
+    %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_CONTRIBUTOR }
+      I am bringing gear, driving trucks, leading the cooking of a meal, etc.
+    %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_COORDINATOR }
+      I am listed on the coordinator sheet
+    %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_UBER_COORDINATOR }
+      I have done a lot of work both off-season and in-season to make this event happen
 
   - if signed_in? && @event.admin?(current_user)
     .well
@@ -59,7 +78,7 @@
 
   = f.label :adults, 'Number of tickets'
   = f.number_field :adults, class: 'input-mini', min: 1,
-    max: @event.max_adult_tickets_per_request,
+    max: TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_VOLUNTEER],
     data: { default_price: @event.adult_ticket_price.to_i }
   %span.help-inline.inline-price
 

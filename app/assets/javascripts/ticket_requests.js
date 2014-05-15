@@ -21,13 +21,30 @@ $('#ticket_request_adults, #ticket_request_kids, #ticket_request_cabins')
 $('input[name="ticket_request[role]"]')
   .on('change', function(evt) {
     var $radioBtn = $(this),
-        role = $radioBtn.val();
-        $roleExplanation = $('textarea[name="ticket_request[role_explanation]"]');
+        role = $radioBtn.val(),
+        $roleRadioBtn = $('#ticket_request_role_' + role),
+        maxTickets = $roleRadioBtn.data('max-tickets'),
+        $roleExplanationField = $('textarea[name="ticket_request[role_explanation]"]'),
+        $roleExplanations = $('.role-explanation'),
+        $selectedRoleExplanation = $('.role-explanation.' + role),
+        $ticketsField = $('input[name="ticket_request[adults]"]');
 
-    $roleExplanation.toggleClass('hidden', role != 'other');
+    // Set max # of tickets to limit imposed by role
+    $ticketsField.attr('max', maxTickets);
+
+    // Reduce tickets if changing role causes maximum to be exceeded
+    if ($ticketsField.val() > maxTickets) {
+      $ticketsField.val(maxTickets);
+    }
+
+    // Show the explanation matching the selected role
+    $roleExplanations.addClass('hidden');
+    $selectedRoleExplanation.removeClass('hidden');
+
+    $roleExplanationField.toggleClass('hidden', role != 'other');
 
     // Don't require explanation if role is not "Other"
-    $roleExplanation.attr('required', function(idx, oldAttr) {
+    $roleExplanationField.attr('required', function(idx, oldAttr) {
       return role == 'other';
     });
   });
