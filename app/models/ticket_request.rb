@@ -19,7 +19,8 @@ class TicketRequest < ActiveRecord::Base
 
   attr_accessible :user_id, :address, :adults, :kids, :cabins, :needs_assistance,
                   :notes, :status, :special_price, :event_id, :volunteer_shifts,
-                  :user_attributes, :user, :donation, :role, :role_explanation
+                  :user_attributes, :user, :donation, :role, :role_explanation,
+                  :vehicle_camping_requested
 
   normalize_attributes :notes, :role_explanation
 

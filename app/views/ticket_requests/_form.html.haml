@@ -101,6 +101,10 @@
     = f.text_area :address, class: 'input-xlarge',
       rows: 3, maxlength: 150, required: true
 
+  = f.label :vehicle_camping_requested, class: 'checkbox' do
+    = f.check_box :vehicle_camping_requested
+    I’m requesting a car or RV camping spot
+
   - if @event.allow_financial_assistance
     = f.label :needs_assistance, class: 'checkbox' do
       = f.check_box :needs_assistance
