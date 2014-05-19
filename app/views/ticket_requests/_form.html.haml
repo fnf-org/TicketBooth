@@ -39,23 +39,23 @@
       = f.label :role_volunteer, class: 'radio inline' do
         = f.radio_button :role, TicketRequest::ROLE_VOLUNTEER,
           data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_VOLUNTEER] }
-        Working Shifts
+        = TicketRequest::ROLES[TicketRequest::ROLE_VOLUNTEER]
       = f.label :role_contributor, class: 'radio inline' do
         = f.radio_button :role, TicketRequest::ROLE_CONTRIBUTOR,
           data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_CONTRIBUTOR] }
-        Major Contributor
+        = TicketRequest::ROLES[TicketRequest::ROLE_CONTRIBUTOR]
       = f.label :role_coordinator, class: 'radio inline' do
         = f.radio_button :role, TicketRequest::ROLE_COORDINATOR,
           data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_COORDINATOR] }
-        Coordinator
+        = TicketRequest::ROLES[TicketRequest::ROLE_COORDINATOR]
       = f.label :role_uber_coordinator, class: 'radio inline' do
         = f.radio_button :role, TicketRequest::ROLE_UBER_COORDINATOR,
           data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_UBER_COORDINATOR] }
-        Uber Coordinator
+        = TicketRequest::ROLES[TicketRequest::ROLE_UBER_COORDINATOR]
       = f.label :role_other, class: 'radio inline' do
         = f.radio_button :role, TicketRequest::ROLE_OTHER,
           data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_OTHER] }
-        Other
+        = TicketRequest::ROLES[TicketRequest::ROLE_OTHER]
     = f.text_area :role_explanation, class: 'input-xlarge hidden',
       placeholder: 'Briefly describe your role',
       rows: 2, maxlength: 200, required: false

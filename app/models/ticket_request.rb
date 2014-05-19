@@ -15,13 +15,13 @@ class TicketRequest < ActiveRecord::Base
     (ROLE_OTHER = 'other') => 2,
   }
 
-  ROLES = [
-    ROLE_UBER_COORDINATOR,
-    ROLE_COORDINATOR,
-    ROLE_CONTRIBUTOR,
-    ROLE_VOLUNTEER,
-    ROLE_OTHER,
-  ]
+  ROLES = {
+    ROLE_UBER_COORDINATOR => 'Uber Coordinator',
+    ROLE_COORDINATOR => 'Coordinator',
+    ROLE_CONTRIBUTOR => 'Major Contributor',
+    ROLE_VOLUNTEER => 'Working Shifts',
+    ROLE_OTHER => 'Other',
+  }
 
   belongs_to :user
   belongs_to :event
@@ -53,7 +53,7 @@ class TicketRequest < ActiveRecord::Base
   validates :cabins, allow_nil: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  validates :role, presence: true, inclusion: { in: ROLES }
+  validates :role, presence: true, inclusion: { in: ROLES.keys }
   validates :role_explanation, presence: { if: -> { role == ROLE_OTHER } },
                                length: { maximum: 200 }
 

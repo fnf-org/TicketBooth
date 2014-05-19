@@ -90,7 +90,9 @@
           = link_to event_ticket_request_path(@event, ticket_request) do
             = ticket_request.user.name
         %td.muted
-          = ticket_request.role.capitalize
+          = TicketRequest::ROLES[ticket_request.role]
+          - if ticket_request.role == TicketRequest::ROLE_OTHER
+            %i.icon-comment.hover-tooltip{ title: ticket_request.role_explanation }
         %td
           - if ticket_request.vehicle_camping_requested
             %i.icon-asterisk.hover-tooltip{ title: 'User is requesting a car or RV camping spot' }
