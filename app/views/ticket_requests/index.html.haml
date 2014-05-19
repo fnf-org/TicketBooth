@@ -92,6 +92,8 @@
         %td.muted
           = ticket_request.role.capitalize
         %td
+          - if ticket_request.vehicle_camping_requested
+            %i.icon-asterisk.hover-tooltip{ title: 'User is requesting a car or RV camping spot' }
           - if ticket_request.needs_assistance
             %i.icon-flag.hover-tooltip{ title: 'User has indicated they need financial assistance' }
           - if ticket_request.notes.present?
