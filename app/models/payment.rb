@@ -63,6 +63,10 @@ class Payment < ActiveRecord::Base
     status == STATUS_RECEIVED
   end
 
+  def via_credit_card?
+    self.stripe_charge_id
+  end
+
 private
 
   def modifying_forbidden_attributes?(attributed)

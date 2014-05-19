@@ -1,6 +1,8 @@
 class PaymentMailer < ActionMailer::Base
   DEFAULT_SENDER_EMAIL = 'payments@helpingculture.com'
 
+  add_template_helper(PaymentsHelper)
+
   layout 'email'
 
   def payment_received(payment)

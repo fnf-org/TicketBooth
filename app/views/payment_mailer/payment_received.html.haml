@@ -2,7 +2,10 @@
   Hi #{@user.first_name},
 %p
   Your payment of
-  %b= number_to_currency @ticket_request.price
+  %b= number_to_currency(@ticket_request.price)
+  - if @ticket_request.payment.try(:via_credit_card?)
+    +
+    %b= number_to_currency(extra_amount_to_charge(@ticket_request.price))
   for
   %b= @event.name
   was received.
