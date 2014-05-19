@@ -19,7 +19,6 @@
 
       = ff.label :email do
         Email
-        = help_mark help_text_for(:email)
       = ff.email_field :email, class: 'input-xlarge',
         maxlength: User::MAX_EMAIL_LENGTH, required: true,
         placeholder: 'email@example.com'
