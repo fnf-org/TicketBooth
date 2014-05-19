@@ -35,6 +35,7 @@ $('input[name="ticket_request[role]"]')
     // Reduce tickets if changing role causes maximum to be exceeded
     if ($ticketsField.val() > maxTickets) {
       $ticketsField.val(maxTickets);
+      $ticketsField.change();
     }
 
     // Show the explanation matching the selected role
