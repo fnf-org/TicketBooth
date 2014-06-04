@@ -17,7 +17,7 @@ gem 'mini_magick'
 gem 'pg'
 gem 'protected_attributes'
 gem 'sass-rails'
-gem 'sentry-raven', git: 'git@github.com:getsentry/raven-ruby.git',
+gem 'sentry-raven', git: 'git://github.com/getsentry/raven-ruby.git',
                     ref: '4efeeb5e7812b9852a407e910d8fcf1dd5e1809a'
 gem 'stripe'
 gem 'therubyracer', platforms: :ruby
