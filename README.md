@@ -12,7 +12,7 @@ you need to do in order to get started.
 
   * Clone this repository: `git clone git@github.com:sds/helpingculture.git`
 
-  * Ensure Ruby 2.1.1 is installed; you can check this by running
+  * Ensure Ruby 2.1.2 is installed; you can check this by running
     `ruby --version` from the command-line. The easiest way to install this
     specific version of Ruby (and to manage multiple versions of Ruby on a
     single system if you're developing other projects on different Ruby
