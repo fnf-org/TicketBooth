@@ -18,6 +18,7 @@ set :copy_dir, '/tmp/capistrano'
 set :copy_remote_dir, "#{deploy_to}/capistrano"
 
 set :default_environment, {
+  'RAILS_ENV' => 'production',
   'PATH' => "$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH"
 }
 
