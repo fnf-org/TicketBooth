@@ -1,6 +1,6 @@
-set :application           , 'cloudwatch'
+set :application           , 'helpingculture'
 set :user                  , application
-set :domain                , 'zeno.cloudwatch.fm'
+set :domain                , 'plato.helpingculture.com'
 set :use_sudo              , false
 set :ssh_options           , { forward_agent: true, compression: 'none' }
 set :keep_releases         , 20 # Keep the last N releases
@@ -16,6 +16,10 @@ set :deploy_via, :copy
 set :deploy_to, "/home/#{user}/deploy"
 set :copy_dir, '/tmp/capistrano'
 set :copy_remote_dir, "#{deploy_to}/capistrano"
+
+set :default_environment, {
+  'PATH' => "$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH"
+}
 
 set :uploads_directory, "/home/#{user}/uploads"
 

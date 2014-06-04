@@ -1,10 +1,8 @@
 # Set environment to production unless something else is specified
-app_name = 'cloudwatch'
+app_name = 'helpingculture'
 env = ENV['RAILS_ENV'] || 'production'
 deploy_path = "#{ENV['HOME']}/deploy"
 shared_path = "#{deploy_path}/shared"
-
-user app_name
 
 # listen on both a Unix domain socket and a TCP port,
 # we use a shorter backlog for quicker failover when busy
