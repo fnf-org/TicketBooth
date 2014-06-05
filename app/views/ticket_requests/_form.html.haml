@@ -108,13 +108,13 @@
 
   = f.label :camping_type do
     I’m requesting a camping spot for a:
-  = f.label :camping_type, class: 'radio inline' do
+  = f.label :camping_type_car, class: 'radio inline' do
     = f.radio_button :camping_type, TicketRequest::CAMPING_CAR
     Car
-  = f.label :camping_type, class: 'radio inline' do
+  = f.label :camping_type_rv, class: 'radio inline' do
     = f.radio_button :camping_type, TicketRequest::CAMPING_RV
     RV
-  = f.label :camping_type, class: 'radio inline' do
+  = f.label :camping_type_tent, class: 'radio inline' do
     = f.radio_button :camping_type, TicketRequest::CAMPING_TENT,
       checked: true
     Neither, I’m roughin’ it!
