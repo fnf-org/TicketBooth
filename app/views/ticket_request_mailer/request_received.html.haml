@@ -1,31 +1,19 @@
 %p
   Hi #{@ticket_request.user.first_name},
-%p
-  This is a confirmation that we have received your ticket request for
-  = @event.name
-
-- if @event.tickets_require_approval
-  %p
-    - if @ticket_request.free?
-      You'll receive a follow-up email if your request has been approved.
-    - else
-      You'll receive a follow-up email if your request has been approved,
-      at which point you'll be able to purchase your tickets.
-  %p
-    You can also view the
-    = link_to 'status of your request',
-      event_ticket_request_url(@event, @ticket_request)
-    at any time.
-- else
-  %p
-    You can review the
-    = link_to 'details of your request',
-      event_ticket_request_url(@event, @ticket_request)
-    at any time, and pay for your tickets if you haven't already.
-  %p
-    We look forward to seeing you at the event!
 
 %p
-  Thanks,
-  %br
-  The #{@event.name} team
+  We have received your ticket request for #{@event.name},
+  August 1 - August 3, 2014.
+
+%p
+  We will send you confirmation of the approved number of tickets and
+  payment information as soon as we can (in some cases this can take a
+  week or more).
+
+%p
+  We know that waiting is sometimes hard, so we thank you for your
+  patience.
+
+%p
+  With love,
+  Your FnF Ticket Team

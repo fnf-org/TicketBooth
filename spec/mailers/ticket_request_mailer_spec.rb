@@ -29,10 +29,6 @@ describe TicketRequestMailer do
     it "includes the event's name" do
       mail.body.encoded.should match('Test Event')
     end
-
-    it "includes a link to the user's ticket request" do
-      mail.body.encoded.should match(event_ticket_request_url(event, ticket_request))
-    end
   end
 
   describe '#request_approved' do

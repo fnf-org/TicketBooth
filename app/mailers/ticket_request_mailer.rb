@@ -1,5 +1,6 @@
 class TicketRequestMailer < ActionMailer::Base
   DEFAULT_SENDER_EMAIL = 'events@helpingculture.com'
+  DEFAULT_REPLY_TO_EMAIL = 'fnftickets@gmail.com'
 
   layout 'email'
 
@@ -8,6 +9,7 @@ class TicketRequestMailer < ActionMailer::Base
     @event = @ticket_request.event
     mail to: to_email,
          from: from_email,
+         reply_to: reply_to_email,
          subject: "#{@event.name} ticket request confirmation"
   end
 
@@ -16,10 +18,11 @@ class TicketRequestMailer < ActionMailer::Base
     @event = @ticket_request.event
     mail to: to_email,
          from: from_email,
+         reply_to: reply_to_email,
          subject: "Your #{@event.name} ticket request has been approved!"
   end
 
-private
+  private
 
   def to_email
     "#{@ticket_request.user.name} <#{@ticket_request.user.email}>"
@@ -27,5 +30,9 @@ private
 
   def from_email
     "#{@event.name} <#{DEFAULT_SENDER_EMAIL}>"
+  end
+
+  def reply_to_email
+    "#{@event.name} Ticketing <#{DEFAULT_REPLY_TO_EMAIL}>"
   end
 end
