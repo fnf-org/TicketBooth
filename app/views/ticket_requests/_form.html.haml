@@ -106,15 +106,28 @@
       - unless @event.cabins_available?
         Sorry, we are sold out of cabins at this point in time.
 
-  = f.label :vehicle_camping_requested, class: 'checkbox' do
-    = f.check_box :vehicle_camping_requested
-    I’m requesting a car or RV camping spot
+  = f.label :camping_type do
+    I’m requesting a camping spot for a:
+  = f.label :camping_type, class: 'radio inline' do
+    = f.radio_button :camping_type, TicketRequest::CAMPING_CAR
+    Car
+  = f.label :camping_type, class: 'radio inline' do
+    = f.radio_button :camping_type, TicketRequest::CAMPING_RV
+    RV
+  = f.label :camping_type, class: 'radio inline' do
+    = f.radio_button :camping_type, TicketRequest::CAMPING_TENT,
+      checked: true
+    Neither, I’m roughin’ it!
+
+  .control-group
 
   - if @event.allow_financial_assistance
     = f.label :needs_assistance, class: 'checkbox' do
       = f.check_box :needs_assistance
       I’m requesting financial assistance with purchasing my ticket(s)
       = help_mark help_text_for(:needs_assistance)
+
+  .control-group
 
   - if @event.require_mailing_address
     %fieldset

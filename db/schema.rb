@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140605053705) do
+ActiveRecord::Schema.define(version: 20140605060026) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -91,28 +91,28 @@ ActiveRecord::Schema.define(version: 20140605053705) do
   end
 
   create_table "ticket_requests", force: true do |t|
-    t.integer  "adults",                                                        default: 1,           null: false
-    t.integer  "kids",                                                          default: 0,           null: false
-    t.integer  "cabins",                                                        default: 0,           null: false
-    t.boolean  "needs_assistance",                                              default: false,       null: false
-    t.string   "notes",                     limit: 500
-    t.string   "status",                    limit: 1,                                                 null: false
+    t.integer  "adults",                                                    default: 1,           null: false
+    t.integer  "kids",                                                      default: 0,           null: false
+    t.integer  "cabins",                                                    default: 0,           null: false
+    t.boolean  "needs_assistance",                                          default: false,       null: false
+    t.string   "notes",                 limit: 500
+    t.string   "status",                limit: 1,                                                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id",                                                                             null: false
-    t.decimal  "special_price",                         precision: 8, scale: 2
-    t.integer  "event_id",                                                                            null: false
-    t.decimal  "donation",                              precision: 8, scale: 2, default: 0.0
-    t.string   "role",                                                          default: "volunteer", null: false
-    t.string   "role_explanation",          limit: 200
-    t.boolean  "vehicle_camping_requested"
-    t.string   "previous_contribution",     limit: 250
-    t.string   "address_line1",             limit: 200
-    t.string   "address_line2",             limit: 200
-    t.string   "city",                      limit: 50
-    t.string   "state",                     limit: 50
-    t.string   "zip_code",                  limit: 32
-    t.string   "country_code",              limit: 4
+    t.integer  "user_id",                                                                         null: false
+    t.decimal  "special_price",                     precision: 8, scale: 2
+    t.integer  "event_id",                                                                        null: false
+    t.decimal  "donation",                          precision: 8, scale: 2, default: 0.0
+    t.string   "role",                                                      default: "volunteer", null: false
+    t.string   "role_explanation",      limit: 200
+    t.string   "previous_contribution", limit: 250
+    t.string   "address_line1",         limit: 200
+    t.string   "address_line2",         limit: 200
+    t.string   "city",                  limit: 50
+    t.string   "state",                 limit: 50
+    t.string   "zip_code",              limit: 32
+    t.string   "country_code",          limit: 4
+    t.string   "camping_type",          limit: 10
   end
 
   create_table "time_slots", force: true do |t|

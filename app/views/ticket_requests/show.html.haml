@@ -109,6 +109,10 @@
     %br
     = @ticket_request.previous_contribution
 
+%p
+  %b Camping Type:
+  = @ticket_request.camping_type
+
 - if @ticket_request.needs_assistance
   %p.text-warning
     %b Financial assistance or custom payment plan requested
