@@ -91,7 +91,7 @@
             = ticket_request.user.name
         %td.muted
           = TicketRequest::ROLES[ticket_request.role]
-          - if ticket_request.role == TicketRequest::ROLE_OTHER
+          - if ticket_request.role_explanation.present?
             %i.icon-comment.hover-tooltip{ title: ticket_request.role_explanation }
         %td
           - if ticket_request.camping_type != TicketRequest::CAMPING_TENT
