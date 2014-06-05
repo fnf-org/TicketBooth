@@ -32,14 +32,13 @@ class TicketRequest < ActiveRecord::Base
   has_one :payment
 
   attr_accessible :user_id, :adults, :kids, :cabins, :needs_assistance,
-                  :notes, :status, :special_price, :event_id, :volunteer_shifts,
+                  :notes, :status, :special_price, :event_id,
                   :user_attributes, :user, :donation, :role, :role_explanation,
                   :vehicle_camping_requested, :previous_contribution,
                   :address_line1, :address_line2, :city, :state, :zip_code,
                   :country_code
 
-  normalize_attributes :notes, :role_explanation, :previous_contribution,
-                       :address_line1, :address_line2, :city, :state, :zip_code
+  normalize_attributes :notes, :role_explanation, :previous_contribution
 
   accepts_nested_attributes_for :user
 
@@ -64,9 +63,6 @@ class TicketRequest < ActiveRecord::Base
   validates :role, presence: true, inclusion: { in: ROLES.keys }
   validates :role_explanation, presence: { if: -> { role == ROLE_OTHER } },
                                length: { maximum: 200 }
-
-  validates :volunteer_shifts, allow_nil: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :notes, length: { maximum: 500 }
 

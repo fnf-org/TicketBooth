@@ -78,17 +78,6 @@ module TicketRequestsHelper
       Due to limited availability, we will obviously not be able to grant all
       requests.
       HELP
-    when :volunteer_shifts
-      <<-HELP
-      This is not a commitment, but gives us an idea of how many volunteer
-      shifts we'll be able to fill (you can enter 0). When the time comes to
-      purchase your ticket, you'll be able to sign up for more or fewer shifts
-      than you entered here.
-      Shifts will be between 1½ – 2 hours long, with a variety of jobs to choose
-      from: driving shuttles, directing people at the gate, helping in the
-      kitchen, etc. No experience is required as you'll be working with people
-      that will show you the ropes.
-      HELP
     when :address
       "We'll mail your tickets to this address."
     when :needs_assistance

@@ -56,14 +56,6 @@
         Check this box if you want to allow people to make an additional donation
         on top of their ticket price when purchasing their tickets.
 
-    = f.label :ask_how_many_shifts, class: 'checkbox' do
-      = f.check_box :ask_how_many_shifts
-      Ask how many volunteer shifts a requester is willing to sign up for
-      %p.muted
-        If your event is going to have volunteer shifts, you can use this
-        to get a sense of how many volunteers you are going to have (or
-        use that to decide whether or not to approve the ticket).
-
     = f.label :adult_ticket_price, 'Adult Ticket Price ($)'
     = f.number_field :adult_ticket_price, class: 'input-small', required: true,
       min: 0

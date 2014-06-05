@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140605045004) do
+ActiveRecord::Schema.define(version: 20140605053705) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,7 +43,6 @@ ActiveRecord::Schema.define(version: 20140605045004) do
     t.boolean  "tickets_require_approval",                              default: true,  null: false
     t.boolean  "require_mailing_address",                               default: false, null: false
     t.boolean  "allow_financial_assistance",                            default: false, null: false
-    t.boolean  "ask_how_many_shifts",                                   default: false, null: false
     t.boolean  "allow_donations",                                       default: false, null: false
     t.datetime "ticket_sales_start_time"
     t.datetime "ticket_sales_end_time"
@@ -103,7 +102,6 @@ ActiveRecord::Schema.define(version: 20140605045004) do
     t.integer  "user_id",                                                                             null: false
     t.decimal  "special_price",                         precision: 8, scale: 2
     t.integer  "event_id",                                                                            null: false
-    t.integer  "volunteer_shifts"
     t.decimal  "donation",                              precision: 8, scale: 2, default: 0.0
     t.string   "role",                                                          default: "volunteer", null: false
     t.string   "role_explanation",          limit: 200

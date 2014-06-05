@@ -82,30 +82,6 @@ describe TicketRequest do
       end
     end
 
-    describe '#address' do
-      let(:event) { Event.make! }
-      let(:ticket_request) { TicketRequest.make event: event, address: address }
-
-      context 'when not present' do
-        let(:address) { nil }
-
-        context 'and the event requires a mailing address' do
-          let(:event) { Event.make! require_mailing_address: true }
-          it { should_not be_valid }
-        end
-
-        context 'and the event does not require a mailing address' do
-          let(:event) { Event.make! require_mailing_address: false }
-          it { should be_valid }
-        end
-      end
-
-      context 'when present' do
-        let(:address) { '123 Fake Street' }
-        it { should be_valid }
-      end
-    end
-
     describe '#adults' do
       let(:ticket_request) { TicketRequest.make adults: adults }
 
@@ -159,25 +135,6 @@ describe TicketRequest do
 
       context 'when a number' do
         let(:cabins) { 2 }
-        it { should be_valid }
-      end
-    end
-
-    describe '#volunteer_shifts' do
-      let(:ticket_request) { TicketRequest.make volunteer_shifts: shifts }
-
-      context 'when not present' do
-        let(:shifts) { nil }
-        it { should be_valid }
-      end
-
-      context 'when not a number' do
-        let(:shifts) { 'not a number' }
-        it { should_not be_valid }
-      end
-
-      context 'when a number' do
-        let(:shifts) { 2 }
         it { should be_valid }
       end
     end

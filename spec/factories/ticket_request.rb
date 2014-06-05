@@ -1,6 +1,5 @@
 FactoryGirl.define do
   factory :ticket_request do
-    address { Sham.street_address }
     adults { Random.rand(1..4) }
     kids { Random.rand(0..2) }
     cabins { Random.rand(0..2) }

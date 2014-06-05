@@ -5,6 +5,9 @@ AllCops:
 AlignHash:
   Enabled: false
 
+AlignParameters:
+  Enabled: false
+
 Documentation:
   Exclude:
     - db/**/*.rb

@@ -116,12 +116,6 @@
       I’m requesting financial assistance with purchasing my ticket(s)
       = help_mark help_text_for(:needs_assistance)
 
-  - if @event.ask_how_many_shifts
-    = f.label :volunteer_shifts do
-      Approximately how many volunteer shifts are you and your guests likely to sign up for?
-      = help_mark help_text_for(:volunteer_shifts)
-    = f.number_field :volunteer_shifts, class: 'input-mini', min: 0, required: true
-
   - if @event.require_mailing_address
     %fieldset
       = f.label :address_line1 do
