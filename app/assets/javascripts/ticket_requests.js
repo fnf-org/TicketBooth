@@ -42,10 +42,8 @@ $('input[name="ticket_request[role]"]')
     $roleExplanations.addClass('hidden');
     $selectedRoleExplanation.removeClass('hidden');
 
-    $roleExplanationField.toggleClass('hidden', role != 'other');
+    $roleExplanationField.toggleClass('hidden', role == 'volunteer');
 
-    // Don't require explanation if role is not "Other"
-    $roleExplanationField.attr('required', function(idx, oldAttr) {
-      return role == 'other';
-    });
+    // Don't require explanation if role is "Working Shifts"
+    $roleExplanationField.attr('required', role != 'volunteer');
   });

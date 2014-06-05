@@ -52,9 +52,6 @@
         = f.radio_button :role, TicketRequest::ROLE_OTHER,
           data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_OTHER] }
         = TicketRequest::ROLES[TicketRequest::ROLE_OTHER]
-    = f.text_area :role_explanation, class: 'input-xlarge hidden',
-      placeholder: 'Briefly describe your role',
-      rows: 2, maxlength: 200, required: false
     %p.muted.role-explanation{ class: TicketRequest::ROLE_VOLUNTEER }
       I plan to help out by working one or more shifts at the event
     %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_CONTRIBUTOR }
@@ -63,6 +60,9 @@
       I am listed on the coordinator sheet
     %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_UBER_COORDINATOR }
       I have done a lot of work both off-season and in-season to make this event happen
+    = f.text_area :role_explanation, class: 'input-xlarge hidden',
+      placeholder: 'Briefly describe your role',
+      rows: 2, maxlength: 200, required: false
 
   = f.label :previous_contribution, 'Did you contribute last year? What did you do?'
   = f.text_area :previous_contribution, class: 'input-xlarge',
