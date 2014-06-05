@@ -23,9 +23,9 @@
         maxlength: User::MAX_EMAIL_LENGTH, required: true,
         placeholder: 'email@example.com'
 
-      = ff.label :password, 'Password'
+      = ff.label :password, 'Create Password'
       = ff.password_field :password,
-        placeholder: 'Must be at least 5 characters', required: true,
+        required: true,
         maxlength: User::MAX_PASSWORD_LENGTH, class: 'input-xlarge'
 
   %fieldset
