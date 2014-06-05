@@ -31,12 +31,15 @@ class TicketRequest < ActiveRecord::Base
   belongs_to :event
   has_one :payment
 
-  attr_accessible :user_id, :address, :adults, :kids, :cabins, :needs_assistance,
+  attr_accessible :user_id, :adults, :kids, :cabins, :needs_assistance,
                   :notes, :status, :special_price, :event_id, :volunteer_shifts,
                   :user_attributes, :user, :donation, :role, :role_explanation,
-                  :vehicle_camping_requested, :previous_contribution
+                  :vehicle_camping_requested, :previous_contribution,
+                  :address_line1, :address_line2, :city, :state, :zip_code,
+                  :country_code
 
-  normalize_attributes :notes, :role_explanation, :previous_contribution
+  normalize_attributes :notes, :role_explanation, :previous_contribution,
+                       :address_line1, :address_line2, :city, :state, :zip_code
 
   accepts_nested_attributes_for :user
 
@@ -46,7 +49,8 @@ class TicketRequest < ActiveRecord::Base
 
   validates :status, presence: true, inclusion: { in: STATUSES }
 
-  validates :address, presence: { if: -> { event.try(:require_mailing_address) } }
+  validates :address_line1, :city, :state, :zip_code, :country_code,
+            presence: { if: -> { event.try(:require_mailing_address) } }
 
   validates :adults, presence: true,
     numericality: { only_integer: true, greater_than: 0 }
@@ -175,5 +179,9 @@ class TicketRequest < ActiveRecord::Base
 
   def total_tickets
     adults + kids
+  end
+
+  def country_name
+    ISO3166::Country[country_code]
   end
 end

@@ -17,6 +17,18 @@ MethodLength:
   Exclude:
     - db/**/*.rb
 
+PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%':  '{}'
+    '%i': '[]'
+    '%q': '{}'
+    '%Q': '{}'
+    '%r': '{}'
+    '%s': '{}'
+    '%w': '[]'
+    '%W': '[]'
+    '%x': '{}'
+
 SingleSpaceBeforeFirstArg:
   Enabled: false
 

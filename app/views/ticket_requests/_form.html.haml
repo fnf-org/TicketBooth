@@ -113,11 +113,25 @@
     = f.number_field :volunteer_shifts, class: 'input-mini', min: 0, required: true
 
   - if @event.require_mailing_address
-    = f.label :address do
-      Mailing Address
+    = f.label :address_line1 do
+      Address
       = help_mark help_text_for(:address)
-    = f.text_area :address, class: 'input-xlarge',
-      rows: 3, maxlength: 150, required: true
+    = f.text_field :address_line1, required: true, class: 'input-xlarge',
+      placeholder: 'Street address, P.O. box, etc.',
+      maxlength: 200
+    %br
+    = f.text_field :address_line2, class: 'input-xlarge',
+      placeholder: 'Apartment, suite, unit, building, floor, etc.',
+      maxlength: 200
+    = f.label :city, 'City'
+    = f.text_field :city, required: true, maxlength: 50, class: 'input-xlarge'
+    = f.label :state, 'State/Province/Region'
+    = f.text_field :state, required: true, class: 'input-xlarge',
+                   maxlength: 50
+    = f.label :zip_code, 'Zip/Postal Code'
+    = f.text_field :zip_code, required: true, maxlength: 32, class: 'input-small'
+    = f.label :country_code, 'Country'
+    = f.country_select :country_code, %w[US CA GB], iso_codes: true
 
   = f.label :vehicle_camping_requested, class: 'checkbox' do
     = f.check_box :vehicle_camping_requested
