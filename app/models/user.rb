@@ -1,3 +1,4 @@
+# A real-life living breathing human.
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :timeoutable and :omniauthable
@@ -20,7 +21,8 @@ class User < ActiveRecord::Base
 
   validates :name, presence: true,
     length: { maximum: MAX_NAME_LENGTH },
-    format: { with: /[^\s]+\s[^\s]+(\s[^\s]+)*/i, message: 'must contain first and last name' }
+    format: { with: /[^\s]+\s[^\s]+(\s[^\s]+)*/i,
+              message: 'must contain first and last name' }
 
   validates :email, presence: true,
     format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i },
@@ -31,7 +33,7 @@ class User < ActiveRecord::Base
   end
 
   def site_admin?
-    !!site_admin
+    !site_admin.nil?
   end
 
   def event_admin?
