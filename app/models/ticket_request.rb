@@ -1,3 +1,7 @@
+# Individual request for one or more tickets.
+#
+# This is intended to capture as much information as possible about the ticket,
+# as well as the state of the request.
 class TicketRequest < ActiveRecord::Base
   STATUSES = [
     STATUS_PENDING = 'P',
@@ -30,9 +34,9 @@ class TicketRequest < ActiveRecord::Base
   attr_accessible :user_id, :address, :adults, :kids, :cabins, :needs_assistance,
                   :notes, :status, :special_price, :event_id, :volunteer_shifts,
                   :user_attributes, :user, :donation, :role, :role_explanation,
-                  :vehicle_camping_requested
+                  :vehicle_camping_requested, :previous_contribution
 
-  normalize_attributes :notes, :role_explanation
+  normalize_attributes :notes, :role_explanation, :previous_contribution
 
   accepts_nested_attributes_for :user
 

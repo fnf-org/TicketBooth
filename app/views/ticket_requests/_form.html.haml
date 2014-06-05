@@ -30,7 +30,7 @@
 
   %fieldset
     %p
-      How are you contributing to the campout?
+      How are you contributing to the campout this year?
       %br
       = f.label :role_volunteer, class: 'radio inline' do
         = f.radio_button :role, TicketRequest::ROLE_VOLUNTEER,
@@ -63,6 +63,10 @@
       I am listed on the coordinator sheet
     %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_UBER_COORDINATOR }
       I have done a lot of work both off-season and in-season to make this event happen
+
+  = f.label :previous_contribution, 'Did you contribute last year? What did you do?'
+  = f.text_area :previous_contribution, class: 'input-xlarge',
+      rows: 2, maxlength: 250
 
   - if signed_in? && @event.admin?(current_user)
     .well

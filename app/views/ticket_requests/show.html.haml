@@ -96,6 +96,12 @@
     %span{ class: ('label label-info' if @ticket_request.special_price) }
       = number_to_currency(@ticket_request.price, precision: 0)
 
+- if @ticket_request.previous_contribution.present?
+  %p
+    %b Contribution(s) last year:
+    %br
+    = @ticket_request.previous_contribution
+
 - if @ticket_request.needs_assistance
   %p.text-warning
     %b Financial assistance or custom payment plan requested

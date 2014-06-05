@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140515054433) do
+ActiveRecord::Schema.define(version: 20140605034909) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,6 +109,7 @@ ActiveRecord::Schema.define(version: 20140515054433) do
     t.string   "role",                                                          default: "volunteer", null: false
     t.string   "role_explanation",          limit: 200
     t.boolean  "vehicle_camping_requested"
+    t.string   "previous_contribution",     limit: 250
   end
 
   create_table "time_slots", force: true do |t|

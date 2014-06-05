@@ -1,2 +1,24 @@
+AllCops:
+  Exclude:
+    - db/schema.rb
+
 AlignHash:
+  Enabled: false
+
+Documentation:
+  Exclude:
+    - db/**/*.rb
+
+LineLength:
+  Max: 100
+
+MethodLength:
+  Max: 20
+  Exclude:
+    - db/**/*.rb
+
+SingleSpaceBeforeFirstArg:
+  Enabled: false
+
+TrailingComma:
   Enabled: false
