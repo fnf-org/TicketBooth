@@ -151,7 +151,6 @@ describe TicketRequestsController do
           name: Sham.words(2),
           email: email,
           password: password,
-          password_confirmation: password,
         }
       end
 

@@ -20,14 +20,9 @@
   = f.label :password do
     Password
     %p.muted Leave blank to keep the same
-  = f.password_field :password, placeholder: 'Must be at least 8 characters',
+  = f.password_field :password,
     required: true, autocomplete: 'off',
     maxlength: User::MAX_PASSWORD_LENGTH, class: 'input-xlarge'
-
-  = f.label :password_confirmation
-  = f.password_field :password_confirmation, placeholder: '',
-    maxlength: User::MAX_PASSWORD_LENGTH, required: true,
-    class: 'input-xlarge'
 
   = f.label :current_password do
     Current password

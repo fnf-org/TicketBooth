@@ -22,11 +22,6 @@
     required: true,
     maxlength: User::MAX_PASSWORD_LENGTH, class: 'input-xlarge'
 
-  = f.label :password_confirmation
-  = f.password_field :password_confirmation, placeholder: '',
-    maxlength: User::MAX_PASSWORD_LENGTH, required: true,
-    class: 'input-xlarge'
-
   .actions
     = f.submit 'Register', class: 'btn btn-primary btn-large'
 

@@ -28,10 +28,6 @@
         placeholder: 'Must be at least 5 characters', required: true,
         maxlength: User::MAX_PASSWORD_LENGTH, class: 'input-xlarge'
 
-      = ff.label :password_confirmation, 'Confirm Password'
-      = ff.password_field :password_confirmation, placeholder: '',
-        maxlength: User::MAX_PASSWORD_LENGTH, required: true, class: 'input-xlarge'
-
   %fieldset
     %p
       How are you contributing to the campout?
