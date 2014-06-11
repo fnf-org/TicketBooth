@@ -94,6 +94,8 @@
           - if ticket_request.role_explanation.present?
             %i.icon-comment.hover-tooltip{ title: ticket_request.role_explanation }
         %td
+          - if ticket_request.admin_notes.present?
+            %i.icon-asterisk.hover-tooltip{ title: 'Ticket Coordinator Notes: ' + ticket_request.admin_notes }
           - if ticket_request.camping_type != TicketRequest::CAMPING_TENT
             = image_tag("#{ticket_request.camping_type.downcase}.png",
               width: 16,
@@ -103,7 +105,7 @@
             = image_tag('bank.png', width: 16, class: 'hover-tooltip',
                         title: 'User has requested financial assistance')
           - if ticket_request.notes.present?
-            %i.icon-comment.hover-tooltip{ title: ticket_request.notes }
+            %i.icon-comment.hover-tooltip{ title: 'Additional requests or comments: ' + ticket_request.notes }
         %td= ticket_request.adults
         - if @event.kid_ticket_price
           %td= ticket_request.kids

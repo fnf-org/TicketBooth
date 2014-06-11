@@ -124,6 +124,11 @@
     %b Notes:
     = @ticket_request.notes
 
+- if @event.admin?(current_user) && @ticket_request.admin_notes.present?
+  .well
+    %h4 Ticket Coordinator Notes:
+    = @ticket_request.admin_notes
+
 - if @event.admin?(current_user)
   .btn-group
     = link_to event_ticket_requests_path(@event), class: 'btn' do

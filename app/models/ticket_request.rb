@@ -42,9 +42,10 @@ class TicketRequest < ActiveRecord::Base
                   :user_attributes, :user, :donation, :role, :role_explanation,
                   :camping_type, :previous_contribution,
                   :address_line1, :address_line2, :city, :state, :zip_code,
-                  :country_code
+                  :country_code, :admin_notes
 
-  normalize_attributes :notes, :role_explanation, :previous_contribution
+  normalize_attributes :notes, :role_explanation, :previous_contribution,
+                       :admin_notes
 
   accepts_nested_attributes_for :user
 

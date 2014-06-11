@@ -68,7 +68,7 @@
   = f.text_area :previous_contribution, class: 'input-xlarge',
       rows: 2, maxlength: 250
 
-  - if signed_in? && @event.admin?(current_user)
+  - if signed_in? && @event.admin?(current_user) && form_action_name == 'edit'
     .well
       = f.label :special_price, 'Special Ticket Price ($)'
       %p.text-error
@@ -155,6 +155,14 @@
     Any special requests or things you want to mention?
   = f.text_area :notes, class: 'input-xxlarge',
     rows: 3, maxlength: 500
+
+  - if signed_in? && @event.admin?(current_user) && form_action_name == :update
+    .well
+      = f.label :admin_notes do
+        Additional Notes
+      %p.text-error
+        Visible by event admins only.
+      = f.text_area :admin_notes, class: 'input-xxlarge', rows: 5, maxlength: 512
 
   .actions
     = f.submit class: 'btn btn-primary btn-large',
