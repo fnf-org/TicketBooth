@@ -12,26 +12,26 @@
       %p
         Already requested a ticket?
         = link_to 'Sign in', new_user_session_path
-      = ff.label :name, 'Full Name'
+      = ff.label :name, 'Full Name', class: 'required-label'
       = ff.text_field :name, class: 'input-xlarge',
         maxlength: User::MAX_NAME_LENGTH, required: true,
         placeholder: 'First and last name'
 
-      = ff.label :email do
+      = ff.label :email, class: 'required-label' do
         Email (username)
       = ff.email_field :email, class: 'input-xlarge',
         maxlength: User::MAX_EMAIL_LENGTH, required: true,
         placeholder: 'email@example.com'
 
-      = ff.label :password, 'Create Password'
+      = ff.label :password, 'Create Password', class: 'required-label'
       = ff.password_field :password,
         required: true,
         maxlength: User::MAX_PASSWORD_LENGTH, class: 'input-xlarge'
 
   %fieldset
     %p
-      How are you contributing to the campout this year?
-      %br
+      = f.label :role_volunteer do
+        How are you contributing to the campout this year?
       = f.label :role_volunteer, class: 'radio inline' do
         = f.radio_button :role, TicketRequest::ROLE_VOLUNTEER,
           data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_VOLUNTEER] }
@@ -61,7 +61,7 @@
     %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_UBER_COORDINATOR }
       I have done a lot of work both off-season and in-season to make this event happen
     = f.text_area :role_explanation, class: 'input-xlarge hidden',
-      placeholder: 'Briefly describe your role',
+      placeholder: 'Briefly describe your role (required)',
       rows: 2, maxlength: 200, required: false
 
   = f.label :previous_contribution, 'Did you contribute last year? What did you do?'
@@ -76,7 +76,7 @@
       = f.number_field :special_price, class: 'input-small', min: 0
 
   = f.label :adults, 'Number of tickets'
-  = f.number_field :adults, class: 'input-mini', min: 1,
+  = f.number_field :adults, class: 'input-mini', min: 1, required: true,
     max: TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_VOLUNTEER],
     data: { default_price: @event.adult_ticket_price.to_i }
   %span.help-inline.inline-price
@@ -131,7 +131,7 @@
 
   - if @event.require_mailing_address
     %fieldset
-      = f.label :address_line1 do
+      = f.label :address_line1, class: 'required-label' do
         Address
         = help_mark help_text_for(:address)
       = f.text_field :address_line1, required: true, class: 'input-xlarge',
@@ -141,14 +141,14 @@
       = f.text_field :address_line2, class: 'input-xlarge',
         placeholder: 'Apartment, suite, unit, building, floor, etc.',
         maxlength: 200
-      = f.label :city, 'City'
+      = f.label :city, 'City', class: 'required-label'
       = f.text_field :city, required: true, maxlength: 50, class: 'input-xlarge'
-      = f.label :state, 'State/Province/Region'
+      = f.label :state, 'State/Province/Region', class: 'required-label'
       = f.text_field :state, required: true, class: 'input-xlarge',
                      maxlength: 50
-      = f.label :zip_code, 'Zip/Postal Code'
+      = f.label :zip_code, 'Zip/Postal Code', class: 'required-label'
       = f.text_field :zip_code, required: true, maxlength: 32, class: 'input-small'
-      = f.label :country_code, 'Country'
+      = f.label :country_code, 'Country', class: 'required-label'
       = f.country_select :country_code, %w[US CA GB], iso_codes: true
 
   = f.label :notes do

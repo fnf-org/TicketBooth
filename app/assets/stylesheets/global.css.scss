@@ -6,6 +6,15 @@ a {
   }
 }
 
+.required-label {
+  &:after {
+    color: #f00;
+    content: '*';
+    font-weight: bold;
+    margin-left: 0.1em;
+  }
+}
+
 .help-inline {
   line-height: 30px;
   vertical-align: top;
