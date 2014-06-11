@@ -11,7 +11,9 @@
   - else
     You can now
     = succeed '.' do
-      = link_to new_payment_url(ticket_request_id: @ticket_request) do
+      = link_to new_payment_url(ticket_request_id: @ticket_request,
+                                user_id: @ticket_request.user_id,
+                                user_token: @auth_token) do
         purchase your
         = 'ticket'.pluralize(@ticket_request.total_tickets)
 

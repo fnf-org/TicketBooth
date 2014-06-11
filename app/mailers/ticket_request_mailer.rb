@@ -14,6 +14,7 @@ class TicketRequestMailer < ActionMailer::Base
   end
 
   def request_approved(ticket_request)
+    @auth_token = ticket_request.user.generate_auth_token!
     @ticket_request = ticket_request
     @event = @ticket_request.event
     mail to: to_email,

@@ -1,3 +1,5 @@
+require 'securerandom'
+
 # A real-life living breathing human.
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
@@ -38,5 +40,11 @@ class User < ActiveRecord::Base
 
   def event_admin?
     event_admins.exists?
+  end
+
+  def generate_auth_token!
+    token = SecureRandom.hex(32)
+    update_attribute(:authentication_token, token)
+    token
   end
 end
