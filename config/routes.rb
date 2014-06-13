@@ -3,6 +3,11 @@ Cloudwatch::Application.routes.draw do
 
   devise_for :users
 
+  get 'fnf-tickets', controller: :ticket_requests, action: :new, event_id: 1
+  get 'fnf_tickets', controller: :ticket_requests, action: :new, event_id: 1
+  get 'fnftickets', controller: :ticket_requests, action: :new, event_id: 1
+  get 'fnf', controller: :ticket_requests, action: :new, event_id: 1
+
   resources :payments, only: [:new, :create, :show] do
     collection do
       get :other
