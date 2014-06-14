@@ -41,7 +41,7 @@ class TicketRequestsController < ApplicationController
 
   def new
     if signed_in?
-      existing_request = TicketRequest.where(user_id: current_user).first
+      existing_request = TicketRequest.where(user_id: current_user, event_id: @event).first
 
       if existing_request
         return redirect_to event_ticket_request_path(@event, existing_request)
