@@ -84,7 +84,7 @@ module TicketRequestsHelper
       <<-HELP
       We never turn anyone away for financial reasons, and will work with you to
       figure something out. Volunteering for some extra shifts, making payments
-      in installments, or requesting a scholarship for a free ticket are
+      in installments, or requesting a scholarship for a discounted ticket are
       examples of payment arrangements we've made in the past.
       HELP
     when :notes
