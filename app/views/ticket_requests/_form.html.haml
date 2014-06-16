@@ -160,5 +160,6 @@
       = f.text_area :admin_notes, class: 'input-xxlarge', rows: 5, maxlength: 512
 
   .actions
-    = f.submit class: 'btn btn-primary btn-large',
-               data: { disable_with: 'Creating request...' }
+    - submit_btn_text = form_action_name == :update ? 'Update Request' : 'Submit Request'
+    = f.submit submit_btn_text, class: 'btn btn-primary btn-large',
+               data: { disable_with: 'Submitting...' }
