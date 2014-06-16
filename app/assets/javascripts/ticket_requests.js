@@ -48,15 +48,14 @@ $('input[name="ticket_request[role]"]')
     $roleExplanationField.attr('required', role != 'volunteer');
   });
 
-$('input[name="ticket_request[camping_type]"]')
+$('input[name="ticket_request[car_camping]"]')
   .on('change', function(evt) {
-    var $radioBtn = $(this),
-        campingType = $radioBtn.val(),
-        $campingTypeRadioBtn = $('#ticket_request_camping_type_' + campingType),
-        $campingTypeExplanationField = $('textarea[name="ticket_request[camping_type_explanation]"]');
+    var $carCampingChkbx = $(this),
+        carCamping = $carCampingChkbx.is(':checked'),
+        $carCampingExplanationField = $('textarea[name="ticket_request[car_camping_explanation]"]');
 
-    $campingTypeExplanationField.toggleClass('hidden', campingType == 'Tent');
+    $carCampingExplanationField.toggleClass('hidden', !carCamping);
 
     // Don't require explanation if not requesting anything
-    $campingTypeExplanationField.attr('required', campingType != 'Tent');
+    $carCampingExplanationField.attr('required', carCamping);
   });

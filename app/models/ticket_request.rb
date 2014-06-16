@@ -27,12 +27,6 @@ class TicketRequest < ActiveRecord::Base
     ROLE_OTHER => 'Other',
   }
 
-  CAMPING_TYPES = [
-    CAMPING_TENT = 'Tent',
-    CAMPING_CAR = 'Car',
-    CAMPING_RV = 'RV',
-  ]
-
   belongs_to :user
   belongs_to :event
   has_one :payment
@@ -40,12 +34,12 @@ class TicketRequest < ActiveRecord::Base
   attr_accessible :user_id, :adults, :kids, :cabins, :needs_assistance,
                   :notes, :status, :special_price, :event_id,
                   :user_attributes, :user, :donation, :role, :role_explanation,
-                  :camping_type, :previous_contribution,
+                  :car_camping, :car_camping_explanation, :previous_contribution,
                   :address_line1, :address_line2, :city, :state, :zip_code,
-                  :country_code, :admin_notes, :camping_type_explanation
+                  :country_code, :admin_notes
 
   normalize_attributes :notes, :role_explanation, :previous_contribution,
-                       :admin_notes, :camping_type_explanation
+                       :admin_notes, :car_camping_explanation
 
   accepts_nested_attributes_for :user
 
@@ -70,8 +64,6 @@ class TicketRequest < ActiveRecord::Base
   validates :role, presence: true, inclusion: { in: ROLES.keys }
   validates :role_explanation, presence: { if: -> { role == ROLE_OTHER } },
                                length: { maximum: 200 }
-
-  validates :camping_type, presence: true, inclusion: { in: CAMPING_TYPES }
 
   validates :notes, length: { maximum: 500 }
 

@@ -96,11 +96,11 @@
         %td
           - if ticket_request.admin_notes.present?
             %i.icon-asterisk.hover-tooltip{ title: 'Ticket Coordinator Notes: ' + ticket_request.admin_notes }
-          - if ticket_request.camping_type != TicketRequest::CAMPING_TENT
-            = image_tag("#{ticket_request.camping_type.downcase}.png",
+          - if ticket_request.car_camping
+            = image_tag('car.png',
               width: 16,
               class: 'hover-tooltip',
-              title: "User has requested a #{ticket_request.camping_type} camping spot")
+              title: 'User has requested a car/RV camping spot because: ' + ticket_request.car_camping_explanation)
           - if ticket_request.needs_assistance
             = image_tag('bank.png', width: 16, class: 'hover-tooltip',
                         title: 'User has requested financial assistance')

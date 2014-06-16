@@ -111,9 +111,10 @@
     %br
     = @ticket_request.previous_contribution
 
-%p
-  %b Camping Type:
-  = @ticket_request.camping_type
+- if @ticket_request.car_camping
+  %p
+    %b Car Camping Requested because:
+    = @ticket_request.car_camping_explanation
 
 - if @ticket_request.needs_assistance
   %p.text-warning
