@@ -18,14 +18,6 @@
   %p
     %b Card Expiration Date:
     #{@charge.card.exp_month} / #{@charge.card.exp_year}
-
-  %p
-    You can
-    = link_to 'review your ticket information',
-      event_ticket_request_path(@event, @ticket_request)
-    at any time
-    %br
-    We look forward to seeing you at the event!
 - else
   %p.lead
     You've indicated that you're paying via another form of payment.
@@ -41,6 +33,27 @@
     You will receive a confirmation email when your payment of
     %span.text-success= number_to_currency(@payment.ticket_request.price)
     is received.
+
+- if @event.require_mailing_address
+  %p
+    Your ticket will be mailed to:
+    %address
+      = @ticket_request.address_line1
+      - if @ticket_request.address_line2.present?
+        %br
+        = @ticket_request.address_line2
+      %br
+      #{@ticket_request.city}, #{@ticket_request.state}, #{@ticket_request.zip_code}
+      %br
+      = @ticket_request.country_name
+
+%p
+  You can
+  = link_to 'review your ticket information',
+    event_ticket_request_path(@event, @ticket_request)
+  at any time
+  %br
+  We look forward to seeing you at the event!
 
 %p
   If you have any other questions, don't hesitate to contact us at
