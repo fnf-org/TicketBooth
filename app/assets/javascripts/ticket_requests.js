@@ -44,6 +44,19 @@ $('input[name="ticket_request[role]"]')
 
     $roleExplanationField.toggleClass('hidden', role == 'volunteer');
 
-    // Don't require explanation if role is "Working Shifts"
+    // Don't require explanation if role is "Volunteer"
     $roleExplanationField.attr('required', role != 'volunteer');
+  });
+
+$('input[name="ticket_request[camping_type]"]')
+  .on('change', function(evt) {
+    var $radioBtn = $(this),
+        campingType = $radioBtn.val(),
+        $campingTypeRadioBtn = $('#ticket_request_camping_type_' + campingType),
+        $campingTypeExplanationField = $('textarea[name="ticket_request[camping_type_explanation]"]');
+
+    $campingTypeExplanationField.toggleClass('hidden', campingType == 'Tent');
+
+    // Don't require explanation if not requesting anything
+    $campingTypeExplanationField.attr('required', campingType != 'Tent');
   });

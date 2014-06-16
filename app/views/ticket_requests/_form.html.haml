@@ -106,18 +106,22 @@
       - unless @event.cabins_available?
         Sorry, we are sold out of cabins at this point in time.
 
-  = f.label :camping_type do
-    I’m considering a camping spot for a:
-  = f.label :camping_type_car, class: 'radio inline' do
-    = f.radio_button :camping_type, TicketRequest::CAMPING_CAR
-    Car
-  = f.label :camping_type_rv, class: 'radio inline' do
-    = f.radio_button :camping_type, TicketRequest::CAMPING_RV
-    RV
-  = f.label :camping_type_tent, class: 'radio inline' do
-    = f.radio_button :camping_type, TicketRequest::CAMPING_TENT,
-      checked: true
-    Neither, I’m roughin’ it!
+  %p
+    = f.label :camping_type do
+      I’m considering a camping spot for a:
+    = f.label :camping_type_car, class: 'radio inline' do
+      = f.radio_button :camping_type, TicketRequest::CAMPING_CAR
+      Car
+    = f.label :camping_type_rv, class: 'radio inline' do
+      = f.radio_button :camping_type, TicketRequest::CAMPING_RV
+      RV
+    = f.label :camping_type_tent, class: 'radio inline' do
+      = f.radio_button :camping_type, TicketRequest::CAMPING_TENT,
+        checked: true
+      Neither, I’m roughin’ it!
+  = f.text_area :camping_type_explanation, class: 'input-xlarge hidden',
+    placeholder: 'Short explanation of why you need this spot',
+    rows: 2, maxlength: 200, required: false
 
   .control-group
 
