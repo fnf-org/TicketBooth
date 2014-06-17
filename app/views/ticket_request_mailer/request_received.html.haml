@@ -18,3 +18,10 @@
   With love,
   %br
   Your FnF Ticket Team
+
+%p
+  P.S. You can see the status of your request at any time by
+  visiting
+  = succeed '.' do
+    = link_to 'this page',
+      event_ticket_request_url(@event, @ticket_request)
