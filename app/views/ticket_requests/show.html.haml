@@ -86,6 +86,12 @@
       = @ticket_request.country_name
 
 %p
+  %b Role:
+  = TicketRequest::ROLES[@ticket_request.role]
+  - if @ticket_request.role_explanation.present?
+    %blockquote= @ticket_request.role_explanation
+
+%p
   %b Adult Tickets:
   = @ticket_request.adults
 
