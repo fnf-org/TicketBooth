@@ -44,7 +44,6 @@ class TicketRequestsController < ApplicationController
     CSV.open(temp_csv.path, 'wb') do |csv|
       csv << TicketRequest.columns.map(&:name)
       TicketRequest.where(event_id: @event).find_each do |ticket_request|
-        Rails.logger.info ticket_request.id
         csv << ticket_request.attributes.values
       end
     end
