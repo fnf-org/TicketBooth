@@ -1,3 +1,7 @@
+require 'tempfile'
+require 'csv'
+
+# Manage all pages related to ticket requests.
 class TicketRequestsController < ApplicationController
   before_filter :authenticate_user!, except: %i[new create]
   before_filter :set_event
@@ -32,6 +36,23 @@ class TicketRequestsController < ApplicationController
         @stats[:total][measure] += @stats[status][measure]
       end
     end
+  end
+
+  def download
+    temp_csv = Tempfile.new('csv')
+
+    CSV.open(temp_csv.path, 'wb') do |csv|
+      csv << TicketRequest.columns.map(&:name)
+      TicketRequest.where(event_id: @event).find_each do |ticket_request|
+        Rails.logger.info ticket_request.id
+        csv << ticket_request.attributes.values
+      end
+    end
+
+    temp_csv.close
+    send_file(temp_csv.path,
+              filename: "#{@event.name} Ticket Requests",
+              type: 'text/csv')
   end
 
   def show

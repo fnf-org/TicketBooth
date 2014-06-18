@@ -32,6 +32,10 @@ Cloudwatch::Application.routes.draw do
     resources :shifts, only: [:index, :create, :destroy]
 
     resources :ticket_requests do
+      collection do
+        get :download
+      end
+
       member do
         post :approve
         post :decline
