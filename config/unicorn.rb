@@ -10,7 +10,7 @@ listen "/tmp/#{app_name}.socket", backlog: 64
 pid    "#{shared_path}/pids/unicorn.#{app_name}.pid"
 
 # Server has 4 cores
-worker_processes 4
+worker_processes 2
 
 # Preload app for more speed
 preload_app true
