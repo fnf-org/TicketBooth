@@ -42,9 +42,10 @@ class TicketRequestsController < ApplicationController
     temp_csv = Tempfile.new('csv')
 
     CSV.open(temp_csv.path, 'wb') do |csv|
-      csv << TicketRequest.columns.map(&:name)
+      csv << %w[name email] + TicketRequest.columns.map(&:name)
       TicketRequest.where(event_id: @event).find_each do |ticket_request|
-        csv << ticket_request.attributes.values
+        csv << [ticket_request.user.name, ticket_request.user.email] +
+               ticket_request.attributes.values
       end
     end
 
