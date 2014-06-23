@@ -51,7 +51,7 @@ class TicketRequestsController < ApplicationController
 
     temp_csv.close
     send_file(temp_csv.path,
-              filename: "#{@event.name} Ticket Requests",
+              filename: "#{@event.name} Ticket Requests.csv",
               type: 'text/csv')
   end
 
