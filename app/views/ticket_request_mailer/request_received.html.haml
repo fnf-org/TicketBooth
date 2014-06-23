@@ -5,10 +5,15 @@
   We have received your ticket request for #{@event.name},
   August 1 - August 3, 2014.
 
+- if @ticket_request.role == 'volunteer'
+  %p
+    At this point, all available tickets have been requested. However,
+    we'll hold on to your request just in case.
+
 %p
-  We will send you confirmation of the approved number of tickets and
-  payment information as soon as we can (in some cases this can take a
-  week or more).
+  If your request is approved, we will send you confirmation of the approved
+  number of tickets and payment information as soon as we can (in some cases
+  this can take a week or more).
 
 %p
   We know that waiting is sometimes hard, so we thank you for your
