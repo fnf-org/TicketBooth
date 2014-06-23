@@ -15,10 +15,20 @@
   %br
   Oakland, CA 94609
 
+%p
+  Please make checks payable to
+  = succeed '.' do
+    %b CFAEA
+
 = form_tag sent_payments_path(ticket_request_id: @ticket_request.id) do
   %p
-    Briefly describe how you intend to pay for your ticket, then click the button
-    once you've sent it.
+    Briefly describe how you intend to pay for your ticket, then click the
+    button once you've sent it.
+    %br
+    Please include details if sending via Paypal or
+    similar, e.g. the email it was sent from.
+    %br
+    When in doubt, contact us!
 
   = text_area_tag(:explanation, nil, class: 'input-xxlarge', rows: 4, required: true)
 
@@ -29,5 +39,5 @@
   We will send you a confirmation email when your payment has been received.
 
 %p
-  If you don't receive confirmation within a week or two, contact us at:
+  If you don't receive confirmation within a week or two since you sent it, contact us at:
   = mail_to 'fnftickets@gmail.com'
