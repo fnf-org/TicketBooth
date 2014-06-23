@@ -36,7 +36,7 @@
 
 - if @event.require_mailing_address
   %p
-    Your ticket will be mailed to:
+    Your order will be mailed to:
     %address
       = @ticket_request.address_line1
       - if @ticket_request.address_line2.present?
