@@ -3,6 +3,8 @@
 **HelpingCulture** is an application that aims to make ticket and volunteer
 management for community events easier.
 
+The idea was originally conceived by Tracy Page.
+
 ## Getting Started
 
 If you want to contribute to the HelpingCulture codebase, there's a few things
