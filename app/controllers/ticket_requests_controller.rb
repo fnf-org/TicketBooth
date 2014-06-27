@@ -5,9 +5,8 @@ require 'csv'
 class TicketRequestsController < ApplicationController
   before_filter :authenticate_user!, except: %i[new create]
   before_filter :set_event
-  before_filter :require_event_admin,
-                only: %i[index edit update approve decline refund]
-  before_filter :set_ticket_request, only: %i[show edit update approve decline refund]
+  before_filter :require_event_admin, except: %i[new create show]
+  before_filter :set_ticket_request,  except: %i[index new create]
 
   def index
     @ticket_requests = TicketRequest
@@ -125,6 +124,14 @@ class TicketRequestsController < ApplicationController
       flash[:notice] = "#{@ticket_request.user.name}'s request was declined"
     else
       flash[:error] = "Unable to decline #{@ticket_request.user.name}'s request"
+    end
+
+    redirect_to event_ticket_requests_path(@event)
+  end
+
+  def resend_approval
+    if @ticket_request.awaiting_payment?
+      TicketRequestMailer.request_approved(@ticket_request).deliver
     end
 
     redirect_to event_ticket_requests_path(@event)

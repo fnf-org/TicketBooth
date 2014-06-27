@@ -40,6 +40,7 @@ Cloudwatch::Application.routes.draw do
         post :approve
         post :decline
         post :refund
+        post :resend_approval
       end
     end
   end
