@@ -6,7 +6,7 @@ class TicketRequestsController < ApplicationController
   before_filter :authenticate_user!, except: %i[new create]
   before_filter :set_event
   before_filter :require_event_admin, except: %i[new create show]
-  before_filter :set_ticket_request,  except: %i[index new create]
+  before_filter :set_ticket_request,  except: %i[index new create download]
 
   def index
     @ticket_requests = TicketRequest
