@@ -68,7 +68,7 @@
   = f.text_area :previous_contribution, class: 'input-xlarge',
       rows: 2, maxlength: 250
 
-  - if signed_in? && @event.admin?(current_user) && form_action_name == 'edit'
+  - if signed_in? && @event.admin?(current_user) && form_action_name == :update
     .well
       = f.label :special_price, 'Special Ticket Price ($)'
       %p.text-error
