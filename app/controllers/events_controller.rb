@@ -30,6 +30,7 @@ class EventsController < ApplicationController
     params[:event][:end_time] = Time.from_picker(params.delete(:end_time))
     params[:event][:ticket_sales_start_time] = Time.from_picker(params.delete(:ticket_sales_start_time))
     params[:event][:ticket_sales_end_time] = Time.from_picker(params.delete(:ticket_sales_end_time))
+    params[:event][:ticket_requests_end_time] = Time.from_picker(params.delete(:ticket_requests_end_time))
 
     @event = Event.new(params[:event])
 
@@ -45,6 +46,7 @@ class EventsController < ApplicationController
     params[:event][:end_time] = Time.from_picker(params.delete(:end_time))
     params[:event][:ticket_sales_start_time] = Time.from_picker(params.delete(:ticket_sales_start_time))
     params[:event][:ticket_sales_end_time] = Time.from_picker(params.delete(:ticket_sales_end_time))
+    params[:event][:ticket_requests_end_time] = Time.from_picker(params.delete(:ticket_requests_end_time))
 
     if @event.update_attributes(params[:event])
       redirect_to @event

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140616030905) do
+ActiveRecord::Schema.define(version: 20140706232217) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 20140616030905) do
     t.boolean  "allow_donations",                                       default: false, null: false
     t.datetime "ticket_sales_start_time"
     t.datetime "ticket_sales_end_time"
+    t.datetime "ticket_requests_end_time"
   end
 
   create_table "jobs", force: true do |t|
