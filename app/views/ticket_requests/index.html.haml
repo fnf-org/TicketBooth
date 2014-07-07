@@ -150,6 +150,12 @@
                   method: :post,
                   class: 'btn btn-link' do
                   Resend Approval
+                = link_to decline_event_ticket_request_path(@event, ticket_request),
+                  method: :post,
+                  class: 'btn btn-link',
+                  data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s already approved request?" } do
+                  %span.text-error Decline
+
           - elsif ticket_request.payment && !ticket_request.payment.received?
             .btn-group.pull-right
               = link_to mark_received_payments_path(ticket_request_id: ticket_request),
