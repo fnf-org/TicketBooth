@@ -33,7 +33,6 @@
       %td
         %span.muted
           = number_to_currency(@stats[:pending][:raised], precision: 0)
-          %small (potential)
     %tr.success
       %td
         Awaiting Payment
@@ -46,18 +45,21 @@
       %td
         %span.muted
           = number_to_currency(@stats[:awaiting_payment][:raised], precision: 0)
-          %small (potential)
     %tr
       %td
-        Paid
-      %td= @stats[:completed][:requests]
-      %td= @stats[:completed][:adults]
-      - if @event.kid_ticket_price
-        %td= @stats[:completed][:kids]
-      - if @event.cabin_price
-        %td= @stats[:completed][:cabins]
+        %span.lead Paid
       %td
-        %span.label.label-success
+        %span.lead= @stats[:completed][:requests]
+      %td
+        %span.lead= @stats[:completed][:adults]
+      - if @event.kid_ticket_price
+        %td
+          %span.lead= @stats[:completed][:kids]
+      - if @event.cabin_price
+        %td
+          %span.lead= @stats[:completed][:cabins]
+      %td
+        %span.lead
           = number_to_currency(@stats[:completed][:raised], precision: 0)
     %tr.muted
       %td
