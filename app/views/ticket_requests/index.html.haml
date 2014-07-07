@@ -145,12 +145,11 @@
                   class: 'btn btn-link' do
                   %span.hover-tooltip{ title: 'Reset status of request to Pending', data: { placement: 'left' } }
                     Revert
-              - else
+              - elsif !ticket_request.completed?
                 = link_to resend_approval_event_ticket_request_path(@event, ticket_request),
                   method: :post,
-                  class: 'btn btn-info' do
+                  class: 'btn btn-link' do
                   Resend Approval
-                  %i.icon-ok-circle
           - elsif ticket_request.payment && !ticket_request.payment.received?
             .btn-group.pull-right
               = link_to mark_received_payments_path(ticket_request_id: ticket_request),
