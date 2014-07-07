@@ -137,7 +137,7 @@
                 data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s request?" } do
                 Decline
                 %i.icon-remove
-          - elsif !ticket_request.payment
+          - elsif !ticket_request.payment && !ticket_request.declined?
             .btn-group.pull-right
               = link_to resend_approval_event_ticket_request_path(@event, ticket_request),
                 method: :post,
