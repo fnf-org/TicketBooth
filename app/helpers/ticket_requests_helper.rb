@@ -6,8 +6,6 @@ module TicketRequestsHelper
       'warning'
     when 'A'
       ticket_request.payment ? 'info' : 'success'
-    when 'D', 'R'
-      'error'
     end
   end
 
