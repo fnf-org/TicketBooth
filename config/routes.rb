@@ -41,6 +41,7 @@ Cloudwatch::Application.routes.draw do
         post :decline
         post :refund
         post :resend_approval
+        post :revert_to_pending
       end
     end
   end

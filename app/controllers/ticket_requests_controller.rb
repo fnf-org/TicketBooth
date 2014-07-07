@@ -137,6 +137,14 @@ class TicketRequestsController < ApplicationController
     redirect_to event_ticket_requests_path(@event)
   end
 
+  def revert_to_pending
+    if @ticket_request.declined?
+      @ticket_request.update_attribute(:status, TicketRequest::STATUS_PENDING)
+    end
+
+    redirect_to event_ticket_requests_path(@event)
+  end
+
   def refund
     if @ticket_request.refund
       return redirect_to event_ticket_request_path(@event, @ticket_request),
