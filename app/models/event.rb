@@ -1,3 +1,4 @@
+# Core object containing all information related to an actual event being held.
 class Event < ActiveRecord::Base
   has_many :event_admins
   has_many :admins, through: :event_admins, source: :user
@@ -58,11 +59,12 @@ class Event < ActiveRecord::Base
   end
 
   def ticket_requests_open?
+    return false if Time.now >= end_time
     return true unless ticket_requests_end_time
     ticket_requests_end_time > Time.now
   end
 
-private
+  private
 
   def end_time_after_start_time
     if start_time && end_time && end_time <= start_time

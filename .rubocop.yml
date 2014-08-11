@@ -12,6 +12,9 @@ Documentation:
   Exclude:
     - db/**/*.rb
 
+GuardClause:
+  Enabled: false
+
 LineLength:
   Max: 100
 
