@@ -169,7 +169,7 @@ GEM
       activesupport (= 4.2.1)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    raindrops (0.10.0)
+    raindrops (0.13.0)
     rake (10.4.2)
     ref (1.0.5)
     responders (2.1.0)
