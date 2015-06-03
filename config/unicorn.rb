@@ -7,6 +7,7 @@ shared_path = "#{deploy_path}/shared"
 # listen on both a Unix domain socket and a TCP port,
 # we use a shorter backlog for quicker failover when busy
 listen "/tmp/#{app_name}.socket", backlog: 64
+listen 3000
 pid    "#{shared_path}/pids/unicorn.#{app_name}.pid"
 
 # Server has 4 cores
