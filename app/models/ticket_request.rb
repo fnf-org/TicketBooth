@@ -20,7 +20,7 @@ class TicketRequest < ActiveRecord::Base
   }
 
   ROLES = {
-    ROLE_UBER_COORDINATOR => 'Uber',
+    ROLE_UBER_COORDINATOR => 'Skipper/Board Member',
     ROLE_COORDINATOR => 'Major Coordinator',
     ROLE_CONTRIBUTOR => 'Planner/Assistant Coordinator',
     ROLE_VOLUNTEER => 'Volunteer',
