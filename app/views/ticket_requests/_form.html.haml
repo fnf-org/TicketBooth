@@ -152,7 +152,19 @@
         Visible by event admins only.
       = f.text_area :admin_notes, class: 'input-xxlarge', rows: 5, maxlength: 512
 
+  %hr
+
+  = f.label :agrees_to_terms, class: 'checkbox' do
+    = f.check_box :agrees_to_terms
+    I’ve read
+    = link_to 'The FnF Way', 'http://cfaea.net/the-fnf-way/'
+    and
+    = link_to 'Code of Conduct', 'https://fnforg.files.wordpress.com/2015/06/cfaea_and_fnfconductpolicy_v1-0.pdf'
+    and agree to follow the principles outlined therein
+  %br
+
   .actions
     - submit_btn_text = form_action_name == :update ? 'Update Request' : 'Submit Request'
-    = f.submit submit_btn_text, class: 'btn btn-primary btn-large',
+    = f.submit submit_btn_text, class: 'btn btn-primary btn-large', disabled: true,
+               id: 'submit-request',
                data: { disable_with: 'Submitting...' }

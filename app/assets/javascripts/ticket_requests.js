@@ -59,3 +59,11 @@ $('input[name="ticket_request[car_camping]"]')
     // Don't require explanation if not requesting anything
     $carCampingExplanationField.attr('required', carCamping);
   });
+
+$('input[name="ticket_request[agrees_to_terms]"]')
+  .on('change', function(evt) {
+    var $agreesChkbx = $(this),
+        agrees = $agreesChkbx.is(':checked');
+
+    $('#submit-request').attr('disabled', !agrees);
+  });

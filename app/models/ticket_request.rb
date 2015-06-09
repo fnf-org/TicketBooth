@@ -36,7 +36,7 @@ class TicketRequest < ActiveRecord::Base
                   :user_attributes, :user, :donation, :role, :role_explanation,
                   :car_camping, :car_camping_explanation, :previous_contribution,
                   :address_line1, :address_line2, :city, :state, :zip_code,
-                  :country_code, :admin_notes
+                  :country_code, :admin_notes, :agrees_to_terms
 
   normalize_attributes :notes, :role_explanation, :previous_contribution,
                        :admin_notes, :car_camping_explanation
@@ -71,6 +71,8 @@ class TicketRequest < ActiveRecord::Base
     numericality: { greater_than_or_equal_to: 0 }
 
   validates :donation, numericality: { greater_than_or_equal_to: 0 }
+
+  validates :agrees_to_terms, presence: true
 
   scope :completed, -> { where(status: STATUS_COMPLETED) }
   scope :pending,  -> { where(status: STATUS_PENDING) }
