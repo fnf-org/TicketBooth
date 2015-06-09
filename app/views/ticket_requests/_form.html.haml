@@ -108,14 +108,6 @@
       - unless @event.cabins_available?
         Sorry, we are sold out of cabins at this point in time.
 
-  %p
-    = f.label :car_camping do
-      = f.check_box :car_camping
-      I’m considering car camping or an RV spot
-  = f.text_area :car_camping_explanation, class: 'input-xlarge hidden',
-    placeholder: 'Short explanation of why you would need a car/RV camping spot',
-    rows: 2, maxlength: 200, required: false
-
   .control-group
 
   - if @event.allow_financial_assistance
