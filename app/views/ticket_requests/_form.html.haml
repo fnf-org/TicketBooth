@@ -12,16 +12,17 @@
       %p
         Already requested a ticket?
         = link_to 'Sign in', new_user_session_path
-      = ff.label :name, 'Full Name', class: 'required-label'
-      = ff.text_field :name, class: 'input-xlarge',
-        maxlength: User::MAX_NAME_LENGTH, required: true,
-        placeholder: 'First and last name'
 
       = ff.label :email, class: 'required-label' do
         Email (username)
       = ff.email_field :email, class: 'input-xlarge',
         maxlength: User::MAX_EMAIL_LENGTH, required: true,
         placeholder: 'email@example.com'
+
+      = ff.label :name, 'Full Name', class: 'required-label'
+      = ff.text_field :name, class: 'input-xlarge',
+        maxlength: User::MAX_NAME_LENGTH, required: true,
+        placeholder: 'First and last name'
 
       = ff.label :password, 'Create Password', class: 'required-label'
       = ff.password_field :password,
