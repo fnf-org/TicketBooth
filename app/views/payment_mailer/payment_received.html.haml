@@ -6,19 +6,24 @@
   - if @ticket_request.payment.try(:via_credit_card?)
     +
     %b= number_to_currency(extra_amount_to_charge(@ticket_request.price))
+    service charge
+  - if @ticket_request.donation && @ticket_request.donation > 0
+    +
+    %b= number_to_currency(@ticket_request.donation)
+    donation
   for
   %b= @event.name
   was received. Thank you.
 
 %p
-  We will mail out tickets around July 10. We will send you an email once we've
+  We will mail out tickets around July 12. We will send you an email once we've
   sent your tickets to you so you can keep a lookout for USPS.
 
 %p
   If it turns out you do not need all the tickets you ordered, please look to
   the Ticket Exchange on the
   = link_to 'CFAEA', 'http://cfaea.net'
-  website to sell your tickets. The exchange will open July 10, 2014.
+  website to sell your tickets. The exchange will open July 12.
 
 %p
   Got ticket questions or think something is wrong with your order? We are still
@@ -31,16 +36,20 @@
   %b Leave No Trace
 
 %p
-  This year we are doing recycling and trash a little differently, and will be
-  expecting you, as a community, to pack out what you pack in. This means that
-  if the packaging and trash came with you,
-  %b
-    %u it goes home with you.
+  As such we expect you, as a community, to pack out what you pack in. This
+  means that if the packaging and trash came with you,
+  %u
+    %b it goes home with you.
+
+%p
   If you are hosting a workshop, art project, serving food and drinks, or in
-  charge of distributing any merchandise, take that
-  %b
-    %u excess packaging and recycling home with you
-  &mdash; or better yet, don't bring any excess packaging in the first place.
+  charge of distributing any merchandise,
+  %u
+    %b take that excess packaging and recycling home with you
+  &mdash; or better yet, don't bring any excess packaging in
+  the first place.
+
+%p
   Here are some ideas to reduce your impact at Saratoga Springs and make things
   easier for all of us:
 
