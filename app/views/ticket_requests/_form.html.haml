@@ -157,9 +157,11 @@
   = f.label :agrees_to_terms, class: 'checkbox' do
     = f.check_box :agrees_to_terms
     I’ve read
-    = link_to 'The FnF Way', 'http://cfaea.net/the-fnf-way/'
+    = link_to 'The FnF Way', 'http://cfaea.net/the-fnf-way/', target: '_blank'
     and
-    = link_to 'Code of Conduct', 'https://fnforg.files.wordpress.com/2015/06/cfaea_and_fnfconductpolicy_v1-0.pdf'
+    = link_to 'Code of Conduct',
+              'https://fnforg.files.wordpress.com/2015/06/cfaea_and_fnfconductpolicy_v1-0.pdf',
+              target: '_blank'
     and agree to follow the principles outlined therein
   %br
 
