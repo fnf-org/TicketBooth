@@ -1,3 +1,34 @@
+$('#ticket_request_user_attributes_email')
+  .on('change', function(evt) {
+    var $emailField = $(this),
+        email = $emailField.val(),
+        lookupPath = $emailField.data('lookup-url');
+
+    $.get(lookupPath + '?email=' + email)
+      .success(function() {
+        $('#email-warning').removeClass('hidden');
+      })
+      .fail(function() {
+        $('#email-warning').addClass('hidden');
+      }).
+      always(function() {
+        $('#email-reset-sent').addClass('hidden');
+      });
+  });
+
+$('#password-reset-link')
+  .on('click', function(evt) {
+    var resetUrl = $(this).data('reset-url'),
+        $emailField = $('#ticket_request_user_attributes_email'),
+        email = $emailField.val();
+    $.get(resetUrl + '?email=' + email)
+      .success(function() {
+        $('#email-warning').addClass('hidden');
+        $('#email-reset-sent').removeClass('hidden');
+      });
+    evt.preventDefault();
+  });
+
 $('#ticket_request_adults, #ticket_request_kids, #ticket_request_cabins')
   .on('change keyup', function(evt) {
     var $numberField = $(this),

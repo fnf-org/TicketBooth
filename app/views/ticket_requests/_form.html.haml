@@ -17,7 +17,24 @@
         Email (username)
       = ff.email_field :email, class: 'input-xlarge',
         maxlength: User::MAX_EMAIL_LENGTH, required: true,
-        placeholder: 'email@example.com'
+        placeholder: 'email@example.com',
+        data: { lookup_url: emails_path }
+
+      .alert.alert-block.hidden#email-warning
+        %h4 Hey! It looks like you requested tickets with this email last year.
+        %p
+          = link_to 'Sign in', new_user_session_path
+          so we can fill most of this form for you!
+          %br
+          = surround '(', ')' do
+            or we can send you a
+            = link_to 'password reset email', new_user_password_path,
+                      data: { reset_url: reset_passwords_path },
+                      id: 'password-reset-link'
+      .alert.alert-block.hidden#email-reset-sent
+        %h4 Password reset email sent!
+        %p
+          Check your email!
 
       = ff.label :name, 'Full Name', class: 'required-label'
       = ff.text_field :name, class: 'input-xlarge',
