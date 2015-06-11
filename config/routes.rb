@@ -18,6 +18,8 @@ Cloudwatch::Application.routes.draw do
     end
   end
 
+  resources :emails, only: :index
+
   resources :events do
     member do
       post :add_admin
