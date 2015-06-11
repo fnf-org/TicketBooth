@@ -5,6 +5,7 @@ FactoryGirl.define do
     cabins { Random.rand(0..2) }
     needs_assistance { [true, false].sample }
     notes { Sham.words(10) }
+    agrees_to_terms true
     user
     event
 
