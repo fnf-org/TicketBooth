@@ -70,6 +70,12 @@ class TicketRequestsController < ApplicationController
 
     @user = current_user if signed_in?
     @ticket_request = TicketRequest.new
+
+    if last_ticket_request = TicketRequest.where(user_id: @user).order(:created_at).last
+      %w[address_line1 address_line2 city state zip_code country_code].each do |field|
+        @ticket_request.send(:"#{field}=", last_ticket_request.send(field))
+      end
+    end
   end
 
   def edit
