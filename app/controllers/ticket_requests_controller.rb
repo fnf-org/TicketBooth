@@ -8,6 +8,10 @@ class TicketRequestsController < ApplicationController
   before_filter :require_event_admin, except: %i[new create show]
   before_filter :set_ticket_request,  except: %i[index new create download]
 
+  http_basic_authenticate_with name: Rails.application.secrets.ticket_request_username,
+                               password: Rails.application.secrets.ticket_request_password,
+                               only: :new
+
   def index
     @ticket_requests = TicketRequest
       .includes({ event: [:price_rules] }, :payment, :user)
