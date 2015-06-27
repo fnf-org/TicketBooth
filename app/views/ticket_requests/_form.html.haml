@@ -183,7 +183,8 @@
   %br
 
   .actions
-    - submit_btn_text = form_action_name == :update ? 'Update Request' : 'Submit Request'
-    = f.submit submit_btn_text, class: 'btn btn-primary btn-large', disabled: true,
+    - is_update = form_action_name == :update
+    - submit_btn_text = is_update ? 'Update Request' : 'Submit Request'
+    = f.submit submit_btn_text, class: 'btn btn-primary btn-large', disabled: !is_update,
                id: 'submit-request',
                data: { disable_with: 'Submitting...' }
