@@ -119,8 +119,6 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
-    mandrill-rails (0.0.4)
-      activesupport (>= 3.0.3)
     method_source (0.8.1)
     mime-types (1.25.1)
     mini_magick (3.6.0)
@@ -262,7 +260,6 @@ DEPENDENCIES
   less
   less-rails
   libv8
-  mandrill-rails
   mini_magick
   pg
   protected_attributes

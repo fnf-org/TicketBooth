@@ -55,6 +55,4 @@ Cloudwatch::Application.routes.draw do
   end
 
   resources :site_admins, only: [:index, :new, :create, :destroy]
-
-  resource :webhook, controller: :web_hook, only: [:show, :create]
 end

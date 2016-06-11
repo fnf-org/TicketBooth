@@ -62,20 +62,5 @@ Cloudwatch::Application.configure do
   config.active_support.deprecation = :notify
 
   config.action_mailer.default_url_options = { host: 'helpingculture.com' }
-  config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.delivery_method = :smtp
-
-  # HACK: During asset compilation of a deploy this will fail because Rails will
-  # start up but the config file hasn't been symlinked yet. To prevent a blowup,
-  # we check for the existence of the file before trying to load it.
-  config_file = Rails.root + 'config/mandrill.yml'
-  if File.exists?(config_file)
-    smtp_config = YAML.load_file(config_file)
-    config.action_mailer.smtp_settings = %w[address port user_name password].
-      inject({}) do |hash, key|
-      hash[key.to_sym] = smtp_config[key]
-      hash
-    end
-  end
 end

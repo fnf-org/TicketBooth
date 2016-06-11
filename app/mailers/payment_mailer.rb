@@ -1,5 +1,5 @@
 class PaymentMailer < ActionMailer::Base
-  DEFAULT_SENDER_EMAIL = 'payments@helpingculture.com'
+  DEFAULT_SENDER_EMAIL = 'fnftickets@gmail.com'
   DEFAULT_REPLY_TO_EMAIL = 'fnftickets@gmail.com'
 
   add_template_helper(PaymentsHelper)

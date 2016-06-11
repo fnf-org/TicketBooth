@@ -59,5 +59,21 @@ module Cloudwatch
 
     # Force application to not access DB or load models when precompiling assets
     config.assets.initialize_on_precompile = false
+
+    # HACK: During asset compilation of a deploy this will fail because Rails will
+    # start up but the config file hasn't been symlinked yet. To prevent a blowup,
+    # we check for the existence of the file before trying to load it.
+    config_file = Rails.root + 'config/smtp.yml'
+    if File.exists?(config_file)
+      config.action_mailer.delivery_method = :smtp
+      config.action_mailer.perform_deliveries = true
+
+      smtp_config = YAML.load_file(config_file)
+      config.action_mailer.smtp_settings = %w[address port user_name password].
+        inject({}) do |hash, key|
+        hash[key.to_sym] = smtp_config[key]
+        hash
+      end
+    end
   end
 end
