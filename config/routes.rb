@@ -51,6 +51,7 @@ Cloudwatch::Application.routes.draw do
 
     resources :eald_payments, only: [:index, :new, :create] do
       collection do
+        get :complete
         get :download
       end
     end

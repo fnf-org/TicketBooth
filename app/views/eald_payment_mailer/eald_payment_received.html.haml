@@ -5,6 +5,10 @@
   Your payment of
   %b= number_to_currency(@eald_payment.amount_charged_cents.to_f / 100)
   for
+  %b= @eald_payment.early_arrival_passes
+  early arrival passes and
+  %b= @eald_payment.late_departure_passes
+  late departure passes for
   %b= @event.name
   was received. Thank you!
 

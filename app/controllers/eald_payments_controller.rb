@@ -4,7 +4,9 @@ require 'csv'
 # Handles payments for early access/late departure passes.
 class EaldPaymentsController < ApplicationController
   before_filter :set_event
-  before_filter :require_event_admin, except: %i[new create]
+  before_filter :require_event_admin, except: %i[new create complete]
+
+  include ActionView::Helpers::NumberHelper
 
   def index
     @eald_payments = EaldPayment.where(event_id: @event)
@@ -29,10 +31,14 @@ class EaldPaymentsController < ApplicationController
 
     if @eald_payment.save_and_charge!
       EaldPaymentMailer.eald_payment_received(@eald_payment).deliver
-      redirect_to @event, notice: 'Payment was successfully received.'
+      redirect_to complete_event_eald_payments_path(@event)
     else
       render action: 'new'
     end
+  end
+
+  def complete
+    render
   end
 
   def download
