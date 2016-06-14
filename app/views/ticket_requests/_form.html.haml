@@ -99,6 +99,17 @@
     data: { default_price: @event.adult_ticket_price.to_i }
   %span.help-inline.inline-price
 
+  = f.label :early_arrival_passes, 'Early arrival passes'
+  = f.number_field :early_arrival_passes, class: 'input-mini', min: 0, required: true,
+    data: { default_price: 25 }
+  %span.help-inline.inline-price
+  = help_mark help_text_for(:early_arrival)
+  = f.label :late_departure_passes, 'Late departure passes'
+  = f.number_field :late_departure_passes, class: 'input-mini', min: 0, required: true,
+    data: { default_price: 25 }
+  %span.help-inline.inline-price
+  = help_mark help_text_for(:late_departure)
+
   - if @event.kid_ticket_price
     = f.label :kids do
       Number of children you are bringing with you (not transferable to adults; babes in arms are free)

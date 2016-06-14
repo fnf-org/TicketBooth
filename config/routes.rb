@@ -3,12 +3,14 @@ Cloudwatch::Application.routes.draw do
 
   devise_for :users
 
-  get 'fnf-tickets', controller: :ticket_requests, action: :new, event_id: 3
-  get 'fnf_tickets', controller: :ticket_requests, action: :new, event_id: 3
-  get 'fnftickets', controller: :ticket_requests, action: :new, event_id: 3
-  get 'fnf', controller: :ticket_requests, action: :new, event_id: 3
-  get 'FNF', controller: :ticket_requests, action: :new, event_id: 3
-  get 'FnF', controller: :ticket_requests, action: :new, event_id: 3
+  get 'fnf-tickets', controller: :ticket_requests, action: :new, event_id: 4
+  get 'fnf_tickets', controller: :ticket_requests, action: :new, event_id: 4
+  get 'fnftickets', controller: :ticket_requests, action: :new, event_id: 4
+  get 'fnf', controller: :ticket_requests, action: :new, event_id: 4
+  get 'FNF', controller: :ticket_requests, action: :new, event_id: 4
+  get 'FnF', controller: :ticket_requests, action: :new, event_id: 4
+
+  get 'eald', controller: :eald_payments, action: :new, event_id: 4
 
   resources :payments, only: [:new, :create, :show] do
     collection do
@@ -44,6 +46,12 @@ Cloudwatch::Application.routes.draw do
         post :refund
         post :resend_approval
         post :revert_to_pending
+      end
+    end
+
+    resources :eald_payments, only: [:index, :new, :create] do
+      collection do
+        get :download
       end
     end
   end

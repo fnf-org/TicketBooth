@@ -11,10 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150609064608) do
+ActiveRecord::Schema.define(version: 20160611234315) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "eald_payments", force: :cascade do |t|
+    t.integer  "event_id"
+    t.string   "stripe_charge_id",                              null: false
+    t.integer  "amount_charged_cents",                          null: false
+    t.string   "name",                  limit: 255,             null: false
+    t.string   "email",                 limit: 255,             null: false
+    t.integer  "early_arrival_passes",              default: 0, null: false
+    t.integer  "late_departure_passes",             default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "event_admins", force: :cascade do |t|
     t.integer  "event_id"
@@ -47,6 +59,8 @@ ActiveRecord::Schema.define(version: 20150609064608) do
     t.datetime "ticket_sales_start_time"
     t.datetime "ticket_sales_end_time"
     t.datetime "ticket_requests_end_time"
+    t.decimal  "early_arrival_price",                       precision: 8, scale: 2, default: 0.0
+    t.decimal  "late_departure_price",                      precision: 8, scale: 2, default: 0.0
   end
 
   create_table "jobs", force: :cascade do |t|
@@ -117,6 +131,8 @@ ActiveRecord::Schema.define(version: 20150609064608) do
     t.boolean  "car_camping"
     t.string   "car_camping_explanation", limit: 200
     t.boolean  "agrees_to_terms"
+    t.integer  "early_arrival_passes",                                        default: 0,           null: false
+    t.integer  "late_departure_passes",                                       default: 0,           null: false
   end
 
   create_table "time_slots", force: :cascade do |t|

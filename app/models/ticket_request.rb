@@ -36,7 +36,8 @@ class TicketRequest < ActiveRecord::Base
                   :user_attributes, :user, :donation, :role, :role_explanation,
                   :car_camping, :car_camping_explanation, :previous_contribution,
                   :address_line1, :address_line2, :city, :state, :zip_code,
-                  :country_code, :admin_notes, :agrees_to_terms
+                  :country_code, :admin_notes, :agrees_to_terms,
+                  :early_arrival_passes, :late_departure_passes
 
   normalize_attributes :notes, :role_explanation, :previous_contribution,
                        :admin_notes, :car_camping_explanation
@@ -54,6 +55,12 @@ class TicketRequest < ActiveRecord::Base
 
   validates :adults, presence: true,
     numericality: { only_integer: true, greater_than: 0 }
+
+  validates :early_arrival_passes, presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :late_departure_passes, presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :kids, allow_nil: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }

@@ -2,7 +2,7 @@
   = render 'shared/form_errors', resource: @payment
 
   = f.hidden_field :ticket_request_id, value: @ticket_request.id
-  = f.hidden_field :stripe_card_token # Value set by JS
+  = f.hidden_field :stripe_card_token, id: 'stripe_card_token' # Value set by JS
 
   .field
     = label_tag :card_number, 'Credit Card Number'
@@ -41,7 +41,7 @@
     %strong.text-success#total_price{ data: { price: @ticket_request.price } }
       = number_to_currency(@payment.ticket_request.price)
     +
-    %strong.text-success
+    %strong.text-success#total_fee
       = number_to_currency(extra_amount_to_charge(@payment.ticket_request.price))
     processing fee
     to the card entered above.

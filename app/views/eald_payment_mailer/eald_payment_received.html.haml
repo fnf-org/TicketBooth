@@ -1,0 +1,20 @@
+%p
+  Hi #{@eald_payment.name},
+
+%p
+  Your payment of
+  %b= number_to_currency(@eald_payment.amount_charged_cents.to_f / 100)
+  for
+  %b= @event.name
+  was received. Thank you!
+
+%p
+  Reminder: there are no refunds for Early Arrival/Late Departure passes!
+
+%p
+  You'll be able to pick up your passes at the gate when you arrive.
+
+%p
+  More information can be found at:
+  = link_to 'Early Arrival / Late Departure Policy',
+    'https://cfaea.net/early-arrival-late-departure-policy/'

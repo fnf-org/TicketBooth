@@ -71,6 +71,14 @@
       %p.muted Leave blank for no limit
     = f.number_field :max_adult_tickets_per_request, class: 'input-mini', min: 1
 
+    = f.label :early_arrival_price, 'Early Arrival Price($)'
+    = f.number_field :early_arrival_price, class: 'input-small', required: true,
+      min: 0
+
+    = f.label :late_departure_price, 'Late Departure Price($)'
+    = f.number_field :late_departure_price, class: 'input-small', required: true,
+      min: 0
+
     = f.label :kid_ticket_price do
       Kid Ticket Price ($)
       %p.muted Keep blank if you want to sell only adult tickets

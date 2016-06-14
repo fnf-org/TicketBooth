@@ -29,8 +29,8 @@ $('#password-reset-link')
     evt.preventDefault();
   });
 
-$('#ticket_request_adults, #ticket_request_kids, #ticket_request_cabins')
-  .on('change keyup', function(evt) {
+$('#ticket_request_adults, #ticket_request_kids, #ticket_request_cabins, #ticket_request_early_arrival_passes, #ticket_request_late_departure_passes')
+  .on('change keyup mouseup', function(evt) {
     var $numberField = $(this),
         $priceDisplay = $numberField.find('+ .inline-price'),
         quantity = $numberField.val() || 0,
