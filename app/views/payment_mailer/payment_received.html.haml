@@ -16,6 +16,19 @@
   was received. Thank you!
 
 %p
+  %b Planning to arrive early or leave late?
+  %br
+  :ruby
+    extra_params = {}
+    extra_params[:early_arrival_passes] = @ticket_request.early_arrival_passes
+    extra_params[:late_departure_passes] = @ticket_request.late_departure_passes
+    extra_params[:email] = @ticket_request.user.email
+    extra_params[:name] = @ticket_request.user.name
+  = link_to 'Early Arrival / Late Departure Passes',
+    new_event_eald_payment_path(@event, extra_params)
+  must be purchased separately!
+
+%p
   We will mail out tickets around July 12. We will send you an email once we've
   sent your tickets to you so you can keep a lookout for USPS.
 
