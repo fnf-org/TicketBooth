@@ -105,14 +105,8 @@ module TicketRequestsHelper
       HELP
     when :community_fund_donation
       <<-HELP
-      We are a community of individuals from a wide range of socioeconomic
-      classes. This diversity contributes to the spirit of the event and ensures
-      that it is attended by helping, good-willed, and unique people. Every
-      year, there are individuals in this community who are not able to afford
-      the full price of a ticket. As a community, we have chosen to come
-      together and help these individuals by subsidizing the cost of their
-      ticket. By donating to this fund, you are preserving the culture of the
-      community by enabling these individuals to attend. Donating is entirely
+      Your donation to the CFAEA general fund goes toward preserving the culture
+      of our community by enabling Art! Music! Fun! Donating is entirely
       voluntary, but anything you can provide helps.
       HELP
     end
