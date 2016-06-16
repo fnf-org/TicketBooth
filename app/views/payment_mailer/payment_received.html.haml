@@ -25,7 +25,7 @@
     extra_params[:email] = @ticket_request.user.email
     extra_params[:name] = @ticket_request.user.name
   = link_to 'Early Arrival / Late Departure Passes',
-    new_event_eald_payment_path(@event, extra_params)
+    new_event_eald_payment_url(@event, extra_params)
   must be purchased separately!
 
 %p
