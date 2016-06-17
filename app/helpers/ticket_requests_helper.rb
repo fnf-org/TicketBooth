@@ -58,14 +58,14 @@ module TicketRequestsHelper
       <<-HELP
       If you need to arrive before noon on Friday and are not on the authorized
       list of staff allowed to arrive early, you'll need to purchase a pass for each      person in your vehicle. See
-      https://cfaea.net/early-arrival-late-departure-policy/
+      https://docs.google.com/document/d/1z-_O8VQFaxyQZYgV3_C0mhxM8omxBhzqWqGwbBuDeL0
       HELP
     when :late_departure
       <<-HELP
       If you need to leave after Sunday @ 2PM and are not on the authorized
       list of staff allowed to leave late, you'll need to purchase a pass for
       each person in your vehicle. See
-      https://cfaea.net/early-arrival-late-departure-policy/
+      https://docs.google.com/document/d/1z-_O8VQFaxyQZYgV3_C0mhxM8omxBhzqWqGwbBuDeL0
       HELP
     when :kids
       # HACK: This copy is specific for Cloudwatch--we'll have to add a
