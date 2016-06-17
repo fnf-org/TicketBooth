@@ -99,6 +99,15 @@
     data: { default_price: @event.adult_ticket_price.to_i }
   %span.help-inline.inline-price
 
+  %p.text-warning
+    If your role/task requires you to arrive early, you don't need to purchase Early Arrival / Late Departure passes
+    except for guests attending with you who do not
+    %i need
+    to arrive early or leave late. See the
+    = link_to 'Early Arrival / Late Departure Policy',
+      'https://docs.google.com/document/d/1z-_O8VQFaxyQZYgV3_C0mhxM8omxBhzqWqGwbBuDeL0'
+    for details
+
   = f.label :early_arrival_passes, 'Early arrival passes'
   = f.number_field :early_arrival_passes, class: 'input-mini', min: 0, required: true,
     data: { default_price: 25 }
