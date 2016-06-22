@@ -1,5 +1,5 @@
 class TicketRequestMailer < ActionMailer::Base
-  DEFAULT_SENDER_EMAIL = 'events@helpingculture.com'
+  DEFAULT_SENDER_EMAIL = 'fnftickets@gmail.com'
   DEFAULT_REPLY_TO_EMAIL = 'fnftickets@gmail.com'
 
   layout 'email'
