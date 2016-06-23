@@ -39,6 +39,22 @@ module TicketRequestsHelper
     end
   end
 
+  def eald_requested?(ticket_request)
+    ticket_request.early_arrival_passes > 0 ||
+      ticket_request.late_departure_passes > 0
+  end
+
+  # Not perfect, but looks up the email address associated with the request and
+  # checks if enough EA/LD passes have been purchased with that email address to
+  # meet or exceed the originally requested amount in the request.
+  def eald_paid?(ticket_request)
+    eald_payments = EaldPayment.where(email: ticket_request.user.email).to_a
+    ea_passes = eald_payments.sum(&:early_arrival_passes)
+    ld_passes = eald_payments.sum(&:late_departure_passes)
+    ea_passes >= ticket_request.early_arrival_passes &&
+      ld_passes >= ticket_request.late_departure_passes
+  end
+
   def price_rules_to_json(event)
     Hash[
       event.price_rules.map do |price_rule|
