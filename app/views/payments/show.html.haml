@@ -6,6 +6,10 @@
     Thanks for purchasing your ticket for #{@event.name}!
 
   %p
+    %b Tickets:
+    = @ticket_request.adults
+
+  %p
     %b Amount Paid:
     = number_to_currency(@charge.amount / 100.0)
     - if @ticket_request.donation > 0

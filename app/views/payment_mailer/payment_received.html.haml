@@ -12,6 +12,9 @@
     %b= number_to_currency(@ticket_request.donation)
     donation
   for
+  %b= @ticket_request.adults
+  = 'ticket'.pluralize(@ticket_request.adults)
+  to
   %b= @event.name
   was received. Thank you!
 

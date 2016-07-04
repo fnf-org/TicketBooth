@@ -10,7 +10,11 @@
 -# HACK: Temporarily hide this for Mo's event
 - if @event.tickets_require_approval
   %p.lead.text-success
-    Your ticket request has been approved!
+    Your request for
+    %b
+      = @ticket_request.adults
+      = 'ticket'.pluralize(@ticket_request.adults)
+    has been approved!
   %p
     Now all that's left is to pay for your tickets.
     If you are paying via credit card, fill out the form below.
