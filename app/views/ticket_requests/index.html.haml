@@ -133,6 +133,8 @@
         %td
           %span{ class: text_class_for_status(ticket_request) }
             = text_for_status ticket_request
+            - if ticket_request.payment && !ticket_request.payment.received?
+              %i.icon-comment.hover-tooltip{ title: ticket_request.payment.explanation }
         %td
           - if @event.tickets_require_approval && ticket_request.pending?
             .btn-group.pull-right
