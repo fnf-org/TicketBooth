@@ -45,13 +45,14 @@ class EaldPaymentsController < ApplicationController
     temp_csv = Tempfile.new('csv')
 
     CSV.open(temp_csv.path, 'wb') do |csv|
-      csv << %w[name email transaction_id early_arrival_passes late_departure_passes]
+      csv << %w[name email transaction_id early_arrival_passes late_departure_passes timestamp]
       EaldPayment.where(event_id: @event).find_each do |p|
         csv << [p.name,
                 p.email,
                 p.stripe_charge_id,
                 p.early_arrival_passes,
-                p.late_departure_passes]
+                p.late_departure_passes,
+                p.created_at.to_i]
       end
     end
 
