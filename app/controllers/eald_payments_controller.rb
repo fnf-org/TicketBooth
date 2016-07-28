@@ -15,6 +15,9 @@ class EaldPaymentsController < ApplicationController
   end
 
   def new
+    # TODO: Remove once we have auto shutdown enabled
+    redirect_to root_path, notice: 'EA/LD sales have closed'
+
     email = params.fetch(:email, '')
     full_name = params.fetch(:name, '')
     early_arrival_passes = params.fetch(:early_arrival_passes, 1)
