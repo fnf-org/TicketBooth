@@ -53,9 +53,9 @@ class Event < ActiveRecord::Base
   end
 
   def ticket_sales_open?
-    return false if Time.now >= end_time
     return false if ticket_sales_start_time && Time.now < ticket_sales_start_time
     return Time.now < ticket_sales_end_time if ticket_sales_end_time
+    return false if Time.now >= end_time
     true
   end
 
