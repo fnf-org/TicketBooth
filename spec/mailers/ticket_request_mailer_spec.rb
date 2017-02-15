@@ -54,8 +54,8 @@ describe TicketRequestMailer do
     context 'when the ticket request is free' do
       let(:price) { 0 }
 
-      it 'does not include the word "purchase"' do
-        body.should_not match('purchase')
+      it 'includes the correct phrase' do
+        body.should match("You're good to go!")
       end
     end
 
