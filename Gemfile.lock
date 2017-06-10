@@ -106,7 +106,6 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.6)
       mime-types (>= 1.16, < 4)
-    method_source (0.8.1)
     mime-types (1.25.1)
     mini_magick (3.6.0)
       subexec (~> 0.2.1)
@@ -231,8 +230,6 @@ GEM
       activerecord
     warden (1.2.6)
       rack (>= 1.0)
-    zeus (0.13.3)
-      method_source (>= 0.6.7)
 
 PLATFORMS
   ruby
@@ -266,7 +263,6 @@ DEPENDENCIES
   uglifier
   unicorn
   validates_existence
-  zeus
 
 BUNDLED WITH
    1.15.1
