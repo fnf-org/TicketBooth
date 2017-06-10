@@ -196,31 +196,31 @@ describe TicketRequest do
 
     context 'when the user is a site admin' do
       let(:user) { User.make! :site_admin }
-      it { should be_true }
+      it { should be true }
     end
 
     context 'when the user is the ticket request creator' do
       let(:user) { requester }
-      it { should be_true }
+      it { should be true }
     end
 
     context 'when the user is anybody else' do
       let(:user) { User.make! }
-      it { should be_false }
+      it { should be false }
     end
   end
 
   describe '#pending?' do
     context 'when the ticket request is pending' do
       subject { TicketRequest.make(:pending).pending? }
-      it { should be_true }
+      it { should be true }
     end
   end
 
   describe '#approved?' do
     context 'when the ticket request is approved' do
       subject { TicketRequest.make(:approved).approved? }
-      it { should be_true }
+      it { should be true }
     end
   end
 
@@ -245,7 +245,7 @@ describe TicketRequest do
   describe '#declined?' do
     context 'when the ticket request is declined' do
       subject { TicketRequest.make(:declined).declined? }
-      it { should be_true }
+      it { should be true }
     end
   end
 

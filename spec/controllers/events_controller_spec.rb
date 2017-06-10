@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EventsController do
+describe EventsController, type: :controller do
   let(:event) { Event.make! }
   let(:viewer) { nil }
   before { sign_in viewer if viewer }

@@ -128,22 +128,22 @@ describe Event do
 
     context 'when given a normal user' do
       let(:user) { User.make! }
-      it { should be_false }
+      it { should be false }
     end
 
     context 'when given a site admin' do
       let(:user) { User.make! :site_admin }
-      it { should be_true }
+      it { should be true }
     end
 
     context 'when given an event admin' do
       let(:user) { EventAdmin.make!(event: event).user }
-      it { should be_true }
+      it { should be true }
     end
 
     context 'when given an admin of another event' do
       let(:user) { EventAdmin.make!.user }
-      it { should be_false }
+      it { should be false }
     end
   end
 
@@ -157,7 +157,7 @@ describe Event do
 
     context 'when no cabin price is set' do
       let(:cabin_price) { nil }
-      it { should be_false }
+      it { should be false }
     end
 
     context 'when cabin price is set' do
@@ -165,14 +165,14 @@ describe Event do
 
       context 'when no maximum specified for the number of cabin requests' do
         let(:max_cabin_requests) { nil }
-        it { should be_true }
+        it { should be true }
       end
 
       context 'when a maximum is specified for the number of cabin requests' do
         let(:max_cabin_requests) { 10 }
 
         context 'when there are fewer cabins requested than the maximum' do
-          it { should be_true }
+          it { should be true }
         end
 
         context 'when the number of cabins requested has met or exceeded the maximum' do
@@ -180,7 +180,7 @@ describe Event do
             TicketRequest.make! event: event, cabins: max_cabin_requests
           end
 
-          it { should be_false }
+          it { should be false }
         end
       end
     end
@@ -204,7 +204,7 @@ describe Event do
     context 'when the event has ended' do
       let(:start_time) { 2.days.ago }
       let(:end_time) { 1.days.ago }
-      it { should be_false }
+      it { should be false }
     end
 
     context 'when the ticket sale start time is specified' do
@@ -212,40 +212,40 @@ describe Event do
         let(:ticket_sale_start_time) { 1.day.ago }
 
         context 'and the ticket sale end time is not specified' do
-          it { should be_true }
+          it { should be true }
         end
 
         context 'and the ticket sale end time has not passed' do
           let(:ticket_sale_end_time) { 1.day.from_now }
-          it { should be_true }
+          it { should be true }
         end
 
         context 'and the ticket sale end time has passed' do
           let(:ticket_sale_end_time) { 1.hour.ago }
-          it { should be_false }
+          it { should be false }
         end
       end
 
       context 'and the start time has not passed' do
         let(:ticket_sale_start_time) { 1.day.from_now }
-        it { should be_false }
+        it { should be false }
       end
     end
 
     context 'when the ticket sale start time is not specified' do
       context 'and the ticket sale end time is not specified' do
-        it { should be_true }
+        it { should be true }
       end
 
       context 'and the ticket sale end time is specified' do
         context 'and the ticket sale end time has passed' do
           let(:ticket_sale_end_time) { 1.day.ago }
-          it { should be_false }
+          it { should be false }
         end
 
         context 'and the ticket sale end time has not passed' do
           let(:ticket_sale_end_time) { 1.hour.from_now }
-          it { should be_true }
+          it { should be true }
         end
       end
     end
