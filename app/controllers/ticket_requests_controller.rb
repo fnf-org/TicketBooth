@@ -105,7 +105,7 @@ class TicketRequestsController < ApplicationController
         redirect_to new_payment_url(ticket_request_id: @ticket_request)
       end
 
-      TicketRequestMailer.request_received(@ticket_request).deliver
+      TicketRequestMailer.request_received(@ticket_request).deliver_now
     else
       render action: 'new'
     end
@@ -121,7 +121,7 @@ class TicketRequestsController < ApplicationController
 
   def approve
     if @ticket_request.approve
-      TicketRequestMailer.request_approved(@ticket_request).deliver
+      TicketRequestMailer.request_approved(@ticket_request).deliver_now
       flash[:notice] = "#{@ticket_request.user.name}'s request was approved"
     else
       flash[:error] = "Unable to approve #{@ticket_request.user.name}'s request"
@@ -142,7 +142,7 @@ class TicketRequestsController < ApplicationController
 
   def resend_approval
     if @ticket_request.awaiting_payment?
-      TicketRequestMailer.request_approved(@ticket_request).deliver
+      TicketRequestMailer.request_approved(@ticket_request).deliver_now
     end
 
     redirect_to event_ticket_requests_path(@event)
