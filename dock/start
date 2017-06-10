@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# Magic: if you create a group named "docker" the Docker daemon will
+# automatically set the group of the daemon's socket to "docker". Thus we create
+# a group with the same GID as the app's group.
+groupadd --non-unique -g $(id -g) docker
+
+# Start daemon and wait for it to be ready
+dockerd \
+  --storage-driver=overlay \
+  --icc=false \
+  >/dev/null 2>&1 &
+for i in {1..5}; do
+  if docker info >/dev/null 2>&1; then
+    break
+  fi
+  echo "Waiting for Docker daemon to start..."
+  sleep 1
+done
+
+if ! docker info >/dev/null 2>&1; then
+  echo "Unable to start Docker daemon!"
+  exit 1
+fi
+
+# Install gems if necessary
+bundle check >/dev/null || bundle install
+
+exit_handler="trap 'docker-compose stop' EXIT INT QUIT TERM"
+eval "$exit_handler"
+docker-compose pull
+docker-compose up -d postgres
+
+exec bash --rcfile <(echo "$exit_handler") -il

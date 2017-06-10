@@ -14,21 +14,21 @@ you need to do in order to get started.
 
   * Clone this repository: `git clone git@github.com:sds/helpingculture.git`
 
-  * Ensure Ruby 2.1.2 is installed; you can check this by running
-    `ruby --version` from the command-line. The easiest way to install this
-    specific version of Ruby (and to manage multiple versions of Ruby on a
-    single system if you're developing other projects on different Ruby
-    versions) is to use [rbenv](https://github.com/sstephenson/rbenv/).
-    However, if you have a clean system and don't intend on doing anything
-    except do HelpingCulture development on it, you can get away with upgrading
-    your system-wide Ruby.
+  * Install [Dock](https://github.com/brigade/dock):
+    ```bash
+    brew cask install docker
+    brew tap brigade/dock
+    brew install dock
+    ```
 
-  * Install Bundler, which manages the gems (Ruby libraries) that
-    HelpingCulture uses: `gem install bundler`
+    If you're on macOS, remember to follow the
+    [additional instructions for setting up Dock](https://github.com/brigade/dock#docker-for-mac).
 
-  * Install all gem dependencies using Bundler: `bundle install`
-
-  * Install Postgres 9.1.3; you can check this by running `psql --version`
+  * Open a shell to the Dockerized environment using Dock:
+    ```bash
+    cd path/to/repo
+    dock
+    ```
 
   * Create a database user for the HelpingCulture Rails application to use when
     connecting to Postgres. Connect as the `postgres` (or whatever user has

@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  rails:
+    depends_on:
+      - postgres
+    build:
+      context: .
+    network_mode: host
+    volumes:
+      - '.:/workspace'
+      - '/usr/local/bundle:/usr/local/bundle'
+    working_dir: '/workspace'
+    command: ['bin/rails', 'server', '-b', '0.0.0.0']
+
+  postgres:
+    image: 'postgres:9.5.2'
+    environment:
+      POSTGRES_USER: helpingculture
+      POSTGRES_PASSWORD:
+      POSTGRES_DB: helpingculture
+    network_mode: host
+    volumes:
+      - 'postgres:/var/lib/postgresql/data'
+
+# Define names of volumes that you want to be preserved between container restarts.
+# These are referenced above in the `volumes` section of the service.
+volumes:
+  postgres:
