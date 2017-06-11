@@ -12,7 +12,7 @@ class TicketRequest < ActiveRecord::Base
   ]
 
   TICKET_LIMITS = {
-    (ROLE_UBER_COORDINATOR = 'uber_coordinator') => 8,
+    (ROLE_UBER_COORDINATOR = 'uber_coordinator') => 6,
     (ROLE_COORDINATOR = 'coordinator') => 6,
     (ROLE_CONTRIBUTOR = 'contributor') => 4,
     (ROLE_VOLUNTEER = 'volunteer') => 2,
@@ -21,8 +21,8 @@ class TicketRequest < ActiveRecord::Base
 
   ROLES = {
     ROLE_UBER_COORDINATOR => 'Skipper/Board Member',
-    ROLE_COORDINATOR => 'Major Coordinator',
-    ROLE_CONTRIBUTOR => 'Planner/Assistant Coordinator',
+    ROLE_COORDINATOR => 'Lead Coordinator',
+    ROLE_CONTRIBUTOR => 'Planner',
     ROLE_VOLUNTEER => 'Volunteer',
     ROLE_OTHER => 'Other',
   }

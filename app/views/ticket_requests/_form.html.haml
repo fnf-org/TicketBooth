@@ -71,11 +71,16 @@
           data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_OTHER] }
         = TicketRequest::ROLES[TicketRequest::ROLE_OTHER]
     %p.muted.role-explanation{ class: TicketRequest::ROLE_VOLUNTEER }
-      I plan to help out by working one or more shifts at the event
+      You are working one or more shifts at the event
     %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_CONTRIBUTOR }
-      I am bringing gear, driving trucks, leading the cooking of a meal, etc.
+      Working before and during or during and after; actively involved in
+      planning the campout e.g. a coordinator assistant or apprentice. Bringing
+      gear, driving trucks, art committee, etc.
     %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_COORDINATOR }
-      I am listed on the coordinator sheet
+      Listed on the Coordinator Sheet as someone who is leading a major area of
+      campout planning; working before, during, and after the event including
+      things like resource coordination, significant gear prep, pre/post-site
+      visits, etc.
     %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_OTHER }
       Art Grantee or DJ
     = f.text_area :role_explanation, class: 'input-xlarge hidden',
