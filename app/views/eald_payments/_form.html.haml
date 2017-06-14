@@ -47,15 +47,17 @@
   %hr
 
   %p
+    - extra = extra_amount_to_charge(@eald_payment.price)
     Clicking "Pay Now" will charge
     %strong.text-success#eald_total_price{ data: { price: @eald_payment.price } }
       = number_to_currency(@eald_payment.price)
-    +
-    %strong.text-success#eald_fee
-      = number_to_currency(extra_amount_to_charge(@eald_payment.price))
-    processing fee
-    to the card entered above.
-    = help_mark 'This fee covers the the fees charged by our credit card processor, Stripe.'
+    - if extra > 0
+      +
+      %strong.text-success#eald_fee
+        = number_to_currency(extra)
+      processing fee
+      to the card entered above.
+      = help_mark 'This fee covers the the fees charged by our credit card processor, Stripe.'
 
   %p
     Early Arrival / Late Departure passes are
