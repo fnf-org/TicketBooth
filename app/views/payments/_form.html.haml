@@ -40,12 +40,14 @@
     Clicking "Pay Now" will charge
     %strong.text-success#total_price{ data: { price: @ticket_request.price } }
       = number_to_currency(@payment.ticket_request.price)
-    +
-    %strong.text-success#total_fee
-      = number_to_currency(extra_amount_to_charge(@payment.ticket_request.price))
-    processing fee
-    to the card entered above.
-    = help_mark 'This fee covers the the fees charged by our credit card processor, Stripe.'
+    - extra = extra_amount_to_charge(@payment.ticket_request.price)
+    - if extra > 0
+      +
+      %strong.text-success#total_fee
+        = number_to_currency(extra)
+      processing fee
+      to the card entered above.
+      = help_mark 'This fee covers the the fees charged by our credit card processor, Stripe.'
 
   %p
     By purchasing tickets to an FnF event, you acknowledge that you have read
