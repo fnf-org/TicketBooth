@@ -24,7 +24,6 @@ gem 'thin'
 gem 'twitter-bootstrap-rails', '~> 2.2.7'
 gem 'uglifier'
 gem 'unicorn'
-gem 'validates_existence'
 
 group :development do
   gem 'capistrano'

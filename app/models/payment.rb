@@ -16,7 +16,7 @@ class Payment < ActiveRecord::Base
 
   attr_accessor :stripe_card_token
 
-  validates :ticket_request, presence: true, existence: true
+  validates :ticket_request, presence: true
   validates :status, presence: true, inclusion: { in: STATUSES }
 
   def save_and_charge!

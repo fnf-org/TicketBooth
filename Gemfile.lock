@@ -246,8 +246,6 @@ GEM
     unicorn (5.4.0)
       kgio (~> 2.6)
       raindrops (~> 0.7)
-    validates_existence (0.9.2)
-      activerecord
     warden (1.2.7)
       rack (>= 1.0)
 
@@ -282,7 +280,6 @@ DEPENDENCIES
   twitter-bootstrap-rails (~> 2.2.7)
   uglifier
   unicorn
-  validates_existence
 
 BUNDLED WITH
    1.16.2

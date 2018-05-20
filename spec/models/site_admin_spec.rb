@@ -10,14 +10,6 @@ describe SiteAdmin do
       it { should accept_values_for(:user_id, User.make!.id) }
       it { should_not accept_values_for(:user_id, nil) }
 
-      context 'when the user does not exist' do
-        let(:user) { User.make! }
-
-        before { user.destroy }
-
-        it { should_not accept_values_for(:user_id, user.id) }
-      end
-
       context 'when the user is already a site admin' do
         let(:user) { User.make! :site_admin }
 

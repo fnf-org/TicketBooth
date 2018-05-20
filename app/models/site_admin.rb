@@ -3,6 +3,6 @@ class SiteAdmin < ActiveRecord::Base
 
   belongs_to :user
 
-  validates :user_id, existence: true,
+  validates :user_id, presence: true,
     uniqueness: { message: 'already site admin' }
 end

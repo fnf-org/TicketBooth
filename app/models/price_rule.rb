@@ -3,7 +3,7 @@ class PriceRule < ActiveRecord::Base
 
   attr_accessible :event, :price, :trigger_value, :type
 
-  validates :event_id, existence: true
+  validates :event_id, presence: true
   validates :price,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :trigger_value, presence: true,

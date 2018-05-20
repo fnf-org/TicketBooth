@@ -9,7 +9,7 @@ class EaldPayment < ActiveRecord::Base
 
   attr_accessible :event_id, :name, :email, :early_arrival_passes, :late_departure_passes, :stripe_card_token
 
-  validates :event_id, presence: true, existence: true
+  validates :event_id, presence: true
 
   validates :early_arrival_passes, presence: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }

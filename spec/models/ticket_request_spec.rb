@@ -21,12 +21,6 @@ describe TicketRequest do
         it { should be_valid }
       end
 
-      context 'when user does not exist' do
-        let(:user) { User.make! }
-        before { user.delete }
-        it { should_not be_valid }
-      end
-
       context 'when user is new' do
         let(:user) { User.make }
         it { should be_valid }
@@ -62,16 +56,6 @@ describe TicketRequest do
 
       context 'when not present' do
         let(:event) { nil }
-        it { should_not be_valid }
-      end
-
-      context 'when event does not exist' do
-        let(:event) { Event.make! }
-
-        before do
-          event.delete
-        end
-
         it { should_not be_valid }
       end
 
