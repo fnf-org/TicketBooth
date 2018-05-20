@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   # Allow user to log in via authentication token
-  before_filter :authenticate_user_from_token!
+  before_action :authenticate_user_from_token!
 
   # Allow additional parameters to be passed to Devise-managed controllers
   before_action :configure_permitted_parameters, if: :devise_controller?

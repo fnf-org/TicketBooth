@@ -1,6 +1,6 @@
 class ShiftsController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :set_event
+  before_action :authenticate_user!
+  before_action :set_event
 
   def index
     @ticket_request = @event.ticket_requests.where(user_id: current_user).first

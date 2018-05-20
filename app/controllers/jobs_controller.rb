@@ -1,7 +1,7 @@
 class JobsController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :set_event
-  before_filter :require_event_admin
+  before_action :authenticate_user!
+  before_action :set_event
+  before_action :require_event_admin
 
   def index
     @jobs = Job.where(event_id: @event).order(:id)

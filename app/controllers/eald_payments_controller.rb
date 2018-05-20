@@ -3,8 +3,8 @@ require 'csv'
 
 # Handles payments for early access/late departure passes.
 class EaldPaymentsController < ApplicationController
-  before_filter :set_event
-  before_filter :require_event_admin, except: %i[new create complete]
+  before_action :set_event
+  before_action :require_event_admin, except: %i[new create complete]
 
   include ActionView::Helpers::NumberHelper
 

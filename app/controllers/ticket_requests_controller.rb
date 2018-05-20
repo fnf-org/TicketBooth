@@ -3,10 +3,10 @@ require 'csv'
 
 # Manage all pages related to ticket requests.
 class TicketRequestsController < ApplicationController
-  before_filter :authenticate_user!, except: %i[new create]
-  before_filter :set_event
-  before_filter :require_event_admin, except: %i[new create show]
-  before_filter :set_ticket_request,  except: %i[index new create download]
+  before_action :authenticate_user!, except: %i[new create]
+  before_action :set_event
+  before_action :require_event_admin, except: %i[new create show]
+  before_action :set_ticket_request,  except: %i[index new create download]
 
   # Uncomment this if we start getting too many requests
   #http_basic_authenticate_with name: Rails.application.secrets.ticket_request_username,

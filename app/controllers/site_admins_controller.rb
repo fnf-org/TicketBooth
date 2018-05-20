@@ -1,6 +1,6 @@
 class SiteAdminsController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :require_site_admin
+  before_action :authenticate_user!
+  before_action :require_site_admin
 
   def index
     @site_admins = SiteAdmin.includes(:user).all

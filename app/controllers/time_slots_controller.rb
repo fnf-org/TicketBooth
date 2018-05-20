@@ -1,9 +1,9 @@
 class TimeSlotsController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :set_event
-  before_filter :require_event_admin
-  before_filter :set_job
-  before_filter :set_time_slot, only: [:edit, :update, :destroy]
+  before_action :authenticate_user!
+  before_action :set_event
+  before_action :require_event_admin
+  before_action :set_job
+  before_action :set_time_slot, only: [:edit, :update, :destroy]
 
   def new
     # If a previous time slot exists, pre-populate info to match that one, but
