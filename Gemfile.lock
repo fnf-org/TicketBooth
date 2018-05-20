@@ -38,17 +38,16 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
-    airbrussh (1.3.0)
-      sshkit (>= 1.6.1, != 1.7.0)
     arel (6.0.4)
     attribute_normalizer (1.2.0)
     bcrypt (3.1.12)
     builder (3.2.3)
-    capistrano (3.10.2)
-      airbrussh (>= 1.0.0)
-      i18n
-      rake (>= 10.0.0)
-      sshkit (>= 1.9.0)
+    capistrano (2.15.9)
+      highline
+      net-scp (>= 1.0.0)
+      net-sftp (>= 2.0.0)
+      net-ssh (>= 2.0.14)
+      net-ssh-gateway (>= 1.1.0)
     carrierwave (1.2.2)
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
@@ -96,6 +95,7 @@ GEM
     haml (5.0.4)
       temple (>= 0.8.0)
       tilt
+    highline (1.7.10)
     i18n (0.9.5)
       concurrent-ruby (~> 1.0)
     i18n_data (0.8.0)
@@ -130,7 +130,11 @@ GEM
     multipart-post (2.0.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
+    net-sftp (2.1.2)
+      net-ssh (>= 2.6.5)
     net-ssh (4.2.0)
+    net-ssh-gateway (2.0.0)
+      net-ssh (>= 4.0.0)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
     orm_adapter (0.5.0)
@@ -217,9 +221,6 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    sshkit (1.16.0)
-      net-scp (>= 1.1.2)
-      net-ssh (>= 2.8.0)
     stripe (3.15.0)
       faraday (~> 0.10)
     temple (0.8.0)
@@ -255,7 +256,7 @@ PLATFORMS
 DEPENDENCIES
   accept_values_for
   attribute_normalizer
-  capistrano
+  capistrano (< 3)
   carrierwave
   coffee-rails
   commonjs

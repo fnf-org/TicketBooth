@@ -26,7 +26,7 @@ gem 'uglifier'
 gem 'unicorn'
 
 group :development do
-  gem 'capistrano'
+  gem 'capistrano', '< 3'
 end
 
 group :test do
