@@ -1,8 +1,6 @@
 class PhotoUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
-  process :set_content_type
-
   # Prevent enormous photos from being stored
   process resize_to_limit: [1000, 1000]
 
