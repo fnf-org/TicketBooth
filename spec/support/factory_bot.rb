@@ -1,46 +1,46 @@
-require 'factory_girl'
+require 'factory_bot'
 
-# Convenience methods added to invoke Factory Girl factories by sending
+# Convenience methods added to invoke FactoryBot factories by sending
 # messages directly to ActiveRecord classes.
 #
-# We use these rather than the one provided by Factory Girl itself
-# (factory_girl/syntax/make) because we want wrappers for all four methods,
+# We use these rather than the one provided by FactoryBot itself
+# (factory_bot/syntax/make) because we want wrappers for all four methods,
 # not just "create", and we also want the option of customising the returned
 # instance via a block.
 class ActiveRecord::Base
   class << self
 
-    # Wrapper for FactoryGirl.build
+    # Wrapper for FactoryBot.build
     def make(*args, &block)
       make_with(name.underscore, *args, &block)
     end
 
     # Like #make, but allows the caller to explicitly specify a factory name.
     def make_with(factory_name, *args, &block)
-      factory_girl_delegate :build, factory_name, *args, &block
+      factory_bot_delegate :build, factory_name, *args, &block
     end
 
-    # Wrapper for FactoryGirl.build_list
+    # Wrapper for FactoryBot.build_list
     def make_list(count, *args, &block)
-      factory_girl_delegate :build_list, name.underscore, count, *args, &block
+      factory_bot_delegate :build_list, name.underscore, count, *args, &block
     end
 
-    # Wrapper for FactoryGirl.create
+    # Wrapper for FactoryBot.create
     def make!(*args, &block)
       make_with!(name.underscore, *args, &block)
     end
 
     # Like #make!, but allows the caller to explicitly specify a factory name.
     def make_with!(factory_name, *args, &block)
-      factory_girl_delegate :create, factory_name, *args, &block
+      factory_bot_delegate :create, factory_name, *args, &block
     end
 
-    # Wrapper for FactoryGirl.build_list
+    # Wrapper for FactoryBot.build_list
     def make_list!(count, *args, &block)
-      factory_girl_delegate :create_list, name.underscore, count, *args, &block
+      factory_bot_delegate :create_list, name.underscore, count, *args, &block
     end
 
-    # Wrapper for FactoryGirl.attributes_for
+    # Wrapper for FactoryBot.attributes_for
     def valid_attributes(*args, &block)
       valid_attributes_with(name.underscore, *args, &block)
     end
@@ -48,20 +48,20 @@ class ActiveRecord::Base
     # Like #valid_attributes, but allows the caller to explicitly specify a
     # factory name.
     def valid_attributes_with(factory_name, *args, &block)
-      factory_girl_delegate :attributes_for, factory_name, *args, &block
+      factory_bot_delegate :attributes_for, factory_name, *args, &block
     end
 
   private
 
-    def factory_girl_delegate(method, factory_name, *args, &block)
-      object = FactoryGirl.send method, factory_name, *args
+    def factory_bot_delegate(method, factory_name, *args, &block)
+      object = FactoryBot.__send__(method, factory_name, *args)
       yield object if block_given?
       object
     end
   end
 end
 
-# Shams were a feature of Factory Girl until version 4.0. This is a thin wrapper
+# Shams were a feature of Factory Bot until version 4.0. This is a thin wrapper
 # that allows us to continue using Shams (as they're very simple).
 module Sham
   def self.method_missing(method, *args, &block)
@@ -70,11 +70,11 @@ module Sham
     end
 
     if block_given? # defining a Sham
-      FactoryGirl.define do
+      FactoryBot.define do
         sequence method, &block
       end
     else # using a Sham
-      FactoryGirl.generate method
+      FactoryBot.generate method
     end
   end
 end

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :ticket_request do
     adults { Random.rand(1..4) }
     kids { Random.rand(0..2) }

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :user do
     name { Sham.words(2) }
     email { Sham.email_address }
