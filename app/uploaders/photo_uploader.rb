@@ -1,5 +1,4 @@
 class PhotoUploader < CarrierWave::Uploader::Base
-  include CarrierWave::MimeTypes
   include CarrierWave::MiniMagick
 
   process :set_content_type
