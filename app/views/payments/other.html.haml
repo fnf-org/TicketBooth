@@ -4,42 +4,21 @@
   If
   = link_to 'paying via credit card',
     new_payment_path(ticket_request_id: @ticket_request.id)
-  is not an option, you can mail a check or other form of payment of
-  %strong.text-success= number_to_currency(@ticket_request.price)
-  to:
-
-%address
-  %b FnF Tickets c/o Becky Schomaker
-  %br
-  2004 10th Ave
-  %br
-  Oakland, CA 94606
-
-%p
-  Please make checks payable to
-  = succeed '.' do
-    %b CFAEA
-  %br
-  %b No post-dating!
+  is not an option, we can accept check or other forms of payment.
 
 = form_tag sent_payments_path(ticket_request_id: @ticket_request.id) do
   %p
-    Briefly describe how you intend to pay for your ticket, then click the
-    button once you've sent it.
-    %br
-    Please include details if sending via Paypal or
-    similar, e.g. the email it was sent from.
-    %br
-    When in doubt, contact us!
+    Briefly describe below how you intend to pay for your ticket.
+    Confirm that your email address in our system is correct so we can contact you.
 
   = text_area_tag(:explanation, nil, class: 'input-xxlarge', rows: 4, required: true)
 
   .actions
-    = submit_tag("✓ I've sent my payment", class: 'btn btn-primary')
+    = submit_tag('Submit request', class: 'btn btn-primary')
 
 %p.lead
-  We will send you a confirmation email when your payment has been received.
+  After submitting your request, we will contact you to arrange payment details.
 
 %p
-  If you don't receive confirmation within a week or two since you sent it, contact us at:
+  When in doubt, contact us at
   = mail_to 'fnftickets@gmail.com'
