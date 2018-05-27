@@ -15,6 +15,11 @@ class PaymentsController < ApplicationController
     return redirect_to payment_path(@ticket_request.payment) if @ticket_request.payment
     @event = @ticket_request.event
 
+    unless @ticket_request.all_guests_specified?
+      return redirect_to edit_event_ticket_request_path(@event, @ticket_request),
+             alert: 'You must fill out all your guests before you can purchase a ticket'
+    end
+
     unless @event.ticket_sales_open?
       return redirect_to event_ticket_request_path(@event, @ticket_request),
              alert: "Sorry, ticket sales for #{@event.name} have closed."

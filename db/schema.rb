@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160611234315) do
+ActiveRecord::Schema.define(version: 20180527021019) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,28 +39,28 @@ ActiveRecord::Schema.define(version: 20160611234315) do
   add_index "event_admins", ["user_id"], name: "index_event_admins_on_user_id", using: :btree
 
   create_table "events", force: :cascade do |t|
-    t.string   "name"
+    t.string   "name",                          limit: 255
     t.datetime "start_time"
     t.datetime "end_time"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "adult_ticket_price",            precision: 8, scale: 2
-    t.decimal  "kid_ticket_price",              precision: 8, scale: 2
-    t.decimal  "cabin_price",                   precision: 8, scale: 2
+    t.decimal  "adult_ticket_price",                        precision: 8, scale: 2
+    t.decimal  "kid_ticket_price",                          precision: 8, scale: 2
+    t.decimal  "cabin_price",                               precision: 8, scale: 2
     t.integer  "max_adult_tickets_per_request"
     t.integer  "max_kid_tickets_per_request"
     t.integer  "max_cabins_per_request"
     t.integer  "max_cabin_requests"
-    t.string   "photo"
-    t.boolean  "tickets_require_approval",                              default: true,  null: false
-    t.boolean  "require_mailing_address",                               default: false, null: false
-    t.boolean  "allow_financial_assistance",                            default: false, null: false
-    t.boolean  "allow_donations",                                       default: false, null: false
+    t.string   "photo",                         limit: 255
+    t.boolean  "tickets_require_approval",                                          default: true,  null: false
+    t.boolean  "require_mailing_address",                                           default: false, null: false
+    t.boolean  "allow_financial_assistance",                                        default: false, null: false
+    t.boolean  "allow_donations",                                                   default: false, null: false
     t.datetime "ticket_sales_start_time"
     t.datetime "ticket_sales_end_time"
     t.datetime "ticket_requests_end_time"
-    t.decimal  "early_arrival_price",           precision: 8, scale: 2, default: 0.0
-    t.decimal  "late_departure_price",          precision: 8, scale: 2, default: 0.0
+    t.decimal  "early_arrival_price",                       precision: 8, scale: 2, default: 0.0
+    t.decimal  "late_departure_price",                      precision: 8, scale: 2, default: 0.0
   end
 
   create_table "jobs", force: :cascade do |t|
@@ -77,13 +77,13 @@ ActiveRecord::Schema.define(version: 20160611234315) do
     t.string   "status",            limit: 1,   default: "P", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "explanation"
+    t.string   "explanation",       limit: 255
   end
 
   create_table "price_rules", force: :cascade do |t|
-    t.string   "type"
+    t.string   "type",          limit: 255
     t.integer  "event_id"
-    t.decimal  "price",         precision: 8, scale: 2
+    t.decimal  "price",                     precision: 8, scale: 2
     t.integer  "trigger_value"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -118,7 +118,7 @@ ActiveRecord::Schema.define(version: 20160611234315) do
     t.decimal  "special_price",                       precision: 8, scale: 2
     t.integer  "event_id",                                                                          null: false
     t.decimal  "donation",                            precision: 8, scale: 2, default: 0.0
-    t.string   "role",                                                        default: "volunteer", null: false
+    t.string   "role",                    limit: 255,                         default: "volunteer", null: false
     t.string   "role_explanation",        limit: 200
     t.string   "previous_contribution",   limit: 250
     t.string   "address_line1",           limit: 200
@@ -133,6 +133,7 @@ ActiveRecord::Schema.define(version: 20160611234315) do
     t.boolean  "agrees_to_terms"
     t.integer  "early_arrival_passes",                                        default: 0,           null: false
     t.integer  "late_departure_passes",                                       default: 0,           null: false
+    t.text     "guests"
   end
 
   create_table "time_slots", force: :cascade do |t|
@@ -145,26 +146,26 @@ ActiveRecord::Schema.define(version: 20160611234315) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                                         null: false
-    t.string   "encrypted_password",                            null: false
-    t.string   "reset_password_token"
+    t.string   "email",                  limit: 255,             null: false
+    t.string   "encrypted_password",     limit: 255,             null: false
+    t.string   "reset_password_token",   limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                     default: 0
+    t.integer  "sign_in_count",                      default: 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
-    t.string   "confirmation_token"
+    t.string   "current_sign_in_ip",     limit: 255
+    t.string   "last_sign_in_ip",        limit: 255
+    t.string   "confirmation_token",     limit: 255
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
-    t.string   "unconfirmed_email"
-    t.integer  "failed_attempts",                   default: 0
-    t.string   "unlock_token"
+    t.string   "unconfirmed_email",      limit: 255
+    t.integer  "failed_attempts",                    default: 0
+    t.string   "unlock_token",           limit: 255
     t.datetime "locked_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",                   limit: 70,             null: false
+    t.string   "name",                   limit: 70,              null: false
     t.string   "authentication_token",   limit: 64
   end
 

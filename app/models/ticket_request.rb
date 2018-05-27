@@ -30,6 +30,7 @@ class TicketRequest < ActiveRecord::Base
   belongs_to :user
   belongs_to :event
   has_one :payment
+  serialize :guests, Array
 
   attr_accessible :user_id, :adults, :kids, :cabins, :needs_assistance,
                   :notes, :status, :special_price, :event_id,
@@ -37,7 +38,7 @@ class TicketRequest < ActiveRecord::Base
                   :car_camping, :car_camping_explanation, :previous_contribution,
                   :address_line1, :address_line2, :city, :state, :zip_code,
                   :country_code, :admin_notes, :agrees_to_terms,
-                  :early_arrival_passes, :late_departure_passes
+                  :early_arrival_passes, :late_departure_passes, :guests
 
   normalize_attributes :notes, :role_explanation, :previous_contribution,
                        :admin_notes, :car_camping_explanation
@@ -74,6 +75,8 @@ class TicketRequest < ActiveRecord::Base
 
   validates :notes, length: { maximum: 500 }
 
+  validates :guests, length: { maximum: 8 }
+
   validates :special_price, allow_nil: true,
     numericality: { greater_than_or_equal_to: 0 }
 
@@ -93,6 +96,9 @@ class TicketRequest < ActiveRecord::Base
       self.status ||= event.tickets_require_approval ? STATUS_PENDING
                                                      : STATUS_AWAITING_PAYMENT
     end
+
+    # Remove empty guests
+    self.guests = Array(self.guests).map { |guest| guest.strip.presence }.compact
   end
 
   def can_view?(user)
@@ -185,6 +191,18 @@ class TicketRequest < ActiveRecord::Base
 
   def total_tickets
     adults + kids
+  end
+
+  def guest_count
+    total_tickets - 1
+  end
+
+  def guests_specified
+    Array(guests).size
+  end
+
+  def all_guests_specified?
+    guests_specified == guest_count
   end
 
   def country_name

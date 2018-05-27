@@ -57,9 +57,9 @@
             data: { confirm: "Are you sure you want to refund #{@ticket_request.user.name}'s ticket? This cannot be undone!",
                     disable_with: 'Refunding...' }
     - else
-      Not yet received.
+      Not yet received
       - if @event.ticket_sales_open?
-        = link_to 'Purchase your ticket now',
+        = link_to @ticket_request.all_guests_specified? ? 'Purchase your ticket now' : 'All guests must be filled out before purchasing ticket',
           new_payment_path(ticket_request_id: @ticket_request),
           class: 'btn btn-small btn-primary'
       - else
@@ -131,6 +131,14 @@
     %b Notes:
     = @ticket_request.notes
 
+- if @ticket_request.guest_count > 0
+  %p
+    %b= 'Guest'.pluralize(@ticket_request.guest_count)
+    %br
+    - @ticket_request.guest_count.times do |guest_id|
+      = Array(@ticket_request.guests)[guest_id] || 'Unspecified'
+      %br
+
 - if @event.admin?(current_user) && @ticket_request.admin_notes.present?
   .well
     %h4 Ticket Coordinator Notes:
@@ -151,12 +159,13 @@
       target: '_blank'
     must be purchased separately!
 
-- if @event.admin?(current_user)
-  .btn-group
+.btn-group
+  - if @event.admin?(current_user)
     = link_to event_ticket_requests_path(@event), class: 'btn' do
       %i.icon-arrow-left
       All Requests
 
-    = link_to edit_event_ticket_request_path(@event, @ticket_request), class: 'btn' do
-      Edit
+  - if @event.admin?(current_user) || @ticket_request.guest_count > 0
+    = link_to edit_event_ticket_request_path(@event, @ticket_request), class: 'btn btn-success' do
+      = @event.admin?(current_user) ? 'Edit' : 'Edit guests'
       %i.icon-edit

@@ -5,7 +5,7 @@ require 'csv'
 class TicketRequestsController < ApplicationController
   before_action :authenticate_user!, except: %i[new create]
   before_action :set_event
-  before_action :require_event_admin, except: %i[new create show]
+  before_action :require_event_admin, except: %i[new create show edit update]
   before_action :set_ticket_request,  except: %i[index new create download]
 
   # Uncomment this if we start getting too many requests
@@ -112,6 +112,11 @@ class TicketRequestsController < ApplicationController
   end
 
   def update
+    # Allow ticket request to edit guests and nothing else
+    unless @event.admin?(current_user)
+      params[:ticket_request].slice!(:guests)
+    end
+
     if @ticket_request.update_attributes(params[:ticket_request])
       redirect_to event_ticket_request_path(@event, @ticket_request)
     else
