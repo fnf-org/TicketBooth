@@ -20,4 +20,8 @@
 
 %hr
 
-= render 'form'
+- if (@event.start_time - Time.now) < 2.weeks
+  = render 'form'
+- else
+  %p.lead
+    Early Arrival / Late Departure passes will be available for purchase closer to the campout date
