@@ -200,6 +200,10 @@
     %hr
 
     - unless is_update
+      %p
+        Every year, every attendee, no matter how long they've been coming, must
+        acquaint themselves with our values and Code of Conduct. Please acknowledge
+        you've done so this year.
       = f.label :agrees_to_terms, class: 'checkbox' do
         = f.check_box :agrees_to_terms
         I’ve read
