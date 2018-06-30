@@ -38,19 +38,6 @@
     %span.text-success= number_to_currency(@payment.ticket_request.price)
     is received.
 
-- if @event.require_mailing_address
-  %p
-    Your order will be mailed to:
-    %address
-      = @ticket_request.address_line1
-      - if @ticket_request.address_line2.present?
-        %br
-        = @ticket_request.address_line2
-      %br
-      #{@ticket_request.city}, #{@ticket_request.state}, #{@ticket_request.zip_code}
-      %br
-      = @ticket_request.country_name
-
 %p
   %b Planning to arrive early or leave late?
   %br
