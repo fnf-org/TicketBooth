@@ -3,7 +3,7 @@
 %p
   Your payment of
   %b= number_to_currency(@ticket_request.price)
-  - if @ticket_request.payment.try(:via_credit_card?)
+  - if @ticket_request.payment.try(:via_credit_card?) && extra_amount_to_charge(@ticket_request.price) > 0
     +
     %b= number_to_currency(extra_amount_to_charge(@ticket_request.price))
     service charge
