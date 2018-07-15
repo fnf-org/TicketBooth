@@ -5,15 +5,8 @@
     %tr
       %th Name
       %th Guests
-      %th Paid?
   %tbody
     - @ticket_requests.each do |ticket_request|
       %tr
         %td= ticket_request.user.name
         %td= ticket_request.guests.join(', ')
-        %td
-          - if ticket_request.payment
-            - if ticket_request.payment.in_progress?
-              %span In Progress
-          - else
-            %span No
