@@ -5,7 +5,7 @@
     %tr
       %th Name
       %th Guests
-      %th Paid
+      %th Paid?
   %tbody
     - @ticket_requests.each do |ticket_request|
       %tr
@@ -15,7 +15,5 @@
           - if ticket_request.payment
             - if ticket_request.payment.in_progress?
               %span In Progress
-            - elsif ticket_request.payment.received?
-              %span Yes
           - else
             %span No
