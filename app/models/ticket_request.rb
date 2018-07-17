@@ -202,7 +202,7 @@ class TicketRequest < ActiveRecord::Base
   end
 
   def all_guests_specified?
-    guests_specified == guest_count
+    guests_specified >= guest_count
   end
 
   def country_name
