@@ -94,12 +94,7 @@ class EventsController < ApplicationController
   end
 
   def guest_list
-    @ticket_requests = TicketRequest.
-      includes(:payment, :user).
-      where(event_id: @event).
-      order('created_at DESC').
-      completed.
-      sort_by { |ticket_request| ticket_request.user.name.upcase }
+    @ticket_requests = completed_ticket_requests
   end
 
   def download_guest_list
@@ -109,13 +104,7 @@ class EventsController < ApplicationController
     CSV.open(temp_csv.path, 'wb') do |csv|
       csv << %w[name Guest-1 Guest-2 Guest-3 Guest-4 Guest-5]
 
-      TicketRequest.
-        includes(:payment, :user).
-        where(event_id: @event).
-        order('created_at DESC').
-        completed.
-        sort_by { |ticket_request| ticket_request.user.name.upcase }.
-        each do |ticket_request|
+      completed_ticket_requests.each do |ticket_request|
         csv << [ticket_request.user.name, ticket_request.guests].flatten
       end
     end
@@ -127,6 +116,15 @@ class EventsController < ApplicationController
   end
 
 private
+
+  def completed_ticket_requests
+    TicketRequest.
+      includes(:payment, :user).
+      where(event_id: @event).
+      order('created_at DESC').
+      completed.
+      sort_by { |ticket_request| ticket_request.user.name.upcase }
+  end
 
   def set_event
     @event = Event.find(params[:id])
