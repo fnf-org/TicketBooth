@@ -1,3 +1,6 @@
+require 'tempfile'
+require 'csv'
+
 class EventsController < ApplicationController
   before_action :authenticate_user!, except: [:show]
   before_action :require_site_admin, only: [:create]
@@ -97,6 +100,30 @@ class EventsController < ApplicationController
       order('created_at DESC').
       completed.
       sort_by { |ticket_request| ticket_request.user.name.upcase }
+  end
+
+  def download_guest_list
+    temp_csv = Tempfile.new('csv')
+
+
+    CSV.open(temp_csv.path, 'wb') do |csv|
+      csv << %w[name Guest-1 Guest-2 Guest-3 Guest-4 Guest-5]
+
+      TicketRequest.
+        includes(:payment, :user).
+        where(event_id: @event).
+        order('created_at DESC').
+        completed.
+        sort_by { |ticket_request| ticket_request.user.name.upcase }.
+        each do |ticket_request|
+        csv << [ticket_request.user.name, ticket_request.guests].flatten
+      end
+    end
+
+    temp_csv.close
+    send_file(temp_csv.path,
+              filename: "#{@event.name} Guest List.csv",
+              type: 'text/csv')
   end
 
 private

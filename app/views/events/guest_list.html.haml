@@ -1,5 +1,12 @@
 %h1 #{@event.name} Guest List
 
+.btn-group
+  = link_to download_guest_list_event_path(@event),
+    class: 'btn btn-info hover-tooltip',
+    title: 'Download CSV of the guest list' do
+    %i.icon-th-list
+      Download CSV
+
 %table.table.table-condensed
   %thead
     %tr
