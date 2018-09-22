@@ -182,6 +182,7 @@
         = f.country_select :country_code, %w[US CA GB], iso_codes: true
 
     = f.label :notes do
+      Who did you hear about this event from?
       Any special requests or things you want to mention?
     = f.text_area :notes, class: 'input-xxlarge',
       rows: 3, maxlength: 500

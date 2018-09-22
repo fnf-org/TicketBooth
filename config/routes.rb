@@ -3,7 +3,7 @@ Cloudwatch::Application.routes.draw do
 
   devise_for :users
 
-  event_id = 6
+  event_id = 7
 
   get 'fnf-tickets', controller: :ticket_requests, action: :new, event_id: event_id
   get 'fnf_tickets', controller: :ticket_requests, action: :new, event_id: event_id
