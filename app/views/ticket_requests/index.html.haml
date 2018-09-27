@@ -85,7 +85,8 @@
         %th Kids
       - if @event.cabin_price
         %th Cabins
-      %th EA/LD
+      - if @event.eald?
+        %th EA/LD
       %th Price
       %th Date Requested
       %th Status
@@ -118,13 +119,14 @@
           %td= ticket_request.kids
         - if @event.cabin_price
           %td= ticket_request.cabins
-        %td
-          #{ticket_request.early_arrival_passes} / #{ticket_request.late_departure_passes}
-          - if eald_requested?(ticket_request)
-            - if eald_paid?(ticket_request)
-              %i.text-success.icon-ok-sign.hover-tooltip{ title: 'All requested EA/LD passes have been purchased' }
-            - else
-              %i.text-warning.icon-question-sign.hover-tooltip{ title: 'Not all requested EA/LD passes have been purchased' }
+        - if @event.eald?
+          %td
+            #{ticket_request.early_arrival_passes} / #{ticket_request.late_departure_passes}
+            - if eald_requested?(ticket_request)
+              - if eald_paid?(ticket_request)
+                %i.text-success.icon-ok-sign.hover-tooltip{ title: 'All requested EA/LD passes have been purchased' }
+              - else
+                %i.text-warning.icon-question-sign.hover-tooltip{ title: 'Not all requested EA/LD passes have been purchased' }
         %td
           %span{ class: ('label label-info' if ticket_request.special_price) }
             = number_to_currency(ticket_request.price, precision: 0)

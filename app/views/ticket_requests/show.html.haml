@@ -146,7 +146,7 @@
     %h4 Ticket Coordinator Notes:
     = @ticket_request.admin_notes
 
-- if @payment
+- if @payment && @event.eald?
   %p
     %b Planning to arrive early or leave late?
     %br

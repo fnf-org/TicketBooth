@@ -65,6 +65,10 @@ class Event < ActiveRecord::Base
     ticket_requests_end_time > Time.now
   end
 
+  def eald?
+    early_arrival_price > 0 || late_departure_price > 0
+  end
+
   private
 
   def end_time_after_start_time
