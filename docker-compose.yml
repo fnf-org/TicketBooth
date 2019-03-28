@@ -2,28 +2,80 @@ version: '3'
 
 services:
   rails:
-    depends_on:
-      - postgres
     build:
+      args:
+        ruby_version: ${RUBY_VERSION}
       context: .
-    network_mode: host
+      dockerfile: Dockerfile
+    command: bundle exec rails server --binding=0.0.0.0 --port=${PORT}
+    environment:
+      - DB_HOST
+      - DB_NAME=${POSTGRES_DB}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASS=${POSTGRES_PASSWORD}
+    networks:
+      - helpingculture
+    ports:
+      - '${PORT}:${PORT}'
     volumes:
-      - '.:/workspace'
-      - '/usr/local/bundle:/usr/local/bundle'
-    working_dir: '/workspace'
-    command: ['bin/rails', 'server', '-b', '0.0.0.0']
+      - '.:/app'
+      - 'gems_data:/usr/local/bundle'
+    working_dir: /app
+
+  nginx:
+    image: linuxserver/letsencrypt
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - SUBDOMAINS
+      - URL
+      - VALIDATION
+      - DNSPLUGIN
+      - EMAIL=${CLOUDFLARE_EMAIL}
+      - CLOUDFLARE_TOKEN
+      - CLOUDFLARE_EMAIL
+    networks:
+      - helpingculture
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - './config/nginx-site.conf:/config/nginx/site-confs/default'
 
   postgres:
-    image: 'postgres:9.5.2'
+    image: 'postgres:${POSTGRES_VERSION}-alpine'
     environment:
-      POSTGRES_USER: helpingculture
-      POSTGRES_PASSWORD:
-      POSTGRES_DB: helpingculture
-    network_mode: host
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    networks:
+      - helpingculture
+    ports:
+      - '5432:5432'
     volumes:
-      - 'postgres:/var/lib/postgresql/data'
+      - 'postgres_data:/var/lib/postgresql/data'
+
+  terraform:
+    build:
+      args:
+        terraform_version: ${TERRAFORM_VERSION}
+        vultr_plugin_version: ${VULTR_PLUGIN_VERSION}
+      context: .
+      dockerfile: Dockerfile-terraform
+    environment:
+      - VULTR_API_KEY
+      - TF_VAR_root_ssh_public_key
+    volumes:
+      - terraform_data:/root/.terraform
+      - ./terraform:/config
+    working_dir: /config
+
+networks:
+  helpingculture:
 
 # Define names of volumes that you want to be preserved between container restarts.
 # These are referenced above in the `volumes` section of the service.
 volumes:
-  postgres:
+  gems_data:
+  postgres_data:
+  terraform_data:

@@ -1,0 +1,17 @@
+ARG terraform_version
+FROM hashicorp/terraform:${terraform_version}
+
+# Operate from home directory of user
+WORKDIR /root
+
+# Store Terraform data (lock file, modules, etc.) in a volume
+RUN mkdir .terraform
+ENV TF_DATA_DIR=/root/.terraform
+VOLUME /root/.terraform
+
+ARG vultr_plugin_version
+ARG terraform_plugin_dir=.terraform.d/plugins/linux_amd64
+
+RUN mkdir -p ${terraform_plugin_dir} \
+  && curl -fL https://github.com/squat/terraform-provider-vultr/releases/download/v${vultr_plugin_version}/terraform-provider-vultr_v${vultr_plugin_version}_linux_amd64.tar.gz \
+  | tar -xzf - -C ${terraform_plugin_dir}
