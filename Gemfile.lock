@@ -88,7 +88,7 @@ GEM
       railties (>= 3.0.0)
     faraday (0.15.1)
       multipart-post (>= 1.2, < 3)
-    ffi (1.9.23)
+    ffi (1.10.0)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     grease (0.3.1)
