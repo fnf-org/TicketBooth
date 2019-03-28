@@ -97,7 +97,7 @@ describe TicketRequestsController, type: :controller do
 
     context 'when viewer is owner of the ticket request' do
       let(:viewer) { user }
-      it { redirects_to new_event_ticket_request_path(ticket_request.event) }
+      it { succeeds }
     end
 
     context 'when viewer is the event admin' do

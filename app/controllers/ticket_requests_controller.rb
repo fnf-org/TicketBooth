@@ -84,6 +84,11 @@ class TicketRequestsController < ApplicationController
   end
 
   def edit
+    unless @event.admin?(current_user) || current_user == @ticket_request.user
+      redirect_to new_event_ticket_request_path(@event)
+      return
+    end
+
     @user = @ticket_request.user
   end
 
