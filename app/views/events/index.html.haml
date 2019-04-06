@@ -11,7 +11,6 @@
       %tr
         %td
           = link_to event do
-            %img.event-photo{ src: event.photo_url(:thumb) }
             = event.name
         %td= event.start_time.localtime.to_s(:friendly)
         %td= event.end_time.localtime.to_s(:friendly)
