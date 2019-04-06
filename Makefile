@@ -29,3 +29,7 @@ start: init
 	# generate the certificate it will use.
 	docker-compose exec nginx bash -c 'echo "dns_cloudflare_email = $${CLOUDFLARE_EMAIL}" > ${lets_encrypt_dns_conf_file}'
 	docker-compose exec nginx bash -c 'echo "dns_cloudflare_api_key = $${CLOUDFLARE_TOKEN}" >> ${lets_encrypt_dns_conf_file}'
+
+shell:
+	docker-compose build --pull
+	docker-compose run --rm rails bash
