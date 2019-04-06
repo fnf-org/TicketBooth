@@ -6,9 +6,14 @@ clean:
 init:
 	# Install gems
 	#docker-compose run --rm rails bundle install
-	# Setup Terraform so it can run plans
-	#docker-compose run --rm terraform init
-	# Setup credentials for LetsEncrypt
+	# Setup Terraform so it can run plans. Run via `sh -c` so the
+	# container's environment variables can be referenced.
+	docker-compose run --rm --entrypoint="" \
+		terraform sh -c 'terraform init \
+		--backend-config="hostname=$${TFE_HOSTNAME}" \
+		--backend-config="token=$${TFE_TOKEN}" \
+		--backend-config="organization=$${TFE_ORGANIZATION}" \
+		--backend-config="workspaces=[{name=\"$${TFE_WORKSPACE}\"}]"'
 
 plan: init
 	docker-compose run --rm terraform plan

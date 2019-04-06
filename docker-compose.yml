@@ -63,8 +63,12 @@ services:
       context: .
       dockerfile: Dockerfile-terraform
     environment:
-      - VULTR_API_KEY
+      - TFE_HOSTNAME
+      - TFE_TOKEN
+      - TFE_ORGANIZATION
+      - TFE_WORKSPACE
       - TF_VAR_root_ssh_public_key
+      - VULTR_API_KEY
     volumes:
       - terraform_data:/root/.terraform
       - ./terraform:/config
