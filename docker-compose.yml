@@ -7,12 +7,13 @@ services:
         ruby_version: ${RUBY_VERSION}
       context: .
       dockerfile: Dockerfile
-    command: bundle exec rails server --binding=0.0.0.0 --port=${PORT}
+    command: bundle exec puma --bind=tcp://0.0.0.0:${PORT} --config config/puma.rb
     environment:
       - DB_HOST
       - DB_NAME=${POSTGRES_DB}
       - DB_USER=${POSTGRES_USER}
       - DB_PASS=${POSTGRES_PASSWORD}
+      - RACK_ENV
     networks:
       - helpingculture
     ports:
