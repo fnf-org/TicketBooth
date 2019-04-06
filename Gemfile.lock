@@ -269,7 +269,7 @@ DEPENDENCIES
   less-rails
   libv8
   mini_magick
-  pg (~> 0.18)
+  pg (~> 0.21)
   protected_attributes
   rails
   rspec-rails
