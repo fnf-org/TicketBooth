@@ -1,3 +1,14 @@
+# Container environment variables are loaded in the following priority order:
+# 1. `environment` service option
+# 2. Shell environment variables
+# 3. `env_file` service option
+# 4. Dockerfile `ENV` directives
+#
+# Environment variables referenced in this Compose file are loaded in the
+# following priority order:
+# 1. Shell environment variables
+# 2. `.env` file
+
 version: '3'
 
 services:
@@ -60,7 +71,7 @@ services:
     build:
       args:
         terraform_version: ${TERRAFORM_VERSION}
-        vultr_plugin_version: ${VULTR_PLUGIN_VERSION}
+        sentry_plugin_version: ${SENTRY_PLUGIN_VERSION}
       context: .
       dockerfile: Dockerfile-terraform
     environment:
@@ -68,12 +79,33 @@ services:
       - TFE_TOKEN
       - TFE_ORGANIZATION
       - TFE_WORKSPACE
+      - TF_VAR_app_name
+      - TF_VAR_digitalocean_token
+      - TF_VAR_mailgun_api_key
+      - TF_VAR_mailgun_sending_domain
+      - TF_VAR_mailgun_smtp_password
       - TF_VAR_root_ssh_public_key
-      - VULTR_API_KEY
+      - TF_VAR_root_ssh_private_key_base64
+      - TF_VAR_sentry_token
+      - TF_VAR_cloudflare_zone_name
+      - TF_VAR_cloudflare_zone
+      - TF_VAR_cloudflare_email
+      - TF_VAR_cloudflare_token
     volumes:
       - terraform_data:/root/.terraform
       - ./terraform:/config
     working_dir: /config
+
+  ansible:
+    build:
+      args:
+        ansible_version: ${ANSIBLE_VERSION}
+      context: .
+      dockerfile: Dockerfile-ansible
+    volumes:
+      - ansible_data:/var
+      - ./ansible:/ansible/playbooks
+    working_dir: /ansible/playbooks
 
 networks:
   helpingculture:
@@ -81,6 +113,7 @@ networks:
 # Define names of volumes that you want to be preserved between container restarts.
 # These are referenced above in the `volumes` section of the service.
 volumes:
+  ansible_data:
   gems_data:
   postgres_data:
   terraform_data:

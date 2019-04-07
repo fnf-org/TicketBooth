@@ -9,3 +9,10 @@
 
 # Ignore file uploads in development
 /public/uploads
+
+# Ignore secrets
+/ansible/vault-password
+.env.secrets
+
+# Ignore backups
+/backups
