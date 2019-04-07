@@ -16,7 +16,6 @@ gem 'libv8'
 gem 'mini_magick'
 gem 'pg', '~> 0.21'
 gem 'protected_attributes'
-gem 'puma'
 gem 'sass-rails'
 gem 'sentry-raven'
 gem 'stripe'
@@ -24,6 +23,7 @@ gem 'therubyracer', platforms: :ruby
 gem 'thin'
 gem 'twitter-bootstrap-rails', '~> 2.2.7'
 gem 'uglifier'
+gem 'unicorn'
 
 group :development do
   gem 'capistrano', '< 3'
