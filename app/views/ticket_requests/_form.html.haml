@@ -202,10 +202,10 @@
     = f.label :guests do
       = 'Guest'.pluralize(@ticket_request.guest_count)
       (including yourself)
+    %br
+    - @ticket_request.guest_count.times do |guest_id|
+      = f.text_field :guests, multiple: true, value: Array(@ticket_request.guests)[guest_id]
       %br
-      - @ticket_request.guest_count.times do |guest_id|
-        = f.text_field :guests, multiple: true, value: Array(@ticket_request.guests)[guest_id]
-        %br
 
   .actions
     - is_update = form_action_name == :update
