@@ -203,13 +203,14 @@
       = 'Guest'.pluralize(@ticket_request.guest_count)
       (including yourself)
     %br
-    - if (@event.start_time - Time.now < 2.days)
+    - list_finalized = (@event.start_time - Time.now) < 2.days
+    - if list_finalized
       Guest list has been finalized. If you need to update your guests, please email
       = mail_to 'fnftickets@gmail.com'
-    - else
-      - @ticket_request.guest_count.times do |guest_id|
-        = f.text_field :guests, multiple: true, value: Array(@ticket_request.guests)[guest_id]
-        %br
+      %br
+    - @ticket_request.guest_count.times do |guest_id|
+      = f.text_field :guests, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests)[guest_id]
+      %br
 
   .actions
     - submit_btn_text = is_update ? 'Update Request' : 'Submit Request'
