@@ -72,7 +72,7 @@ services:
         terraform_version: ${TERRAFORM_VERSION}
         sentry_plugin_version: ${SENTRY_PLUGIN_VERSION}
       context: .
-      dockerfile: Dockerfile-terraform
+      dockerfile: Dockerfile.terraform
     environment:
       - TFE_HOSTNAME
       - TFE_TOKEN
@@ -100,7 +100,7 @@ services:
       args:
         ansible_version: ${ANSIBLE_VERSION}
       context: .
-      dockerfile: Dockerfile-ansible
+      dockerfile: Dockerfile.ansible
     volumes:
       - ansible_data:/var
       - ./ansible:/ansible/playbooks

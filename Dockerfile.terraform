@@ -13,5 +13,6 @@ ARG sentry_plugin_version
 ARG terraform_plugin_dir=.terraform.d/plugins/linux_amd64
 
 RUN mkdir -p ${terraform_plugin_dir} \
-  && curl -fL https://github.com/jianyuan/terraform-provider-sentry/releases/download/v${sentry_plugin_version}/terraform-provider-sentry_${sentry_plugin_version}_linux_amd64.tar.gz \
-  | tar -xzf - -C ${terraform_plugin_dir}
+  && wget -c https://github.com/jianyuan/terraform-provider-sentry/releases/download/v${sentry_plugin_version}/terraform-provider-sentry_${sentry_plugin_version}_linux_amd64.zip \
+  && unzip terraform-provider-sentry_${sentry_plugin_version}_linux_amd64.zip \
+  && mv -v terraform-provider* ${terraform_plugin_dir}
