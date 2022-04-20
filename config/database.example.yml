@@ -3,7 +3,7 @@
 defaults: &defaults
   adapter: postgresql
   encoding: utf8
-  host: postgres
+  host: localhost
   username: postgres
 
 development:
