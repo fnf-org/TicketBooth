@@ -30,7 +30,21 @@ jobs:
           ruby-version: 2.5.8 # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - run: |
-          gem update --system
-          gem install bundler
-          bundle update --jobs 4 --retry 3
+          cd config
+          for file in $(ls -1 *.example.yml); do
+           n="${file/.example/}"
+           ln -nvfs "${file}" "${n}"        
+          done
+          cd - >/dev/null
+
+      - run: |
+          gem install bundler --version 1.17.3 -N
+          bundle _1.17.3_ install -j 12
+
+      - run: |
+          bundle exec rake db:create
+          bundle exec rake db:migrate
+          bundle exec rake db:test:prepare
+
+      - run: |
           bundle exec rspec --format documentation
