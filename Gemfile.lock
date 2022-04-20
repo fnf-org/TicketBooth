@@ -54,6 +54,8 @@ GEM
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
+    codecov (0.6.0)
+      simplecov (>= 0.15, < 0.22)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0)
@@ -286,6 +288,7 @@ DEPENDENCIES
   attribute_normalizer
   capistrano (< 3)
   carrierwave
+  codecov
   coffee-rails
   commonjs
   country_select
@@ -315,3 +318,5 @@ DEPENDENCIES
   uglifier
   yard
 
+BUNDLED WITH
+   1.17.3

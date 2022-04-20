@@ -37,6 +37,7 @@ end
 
 group :test do
   gem 'accept_values_for'
+  gem 'codecov'
   gem 'factory_bot_rails'
   gem 'rspec-its'
   gem 'rspec-rails'
