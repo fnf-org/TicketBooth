@@ -17,16 +17,15 @@ RSpec::Core::RakeTask.new(:spec)
 
 RuboCop::RakeTask.new
 
-
 namespace :todolist do
   task :statsetup do
     require 'rails/code_statistics'
-    ::STATS_DIRECTORIES << ["Uploaders", "app/uploaders"]
+    ::STATS_DIRECTORIES << %w[Uploaders app/uploaders]
 
     # For test folders not defined in CodeStatistics::TEST_TYPES (ie: spec/)
-    ::STATS_DIRECTORIES << ["Specs", "spec"]
-    CodeStatistics::TEST_TYPES << "Specs"
+    ::STATS_DIRECTORIES << %w[Specs spec]
+    CodeStatistics::TEST_TYPES << 'Specs'
   end
 end
 
-task :stats => "todolist:statsetup"
+task stats: 'todolist:statsetup'
