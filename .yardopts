@@ -1,0 +1,4 @@
+--protected
+--no-private
+--embed-mixin ClassMethods
+--embed-mixin Sym::Extensions::InstanceMethods

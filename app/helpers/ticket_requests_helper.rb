@@ -84,7 +84,7 @@ module TicketRequestsHelper
       each person in your vehicle.
       HELP
     when :kids
-      # HACK: This copy is specific for Cloudwatch--we'll have to add a
+      # HACK: This copy is specific for TicketBooth--we'll have to add a
       # customization so that this can be set on a per-event basis
       <<-HELP
       The cost of tickets for children will be dependent on how many you bring.

@@ -4,5 +4,5 @@ class SiteAdmin < ActiveRecord::Base
   belongs_to :user
 
   validates :user_id, presence: true,
-    uniqueness: { message: 'already site admin' }
+            uniqueness:         { message: 'already site admin' }
 end

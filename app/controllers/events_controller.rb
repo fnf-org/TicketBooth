@@ -29,11 +29,7 @@ class EventsController < ApplicationController
   end
 
   def create
-    params[:event][:start_time] = Time.from_picker(params.delete(:start_time))
-    params[:event][:end_time] = Time.from_picker(params.delete(:end_time))
-    params[:event][:ticket_sales_start_time] = Time.from_picker(params.delete(:ticket_sales_start_time))
-    params[:event][:ticket_sales_end_time] = Time.from_picker(params.delete(:ticket_sales_end_time))
-    params[:event][:ticket_requests_end_time] = Time.from_picker(params.delete(:ticket_requests_end_time))
+    populate_params_event(params)
 
     @event = Event.new(params[:event])
 
@@ -45,11 +41,7 @@ class EventsController < ApplicationController
   end
 
   def update
-    params[:event][:start_time] = Time.from_picker(params.delete(:start_time))
-    params[:event][:end_time] = Time.from_picker(params.delete(:end_time))
-    params[:event][:ticket_sales_start_time] = Time.from_picker(params.delete(:ticket_sales_start_time))
-    params[:event][:ticket_sales_end_time] = Time.from_picker(params.delete(:ticket_sales_end_time))
-    params[:event][:ticket_requests_end_time] = Time.from_picker(params.delete(:ticket_requests_end_time))
+    populate_params_event(params)
 
     if @event.update_attributes(params[:event])
       redirect_to @event
@@ -116,6 +108,14 @@ class EventsController < ApplicationController
   end
 
 private
+
+  def populate_params_event(params)
+    params[:event][:start_time]               = Time.from_picker(params.delete(:start_time))
+    params[:event][:end_time]                 = Time.from_picker(params.delete(:end_time))
+    params[:event][:ticket_sales_start_time]  = Time.from_picker(params.delete(:ticket_sales_start_time))
+    params[:event][:ticket_sales_end_time]    = Time.from_picker(params.delete(:ticket_sales_end_time))
+    params[:event][:ticket_requests_end_time] = Time.from_picker(params.delete(:ticket_requests_end_time))
+  end
 
   def completed_ticket_requests
     TicketRequest.

@@ -1,5 +1,5 @@
 # Set environment to production unless something else is specified
-app_name = 'helpingculture'
+app_name = 'tickets'
 env = ENV['RAILS_ENV'] || 'production'
 deploy_path = "#{ENV['HOME']}/deploy"
 shared_path = "#{deploy_path}/shared"

@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails'
+gem 'rails', '~> 4.2'
 
 gem 'attribute_normalizer'
 gem 'carrierwave'
@@ -14,23 +14,29 @@ gem 'less'
 gem 'less-rails'
 gem 'libv8'
 gem 'mini_magick'
-gem 'pg', '~> 0.21'
+gem 'pg', '~> 0.20'
 gem 'protected_attributes'
+gem 'puma'
+gem 'rake'
+gem 'relaxed-rubocop'
+gem 'rubocop'
 gem 'sass-rails'
 gem 'sentry-raven'
 gem 'stripe'
 gem 'therubyracer', platforms: :ruby
-gem 'thin'
-gem 'twitter-bootstrap-rails', '~> 2.2.7'
+gem 'twitter-bootstrap-rails'
 gem 'uglifier'
-gem 'unicorn'
 
 group :development do
+  gem 'asciidoctor'
   gem 'capistrano', '< 3'
+  gem 'yard'
 end
 
 group :test do
   gem 'accept_values_for'
   gem 'factory_bot_rails'
+  gem 'rspec-its'
   gem 'rspec-rails'
+  gem 'simplecov'
 end

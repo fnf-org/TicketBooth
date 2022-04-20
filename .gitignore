@@ -1,4 +1,6 @@
 # Ignore all logfiles and tempfiles
+.idea
+.vscode
 /log
 /tmp
 
@@ -6,6 +8,10 @@
 # source control
 /config/database.yml
 /config/stripe.yml
+/config/sentry.yml
+/config/smtp.yml
+/config/secrets.yml
+/config/secret.yml
 
 # Ignore file uploads in development
 /public/uploads
@@ -16,3 +22,5 @@
 
 # Ignore backups
 /backups
+/.yard
+/coverage

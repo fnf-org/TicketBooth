@@ -7,8 +7,9 @@ if defined?(Bundler)
   Bundler.require(:default, Rails.env)
 end
 
-module Cloudwatch
-  class Application < Rails::Application
+# @description Main Application Class for the Ticket Booth
+module TicketBooth
+  class Application < ::Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -43,7 +44,7 @@ module Cloudwatch
     # Use SQL instead of Active Record's schema dumper when creating the database.
     # This is necessary if your schema can't be completely dumped by the schema dumper,
     # like if you have constraints or database-specific column types
-    # config.active_record.schema_format = :sql
+    config.active_record.schema_format = :sql
 
     config.active_record.raise_in_transactional_callbacks = true
 
@@ -60,7 +61,8 @@ module Cloudwatch
     # start up but the config file hasn't been symlinked yet. To prevent a blowup,
     # we check for the existence of the file before trying to load it.
     config_file = Rails.root + 'config/smtp.yml'
-    if File.exists?(config_file)
+
+    if File.exist?(config_file)
       config.action_mailer.delivery_method = :smtp
       config.action_mailer.perform_deliveries = true
 

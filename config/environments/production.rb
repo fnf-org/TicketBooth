@@ -1,4 +1,4 @@
-Cloudwatch::Application.configure do
+TicketBooth::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
   # Code is not reloaded between requests
@@ -61,6 +61,6 @@ Cloudwatch::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
-  config.action_mailer.default_url_options = { host: 'helpingculture.com' }
+  config.action_mailer.default_url_options = { host: 'tickets.com' }
   config.action_mailer.raise_delivery_errors = false
 end

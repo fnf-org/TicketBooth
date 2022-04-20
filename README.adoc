@@ -1,0 +1,32 @@
+= Ticket Booth
+:author: 0.1.2
+:doctype: book
+:source-highlighter: rouge
+:rouge-style: base16.monokai
+:toclevels: 5
+:toc:
+:icons: font
+:license: MIT
+
+> NOTE: This app is formerly known as **Helping Culture**, which in turn was originally conceived and inspired by Tracy Page. This project was originally written by https://github.com/sds[Shane de Silva]. It is currently maintained by the https://github.com/fnf-org[FnF] org, and within it specifically https://github.com/kigster[Konstantin Gredeskoul]. Tag any issues with https://github.com/kigster[@kigster].
+
+
+== Welcome to the *Ticket Booth*!
+
+=== Ticket Booth is an open source Rails App meant to be self-hosted
+
+The goal of the app is to make ticket and volunteer management for community events easier and automated.
+
+=== Usage
+
+Currently under construction.
+
+=== Developer Setup
+
+We dedicated a separate document to the xref:DEVELOPERS.adoc[developer setup], which helps you get the application running locally.
+
+== API Documentation
+
+Yard-generated documentation is available xref:doc/index.html[here].
+
+

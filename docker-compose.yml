@@ -25,7 +25,7 @@ services:
       - DB_USER=${POSTGRES_USER}
       - DB_PASS=${POSTGRES_PASSWORD}
     networks:
-      - helpingculture
+      - tickets
     ports:
       - '${PORT}:${PORT}'
     volumes:
@@ -46,7 +46,7 @@ services:
       - CLOUDFLARE_TOKEN
       - CLOUDFLARE_EMAIL
     networks:
-      - helpingculture
+      - tickets
     ports:
       - '80:80'
       - '443:443'
@@ -60,7 +60,7 @@ services:
       - POSTGRES_PASSWORD
       - POSTGRES_DB
     networks:
-      - helpingculture
+      - tickets
     ports:
       - '5432:5432'
     volumes:
@@ -107,7 +107,7 @@ services:
     working_dir: /ansible/playbooks
 
 networks:
-  helpingculture:
+  tickets:
 
 # Define names of volumes that you want to be preserved between container restarts.
 # These are referenced above in the `volumes` section of the service.
