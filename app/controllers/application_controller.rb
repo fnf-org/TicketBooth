@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # General controller configuration and helpers.
 class ApplicationController < ActionController::Base
   protect_from_forgery

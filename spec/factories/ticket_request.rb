@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :ticket_request do
     adults { Random.rand(1..4) }
@@ -9,15 +11,15 @@ FactoryBot.define do
     user
     event
 
-    trait :pending do |ticket_request|
+    trait :pending do |_ticket_request|
       status TicketRequest::STATUS_PENDING
     end
 
-    trait :approved do |ticket_request|
+    trait :approved do |_ticket_request|
       status TicketRequest::STATUS_AWAITING_PAYMENT
     end
 
-    trait :declined do |ticket_request|
+    trait :declined do |_ticket_request|
       status TicketRequest::STATUS_DECLINED
     end
   end

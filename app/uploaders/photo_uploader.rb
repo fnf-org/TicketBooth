@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PhotoUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
@@ -34,6 +36,7 @@ class PhotoUploader < CarrierWave::Uploader::Base
   # This prevents someone from guessing the URL of another event's photos.
   def filename
     return unless file
+
     if model.send("#{mounted_as}_changed?")
       # Generate a secure name for the new file
       extension = file.extension == 'jpeg' ? 'jpg' : file.extension
@@ -43,7 +46,7 @@ class PhotoUploader < CarrierWave::Uploader::Base
     end
   end
 
-protected
+  protected
 
   def secure_token(length = 16)
     ivar = :"@#{mounted_as}_secure_token"

@@ -1,4 +1,6 @@
-require File.expand_path('../boot', __FILE__)
+# frozen_string_literal: true
+
+require File.expand_path('boot', __dir__)
 
 require 'rails/all'
 
@@ -60,17 +62,16 @@ module TicketBooth
     # HACK: During asset compilation of a deploy this will fail because Rails will
     # start up but the config file hasn't been symlinked yet. To prevent a blowup,
     # we check for the existence of the file before trying to load it.
-    config_file = Rails.root + 'config/smtp.yml'
+    config_file = "#{Rails.root}/config/smtp.yml"
 
     if File.exist?(config_file)
       config.action_mailer.delivery_method = :smtp
       config.action_mailer.perform_deliveries = true
 
       smtp_config = YAML.load_file(config_file)
-      config.action_mailer.smtp_settings = %w[address port user_name password].
-        inject({}) do |hash, key|
+      config.action_mailer.smtp_settings = %w[address port user_name password]
+                                           .each_with_object({}) do |key, hash|
         hash[key.to_sym] = smtp_config[key]
-        hash
       end
     end
   end

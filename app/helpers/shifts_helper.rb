@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ShiftsHelper
   def volunteer_button_hover_text
     <<-TIP
@@ -15,9 +17,8 @@ module ShiftsHelper
     rows = Array.new(blocks) { [] }
 
     @jobs.each do |job|
-      last_time_slot = job.time_slots.sort_by(&:start_time).
-        inject(nil) do |last_time_slot, time_slot|
-
+      last_time_slot = job.time_slots.sort_by(&:start_time)
+                          .inject(nil) do |last_time_slot, time_slot|
         offset = (time_slot.start_time - earliest) / interval
         duration = (time_slot.end_time - time_slot.start_time) / interval
         rows[offset] << { offset: offset, time_slot: time_slot, rowspan: duration.to_i }

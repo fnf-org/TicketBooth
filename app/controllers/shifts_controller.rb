@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ShiftsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_event
@@ -9,10 +11,10 @@ class ShiftsController < ApplicationController
       return redirect_to :root
     end
 
-    @jobs = Job.where(event_id: @event.id).
-      order(:id).
-      includes(:time_slots => [{:shifts => :user }, :job]).
-      select { |job| job.time_slots.any? }
+    @jobs = Job.where(event_id: @event.id)
+               .order(:id)
+               .includes(time_slots: [{ shifts: :user }, :job])
+               .select { |job| job.time_slots.any? }
   end
 
   def create
@@ -20,23 +22,23 @@ class ShiftsController < ApplicationController
 
     if @shift.save
       redirect_to event_shifts_path(@event),
-        notice: "Successfully volunteered for #{@shift.time_slot.job.name}" +
-                " for #{@shift.time_slot.start_time.localtime.to_s(:dhmm)}"
+                  notice: "Successfully volunteered for #{@shift.time_slot.job.name}" \
+                          " for #{@shift.time_slot.start_time.localtime.to_s(:dhmm)}"
     else
       render action: 'index'
     end
   end
 
   def destroy
-    @shift = Shift.includes(:time_slot => :job).find(params[:id])
+    @shift = Shift.includes(time_slot: :job).find(params[:id])
     @shift.destroy
 
     redirect_to event_shifts_url(@event),
-      notice: "Unvolunteered from #{@shift.time_slot.job.name}" +
-              " for #{@shift.time_slot.start_time.localtime.to_s(:dhmm)}"
+                notice: "Unvolunteered from #{@shift.time_slot.job.name}" \
+                        " for #{@shift.time_slot.start_time.localtime.to_s(:dhmm)}"
   end
 
-private
+  private
 
   def set_event
     @event = Event.find(params[:event_id])

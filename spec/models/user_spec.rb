@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe User do
@@ -21,7 +23,7 @@ describe User do
       end
 
       context 'when longer than 70 characters' do
-        let(:name) { Sham.string(35) + ' ' + Sham.string(35) }
+        let(:name) { "#{Sham.string(35)} #{Sham.string(35)}" }
         it { should_not be_valid }
       end
 
@@ -78,7 +80,7 @@ describe User do
       end
 
       context 'when email longer than 254 characters' do
-        let(:email) { Sham.string(243) + '@example.com' }
+        let(:email) { "#{Sham.string(243)}@example.com" }
         it { should_not be_valid }
       end
 

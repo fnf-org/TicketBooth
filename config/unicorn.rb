@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Set environment to production unless something else is specified
 app_name = 'tickets'
 env = ENV['RAILS_ENV'] || 'production'
@@ -26,17 +28,15 @@ working_directory "#{deploy_path}/current"
 stderr_path "#{shared_path}/log/unicorn.#{app_name}.stderr.log"
 stdout_path "#{shared_path}/log/unicorn.#{app_name}.stdout.log"
 
-before_fork do |server, worker|
+before_fork do |server, _worker|
   # the following is highly recomended for Rails + "preload_app true"
   # as there's no need for the master process to hold a connection
-  if defined?(ActiveRecord::Base)
-    ActiveRecord::Base.connection.disconnect!
-  end
+  ActiveRecord::Base.connection.disconnect! if defined?(ActiveRecord::Base)
 
   # Before forking, kill the master process that belongs to the .oldbin PID.
   # This enables 0 downtime deploys.
   old_pid = "#{shared_path}/pids/unicorn.#{app_name}.pid.oldbin"
-  if File.exists?(old_pid) && server.pid != old_pid
+  if File.exist?(old_pid) && server.pid != old_pid
     begin
       Process.kill('QUIT', File.read(old_pid).to_i)
     rescue Errno::ENOENT, Errno::ESRCH
@@ -45,11 +45,9 @@ before_fork do |server, worker|
   end
 end
 
-after_fork do |server, worker|
+after_fork do |_server, _worker|
   # Required for Rails + "preload_app true",
-  if defined?(ActiveRecord::Base)
-    ActiveRecord::Base.establish_connection
-  end
+  ActiveRecord::Base.establish_connection if defined?(ActiveRecord::Base)
 
   # If preload_app is true, then you may also want to check and
   # restart any other shared sockets/descriptors such as Memcached,

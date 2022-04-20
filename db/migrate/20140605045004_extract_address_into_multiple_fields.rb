@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ExtractAddressIntoMultipleFields < ActiveRecord::Migration
   def change
     remove_column :ticket_requests, :address

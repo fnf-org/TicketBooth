@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file contains settings for ActionController::ParamsWrapper which
 # is enabled by default.
 

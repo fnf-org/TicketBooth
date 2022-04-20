@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EventAdmin < ActiveRecord::Base
   attr_accessible :event_id, :user_id
 
@@ -7,5 +9,5 @@ class EventAdmin < ActiveRecord::Base
   validates :event_id, presence: true
 
   validates :user_id, presence: true,
-    uniqueness: { scope: :event_id, message: 'already admin for this event' }
+                      uniqueness: { scope: :event_id, message: 'already admin for this event' }
 end

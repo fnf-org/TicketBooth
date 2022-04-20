@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddMaxCabinRequestsToEvents < ActiveRecord::Migration
   def change
     change_table :events do |t|

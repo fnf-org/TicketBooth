@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PaymentsController < ApplicationController
   before_action :authenticate_user!
 
@@ -13,16 +15,17 @@ class PaymentsController < ApplicationController
     @ticket_request = TicketRequest.find(params[:ticket_request_id])
     return redirect_to root_path unless @ticket_request.can_view?(current_user)
     return redirect_to payment_path(@ticket_request.payment) if @ticket_request.payment
+
     @event = @ticket_request.event
 
     unless @ticket_request.all_guests_specified?
       return redirect_to edit_event_ticket_request_path(@event, @ticket_request),
-             alert: 'You must fill out all your guests before you can purchase a ticket'
+                         alert: 'You must fill out all your guests before you can purchase a ticket'
     end
 
     unless @event.ticket_sales_open?
       return redirect_to event_ticket_request_path(@event, @ticket_request),
-             alert: "Sorry, ticket sales for #{@event.name} have closed."
+                         alert: "Sorry, ticket sales for #{@event.name} have closed."
     end
 
     @user = @ticket_request.user
@@ -49,6 +52,7 @@ class PaymentsController < ApplicationController
     @ticket_request = TicketRequest.find(params[:ticket_request_id])
     return redirect_to root_path unless @ticket_request.can_view?(current_user)
     return redirect_to payment_path(@ticket_request.payment) if @ticket_request.payment
+
     @user = @ticket_request.user
   end
 

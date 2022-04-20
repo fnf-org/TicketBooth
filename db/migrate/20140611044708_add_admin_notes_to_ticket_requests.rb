@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddAdminNotesToTicketRequests < ActiveRecord::Migration
   def change
     change_table :ticket_requests do |t|

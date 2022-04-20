@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Allows us to trigger a password reset from the client.
 class PasswordsController < ApplicationController
   def reset

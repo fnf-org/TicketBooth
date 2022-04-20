@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 TicketBooth::Application.routes.draw do
   root to: 'home#index'
 
@@ -14,7 +16,7 @@ TicketBooth::Application.routes.draw do
 
   get 'eald', controller: :eald_payments, action: :new, event_id: event_id
 
-  resources :payments, only: [:new, :create, :show] do
+  resources :payments, only: %i[new create show] do
     collection do
       get :other
       post :sent
@@ -33,10 +35,10 @@ TicketBooth::Application.routes.draw do
     end
 
     resources :jobs do
-      resources :time_slots, only: [:new, :create, :edit, :update, :destroy]
+      resources :time_slots, only: %i[new create edit update destroy]
     end
 
-    resources :shifts, only: [:index, :create, :destroy]
+    resources :shifts, only: %i[index create destroy]
 
     resources :ticket_requests do
       collection do
@@ -52,7 +54,7 @@ TicketBooth::Application.routes.draw do
       end
     end
 
-    resources :eald_payments, only: [:index, :new, :create] do
+    resources :eald_payments, only: %i[index new create] do
       collection do
         get :complete
         get :download
@@ -66,5 +68,5 @@ TicketBooth::Application.routes.draw do
     end
   end
 
-  resources :site_admins, only: [:index, :new, :create, :destroy]
+  resources :site_admins, only: %i[index new create destroy]
 end

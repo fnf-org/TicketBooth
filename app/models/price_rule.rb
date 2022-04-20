@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PriceRule < ActiveRecord::Base
   belongs_to :event
 
@@ -5,9 +7,9 @@ class PriceRule < ActiveRecord::Base
 
   validates :event_id, presence: true
   validates :price,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :trigger_value, presence: true,
-    numericality: { greater_than_or_equal_to: 0 }
+                            numericality: { greater_than_or_equal_to: 0 }
 
   # The price rule that returns the smallest non-nil value is used to calculate
   # its respective portion of the price for the ticket request.

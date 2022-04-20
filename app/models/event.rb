@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Core object containing all information related to an actual event being held.
 class Event < ActiveRecord::Base
   has_many :event_admins
@@ -10,12 +12,12 @@ class Event < ActiveRecord::Base
   MAX_NAME_LENGTH = 100
 
   attr_accessible :name, :start_time, :end_time, :adult_ticket_price,
-    :early_arrival_price, :late_departure_price,
-    :kid_ticket_price, :cabin_price, :max_adult_tickets_per_request,
-    :max_kid_tickets_per_request, :max_cabins_per_request, :max_cabin_requests,
-    :photo, :photo_cache, :tickets_require_approval, :require_mailing_address,
-    :allow_financial_assistance, :allow_donations,
-    :ticket_sales_start_time, :ticket_sales_end_time, :ticket_requests_end_time
+                  :early_arrival_price, :late_departure_price,
+                  :kid_ticket_price, :cabin_price, :max_adult_tickets_per_request,
+                  :max_kid_tickets_per_request, :max_cabins_per_request, :max_cabin_requests,
+                  :photo, :photo_cache, :tickets_require_approval, :require_mailing_address,
+                  :allow_financial_assistance, :allow_donations,
+                  :ticket_sales_start_time, :ticket_sales_end_time, :ticket_requests_end_time
 
   mount_uploader :photo, PhotoUploader
 
@@ -25,19 +27,19 @@ class Event < ActiveRecord::Base
   validates :start_time, presence: true
   validates :end_time, presence: true
   validates :adult_ticket_price, presence: true,
-    numericality: { greater_than_or_equal_to: 0 }
+                                 numericality: { greater_than_or_equal_to: 0 }
   validates :kid_ticket_price, allow_nil: true,
-    numericality: { greater_than_or_equal_to: 0 }
+                               numericality: { greater_than_or_equal_to: 0 }
   validates :cabin_price, allow_nil: true,
-    numericality: { greater_than_or_equal_to: 0 }
+                          numericality: { greater_than_or_equal_to: 0 }
   validates :max_adult_tickets_per_request, allow_nil: true,
-    numericality: { only_integer: true, greater_than: 0 }
+                                            numericality: { only_integer: true, greater_than: 0 }
   validates :max_kid_tickets_per_request, allow_nil: true,
-    numericality: { only_integer: true, greater_than: 0 }
+                                          numericality: { only_integer: true, greater_than: 0 }
   validates :max_cabins_per_request, allow_nil: true,
-    numericality: { only_integer: true, greater_than: 0 }
+                                     numericality: { only_integer: true, greater_than: 0 }
   validates :max_cabin_requests, allow_nil: true,
-    numericality: { only_integer: true, greater_than: 0 }
+                                 numericality: { only_integer: true, greater_than: 0 }
 
   validate :end_time_after_start_time, :sales_end_time_after_start_time,
            :ensure_prices_set_if_maximum_specified
@@ -49,6 +51,7 @@ class Event < ActiveRecord::Base
   def cabins_available?
     return false unless cabin_price
     return true unless max_cabin_requests
+
     ticket_requests.not_declined.sum(:cabins) < max_cabin_requests
   end
 
@@ -56,45 +59,39 @@ class Event < ActiveRecord::Base
     return false if ticket_sales_start_time && Time.now < ticket_sales_start_time
     return Time.now < ticket_sales_end_time if ticket_sales_end_time
     return false if Time.now >= end_time
+
     true
   end
 
   def ticket_requests_open?
     return false if Time.now >= end_time
     return true unless ticket_requests_end_time
+
     ticket_requests_end_time > Time.now
   end
 
   def eald?
-    early_arrival_price > 0 || late_departure_price > 0
+    early_arrival_price.positive? || late_departure_price.positive?
   end
 
   private
 
   def end_time_after_start_time
-    if start_time && end_time && end_time <= start_time
-      errors.add(:end_time, 'must be after start time')
-    end
+    errors.add(:end_time, 'must be after start time') if start_time && end_time && end_time <= start_time
   end
 
   def sales_end_time_after_start_time
     if ticket_sales_start_time && ticket_sales_end_time &&
-      ticket_sales_end_time <= ticket_sales_start_time
+       ticket_sales_end_time <= ticket_sales_start_time
       errors.add(:ticket_sales_end_time, 'must be after start time')
     end
   end
 
   def ensure_prices_set_if_maximum_specified
-    if max_kid_tickets_per_request && kid_ticket_price.blank?
-      errors.add(:max_kid_tickets_per_request, 'can be set only if a kid ticket price is set')
-    end
+    errors.add(:max_kid_tickets_per_request, 'can be set only if a kid ticket price is set') if max_kid_tickets_per_request && kid_ticket_price.blank?
 
-    if max_cabins_per_request && cabin_price.blank?
-      errors.add(:max_cabins_per_request, 'can be set only if a cabin price is set')
-    end
+    errors.add(:max_cabins_per_request, 'can be set only if a cabin price is set') if max_cabins_per_request && cabin_price.blank?
 
-    if max_cabin_requests && cabin_price.blank?
-      errors.add(:max_cabin_requests, 'can be set only if a cabin price is set')
-    end
+    errors.add(:max_cabin_requests, 'can be set only if a cabin price is set') if max_cabin_requests && cabin_price.blank?
   end
 end

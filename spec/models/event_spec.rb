@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Event do
@@ -7,8 +9,8 @@ describe Event do
 
   describe 'normalization' do
     it { should normalize(:name) }
-    it { should normalize(:name).from('  Trim Spaces  ').to('Trim Spaces')}
-    it { should normalize(:name).from('Squish  Spaces').to('Squish Spaces')}
+    it { should normalize(:name).from('  Trim Spaces  ').to('Trim Spaces') }
+    it { should normalize(:name).from('Squish  Spaces').to('Squish Spaces') }
   end
 
   describe 'validations' do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe TicketRequestsController, type: :controller do
@@ -150,7 +152,7 @@ describe TicketRequestsController, type: :controller do
         {
           name: Sham.words(2),
           email: email,
-          password: password,
+          password: password
         }
       end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Payment for early arrival/late departures passes.
 #
 # We only associate this with an event, as we want to treat these separately
@@ -12,10 +14,10 @@ class EaldPayment < ActiveRecord::Base
   validates :event_id, presence: true
 
   validates :early_arrival_passes, presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+                                   numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :late_departure_passes, presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+                                    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   attr_accessor :stripe_card_token
 
@@ -28,7 +30,7 @@ class EaldPayment < ActiveRecord::Base
         amount: amount_to_charge_cents,
         currency: 'usd',
         card: stripe_card_token,
-        description: "#{event.name} EA/LD Pass",
+        description: "#{event.name} EA/LD Pass"
       )
 
       self.stripe_charge_id = charge.id

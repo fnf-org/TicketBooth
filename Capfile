@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 # Ensure we run within a Bundler context with the correct version of Capistrano
-exec('bundle', 'exec', $0, *ARGV) unless defined?(Bundler)
+exec('bundle', 'exec', $PROGRAM_NAME, *ARGV) unless defined?(Bundler)
 
 load 'deploy'
 load 'deploy/assets'

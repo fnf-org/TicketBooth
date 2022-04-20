@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SiteAdminsController < ApplicationController
   before_action :authenticate_user!
   before_action :require_site_admin

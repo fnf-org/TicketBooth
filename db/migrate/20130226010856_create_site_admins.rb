@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateSiteAdmins < ActiveRecord::Migration
   def change
     create_table :site_admins do |t|

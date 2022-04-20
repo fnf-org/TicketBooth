@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 
 # A real-life living breathing human.
@@ -22,13 +24,13 @@ class User < ActiveRecord::Base
   normalize_attributes :name, :email
 
   validates :name, presence: true,
-    length: { maximum: MAX_NAME_LENGTH },
-    format: { with: /\A[^\s]+\s[^\s]+(\s[^\s]+)*\z/i,
-              message: 'must contain first and last name' }
+                   length: { maximum: MAX_NAME_LENGTH },
+                   format: { with: /\A[^\s]+\s[^\s]+(\s[^\s]+)*\z/i,
+                             message: 'must contain first and last name' }
 
   validates :email, presence: true,
-    format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i },
-    length: { maximum: MAX_EMAIL_LENGTH }
+                    format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i },
+                    length: { maximum: MAX_EMAIL_LENGTH }
 
   def first_name
     name.split(' ').first

@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class TimeSlotsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_event
   before_action :require_event_admin
   before_action :set_job
-  before_action :set_time_slot, only: [:edit, :update, :destroy]
+  before_action :set_time_slot, only: %i[edit update destroy]
 
   def new
     # If a previous time slot exists, pre-populate info to match that one, but
@@ -54,7 +56,7 @@ class TimeSlotsController < ApplicationController
     redirect_to event_job_path(@event, @job)
   end
 
-private
+  private
 
   def set_event
     @event = Event.find(params[:event_id])

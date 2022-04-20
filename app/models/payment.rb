@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class Payment < ActiveRecord::Base
   include PaymentsHelper
 
   STATUSES = [
     STATUS_IN_PROGRESS = 'P',
-    STATUS_RECEIVED = 'R',
-  ]
+    STATUS_RECEIVED = 'R'
+  ].freeze
 
   belongs_to :ticket_request
 
@@ -17,7 +19,7 @@ class Payment < ActiveRecord::Base
   attr_accessor :stripe_card_token
 
   validates :ticket_request, presence: true,
-    uniqueness: { message: 'ticket request has already been paid' }
+                             uniqueness: { message: 'ticket request has already been paid' }
   validates :status, presence: true, inclusion: { in: STATUSES }
 
   def save_and_charge!
@@ -30,7 +32,7 @@ class Payment < ActiveRecord::Base
         amount: amount_to_charge_cents,
         currency: 'usd',
         card: stripe_card_token,
-        description: "#{ticket_request.event.name} Ticket",
+        description: "#{ticket_request.event.name} Ticket"
       )
 
       self.stripe_charge_id = charge.id
@@ -65,14 +67,14 @@ class Payment < ActiveRecord::Base
   end
 
   def via_credit_card?
-    self.stripe_charge_id
+    stripe_charge_id
   end
 
-private
+  private
 
   def modifying_forbidden_attributes?(attributed)
     # Only allow donation field to be updated
-    attributed.any? do |attribute, value|
+    attributed.any? do |attribute, _value|
       !%w[donation id].include?(attribute.to_s)
     end
   end

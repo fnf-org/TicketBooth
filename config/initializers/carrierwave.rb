@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 CarrierWave.configure do |config|
-  config.permissions = 0664
-  config.directory_permissions = 0777
+  config.permissions = 0o664
+  config.directory_permissions = 0o777
   config.storage = :file
   config.enable_processing = false if Rails.env.test?
 end

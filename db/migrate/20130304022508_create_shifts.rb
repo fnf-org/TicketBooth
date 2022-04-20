@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateShifts < ActiveRecord::Migration
   def change
     create_table :shifts do |t|

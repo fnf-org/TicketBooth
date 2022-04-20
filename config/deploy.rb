@@ -1,16 +1,18 @@
-set :application           , 'tickets'
-set :user                  , application
-set :domain                , 'tickets.com'
-set :use_sudo              , false
-set :ssh_options           , { forward_agent: true, compression: 'none' }
-set :keep_releases         , 20 # Keep the last N releases
+# frozen_string_literal: true
+
+set :application, 'tickets'
+set :user, application
+set :domain, 'tickets.com'
+set :use_sudo, false
+set :ssh_options, { forward_agent: true, compression: 'none' }
+set :keep_releases, 20 # Keep the last N releases
 
 # Source code repository
-set :repository            , '.'
-set :branch                , 'master'
-set :migrate_target        , :current
-set :scm                   , :git
-set :git_enable_submodules , 1
+set :repository, '.'
+set :branch, 'master'
+set :migrate_target, :current
+set :scm, :git
+set :git_enable_submodules, 1
 
 set :deploy_via, :copy
 set :deploy_to, "/home/#{user}/deploy"
@@ -19,7 +21,7 @@ set :copy_remote_dir, "#{deploy_to}/capistrano"
 
 set :default_environment, {
   'RAILS_ENV' => 'production',
-  'PATH' => "$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH"
+  'PATH' => '$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH'
 }
 
 set :uploads_directory, "/home/#{user}/uploads"
@@ -49,7 +51,7 @@ namespace :deploy do
   task :restart, roles: :app do
     # XXX: There are problems with the zero-downtime deploys. In the interest
     # of having something working, just kill and start the server for now.
-    #run "kill -s USR2 `cat #{shared_path}/pids/unicorn.#{application}.pid`"
+    # run "kill -s USR2 `cat #{shared_path}/pids/unicorn.#{application}.pid`"
     run "kill -s QUIT `cat #{shared_path}/pids/unicorn.#{application}.pid`"
     run "cd #{current_path} && bundle exec unicorn_rails -c config/unicorn.rb -D"
   end

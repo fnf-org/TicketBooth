@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class JobsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_event
@@ -37,7 +39,7 @@ class JobsController < ApplicationController
 
     if @job.update_attributes(params[:job])
       redirect_to event_job_path(@event, @job),
-        notice: 'Job was successfully updated.'
+                  notice: 'Job was successfully updated.'
     else
       render action: 'edit'
     end
@@ -50,7 +52,7 @@ class JobsController < ApplicationController
     redirect_to event_jobs_url(@event)
   end
 
-private
+  private
 
   def set_event
     @event = Event.find(params[:event_id])

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddExplanationToPayments < ActiveRecord::Migration
   def change
     change_table :payments do |t|

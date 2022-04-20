@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateTimeSlots < ActiveRecord::Migration
   def change
     create_table :time_slots do |t|

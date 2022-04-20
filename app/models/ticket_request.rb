@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Individual request for one or more tickets.
 #
 # This is intended to capture as much information as possible about the ticket,
@@ -8,24 +10,24 @@ class TicketRequest < ActiveRecord::Base
     STATUS_AWAITING_PAYMENT = 'A',
     STATUS_DECLINED = 'D',
     STATUS_COMPLETED = 'C',
-    STATUS_REFUNDED = 'R',
-  ]
+    STATUS_REFUNDED = 'R'
+  ].freeze
 
   TICKET_LIMITS = {
     (ROLE_UBER_COORDINATOR = 'uber_coordinator') => 4,
     (ROLE_COORDINATOR = 'coordinator') => 4,
     (ROLE_CONTRIBUTOR = 'contributor') => 4,
     (ROLE_VOLUNTEER = 'volunteer') => 4,
-    (ROLE_OTHER = 'other') => 4,
-  }
+    (ROLE_OTHER = 'other') => 4
+  }.freeze
 
   ROLES = {
     ROLE_UBER_COORDINATOR => 'Skipper/Board Member',
     ROLE_COORDINATOR => 'Lead Coordinator',
     ROLE_CONTRIBUTOR => 'Planner',
     ROLE_VOLUNTEER => 'Volunteer',
-    ROLE_OTHER => 'Other',
-  }
+    ROLE_OTHER => 'Other'
+  }.freeze
 
   belongs_to :user
   belongs_to :event
@@ -55,19 +57,19 @@ class TicketRequest < ActiveRecord::Base
             presence: { if: -> { event.try(:require_mailing_address) } }
 
   validates :adults, presence: true,
-    numericality: { only_integer: true, greater_than: 0 }
+                     numericality: { only_integer: true, greater_than: 0 }
 
   validates :early_arrival_passes, presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+                                   numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :late_departure_passes, presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+                                    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :kids, allow_nil: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+                   numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :cabins, allow_nil: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+                     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :role, presence: true, inclusion: { in: ROLES.keys }
   validates :role_explanation, presence: { if: -> { role == ROLE_OTHER } },
@@ -78,14 +80,14 @@ class TicketRequest < ActiveRecord::Base
   validates :guests, length: { maximum: 8 }
 
   validates :special_price, allow_nil: true,
-    numericality: { greater_than_or_equal_to: 0 }
+                            numericality: { greater_than_or_equal_to: 0 }
 
   validates :donation, numericality: { greater_than_or_equal_to: 0 }
 
   validates :agrees_to_terms, presence: true
 
   scope :completed, -> { where(status: STATUS_COMPLETED) }
-  scope :pending,  -> { where(status: STATUS_PENDING) }
+  scope :pending, -> { where(status: STATUS_PENDING) }
   scope :awaiting_payment, -> { where(status: STATUS_AWAITING_PAYMENT) }
   scope :approved, -> { awaiting_payment }
   scope :declined, -> { where(status: STATUS_DECLINED) }
@@ -93,12 +95,15 @@ class TicketRequest < ActiveRecord::Base
 
   before_validation do
     if event
-      self.status ||= event.tickets_require_approval ? STATUS_PENDING
-                                                     : STATUS_AWAITING_PAYMENT
+      self.status ||= if event.tickets_require_approval
+                        STATUS_PENDING
+                      else
+                        STATUS_AWAITING_PAYMENT
+                      end
     end
 
     # Remove empty guests
-    self.guests = Array(self.guests).map { |guest| guest.strip.presence }.compact
+    self.guests = Array(guests).map { |guest| guest.strip.presence }.compact
   end
 
   def can_view?(user)
@@ -159,7 +164,7 @@ class TicketRequest < ActiveRecord::Base
       end
     rescue Stripe::StripeError => e
       errors.add(:base, "Cannot refund ticket: #{e.message}")
-      return false
+      false
     end
   end
 
@@ -173,7 +178,7 @@ class TicketRequest < ActiveRecord::Base
         price_rule.calc_price(self)
       end.compact.min
 
-      total += custom_price ? custom_price : kids * event.kid_ticket_price
+      total += custom_price || kids * event.kid_ticket_price
     end
 
     total += cabins * event.cabin_price if event.cabin_price
@@ -186,7 +191,7 @@ class TicketRequest < ActiveRecord::Base
   end
 
   def free?
-    price == 0
+    price.zero?
   end
 
   def total_tickets

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'factory_bot'
 
 # Convenience methods added to invoke FactoryBot factories by sending
@@ -7,56 +9,57 @@ require 'factory_bot'
 # (factory_bot/syntax/make) because we want wrappers for all four methods,
 # not just "create", and we also want the option of customising the returned
 # instance via a block.
-class ActiveRecord::Base
-  class << self
+module ActiveRecord
+  class Base
+    class << self
+      # Wrapper for FactoryBot.build
+      def make(*args, &block)
+        make_with(name.underscore, *args, &block)
+      end
 
-    # Wrapper for FactoryBot.build
-    def make(*args, &block)
-      make_with(name.underscore, *args, &block)
-    end
+      # Like #make, but allows the caller to explicitly specify a factory name.
+      def make_with(factory_name, *args, &block)
+        factory_bot_delegate :build, factory_name, *args, &block
+      end
 
-    # Like #make, but allows the caller to explicitly specify a factory name.
-    def make_with(factory_name, *args, &block)
-      factory_bot_delegate :build, factory_name, *args, &block
-    end
+      # Wrapper for FactoryBot.build_list
+      def make_list(count, *args, &block)
+        factory_bot_delegate :build_list, name.underscore, count, *args, &block
+      end
 
-    # Wrapper for FactoryBot.build_list
-    def make_list(count, *args, &block)
-      factory_bot_delegate :build_list, name.underscore, count, *args, &block
-    end
+      # Wrapper for FactoryBot.create
+      def make!(*args, &block)
+        make_with!(name.underscore, *args, &block)
+      end
 
-    # Wrapper for FactoryBot.create
-    def make!(*args, &block)
-      make_with!(name.underscore, *args, &block)
-    end
+      # Like #make!, but allows the caller to explicitly specify a factory name.
+      def make_with!(factory_name, *args, &block)
+        factory_bot_delegate :create, factory_name, *args, &block
+      end
 
-    # Like #make!, but allows the caller to explicitly specify a factory name.
-    def make_with!(factory_name, *args, &block)
-      factory_bot_delegate :create, factory_name, *args, &block
-    end
+      # Wrapper for FactoryBot.build_list
+      def make_list!(count, *args, &block)
+        factory_bot_delegate :create_list, name.underscore, count, *args, &block
+      end
 
-    # Wrapper for FactoryBot.build_list
-    def make_list!(count, *args, &block)
-      factory_bot_delegate :create_list, name.underscore, count, *args, &block
-    end
+      # Wrapper for FactoryBot.attributes_for
+      def valid_attributes(*args, &block)
+        valid_attributes_with(name.underscore, *args, &block)
+      end
 
-    # Wrapper for FactoryBot.attributes_for
-    def valid_attributes(*args, &block)
-      valid_attributes_with(name.underscore, *args, &block)
-    end
+      # Like #valid_attributes, but allows the caller to explicitly specify a
+      # factory name.
+      def valid_attributes_with(factory_name, *args, &block)
+        factory_bot_delegate :attributes_for, factory_name, *args, &block
+      end
 
-    # Like #valid_attributes, but allows the caller to explicitly specify a
-    # factory name.
-    def valid_attributes_with(factory_name, *args, &block)
-      factory_bot_delegate :attributes_for, factory_name, *args, &block
-    end
+      private
 
-  private
-
-    def factory_bot_delegate(method, factory_name, *args, &block)
-      object = FactoryBot.__send__(method, factory_name, *args)
-      yield object if block_given?
-      object
+      def factory_bot_delegate(method, factory_name, *args)
+        object = FactoryBot.__send__(method, factory_name, *args)
+        yield object if block_given?
+        object
+      end
     end
   end
 end
@@ -65,9 +68,7 @@ end
 # that allows us to continue using Shams (as they're very simple).
 module Sham
   def self.method_missing(method, *args, &block)
-    if args.any?
-      raise ArgumentError, "Sham.#{method} called with #{args.inspect}"
-    end
+    raise ArgumentError, "Sham.#{method} called with #{args.inspect}" if args.any?
 
     if block_given? # defining a Sham
       FactoryBot.define do
@@ -91,22 +92,22 @@ end
 
 # Produce a zip code, starting at 10,000.
 Sham.zip_code do |n|
-  '%.5d' % (n + 10_000)
+  format('%.5d', (n + 10_000))
 end
 
 # Generate a random string of length k.
 def Sham.string(k)
-  chars =  ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a
+  chars = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a
   1.upto(k).reduce('') { |string, _| string + chars[rand(chars.size - 1)] }
 end
 
 # Generate a random but prounounceable word.
 # Modified from: http://snipplr.com/view.php?codeview&id=1247
-def Sham.word(n = [2,4,6].sample)
-  c = %w(b c d f g h j k l m n p qu r s t v w x z) +
-      %w(ch cr fr ph pr sh sl sp st th tr)
-  v = %w(a e i o u y)
-  e = %w(ch nd ng nk nt ph rd sh sp st)
+def Sham.word(n = [2, 4, 6].sample)
+  c = %w[b c d f g h j k l m n p qu r s t v w x z] +
+      %w[ch cr fr ph pr sh sl sp st th tr]
+  v = %w[a e i o u y]
+  e = %w[ch nd ng nk nt ph rd sh sp st]
   suf = rand > 0.5 ? e.sample : ''
   f = false
   (0...n).map { (f = !f) ? c.sample : v.sample }.join + suf

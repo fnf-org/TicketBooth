@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 TicketBooth::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -37,7 +39,7 @@ TicketBooth::Application.configure do
   config.log_level = :debug
 
   # Prepend all log lines with the following tags
-  config.log_tags = [ lambda { |req| DateTime.now }, :uuid ]
+  config.log_tags = [->(_req) { DateTime.now }, :uuid]
 
   # Use a different logger for distributed setups
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)

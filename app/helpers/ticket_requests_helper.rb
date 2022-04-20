@@ -1,4 +1,5 @@
-# encoding: UTF-8
+# frozen_string_literal: true
+
 module TicketRequestsHelper
   def class_for_table_row(ticket_request)
     case ticket_request.status
@@ -40,8 +41,8 @@ module TicketRequestsHelper
   end
 
   def eald_requested?(ticket_request)
-    ticket_request.early_arrival_passes > 0 ||
-      ticket_request.late_departure_passes > 0
+    ticket_request.early_arrival_passes.positive? ||
+      ticket_request.late_departure_passes.positive?
   end
 
   # Not perfect, but looks up the email address associated with the request and
@@ -59,7 +60,7 @@ module TicketRequestsHelper
   def price_rules_to_json(event)
     Hash[
       event.price_rules.map do |price_rule|
-        [ price_rule.trigger_value, price_rule.price.to_i ]
+        [price_rule.trigger_value, price_rule.price.to_i]
       end
     ].to_json
   end

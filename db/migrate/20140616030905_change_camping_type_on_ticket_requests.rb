@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeCampingTypeOnTicketRequests < ActiveRecord::Migration
   def change
     remove_column :ticket_requests, :camping_type

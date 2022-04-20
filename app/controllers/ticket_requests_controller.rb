@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'tempfile'
 require 'csv'
 
@@ -9,29 +11,27 @@ class TicketRequestsController < ApplicationController
   before_action :set_ticket_request,  except: %i[index new create download]
 
   # Uncomment this if we start getting too many requests
-  #http_basic_authenticate_with name: Rails.application.secrets.ticket_request_username,
-                               #password: Rails.application.secrets.ticket_request_password,
-                               #only: :new
+  # http_basic_authenticate_with name: Rails.application.secrets.ticket_request_username,
+  # password: Rails.application.secrets.ticket_request_password,
+  # only: :new
 
   def index
     @ticket_requests = TicketRequest
-      .includes({ event: [:price_rules] }, :payment, :user)
-      .where(event_id: @event)
-      .order('created_at DESC')
-      .to_a
+                       .includes({ event: [:price_rules] }, :payment, :user)
+                       .where(event_id: @event)
+                       .order('created_at DESC')
+                       .to_a
 
-    @stats = %i[pending awaiting_payment completed].reduce({}) do |stats, status|
-      requests = @ticket_requests.select { |tr| tr.send(status.to_s + '?') }
+    @stats = %i[pending awaiting_payment completed].each_with_object({}) do |status, stats|
+      requests = @ticket_requests.select { |tr| tr.send("#{status}?") }
 
       stats[status] = {
         requests: requests.count,
-        adults:   requests.sum(&:adults),
-        kids:     requests.sum(&:kids),
-        cabins:   requests.sum(&:cabins),
-        raised:   requests.sum(&:price),
+        adults: requests.sum(&:adults),
+        kids: requests.sum(&:kids),
+        cabins: requests.sum(&:cabins),
+        raised: requests.sum(&:price)
       }
-
-      stats
     end
 
     @stats[:total] ||= Hash.new { |h, k| h[k] = 0 }
@@ -61,6 +61,7 @@ class TicketRequestsController < ApplicationController
 
   def show
     return redirect_to root_path unless @ticket_request.can_view?(current_user)
+
     @payment = @ticket_request.payment
   end
 
@@ -68,9 +69,7 @@ class TicketRequestsController < ApplicationController
     if signed_in?
       existing_request = TicketRequest.where(user_id: current_user, event_id: @event).first
 
-      if existing_request
-        return redirect_to event_ticket_request_path(@event, existing_request)
-      end
+      return redirect_to event_ticket_request_path(@event, existing_request) if existing_request
     end
 
     @user = current_user if signed_in?
@@ -118,9 +117,7 @@ class TicketRequestsController < ApplicationController
 
   def update
     # Allow ticket request to edit guests and nothing else
-    unless @event.admin?(current_user)
-      params[:ticket_request].slice!(:guests)
-    end
+    params[:ticket_request].slice!(:guests) unless @event.admin?(current_user)
 
     if @ticket_request.update_attributes(params[:ticket_request])
       redirect_to event_ticket_request_path(@event, @ticket_request)
@@ -151,32 +148,28 @@ class TicketRequestsController < ApplicationController
   end
 
   def resend_approval
-    if @ticket_request.awaiting_payment?
-      TicketRequestMailer.request_approved(@ticket_request).deliver_now
-    end
+    TicketRequestMailer.request_approved(@ticket_request).deliver_now if @ticket_request.awaiting_payment?
 
     redirect_to event_ticket_requests_path(@event)
   end
 
   def revert_to_pending
-    if @ticket_request.declined?
-      @ticket_request.update_attribute(:status, TicketRequest::STATUS_PENDING)
-    end
+    @ticket_request.update_attribute(:status, TicketRequest::STATUS_PENDING) if @ticket_request.declined?
 
     redirect_to event_ticket_requests_path(@event)
   end
 
   def refund
     if @ticket_request.refund
-      return redirect_to event_ticket_request_path(@event, @ticket_request),
-             notice: 'Ticket request was refunded'
+      redirect_to event_ticket_request_path(@event, @ticket_request),
+                  notice: 'Ticket request was refunded'
     else
-      return redirect_to event_ticket_request_path(@event, @ticket_request),
-             alert: @ticket_request.errors.full_messages.join('. ')
+      redirect_to event_ticket_request_path(@event, @ticket_request),
+                  alert: @ticket_request.errors.full_messages.join('. ')
     end
   end
 
-private
+  private
 
   def set_event
     @event = Event.find(params[:event_id])

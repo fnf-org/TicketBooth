@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'tempfile'
 require 'csv'
 
@@ -19,10 +21,10 @@ class EaldPaymentsController < ApplicationController
     full_name             = params.fetch(:name, '')
     early_arrival_passes  = params.fetch(:early_arrival_passes, 1)
     late_departure_passes = params.fetch(:late_departure_passes, 1)
-    @eald_payment         = EaldPayment.new(event_id:              @event.id,
-                                            email:                 email,
-                                            name:                  full_name,
-                                            early_arrival_passes:  early_arrival_passes,
+    @eald_payment         = EaldPayment.new(event_id: @event.id,
+                                            email: email,
+                                            name: full_name,
+                                            early_arrival_passes: early_arrival_passes,
                                             late_departure_passes: late_departure_passes)
   end
 
@@ -59,7 +61,7 @@ class EaldPaymentsController < ApplicationController
     temp_csv.close
     send_file(temp_csv.path,
               filename: "#{@event.name} EALD Passes.csv",
-              type:     'text/csv')
+              type: 'text/csv')
   end
 
   private

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe TicketRequest do
@@ -245,7 +247,7 @@ describe TicketRequest do
       Event.make!(
         adult_ticket_price: adult_price,
         kid_ticket_price: kid_price,
-        cabin_price: cabin_price,
+        cabin_price: cabin_price
       )
     end
     let(:ticket_request) do
@@ -254,10 +256,10 @@ describe TicketRequest do
         adults: adults,
         kids: kids,
         cabins: cabins,
-        special_price: special_price,
+        special_price: special_price
       )
     end
-    subject { ticket_request.price  }
+    subject { ticket_request.price }
 
     context 'when kid ticket price is not set on the event' do
       it { should == adult_price * adults }
@@ -286,7 +288,7 @@ describe TicketRequest do
     end
 
     context 'when a special price is set' do
-      let(:special_price) { BigDecimal.new(99.99, 10) }
+      let(:special_price) { BigDecimal(99.99, 10) }
       it { should == special_price }
     end
 

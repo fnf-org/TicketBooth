@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Provides helpers making specs for various controller responses easier to
 # write.
 module ResponseHelpers
@@ -14,6 +16,6 @@ module ResponseHelpers
   end
 end
 
-RSpec.configure do |config|
+RSpec.configure do |_config|
   include ResponseHelpers
 end
