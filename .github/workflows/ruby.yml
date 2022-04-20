@@ -38,6 +38,7 @@ jobs:
           cd - >/dev/null
 
       - run: |
+          gem update --system 3.2.3 || true
           gem install bundler --version 1.17.3 -N
           bundle _1.17.3_ install -j 12
 
