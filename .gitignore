@@ -23,6 +23,7 @@
 # Ignore backups
 /backups
 /.yard
+/.yardoc
 /coverage
 /doc
 /.history

@@ -8,7 +8,7 @@ defaults: &defaults
   password: postgres
 
 development:
-  <<: *defaults
+   <<: *defaults
   database: hc_development
 
 test:
