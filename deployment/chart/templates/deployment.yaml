@@ -59,10 +59,7 @@ spec:
           - name: TICKET_DB_USER
             value: {{ .Values.postgresql.auth.username }}
           - name: TICKET_DB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "chart.postgresql.fullname" . }}
-                key: postgres-password
+            value: {{ .Values.postgresql.auth.password }}
           envFrom:
           - secretRef:
               name: {{ .Release.Name }}-secrets
