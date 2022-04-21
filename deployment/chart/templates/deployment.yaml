@@ -37,6 +37,16 @@ spec:
             - name: http
               containerPort: 3000
               protocol: TCP
+          livenessProbe:
+            timeoutSeconds: 5
+            httpGet:
+              path: /
+              port: 3000
+          readinessProbe:
+            timeoutSeconds: 5
+            httpGet:
+              path: /
+              port: 3000
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
