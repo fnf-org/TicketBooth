@@ -25,7 +25,6 @@ RUN bundle install
 
 COPY . /app
 
-ENV RAILS_ENV=development
 RUN SECRET_KEY_BASE=1 bundle exec rake assets:precompile
 
 EXPOSE 3000
