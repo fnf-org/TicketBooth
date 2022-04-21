@@ -1,0 +1,22 @@
+image:
+  repository: tickets
+  pullPolicy: Never
+  tag: "latest"
+
+ticketsEnvironment: "development"
+ticketsSecretToken: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+ticketsServeStaticFiles: "true"
+ticketsSMTPHost: ""
+ticketsSMTPPort: ""
+ticketsSMTPUser: ""
+ticketsSMTPPassword: ""
+ticketsDBSeed: ""
+ticketsHost: "localhost"
+ticketsEmailAddress: "tickets@fnf.org"
+
+postgresql:
+  auth:
+    database: tickets
+    username: ticketsuser
+    password: "test"
+    postgresPassword: "test"

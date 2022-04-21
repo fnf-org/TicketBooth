@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+data:
+  RAILS_ENV: "{{ .Values.ticketsEnvironment }}"
+  SMTP_ADDRESS: "{{ .Values.ticketsSMTPHost }}"
+  SMTP_PORT: "{{ .Values.ticketsSMTPPort }}"
+  SMTP_DOMAIN: "{{ .Values.ticketsSMTPDomain }}"
+  TICKETS_HOST: "{{ .Values.ticketsHost }}"
+  ACTION_MAILER_DEFAULT_FROM: "{{ .Values.ticketsEmailAddress }}"
+  ACTION_MAILER_DEFAULT_TO: "{{ .Values.ticketsEmailAddress }}"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-secrets
+type: Opaque
+stringData:
+  SECRET_KEY_BASE: "{{ .Values.ticketsSecretToken }}"
+  RAILS_SERVE_STATIC_FILES: "{{ .Values.ticketsServeStaticFiles }}"
+  SMTP_USERNAME: "{{ .Values.ticketsSMTPUser }}"
+  SMTP_PASSWORD: "{{ .Values.ticketsSMTPPassword }}"
