@@ -14,105 +14,30 @@ version: '3'
 services:
   rails:
     build:
-      args:
-        ruby_version: ${RUBY_VERSION}
       context: .
       dockerfile: Dockerfile
-    command: bundle exec rails server --binding=0.0.0.0 --port=${PORT}
     environment:
-      - DB_HOST
-      - DB_NAME=${POSTGRES_DB}
-      - DB_USER=${POSTGRES_USER}
-      - DB_PASS=${POSTGRES_PASSWORD}
+      - TICKET_DB_USER=ticket
+      - TICKET_DB_PASSWORD=ticket
+      - TICKET_DB_HOST=postgres
+      - TICKET_DB_PORT=5432
+      - TICKET_DB_NAME=ticket
     networks:
       - tickets
     ports:
-      - '${PORT}:${PORT}'
-    volumes:
-      - '.:/app'
-      - 'gems_data:/usr/local/bundle'
-    working_dir: /app
-
-  nginx:
-    image: linuxserver/letsencrypt
-    cap_add:
-      - NET_ADMIN
-    environment:
-      - SUBDOMAINS
-      - URL
-      - VALIDATION
-      - DNSPLUGIN
-      - EMAIL=${CLOUDFLARE_EMAIL}
-      - CLOUDFLARE_TOKEN
-      - CLOUDFLARE_EMAIL
-    networks:
-      - tickets
-    ports:
-      - '80:80'
-      - '443:443'
-    volumes:
-      - './config/nginx-site.conf:/config/nginx/site-confs/default'
+      - '3000:3000'
 
   postgres:
-    image: 'postgres:${POSTGRES_VERSION}-alpine'
+    image: 'postgres:11-alpine'
     environment:
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
+      - POSTGRES_USER=ticket
+      - POSTGRES_PASSWORD=ticket
+      - POSTGRES_DB=ticket
     networks:
       - tickets
     ports:
       - '5432:5432'
-    volumes:
-      - 'postgres_data:/var/lib/postgresql/data'
-
-  terraform:
-    build:
-      args:
-        terraform_version: ${TERRAFORM_VERSION}
-        sentry_plugin_version: ${SENTRY_PLUGIN_VERSION}
-      context: .
-      dockerfile: Dockerfile.terraform
-    environment:
-      - TFE_HOSTNAME
-      - TFE_TOKEN
-      - TFE_ORGANIZATION
-      - TFE_WORKSPACE
-      - TF_VAR_app_name
-      - TF_VAR_digitalocean_token
-      - TF_VAR_mailgun_api_key
-      - TF_VAR_mailgun_sending_domain
-      - TF_VAR_mailgun_smtp_password
-      - TF_VAR_root_ssh_public_key
-      - TF_VAR_root_ssh_private_key_base64
-      - TF_VAR_sentry_token
-      - TF_VAR_cloudflare_zone_name
-      - TF_VAR_cloudflare_zone
-      - TF_VAR_cloudflare_email
-      - TF_VAR_cloudflare_token
-    volumes:
-      - terraform_data:/root/.terraform
-      - ./terraform:/config
-    working_dir: /config
-
-  ansible:
-    build:
-      args:
-        ansible_version: ${ANSIBLE_VERSION}
-      context: .
-      dockerfile: Dockerfile.ansible
-    volumes:
-      - ansible_data:/var
-      - ./ansible:/ansible/playbooks
-    working_dir: /ansible/playbooks
 
 networks:
   tickets:
 
-# Define names of volumes that you want to be preserved between container restarts.
-# These are referenced above in the `volumes` section of the service.
-volumes:
-  ansible_data:
-  gems_data:
-  postgres_data:
-  terraform_data:
