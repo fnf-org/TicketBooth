@@ -3,7 +3,7 @@ image:
   pullPolicy: Never
   tag: "latest"
 
-ticketsEnvironment: "development"
+ticketsEnvironment: "production"
 ticketsSecretToken: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 ticketsServeStaticFiles: "true"
 ticketsSMTPHost: ""
