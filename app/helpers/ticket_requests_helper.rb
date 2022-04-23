@@ -51,18 +51,16 @@ module TicketRequestsHelper
   def eald_paid?(ticket_request)
     eald_payments = EaldPayment.where(event: ticket_request.event,
                                       email: ticket_request.user.email).to_a
-    ea_passes = eald_payments.sum(&:early_arrival_passes)
-    ld_passes = eald_payments.sum(&:late_departure_passes)
+    ea_passes     = eald_payments.sum(&:early_arrival_passes)
+    ld_passes     = eald_payments.sum(&:late_departure_passes)
     ea_passes >= ticket_request.early_arrival_passes &&
       ld_passes >= ticket_request.late_departure_passes
   end
 
   def price_rules_to_json(event)
-    Hash[
-      event.price_rules.map do |price_rule|
-        [price_rule.trigger_value, price_rule.price.to_i]
-      end
-    ].to_json
+    event.price_rules.map do |price_rule|
+      [price_rule.trigger_value, price_rule.price.to_i]
+    end.to_h.to_json
   end
 
   def help_text_for(sym)

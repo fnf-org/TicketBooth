@@ -33,10 +33,4 @@ class ApplicationController < ActionController::Base
       sign_in user
     end
   end
-
-  # This is so that RubyMine can find it
-  # rubocop: disable Lint/UselessMethodDefinition
-  def current_user
-    super
-  end
 end

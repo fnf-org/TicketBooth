@@ -8,6 +8,7 @@ class Job < ActiveRecord::Base
 
   validates :event_id, presence: true,
                        numericality: { only_integer: true, greater_than: 0 }
+
   validates :name, presence: true, length: { maximum: 100 }
   validates :description, presence: true, length: { maximum: 512 }
 end

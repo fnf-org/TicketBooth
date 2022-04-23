@@ -268,7 +268,7 @@ describe TicketRequest do
     context 'when the ticket request includes kids' do
       let(:kids) { 2 }
       let(:kid_price) { 10 }
-      it { should == adult_price * adults + kid_price * kids }
+      it { should == (adult_price * adults) + (kid_price * kids) }
     end
 
     context 'when the ticket request does not include kids' do
@@ -279,7 +279,7 @@ describe TicketRequest do
     context 'when the ticket request includes cabins' do
       let(:cabins) { 2 }
       let(:cabin_price) { 100 }
-      it { should == adult_price * adults + cabin_price * cabins }
+      it { should == (adult_price * adults) + (cabin_price * cabins) }
     end
 
     context 'when the ticket request does not include cabins' do
