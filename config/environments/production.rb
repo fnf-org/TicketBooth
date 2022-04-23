@@ -21,9 +21,7 @@ TicketBooth::Application.configure do
   config.assets.js_compressor = :uglifier
 
   # Don't fallback to assets pipeline if a precompiled asset is missed
-  ### MM: Modified for Kubernetes
-  ## FIXME: Why doe we need this if we compile assets in the container build?
-  config.assets.compile = true
+  config.assets.compile = false
 
   # Generate digests for assets URLs
   config.assets.digest = true
@@ -36,8 +34,7 @@ TicketBooth::Application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  ### MM: Modified for Kubernetes
-  config.force_ssl = false
+  config.force_ssl = true
 
   # See everything in the log (default is :info)
   config.log_level = :debug
