@@ -22,7 +22,7 @@ TicketBooth::Application.configure do
 
   # Don't fallback to assets pipeline if a precompiled asset is missed
   ### MM: Modified for Kubernetes
-  ## FIXME: Why doe we need this if we compile assets in the container build? 
+  ## FIXME: Why doe we need this if we compile assets in the container build?
   config.assets.compile = true
 
   # Generate digests for assets URLs
@@ -71,9 +71,8 @@ TicketBooth::Application.configure do
   config.action_mailer.raise_delivery_errors = false
 
   # FIXME: Why?
-  # pg_dump doesnt seem to work in the container in Kubernetes, 
-  # it works on docker-compose. Why do we need it? 
+  # pg_dump doesnt seem to work in the container in Kubernetes,
+  # it works on docker-compose. Why do we need it?
   # https://stackoverflow.com/questions/41561883/pg-dump-error-while-running-rake-dbmigrate
   config.active_record.dump_schema_after_migration = false
-
 end

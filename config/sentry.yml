@@ -1,0 +1,2 @@
+# Defines the URL endpoint that Raven should use to send errors to Sentry
+dsn: https://<public_key>:<secret_key>@app.getsentry.com/<project_id>
