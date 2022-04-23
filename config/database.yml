@@ -1,20 +1,30 @@
-# Copy this file to config/database.yml and edit it so you can access the DB on
-# your local development environment
-defaults: &defaults
+development:
   adapter: postgresql
   encoding: utf8
   host: localhost
+  port: 5432
+  pool: 5
   username: postgres
   password: postgres
-
-production:
-  <<: *defaults
-  database: postgres
-
-development:
-  <<: *defaults
-  database: hc_development
+  database: tickets_development
 
 test:
-  <<: *defaults
-  database: hc_test
+  adapter: postgresql
+  encoding: utf8
+  host: localhost
+  port: 5432
+  pool: 5
+  username: postgres
+  password: postgres
+  database: tickets_test
+
+production:
+  adapter: postgresql
+  encoding: utf8
+  host: localhost
+  port: 5432
+  pool: 5
+  username: postgres
+  password: postgres
+  database: tickets_production
+  pool: 15

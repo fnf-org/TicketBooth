@@ -1,27 +1,30 @@
-ARG ruby_version
-FROM ruby:2.5.8
+FROM ruby:2.5.8-slim
 
 # Needed by Ruby to process UTF8-encoded files
 ENV LANG C.UTF-8
 
 RUN set -eus; \
     apt-get update -qq; \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
     nodejs \
     shared-mime-info \
     build-essential \
     libpq-dev \
     libxml2-dev \
     libxslt1-dev \
+    libjemalloc2 \
     ruby-yaml-db \
     postgresql-client \
     ; \
     apt-get clean; \
     rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*;
 
+# @see https://engineering.binti.com/jemalloc-with-ruby-and-docker/
+ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
+
 WORKDIR /app
 COPY Gemfile Gemfile.lock ./
-RUN bundle install
+RUN bundle install -j 12 --deployment --without test --without development
 
 COPY . /app
 
