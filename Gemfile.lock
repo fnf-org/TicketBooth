@@ -64,6 +64,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
+    colored2 (3.1.2)
     commonjs (0.2.7)
     concurrent-ruby (1.1.5)
     countries (2.1.4)
@@ -300,6 +301,7 @@ DEPENDENCIES
   capistrano (< 3)
   carrierwave
   coffee-rails
+  colored2
   commonjs
   country_select
   devise

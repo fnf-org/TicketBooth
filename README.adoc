@@ -10,7 +10,7 @@ image:https://github.com/fnf-org/ticket-booth/actions/workflows/ruby.yml/badge.s
 
 ---
 
-NOTE: This app is formerly known as **Helping Culture**, which in turn was originally conceived and inspired by Tracy Page. This project was originally written by https://github.com/sds[Shane de Silva]. It is currently maintained by the https://github.com/fnf-org[FnF] org, and within it specifically https://github.com/kigster[Konstantin Gredeskoul]. Tag any issues with https://github.com/kigster[@kigster].
+NOTE: This app is formerly known as **Helping Culture**, which in turn was originally conceived and inspired by Tracy Page. This project was originally written by https://github.com/sds[Shane de Silva]. It is currently maintained by the https://github.com/fnf-org[FnF] org, and within it specifically https://github.com/kigster[Konstantin Gredeskoul] for any application issues, and https://github.com/mike-matera[Mike Matera] for any issues related to deployment to the Google Public Cloud. Please use labels to tag any reported issues.
 
 
 == Welcome to the *Ticket Booth*!
@@ -21,12 +21,21 @@ The goal of the app is to make ticket and volunteer management for community eve
 
 === Usage
 
-Currently under construction.
+When the database is completely blank, the first step is to create the initial account. Lets say you registered as 'kig@fnf.org':
+
+The second step is to make that person a site admin:
+
+[source,bash]
+RAILS_ENV=production bin/site-admin add kig@fnf.org
+
+Or, to remove site admin from a given user:
+
+[source,bash]
+RAILS_ENV=production bin/site-admin remove kig@fnf.org
 
 === Developer Setup
 
-
-We dedicated a separate document to the xref:DEVELOPERS.adoc[developer setup], which helps you get the application running locally.
+We dedicated a separate document to the xref:DEVELOPERS.pdf[developer setup], which helps you get the application running locally.
 
 == API Documentation
 
