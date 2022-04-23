@@ -7,6 +7,8 @@ TicketBooth::Application.configure do
   # every request. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
+  # Enable threaded mode
+  # config.threadsafe!
 
   config.eager_load = false
 
@@ -25,4 +27,10 @@ TicketBooth::Application.configure do
 
   config.action_mailer.default_url_options = { host: 'localhost:3000' }
   config.action_mailer.raise_delivery_errors = true
+
+  # FIXME: Why?
+  # pg_dump doesnt seem to work in the container in Kubernetes,
+  # it works on docker-compose. Why do we need it?
+  # https://stackoverflow.com/questions/41561883/pg-dump-error-while-running-rake-dbmigrate
+  config.active_record.dump_schema_after_migration = true
 end

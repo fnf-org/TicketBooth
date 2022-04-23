@@ -178,7 +178,7 @@ class TicketRequest < ActiveRecord::Base
         price_rule.calc_price(self)
       end.compact.min
 
-      total += custom_price || kids * event.kid_ticket_price
+      total += custom_price || (kids * event.kid_ticket_price)
     end
 
     total += cabins * event.cabin_price if event.cabin_price

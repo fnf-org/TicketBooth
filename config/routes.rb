@@ -2,7 +2,7 @@
 
 TicketBooth::Application.routes.draw do
   root to: 'home#index'
-
+  get 'oops', controller: :home, action: :oops
   devise_for :users
 
   event_id = 9

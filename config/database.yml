@@ -1,0 +1,30 @@
+development:
+  adapter: postgresql
+  encoding: utf8
+  host: localhost
+  port: 5432
+  pool: 5
+  username: postgres
+  password: postgres
+  database: tickets_development
+
+test:
+  adapter: postgresql
+  encoding: utf8
+  host: localhost
+  port: 5432
+  pool: 5
+  username: postgres
+  password: postgres
+  database: tickets_test
+
+production:
+  adapter: postgresql
+  encoding: utf8
+  host: localhost
+  port: 5432
+  pool: 5
+  username: postgres
+  password: postgres
+  database: tickets_production
+  pool: 15
