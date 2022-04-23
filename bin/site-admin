@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby -W0
+# vim: ft=ruby
+# frozen_string_literal: true
+
+require 'uri'
+require 'colored2'
+
+user_email = ARGV[1]
+action = ARGV[0]
+
+if ARGV.size.zero? || user_email !~ URI::MailTo::EMAIL_REGEXP || !%w[add remove].include?(action)
+  puts 'USAGE:'.bold.green
+  puts '     bin/site-admin '.bold.blue + 'add   '.bold.magenta +  ' <email-address>'.bold.yellow
+  puts '     bin/site-admin '.bold.blue + 'remove'.bold.magenta +  ' <email-address>'.bold.yellow
+
+  puts "\nWhere 'email-address' is the address of an existing user."
+  exit 3
+end
+
+require File.expand_path('../config/application', __dir__)
+require File.expand_path('../config/environment', __dir__)
+
+class God
+  attr_reader :email, :user
+
+  def initialize(user_email:)
+    @email = user_email
+    @user  = ::User.where(email: email).first
+    if user.present?
+      puts "\nNice to meet you, #{user.name.bold.blue} ;-)".yellow
+    else
+      puts 'Uh oh huh hrmm... Craptastic  💩💩💩'.bold.yellow
+      puts 'The email address you provided does not match any existing records...'.bold.red
+      puts " • #{@email.bold.green}"
+      exit 1
+    end
+  end
+
+  def divine_intervention(action)
+    if %i[add remove].include?(action)
+      send(action)
+    else
+      puts "\nWho are you to ask God for this mystic power!? #{action} is not known.\n".red.bold
+    end
+  end
+
+  def add
+    SiteAdmin.create!(user_id: user.id)
+    puts "\nUser #{user.name} has been granted divine powers.\n".bold.green
+  rescue ActiveRecord::RecordInvalid => e
+    puts "\nWell, shit, what do you know!".bold.yellow + "\n • #{e.message.red}\n"
+    exit 2
+  end
+
+  def remove
+    admin = SiteAdmin.where(user_id: user.id).first
+    if admin
+      puts "\nUser #{email} no longer yields divine powers.\n".bold.blue
+    else
+      puts "\nUser #{email} did not have any divine powers, nothing changed.\n".bold.red
+    end
+  rescue ActiveRecord::RecordInvalid => e
+    puts "\nWell, shit, what do you know!".bold.yellow + "\n • #{e.message.red}\n"
+    exit 2
+  end
+end
+
+God.new(user_email: user_email).divine_intervention(action.to_sym)
