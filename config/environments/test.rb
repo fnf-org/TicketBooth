@@ -8,6 +8,8 @@ TicketBooth::Application.configure do
   # your test database is "scratch space" for the test suite and is wiped
   # and recreated between test runs. Don't rely on the data there!
   config.cache_classes = true
+  # Enable threaded mode
+  # config.threadsafe!
 
   config.eager_load = false
 

@@ -9,11 +9,13 @@ directory(current_dir) if Dir.exist?(current_dir)
 
 if @env == 'development'
   bind 'tcp://127.0.0.1:3000'
-  threads 1, 5
+  threads 1, 1
   workers 1
 else
   bind 'tcp://0.0.0.0:3000'
-  threads 4, 16
+  port 3000
+  threads 2, 2
+  workers [(2 * Etc.nprocessors), 8].min
 end
 
 tag 'ticket-booth'

@@ -20,3 +20,5 @@
 /doc
 /.history
 /.bundle
+/public/assets
+/vendor/bundle
