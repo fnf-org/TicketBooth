@@ -30,5 +30,5 @@ TicketBooth::Application.configure do
   # pg_dump doesnt seem to work in the container in Kubernetes,
   # it works on docker-compose. Why do we need it?
   # https://stackoverflow.com/questions/41561883/pg-dump-error-while-running-rake-dbmigrate
-  config.active_record.dump_schema_after_migration = false
+  config.active_record.dump_schema_after_migration = true
 end

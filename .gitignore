@@ -1,4 +1,5 @@
 # Ignore all logfiles and tempfiles
+**/.DS_Store
 .idea
 .vscode
 /log

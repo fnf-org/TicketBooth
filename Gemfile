@@ -18,26 +18,33 @@ gem 'libv8'
 gem 'mini_magick'
 gem 'pg', '~> 0.20'
 gem 'protected_attributes'
+gem 'psych', '< 4'
 gem 'puma'
 gem 'rake'
-gem 'relaxed-rubocop'
-gem 'rubocop'
 gem 'sass-rails'
 gem 'sentry-raven'
 gem 'stripe'
 gem 'therubyracer', platforms: :ruby
 gem 'twitter-bootstrap-rails'
 gem 'uglifier'
+gem 'yard'
+
+group :development, :test do
+  gem 'relaxed-rubocop'
+  gem 'rubocop'
+  gem 'rubocop-rails'
+  gem 'rubocop-rake'
+  gem 'rubocop-rspec'
+end
 
 group :development do
+  gem 'annotate'
   gem 'asciidoctor'
   gem 'capistrano', '< 3'
-  gem 'yard'
 end
 
 group :test do
   gem 'accept_values_for'
-  gem 'codecov'
   gem 'factory_bot_rails'
   gem 'rspec-its'
   gem 'rspec-rails'
