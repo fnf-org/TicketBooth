@@ -33,7 +33,7 @@ class User < ActiveRecord::Base
                     length: { maximum: MAX_EMAIL_LENGTH }
 
   def first_name
-    name.split(' ').first
+    name.split.first
   end
 
   def site_admin?

@@ -88,10 +88,19 @@ class Event < ActiveRecord::Base
   end
 
   def ensure_prices_set_if_maximum_specified
-    errors.add(:max_kid_tickets_per_request, 'can be set only if a kid ticket price is set') if max_kid_tickets_per_request && kid_ticket_price.blank?
+    if max_kid_tickets_per_request && kid_ticket_price.blank?
+      errors.add(:max_kid_tickets_per_request,
+                 'can be set only if a kid ticket price is set')
+    end
 
-    errors.add(:max_cabins_per_request, 'can be set only if a cabin price is set') if max_cabins_per_request && cabin_price.blank?
+    if max_cabins_per_request && cabin_price.blank?
+      errors.add(:max_cabins_per_request,
+                 'can be set only if a cabin price is set')
+    end
 
-    errors.add(:max_cabin_requests, 'can be set only if a cabin price is set') if max_cabin_requests && cabin_price.blank?
+    if max_cabin_requests && cabin_price.blank?
+      errors.add(:max_cabin_requests,
+                 'can be set only if a cabin price is set')
+    end
   end
 end
