@@ -46,3 +46,6 @@ reset:		## Complete reset of the databases and runs the rspec and rubocop
 		@bundle exec rspec
 		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(bg_blue)$(yellow)Running Rubocop...$(clear)\n"
 		@bundle exec rubocop
+
+docker-image:	## Builds a docker image named 'tickets'
+		docker build -t tickets .
