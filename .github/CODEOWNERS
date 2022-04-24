@@ -17,6 +17,10 @@
 #
 #=============================================================================
 
+# Code
+*                       @fnf-org/fnf-engineeres
+
+# Build — keeping them separately for the time we have a dedicated security team
 Dockerfile*             @fnf-org/fnf-engineeres
 docker-compose.yml      @fnf-org/fnf-engineeres
 /deploy                 @fnf-org/fnf-engineeres
@@ -28,7 +32,4 @@ docker-compose.yml      @fnf-org/fnf-engineeres
 /webpack.*.json         @fnf-org/fnf-engineeres
 
 # Folks in this team should review all migrations.
-/db/migrate             @fnf-org/fnf-engineeres
-*.sql                   @fnf-org/fnf-engineeres
-schema.rb               @fnf-org/fnf-engineeres
 
