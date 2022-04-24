@@ -39,13 +39,13 @@ TicketBooth::Application.configure do
   config.force_ssl = false
 
   # See everything in the log (default is :info)
-  config.log_level = :debug
+  config.log_level = :info
 
   # Prepend all log lines with the following tags
   config.log_tags = [->(_req) { DateTime.now }, :uuid]
 
   # For Kubernetes: Log to STDOUT
-  config.logger = Logger.new(STDOUT)
+  config.logger = Logger.new($stdout)
 
   # Use a different logger for distributed setups
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
