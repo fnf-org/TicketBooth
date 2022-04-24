@@ -21,7 +21,9 @@ TicketBooth::Application.configure do
   config.assets.js_compressor = :uglifier
 
   # Don't fallback to assets pipeline if a precompiled asset is missed
-  config.assets.compile = false
+  ### MM: Modified for Kubernetes
+  ## FIXME: Why doe we need this if we compile assets in the container build? 
+  config.assets.compile = true
 
   # Generate digests for assets URLs
   config.assets.digest = true
@@ -34,6 +36,8 @@ TicketBooth::Application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
+  ### MM: Modified for Kubernetes
+  ## FIXME: Get secure cookies working.
   config.force_ssl = false
 
   # See everything in the log (default is :info)
@@ -41,6 +45,9 @@ TicketBooth::Application.configure do
 
   # Prepend all log lines with the following tags
   config.log_tags = [->(_req) { DateTime.now }, :uuid]
+
+  # For Kubernetes: Log to STDOUT
+  config.logger = Logger.new(STDOUT)
 
   # Use a different logger for distributed setups
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
@@ -67,9 +74,5 @@ TicketBooth::Application.configure do
   config.action_mailer.default_url_options = { host: 'tickets.com' }
   config.action_mailer.raise_delivery_errors = false
 
-  # FIXME: Why?
-  # pg_dump doesnt seem to work in the container in Kubernetes,
-  # it works on docker-compose. Why do we need it?
-  # https://stackoverflow.com/questions/41561883/pg-dump-error-while-running-rake-dbmigrate
   config.active_record.dump_schema_after_migration = false
 end
