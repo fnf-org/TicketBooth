@@ -1,4 +1,4 @@
-address: smtp.gmail.com
-port: 587
-user_name: account_email@gmail.com
-password: super_secret_password
+address: ENV['SMTP_ADDRESS']
+port: ENV['SMTP_PORT']
+user_name: ENV['SMTP_USERNAME']
+password: ENV['SMTP_PASSWORD']
