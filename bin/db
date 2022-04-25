@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# vim: ft=bash
+#
+# @description This script connects to production database by setting up port-forwarding.
+#    For this to work you must have kubectl installed, and gcloud authenticated.
+#    If you are using `direnv` you should create a file .env.local and put
+#    export PGPASSWORD="..." (real password of the production db connection).
+#    Then you will be able to seamlessly connect via `bin/db`.
+
+set -e
+
+if [[ -z ${PGPASSWORD} ]]; then
+   echo "WARNING: You will need to paste the PostgreSQL user's password, or set PGPASSWORD env var."
+fi
+
+POD="pod/tickets-postgresql"
+PGPORT="${PGPORT:-5433}"
+
+set +e
+
+kubectl get all | grep "${POD}" | grep -q Running || {
+  echo "No running PostgreSQL was found under POD name ${POD}"
+  exit 1
+}
+
+netstat -an | grep LISTEN | grep -q "${PGPORT}" || {
+   echo "INFO: You must setup PostgreSQL port forwarding via:"
+   echo "kubectl port-forward ${PGPORT}:5432 in another terminal."
+   exit 2
+}
+
+set -e
+
+echo "Connecting you to the Production Database..."
+psql -p 5433 -h localhost -U ticketsuser tickets
+

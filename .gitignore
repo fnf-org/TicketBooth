@@ -22,3 +22,5 @@
 /.bundle
 /public/assets
 /vendor/bundle
+.envrc.local
+.make.env
