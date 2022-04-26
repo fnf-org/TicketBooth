@@ -8,14 +8,18 @@ require File.expand_path('config/application', __dir__)
 
 TicketBooth::Application.load_tasks
 
-require 'rspec/core/rake_task'
-require 'rubocop/rake_task'
-require 'yard'
 require 'timeout'
 
-RSpec::Core::RakeTask.new(:spec)
+is_dev_test = %w[development test].include?(ENV.fetch('RAILS_ENV', 'development'))
+if is_dev_test
+  puts "Loading dev/test tasks..."
+  require 'rspec/core/rake_task' 
+  require 'rubocop/rake_task'
+  require 'yard'
 
-RuboCop::RakeTask.new
+  RSpec::Core::RakeTask.new(:spec)
+  RuboCop::RakeTask.new
+end
 
 namespace :todolist do
   task :statsetup do

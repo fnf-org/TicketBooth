@@ -24,7 +24,10 @@ ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
 
 WORKDIR /app
 COPY Gemfile Gemfile.lock ./
-RUN bundle install -j 12 --deployment --without test --without development
+ENV RAILS_ENV="${RAIL_ENV:-"production"}"
+RUN gem update --system -N
+RUN gem install bundler -N --version 1.17.3
+RUN bundle install -j 12 --deployment --without "test development"
 
 COPY . /app
 
