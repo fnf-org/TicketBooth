@@ -17,6 +17,7 @@ File.open(path) do |file|
   CSV.foreach(file) do |row|
     name, url = *row
     next if name == 'Name'
+
     puts <<~HTML
       <li><a href="#{url}" target="_blank" ref="canonical">#{name}</a></li>
     HTML

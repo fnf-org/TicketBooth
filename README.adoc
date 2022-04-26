@@ -6,7 +6,7 @@
 :icons: font
 :license: MIT
 
-image:https://github.com/fnf-org/ticket-booth/actions/workflows/ruby.yml/badge.svg[RSpec, link=https://github.com/fnf-org/ticket-booth/actions/workflows/ruby.yml] image:https://github.com/fnf-org/ticket-booth/actions/workflows/rubocop.yml/badge.svg[Rubocop, link=https://github.com/fnf-org/ticket-booth/actions/workflows/rubocop.yml]
+image:https://github.com/fnf-org/ticket-booth/actions/workflows/ruby.yml/badge.svg[RSpec, link=https://github.com/fnf-org/ticket-booth/actions/workflows/ruby.yml] image:https://github.com/fnf-org/ticket-booth/actions/workflows/rubocop.yml/badge.svg[Rubocop, link=https://github.com/fnf-org/ticket-booth/actions/workflows/rubocop.yml] image:https://github.com/fnf-org/TicketBooth/actions/workflows/build.yaml/badge.svg[Docker Image Build,link="https://github.com/fnf-org/TicketBooth/actions/workflows/build.yaml"]
 
 ---
 
