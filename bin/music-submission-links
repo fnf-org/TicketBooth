@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby -W0
+# vim: ft=ruby
+# frozen_string_literal: true
+
+require 'csv'
+
+path = ARGV.first
+
+if path.nil?
+  puts "USAGE: #{$PROGRAM_NAME} csv-file"
+  puts 'where the file has two columns: Name, URL'
+  exit 1
+end
+
+File.open(path) do |file|
+  puts '<ol>'
+  CSV.foreach(file) do |row|
+    name, url = *row
+    next if name == 'Name'
+
+    puts <<~HTML
+      <li><a href="#{url}" target="_blank" ref="canonical">#{name}</a></li>
+    HTML
+  end
+  puts '</ol>'
+end
