@@ -7,30 +7,32 @@
 #    export PGPASSWORD="..." (real password of the production db connection).
 #    Then you will be able to seamlessly connect via `bin/db`.
 
-set -e
+set +e
 
-if [[ -z ${PGPASSWORD} ]]; then
-   echo "WARNING: You will need to paste the PostgreSQL user's password, or set PGPASSWORD env var."
-fi
+# shellcheck disable=2046
+[[ -z ${BASHMATIC_HOME} ]] && export BASHMATIC_HOME="$(dirname $(cd $(dirname "${BASH_SOURCE[0]:-${(%):-%x}}") || exit 1; pwd -P))"
+[[ -d "${BASHMATIC_HOME}" ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install -v" 1>/dev/null 2>/dev/null
+source "${BASHMATIC_HOME}/init.sh"
+
+is.blank "${PGPASSWORD}" && warning "You will need to paste the PostgreSQL user's password, or set PGPASSWORD env var."
 
 POD="pod/tickets-postgresql"
 PGPORT="${PGPORT:-5433}"
 
-set +e
-
 kubectl get all | grep "${POD}" | grep -q Running || {
-  echo "No running PostgreSQL was found under POD name ${POD}"
+  error "No running PostgreSQL was detected under the pod name ${bldylw}${POD}"
   exit 1
 }
 
 netstat -an | grep LISTEN | grep -q "${PGPORT}" || {
-   echo "INFO: You must setup PostgreSQL port forwarding via:"
-   echo "kubectl port-forward ${PGPORT}:5432 in another terminal."
+   info "INFO: You must setup PostgreSQL port forwarding via:"
+   info "  ${bldylw}kubectl port-forward service/tickets-postgresql ${PGPORT}:5432"
+   info "in another terminal."
    exit 2
 }
 
 set -e
 
-echo "Connecting you to the Production Database..."
-psql -p 5433 -h localhost -U ticketsuser tickets
-
+info "Connecting you to the Production Database..."
+run.set-next show-output-on
+run "psql -p 5433 -h localhost -U ticketsuser tickets" && success 'We hope you enjoyed your psql session ;-) Come back soon.'
