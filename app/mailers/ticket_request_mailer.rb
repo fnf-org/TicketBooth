@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class TicketRequestMailer < ActionMailer::Base
-  DEFAULT_SENDER_EMAIL = 'fnftickets@gmail.com'
-  DEFAULT_REPLY_TO_EMAIL = 'fnftickets@gmail.com'
+  DEFAULT_SENDER_EMAIL = 'tickets@fnf.org'
+  DEFAULT_REPLY_TO_EMAIL = 'tickets@fnf.org'
 
   layout 'email'
 
