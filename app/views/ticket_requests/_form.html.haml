@@ -206,7 +206,7 @@
     - list_finalized = (@event.start_time - Time.now) < 2.days
     - if list_finalized
       Guest list has been finalized. If you need to update your guests, please email
-      = mail_to 'fnftickets@gmail.com'
+      = mail_to 'tickets@fnf.org'
       %br
     - @ticket_request.guest_count.times do |guest_id|
       = f.text_field :guests, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests)[guest_id]
