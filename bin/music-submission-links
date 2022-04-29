@@ -1,9 +1,17 @@
 #!/usr/bin/env ruby -W0
 # vim: ft=ruby
+#
+# How to use this script, eg on a Mac:
+#
+#    ./music-submissions <csv-file> | pbcopy
+#
+# Then paste into a left or right column of a two-column layout WordPress Page
+# with the appropriate heading.
+#
 # frozen_string_literal: true
 
 require 'csv'
-
+require 'stringio'
 path = ARGV.first
 
 if path.nil?
@@ -12,15 +20,36 @@ if path.nil?
   exit 1
 end
 
+output = StringIO.new
 File.open(path) do |file|
-  puts '<ol>'
-  CSV.foreach(file) do |row|
-    name, url = *row
-    next if name == 'Name'
+  output.puts '<ol>'
+  first_line = true
 
-    puts <<~HTML
-      <li><a href="#{url}" target="_blank" ref="canonical">#{name}</a></li>
+  CSV.foreach(file) do |row|
+    next if first_line
+
+    first_line = false
+
+    # split by three rows
+    dj_name, real_name, url = *row
+    real_name = real_name.split(/ /).map(&:capitalize).join(' ')
+
+    next if dj_name == 'DJ Name'
+
+    output.print <<~HTML
+      <li>
+        <strong>
+          <a href="#{url}"#{' '}
+            target="_blank" ref="canonical">#{dj_name}
+          </a>
+        </strong>
     HTML
+
+    output.puts "  (#{real_name.split(/ /).map(&:capitalize).join(' ')})" unless dj_name == real_name
+
+    output.print '  </li>'
   end
-  puts '</ol>'
+  output.puts '</ol>'
 end
+
+puts output.string
