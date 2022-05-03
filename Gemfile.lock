@@ -58,6 +58,8 @@ GEM
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
       ssrf_filter (~> 1.0)
+    codecov (0.6.0)
+      simplecov (>= 0.15, < 0.22)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0)
@@ -303,6 +305,7 @@ DEPENDENCIES
   attribute_normalizer
   capistrano (< 3)
   carrierwave
+  codecov
   coffee-rails
   colored2
   commonjs

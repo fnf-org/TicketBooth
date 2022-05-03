@@ -8,48 +8,38 @@
 # Then paste into a left or right column of a two-column layout WordPress Page
 # with the appropriate heading.
 #
+# Want to see the result as a syntax highlighted version?
+#     npm i -g highlight
+#     ./music-submissions <csv-file> | highlight -l html
+#
 # frozen_string_literal: true
 
-require 'csv'
-require 'stringio'
-path = ARGV.first
+require_relative '../lib/fnf/html_generator'
+require_relative '../lib/fnf/csv_reader'
 
+path = ARGV.first
 if path.nil?
   puts "USAGE: #{$PROGRAM_NAME} csv-file"
-  puts 'where the file has two columns: Name, URL'
+  puts 'Where the CSV file has three columns: DJ Name, Real Name, URL'
   exit 1
 end
 
-output = StringIO.new
-File.open(path) do |file|
-  output.puts '<ol>'
-  first_line = true
+generator = FnF::HTMLGenerator.new
+reader    = FnF::CSVReader.new(path)
 
-  CSV.foreach(file) do |row|
-    next if first_line
-
-    first_line = false
-
-    # split by three rows
-    dj_name, real_name, url = *row
-    real_name = real_name.split(/ /).map(&:capitalize).join(' ')
-
-    next if dj_name == 'DJ Name'
-
-    output.print <<~HTML
-      <li>
-        <strong>
-          <a href="#{url}"#{' '}
-            target="_blank" ref="canonical">#{dj_name}
-          </a>
-        </strong>
-    HTML
-
-    output.puts "  (#{real_name.split(/ /).map(&:capitalize).join(' ')})" unless dj_name == real_name
-
-    output.print '  </li>'
+generator.ol(:br) do
+  reader.read do |dj_name, real_name, url|
+    li do
+      strong { a(href: url, target: '_blank', ref: 'canonical') { dj_name } }
+      print ' '
+      if dj_name != real_name
+        span class: 'djName' do
+          "(#{real_name.split(/ /).map(&:capitalize).join(' ')})"
+        end
+      end
+    end
+    generator.puts
   end
-  output.puts '</ol>'
 end
 
-puts output.string
+generator.render
