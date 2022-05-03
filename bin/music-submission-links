@@ -1,26 +1,45 @@
 #!/usr/bin/env ruby -W0
 # vim: ft=ruby
+#
+# How to use this script, eg on a Mac:
+#
+#    ./music-submissions <csv-file> | pbcopy
+#
+# Then paste into a left or right column of a two-column layout WordPress Page
+# with the appropriate heading.
+#
+# Want to see the result as a syntax highlighted version?
+#     npm i -g highlight
+#     ./music-submissions <csv-file> | highlight -l html
+#
 # frozen_string_literal: true
 
-require 'csv'
+require_relative '../lib/fnf/html_generator'
+require_relative '../lib/fnf/csv_reader'
 
 path = ARGV.first
-
 if path.nil?
   puts "USAGE: #{$PROGRAM_NAME} csv-file"
-  puts 'where the file has two columns: Name, URL'
+  puts 'Where the CSV file has three columns: DJ Name, Real Name, URL'
   exit 1
 end
 
-File.open(path) do |file|
-  puts '<ol>'
-  CSV.foreach(file) do |row|
-    name, url = *row
-    next if name == 'Name'
+generator = FnF::HTMLGenerator.new
+reader    = FnF::CSVReader.new(path)
 
-    puts <<~HTML
-      <li><a href="#{url}" target="_blank" ref="canonical">#{name}</a></li>
-    HTML
+generator.ol(:br) do
+  reader.read do |dj_name, real_name, url|
+    li do
+      strong { a(href: url, target: '_blank', ref: 'canonical') { dj_name } }
+      print ' '
+      if dj_name != real_name
+        span class: 'djName' do
+          "(#{real_name.split(/ /).map(&:capitalize).join(' ')})"
+        end
+      end
+    end
+    generator.puts
   end
-  puts '</ol>'
 end
+
+generator.render

@@ -32,6 +32,7 @@ gem 'uglifier'
 gem 'yard'
 
 group :development, :test do
+  gem 'codecov'
   gem 'relaxed-rubocop'
   gem 'rubocop'
   gem 'rubocop-rails'
