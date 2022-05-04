@@ -69,7 +69,7 @@ TicketBooth::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
-  config.action_mailer.default_url_options = { host: ENV["TICKETS_HOST"] }
+  config.action_mailer.default_url_options = { host: ENV['TICKETS_HOST'] }
   config.action_mailer.raise_delivery_errors = false
 
   config.active_record.dump_schema_after_migration = false
