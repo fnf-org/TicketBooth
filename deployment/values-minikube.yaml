@@ -13,6 +13,8 @@ ticketsSMTPPassword: ""
 ticketsDBSeed: ""
 ticketsHost: "localhost"
 ticketsEmailAddress: "tickets@fnf.org"
+stripeSecretKey: ""
+stripePublicKey: ""
 
 postgresql:
   auth:
