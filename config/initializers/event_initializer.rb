@@ -12,6 +12,5 @@ module FnF
     TicketRequestApprovedEvent.configure do
       notifies ::TicketRequestMailer
     end
-
   end
 end

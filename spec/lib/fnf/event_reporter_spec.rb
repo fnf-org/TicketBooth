@@ -6,7 +6,6 @@ require 'fnf/csv_reader'
 module FnF
   RSpec.describe EventReporter do
     describe '#event_name' do
-
       before do
         expect(EventReporter).to receive(:metric).once
       end

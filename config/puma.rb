@@ -1,6 +1,7 @@
 # vim: ft=ruby
 # frozen_string_literal: true
 
+require 'English'
 require 'etc'
 
 silence_single_worker_warning
@@ -27,11 +28,11 @@ preload_app!
 worker_timeout 60
 activate_control_app 'tcp://127.0.0.1:32123', { auth_token: 'fnf' }
 
-DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S %z'.freeze
+DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S %z'
 
 log_requests
 log_formatter do |str|
-  "#{sprintf '%5d', $$} | #{Time.now.strftime DATETIME_FORMAT} : |puma| #{str}"
+  "#{format '%5d', $PROCESS_ID} | #{Time.now.strftime DATETIME_FORMAT} : |puma| #{str}"
 end
 
 require 'newrelic_rpm'

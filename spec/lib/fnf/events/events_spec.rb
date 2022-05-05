@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class Worker
@@ -31,5 +33,4 @@ RSpec.describe 'Observers' do
   subject { worker.events }
 
   it { is_expected.not_to be_empty }
-
 end

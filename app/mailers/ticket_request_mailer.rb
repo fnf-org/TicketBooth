@@ -10,9 +10,9 @@ class TicketRequestMailer < ActionMailer::Base
     @ticket_request = ticket_request
     @event = @ticket_request.event
     mail to: to_email,
-      from: from_email,
-      reply_to: reply_to_email,
-      subject: "#{@event.name} ticket request confirmation"
+         from: from_email,
+         reply_to: reply_to_email,
+         subject: "#{@event.name} ticket request confirmation"
   end
 
   def request_approved(ticket_request)
@@ -20,9 +20,9 @@ class TicketRequestMailer < ActionMailer::Base
     @ticket_request = ticket_request
     @event = @ticket_request.event
     mail to: to_email,
-      from: from_email,
-      reply_to: reply_to_email,
-      subject: "Your #{@event.name} ticket request has been approved!"
+         from: from_email,
+         reply_to: reply_to_email,
+         subject: "Your #{@event.name} ticket request has been approved!"
   end
 
   private
