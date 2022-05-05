@@ -36,4 +36,4 @@ if [[ "$DB_SEED" = "true" ]]; then
   bundle exec rake db:seed
 fi
 
-bundle exec puma -C config/puma.rb
+bundle exec rails s -p 3000 -b '0.0.0.0'

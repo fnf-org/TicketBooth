@@ -10,6 +10,7 @@ data:
   TICKETS_HOST: "{{ .Values.ticketsHost }}"
   ACTION_MAILER_DEFAULT_FROM: "{{ .Values.ticketsEmailAddress }}"
   ACTION_MAILER_DEFAULT_TO: "{{ .Values.ticketsEmailAddress }}"
+  STRIPE_PUBLIC_KEY: "{{ .Values.stripePublicKey }}"
 ---
 apiVersion: v1
 kind: Secret
@@ -21,3 +22,4 @@ stringData:
   RAILS_SERVE_STATIC_FILES: "{{ .Values.ticketsServeStaticFiles }}"
   SMTP_USERNAME: "{{ .Values.ticketsSMTPUser }}"
   SMTP_PASSWORD: "{{ .Values.ticketsSMTPPassword }}"
+  STRIPE_SECRET_KEY: "{{ .Values.stripeSecretKey }}"

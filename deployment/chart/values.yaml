@@ -82,6 +82,8 @@ ticketsSMTPPassword: ""
 ticketsDBSeed: ""
 ticketsHost: ""
 ticketsEmailAddress: ""
+stripeSecretKey: ""
+stripePublicKey: ""
 
 postgresql:
   auth:

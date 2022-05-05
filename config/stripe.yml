@@ -1,6 +1,0 @@
-# Copy this file to config/stripe.yml and edit it so you can access the Stripe
-# API on your local development environment. If you want to use your own Stripe
-# account for development, enter your secret/public keys here. The ones shown
-# here should work out of the box for development purposes, however.
-secret_key: sk_test_Tz2o8c6VFlldtHUcuhUlhgIL
-public_key: pk_test_JmDxKSl33hQqkqivA1NhgFdc
