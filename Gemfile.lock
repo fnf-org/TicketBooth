@@ -68,6 +68,7 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     colored2 (3.1.2)
+    colorize (0.8.1)
     commonjs (0.2.7)
     concurrent-ruby (1.1.10)
     countries (2.1.4)
@@ -143,6 +144,7 @@ GEM
     net-ssh (4.2.0)
     net-ssh-gateway (2.0.0)
       net-ssh (>= 4.0.0)
+    net_http_unix (0.2.2)
     newrelic_rpm (8.6.0)
     nio4r (2.5.8)
     nokogiri (1.10.8)
@@ -157,6 +159,10 @@ GEM
     psych (3.3.2)
     puma (5.6.4)
       nio4r (~> 2.0)
+    puma-status (1.4)
+      colorize (~> 0.8)
+      net_http_unix (~> 0.2)
+      parallel (~> 1)
     rack (1.6.12)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -289,6 +295,7 @@ GEM
       execjs (>= 0.3.0, < 3)
     unicode-display_width (2.1.0)
     unicode_utils (1.4.0)
+    ventable (1.2.0)
     warden (1.2.7)
       rack (>= 1.0)
     webrick (1.7.0)
@@ -323,6 +330,7 @@ DEPENDENCIES
   protected_attributes
   psych (< 4)
   puma
+  puma-status
   rails (~> 4.2)
   rake
   relaxed-rubocop
@@ -339,6 +347,7 @@ DEPENDENCIES
   therubyracer
   twitter-bootstrap-rails
   uglifier
+  ventable
   yard
 
 BUNDLED WITH

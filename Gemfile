@@ -22,6 +22,7 @@ gem 'pg', '~> 0.20'
 gem 'protected_attributes'
 gem 'psych', '< 4'
 gem 'puma'
+gem 'puma-status'
 gem 'rake'
 gem 'sass-rails'
 gem 'sentry-raven'
@@ -29,6 +30,7 @@ gem 'stripe'
 gem 'therubyracer', platforms: :ruby
 gem 'twitter-bootstrap-rails'
 gem 'uglifier'
+gem 'ventable'
 gem 'yard'
 
 group :development, :test do
