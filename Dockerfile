@@ -6,6 +6,7 @@ ENV LANG C.UTF-8
 RUN set -eus; \
     apt-get update -qq; \
     apt-get install -y --no-install-recommends \
+    git-all \
     nodejs \
     shared-mime-info \
     build-essential \
@@ -13,8 +14,14 @@ RUN set -eus; \
     libxml2-dev \
     libxslt1-dev \
     libjemalloc2 \
-    ruby-yaml-db \
     postgresql-client \
+    iputils-ping \
+    net-tools \
+    netcat \
+    htop \
+    strace \
+    python-ptrace \
+    pg-activity \
     ; \
     apt-get clean; \
     rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*;

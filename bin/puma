@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+# vim: ft=ruby
+#
+# frozen_string_literal: true
+
+require 'rubygems'
+# Set up gems listed in the Gemfile.
+rails_root = File.expand_path('../', __dir__)
+ENV['BUNDLE_GEMFILE'] ||= "#{rails_root}/Gemfile"
+
+require 'bundler/setup' if File.exist?(ENV['BUNDLE_GEMFILE'])
+require 'puma/cli'
+require_relative '../config/boot'
+
+args = %W[-C #{rails_root}/config/puma.rb] + ARGV
+
+warn "> puma #{args.join(' ')}"
+
+cli = Puma::CLI.new(args)
+cli.run
