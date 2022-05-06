@@ -33,3 +33,5 @@ namespace :todolist do
 end
 
 task stats: 'todolist:statsetup'
+
+task default: %i[spec rubocop] if is_dev_test

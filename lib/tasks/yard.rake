@@ -3,9 +3,7 @@
 require 'yard'
 
 YARD::Rake::YardocTask.new(:doc) do |t|
-  t.files = %w[{app,config,lib}/**/*.rb - README.adoc DEVELOPERS.adoc CHANGELOG.md LICENSE]
-  t.options.unshift('--title', '"Ticket Booth for the Communities"')
-  t.after = lambda {
-    system('/usr/bin/env bash -c "sleep 3; [[ -f doc/index.html ]] && open doc/index.html" & ')
-  }
+  system("bash -c 'sleep 5 && open doc/index.html' &")
+  t.files = %w[app/**/*.rb lib/**/*.rb - README.adoc DEVELOPERS.adoc LICENSE]
+  t.options.unshift('--title', '"FnF Ticketing App"')
 end

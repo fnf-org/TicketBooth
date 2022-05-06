@@ -32,14 +32,7 @@ module FnF
       options = opts.map { |k, v| %( #{k}="#{v}" ) }.join
       options = " #{options}" if options
       self.print "<#{method}#{options}" if options
-      if block
-        print '>'
-        result = instance_exec(&block)
-        print result unless result.nil?
-        print "</#{method}>"
-      else
-        print '/>'
-      end
+      process_block(block, method)
       puts if args.include?(:br)
     end
 
@@ -53,6 +46,19 @@ module FnF
 
     def generate(&block)
       instance_exec(&block)
+    end
+
+    private
+
+    def process_block(block, method)
+      if block
+        print '>'
+        result = instance_exec(&block)
+        print result unless result.nil?
+        print "</#{method}>"
+      else
+        print '/>'
+      end
     end
   end
 end
