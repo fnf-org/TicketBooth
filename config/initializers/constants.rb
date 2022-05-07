@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-PRODUCT_NAME = 'Helping Culture'
+PRODUCT_NAME = 'Ticket Booth'
