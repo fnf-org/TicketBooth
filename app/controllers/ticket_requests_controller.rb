@@ -8,7 +8,7 @@ class TicketRequestsController < ApplicationController
   before_action :authenticate_user!, except: %i[new create]
   before_action :set_event
   before_action :require_event_admin, except: %i[new create show edit update]
-  before_action :set_ticket_request,  except: %i[index new create download]
+  before_action :set_ticket_request, except: %i[index new create download]
 
   # Uncomment this if we start getting too many requests
   # http_basic_authenticate_with name: Rails.application.secrets.ticket_request_username,
@@ -45,11 +45,13 @@ class TicketRequestsController < ApplicationController
   def download
     temp_csv = Tempfile.new('csv')
 
+    raise(ArgumentError, 'Blank temp_csv') unless temp_csv && temp_csv&.path
+
     CSV.open(temp_csv.path, 'wb') do |csv|
       csv << (%w[name email] + TicketRequest.columns.map(&:name))
       TicketRequest.where(event_id: @event).find_each do |ticket_request|
         csv << ([ticket_request.user.name, ticket_request.user.email] +
-               ticket_request.attributes.values)
+          ticket_request.attributes.values)
       end
     end
 
@@ -75,7 +77,8 @@ class TicketRequestsController < ApplicationController
     @user = current_user if signed_in?
     @ticket_request = TicketRequest.new
 
-    if last_ticket_request = TicketRequest.where(user_id: @user).order(:created_at).last
+    last_ticket_request = TicketRequest.where(user_id: @user).order(:created_at).last
+    if last_ticket_request
       %w[address_line1 address_line2 city state zip_code country_code].each do |field|
         @ticket_request.send(:"#{field}=", last_ticket_request.send(field))
       end
@@ -101,6 +104,11 @@ class TicketRequestsController < ApplicationController
     @ticket_request = TicketRequest.new(params[:ticket_request])
 
     if @ticket_request.save
+      FnF::Events::TicketRequestEvent.new(
+        user: current_user,
+        target: @ticket_request
+      ).fire!
+
       sign_in(@ticket_request.user) unless signed_in?
 
       if @event.tickets_require_approval || @ticket_request.free?
@@ -108,8 +116,6 @@ class TicketRequestsController < ApplicationController
       else
         redirect_to new_payment_url(ticket_request_id: @ticket_request)
       end
-
-      TicketRequestMailer.request_received(@ticket_request).deliver_now
     else
       render action: 'new'
     end
@@ -128,7 +134,10 @@ class TicketRequestsController < ApplicationController
 
   def approve
     if @ticket_request.approve
-      TicketRequestMailer.request_approved(@ticket_request).deliver_now
+      ::FnF::Events::TicketRequestApprovedEvent.new(
+        user: current_user,
+        target: @ticket_request
+      ).fire!
       flash[:notice] = "#{@ticket_request.user.name}'s request was approved"
     else
       flash[:error] = "Unable to approve #{@ticket_request.user.name}'s request"
@@ -139,6 +148,10 @@ class TicketRequestsController < ApplicationController
 
   def decline
     if @ticket_request.update_attributes(status: TicketRequest::STATUS_DECLINED)
+      ::FnF::Events::TicketRequestDeclinedEvent.new(
+        user: current_user,
+        target: @ticket_request
+      ).fire!
       flash[:notice] = "#{@ticket_request.user.name}'s request was declined"
     else
       flash[:error] = "Unable to decline #{@ticket_request.user.name}'s request"

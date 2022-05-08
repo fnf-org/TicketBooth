@@ -38,4 +38,14 @@ class TicketRequestMailer < ActionMailer::Base
   def reply_to_email
     "#{@event.name} Ticketing <#{DEFAULT_REPLY_TO_EMAIL}>"
   end
+
+  class << self
+    def ticket_request_event(event)
+      request_received(event.ticket_request).deliver_now
+    end
+
+    def ticket_request_approved_event(event)
+      request_approved(event.ticket_request).deliver_now
+    end
+  end
 end

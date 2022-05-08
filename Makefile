@@ -68,11 +68,10 @@ boot: 		## Boots Rails server in the whatever RAILS_ENV is set to — eg: make p
 			export RUBYOPT=-W0 && \
 			if [[ -n $(MAKE_ENV) && -f $(MAKE_ENV) ]] ; then source $(MAKE_ENV) && rm -f $(MAKE_ENV); fi && \
 			( bundle check || bundle install; ) && \
-			bundle exec rake db:migrate && \
+			RAILS_ENV=$(RAILS_ENV) bundle exec rake db:migrate && \
 			if [[ \"${RAILS_ENV}\" =~ production ]] ; then bundle exec rake assets:precompile; fi && \
-			bundle exec rails s && \
-			sleep 4 && \
-			open 'http://127.0.0.1:3000'"
+			( RAILS_ENV=$(RAILS_ENV) bin/puma & ) "
+		@bash -c "sleep 4 && open 'http://127.0.0.1:3000'"
 
 
 docker-image:	## Builds a docker image named 'tickets'
