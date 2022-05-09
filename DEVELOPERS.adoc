@@ -91,6 +91,10 @@ running:
 [source,bash]
 bundle exec rails server
 
+OR
+[source,bash]
+bundle exec puma -C config/puma.rb
+
 This should run an all-in-one server that you can access from your browser
 at http://localhost:3000[http://localhost:3000]. It will also automatically load any changes
 you make to code in the repo's `app` directory. Changes anywhere else will
@@ -119,6 +123,10 @@ Check the `coverage` folder, eg.
 
 [source,bash]
 bundle exec rspec && open coverage/index.html
+
+To run both the specs and rubocop:
+[source,bash]
+rake
 
 == Deploying
 

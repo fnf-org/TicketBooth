@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+# vim: ft=bash
+
+set +e
+
+function define-colors() {
+  declare -g clr="\u001b[0m"
+
+  declare -g txt_black="\u001b[30m"
+  declare -g txt_red="\u001b[31m"
+  declare -g txt_green="\u001b[32m"
+  declare -g txt_yellow="\u001b[33m"
+  declare -g txt_blue="\u001b[34m"
+  declare -g txt_magenta="\u001b[35m"
+  declare -g txt_cyan="\u001b[36m"
+  declare -g txt_white="\u001b[37m"
+
+  declare -g txt_bright_black="\u001b[30;1m"
+  declare -g txt_bright_red="\u001b[31;1m"
+  declare -g txt_bright_green="\u001b[32;1m"
+  declare -g txt_bright_yellow="\u001b[33;1m"
+  declare -g txt_bright_blue="\u001b[34;1m"
+  declare -g txt_bright_magenta="\u001b[35;1m"
+  declare -g txt_bright_cyan="\u001b[36;1m"
+  declare -g txt_bright_white="\u001b[37;1m"
+
+  declare -g bg_black="\u001b[40m"
+  declare -g bg_red="\u001b[41m"
+  declare -g bg_green="\u001b[42m"
+  declare -g bg_yellow="\u001b[43m"
+  declare -g bg_blue="\u001b[44m"
+  declare -g bg_magenta="\u001b[45m"
+  declare -g bg_cyan="\u001b[46m"
+  declare -g bg_white="\u001b[47m"
+
+  declare -g bg_bright_black="\u001b[40;1m"
+  declare -g bg_bright_red="\u001b[41;1m"
+  declare -g bg_bright_green="\u001b[42;1m"
+  declare -g bg_bright_yellow="\u001b[43;1m"
+  declare -g bg_bright_blue="\u001b[44;1m"
+  declare -g bg_bright_magenta="\u001b[45;1m"
+  declare -g bg_bright_cyan="\u001b[46;1m"
+  declare -g bg_bright_white="\u001b[47;1m"
+}
+
+function puma-pids() {
+  # shellcheck disable=SC2009
+  ps -ef | grep "[p]uma" | cut -d ' ' -f 4
+}
+
+function puma-running() {
+  netstat -an | grep LISTEN | grep -q 3000
+}
+
+# shellcheck disable=SC2207
+function kill-puma() {
+  local counter=0
+  while puma-running; do
+    counter=$((counter + 1))
+    if [[ ${counter} -gt 10 ]]; then
+      .err "Too many attempts to kill puma, please whack it manually."
+      exit 1
+    fi
+    local -a pids=($(puma-pids))
+    if [[ ${#pids[@]} -gt 0 ]]; then
+      set +e
+      kill -TERM "${pids[@]}"
+      sleep 5
+      pids=($(puma-pids))
+      [[ ${#pids[@]} -gt 0 ]] && {
+        kill -KILL "${pids[@]}"
+        sleep 2
+      }
+    fi
+  done
+}
+
+function .err() {
+  printf -- "\n${bg_bright_red} 🖕 ${clr}${txt_red}${clr} ${txt_red}${clr}${bg_bright_red} %s ${clr}${txt_red}${clr}\n" "$*"
+}
+
+function .inf() {
+  printf -- "${bg_bright_green}  ️✔︎ ${clr}${txt_green}${clr} ${txt_yellow}%s....${clr}\n" "$*"
+}
+
+function setup() {
+  define-colors
+
+  export MAKE_ENV=".make.env"
+  cat <<EOF >>"${MAKE_ENV}"
+export RUBYOPT="-W0"
+export MALLOC_ARENA_MAX=2
+EOF
+
+  eval "$(cat "${MAKE_ENV}")"
+}
+
+function main() {
+  setup
+
+  if [[ -z "${RAILS_ENV}" ]]; then
+    .err "RAILS_ENV must be set prior to calling this script."
+    echo
+    .inf "To boot the application via the 'make' target, run one of the: "
+    echo
+    .inf '		make development boot'
+    .inf '		make staging     boot'
+    .inf '		make production  boot'
+    echo
+    exit 1
+  else
+    .inf "Starting with RAILS_ENV=${RAILS_ENV}"
+  fi
+
+  .inf "Running bundle install..."
+  (bundle check || bundle install) && {
+    .inf "Running migrations..."
+    bundle exec rake db:migrate &&
+      if [[ "${RAILS_ENV}" =~ production ]]; then
+        .inf "Compiling production assets..."
+        bundle exec rake assets:precompile
+      fi
+    # shellcheck disable=SC2207,SC2009
+
+    puma-running && {
+      .err "It appears that port 3000 is taken by something..."
+      exit 1
+    }
+    .inf "Starting Puma"
+    (sleep 8 && open "http://127.0.0.1:3000") &
+    bundle exec puma -C config/puma.rb
+  }
+
+  rm -f ${MAKE_ENV}
+}
+
+[[ "$1" == "--source" ]] || main "$@"

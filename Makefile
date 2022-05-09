@@ -49,30 +49,17 @@ reset:		## Complete reset of the databases and runs the rspec and rubocop
 		@bundle exec rubocop
 
 
-env: 		
-		@echo 'export RUBYOPT="-W0"' 		 > $(MAKE_ENV)
-		@echo 'export MALLOC_ARENA_MAX=2' 	>> $(MAKE_ENV)
+development: 	## Set RAILS_ENV=development
+		@echo 'export RAILS_ENV=development' > $(MAKE_ENV)
 
-development: 	env ## Set RAILS_ENV=development
-		echo 'export RAILS_ENV=development'	>> $(MAKE_ENV)
+staging: 	## Set RAILS_ENV=staging
+		@echo 'export RAILS_ENV=staging' > $(MAKE_ENV)
 
-staging: 	env ## Set RAILS_ENV=staging
-		echo 'export RAILS_ENV=staging'		>> $(MAKE_ENV)
+production: 	## Set RAILS_ENV=production
+		@echo 'export RAILS_ENV=production' > $(MAKE_ENV)
 
-production: 	env ## Set RAILS_ENV=production
-		echo 'export RAILS_ENV=production'	>> $(MAKE_ENV)
-
-boot: 		## Boots Rails server in the whatever RAILS_ENV is set to — eg: make production boot
-		@bash -c " \
-			set -ex; \
-			export RUBYOPT=-W0 && \
-			if [[ -n $(MAKE_ENV) && -f $(MAKE_ENV) ]] ; then source $(MAKE_ENV) && rm -f $(MAKE_ENV); fi && \
-			( bundle check || bundle install; ) && \
-			RAILS_ENV=$(RAILS_ENV) bundle exec rake db:migrate && \
-			if [[ \"${RAILS_ENV}\" =~ production ]] ; then bundle exec rake assets:precompile; fi && \
-			( RAILS_ENV=$(RAILS_ENV) bin/puma & ) "
-		@bash -c "sleep 4 && open 'http://127.0.0.1:3000'"
-
+boot: 		## Boots Rails sserver in the whatever RAILS_ENV is set to — eg: make production boot
+		bash bin/boot-up
 
 docker-image:	## Builds a docker image named 'tickets'
 		docker build -t tickets .
