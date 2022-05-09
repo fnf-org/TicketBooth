@@ -13,12 +13,11 @@ environment @env
 rackup "#{current_dir}/config.ru"
 pidfile "#{current_dir}/tmp/pids/puma-#{@env}.pid"
 
+bind 'tcp://0.0.0.0:3000'
 if @env == 'development'
-  bind 'tcp://127.0.0.1:3000'
   threads 1, 1
   workers 1
 else
-  bind 'tcp://0.0.0.0:3000'
   threads 2, 2
   workers [[(2 * Etc.nprocessors), 12].min, 6].max
 end

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'rspec'
+require 'tempfile'
+require 'spec_helper'
 
 RSpec.describe 'bin/music-submissions' do
   let(:pwd) { Dir.pwd }

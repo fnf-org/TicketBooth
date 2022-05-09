@@ -19,19 +19,89 @@ NOTE: This app is formerly known as **Helping Culture**, which in turn was origi
 
 The goal of the app is to make ticket and volunteer management for community events easier and automated.
 
-=== Usage
+=== Initialization
+
+Please make sure you have PostgreSQL running locally, or install it via Homebrew:
+
+[source,bash]
+----
+brew install postgresql
+brew services start postgresql
+# you may need to run this command as well, but it's ok if it fails
+createuser -s postgres -U ${USER} 
+----
+
+After that:
+
+[source,bash]
+----
+brew install rbenv ruby-build
+eval "$(rbenv init -)"
+rbenv install -s $(cat .ruby-version)
+rbenv local $(cat .ruby-version)
+bundle install
+bundle exec rake db:create
+bundle exec rake db:migrate db:seed
+bundle exec rake db:test:prepare
+bundle exec rspec
+----
+
+=== Starting the Server
+
+We recommend that you use the `Makefile`:
+
+[source,bash]
+----
+make development boot
+----
+
+Here is an example:
+
+image:docs/make-boot.png["Booting with Make"]
+
+=== Tooling
+
+==== Adding Site Admin
 
 When the database is completely blank, the first step is to create the initial account. Lets say you registered as 'kig@fnf.org':
 
 The second step is to make that person a site admin:
 
 [source,bash]
-RAILS_ENV=production bin/site-admin add kig@fnf.org
+----
+RAILS_ENV=production
+bin/site-admin add kig@fnf.org
 
-Or, to remove site admin from a given user:
+# Or, to remove site admin from a given user:
+bin/site-admin remove kig@fnf.org
+----
+
+==== Generating Music Submissions List
+
+The repo contains a convenient script for generating HTML to embed into the Wordpress site, using a CSV generated out of Google Spreadsheet collected using Google Forms.
+
+The CSV must contain three columns and a header row:
+
+ * DJ Name
+ * Full Name
+ * Set URL
+
+To generate the HTML (we'll use the CSV file checked into the fixtures):
 
 [source,bash]
-RAILS_ENV=production bin/site-admin remove kig@fnf.org
+----
+bin/music-submission-links spec/fixtures/chill_sets.csv | pbcopy
+----
+
+Now you can open WordPress, create a two-column layout and paste the contents into one of the two columns.
+
+To verify that the script is working, install a handy tool called `highlight`:
+
+[source,bash]
+----
+npm i -g highlight
+bin/music-submission-links spec/fixtures/chill_sets.csv | highlight -l html
+----
 
 === Developer Setup
 
@@ -42,7 +112,11 @@ We dedicated a separate document to the xref:DEVELOPERS.pdf[developer setup], wh
 Yard-generated documentation is available via running:
 
 [source,bash]
+----
 bundle exec rake doc
+# this will automatically open the index.html
+----
 
+b
 
 
