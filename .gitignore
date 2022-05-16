@@ -26,3 +26,4 @@
 .make.env
 Downloads
 .dccache
+*.pyc
