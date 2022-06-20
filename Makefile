@@ -64,3 +64,5 @@ boot: 		## Boots Rails sserver in the whatever RAILS_ENV is set to — eg: make 
 docker-image:	## Builds a docker image named 'tickets'
 		docker build -t tickets .
 
+shellcheck:	## Run shellcheck on the shell files
+		$(CURRENT_DIR)/bin/shchk	

@@ -25,10 +25,7 @@ Please make sure you have PostgreSQL running locally, or install it via Homebrew
 
 [source,bash]
 ----
-brew install postgresql
-brew services start postgresql
-# you may need to run this command as well, but it's ok if it fails
-createuser -s postgres -U ${USER} 
+bin/boot-up
 ----
 
 After that:

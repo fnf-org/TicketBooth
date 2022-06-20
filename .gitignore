@@ -26,3 +26,5 @@
 .make.env
 Downloads
 .dccache
+.viminfo
+newrelic_agent.log
