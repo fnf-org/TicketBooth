@@ -96,7 +96,7 @@
 
     - if signed_in? && @event.admin?(current_user) && form_action_name == :update
       .well
-        = f.label :special_price, 'Special Ticket Price ($)'
+        = f.label :special_price, 'Special Total Price ($)'
         %p.text-error
           Editable by event admins only. Leave blank to use default price.
         = f.number_field :special_price, class: 'input-small', min: 0
