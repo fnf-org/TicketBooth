@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'awesome_print'
 class TicketRequestMailer < ActionMailer::Base
   DEFAULT_SENDER_EMAIL = 'tickets@fnf.org'
   DEFAULT_REPLY_TO_EMAIL = 'tickets@fnf.org'
@@ -40,12 +41,24 @@ class TicketRequestMailer < ActionMailer::Base
   end
 
   class << self
+    def mail_config
+      TicketBooth::Application.configure do
+        return config.action_mailer
+      end
+    end
+
     def ticket_request_event(event)
-      request_received(event.ticket_request).deliver_now
+      request_received(event.ticket_request).tap do |mail|
+        Rails.logger.info("delivering mail #{mail.inspect}")
+        Rails.logger.info("mail config: #{mail_config.inspect}")
+      end.deliver_now
     end
 
     def ticket_request_approved_event(event)
-      request_approved(event.ticket_request).deliver_now
+      request_approved(event.ticket_request).tap do |mail|
+        Rails.logger.info("delivering mail #{mail.inspect}")
+        Rails.logger.info("mail config: #{mail_config.inspect}")
+      end.deliver_now
     end
   end
 end

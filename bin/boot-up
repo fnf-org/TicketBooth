@@ -1,46 +1,70 @@
 #!/usr/bin/env bash
 # vim: ft=bash
 
-set +e
+[[ -z ${BASHMATIC_HOME} ]] && export BASHMATIC_HOME="${HOME}/.bashmatic"
+[[ -d ${BASHMATIC_HOME} ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install"
+[[ -d ${BASHMATIC_HOME} ]] || {
+  echo "Can't find Bashmatic, even after attempting an installation."
+  echo "Please install Bashmatic with the following command line:"
+  echo 'bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install"'
+  exit 1
+}
 
-function define-colors() {
-  declare -g clr="\u001b[0m"
+source "${BASHMATIC_HOME}/init.sh"
+output.constrain-screen-width 100
 
-  declare -g txt_black="\u001b[30m"
-  declare -g txt_red="\u001b[31m"
-  declare -g txt_green="\u001b[32m"
-  declare -g txt_yellow="\u001b[33m"
-  declare -g txt_blue="\u001b[34m"
-  declare -g txt_magenta="\u001b[35m"
-  declare -g txt_cyan="\u001b[36m"
-  declare -g txt_white="\u001b[37m"
+function ensure-postgresql() {
+  ps -ef | grep -q "[p]ostgres" && {
+    success "PostgreSQL is already running."
+    return 0
+  }
 
-  declare -g txt_bright_black="\u001b[30;1m"
-  declare -g txt_bright_red="\u001b[31;1m"
-  declare -g txt_bright_green="\u001b[32;1m"
-  declare -g txt_bright_yellow="\u001b[33;1m"
-  declare -g txt_bright_blue="\u001b[34;1m"
-  declare -g txt_bright_magenta="\u001b[35;1m"
-  declare -g txt_bright_cyan="\u001b[36;1m"
-  declare -g txt_bright_white="\u001b[37;1m"
+  (command -v brew >/dev/null) && {
+    run.set-all abort-on-error
+    h1 "Installing and starting PostgreSQL using Homebrew..."
+    run "brew install postgresql"
+    run "brew unlink postgresql && brew link postgresql"
+    run "brew services postgresql start"
+    sleep 3
+    pg_isready && success "Database is UP." 
+    pg_isready || {
+      error "Unable to start PostgreSQL. Please install it manually" \
+        "from: https://www.postgresql.org/download/"
+      open "https://www.postgresql.org/download/"
+      exit 1
+    }
 
-  declare -g bg_black="\u001b[40m"
-  declare -g bg_red="\u001b[41m"
-  declare -g bg_green="\u001b[42m"
-  declare -g bg_yellow="\u001b[43m"
-  declare -g bg_blue="\u001b[44m"
-  declare -g bg_magenta="\u001b[45m"
-  declare -g bg_cyan="\u001b[46m"
-  declare -g bg_white="\u001b[47m"
+    run "createuser -s postgres -U ${USER}"
+    run "createuser -s root -U ${USER}"
+  } 
+}
 
-  declare -g bg_bright_black="\u001b[40;1m"
-  declare -g bg_bright_red="\u001b[41;1m"
-  declare -g bg_bright_green="\u001b[42;1m"
-  declare -g bg_bright_yellow="\u001b[43;1m"
-  declare -g bg_bright_blue="\u001b[44;1m"
-  declare -g bg_bright_magenta="\u001b[45;1m"
-  declare -g bg_bright_cyan="\u001b[46;1m"
-  declare -g bg_bright_white="\u001b[47;1m"
+function ensure-stripe-mock() {
+  run "brew install stripe/stripe-mock/stripe-mock"
+  run "brew upgrade stripe-mock"
+  run "brew services start stripe-mock"
+}
+
+function ensure-ruby() {
+  h2 "Ensuring Ruby & Gems are Installed..."
+  if command -v rbenv >/dev/null; then
+    run "brew upgrade rbenv ruby-build"
+  else
+    run "brew install rbenv ruby-build"
+  fi
+
+  eval "$(rbenv init -)"
+
+  run "rbenv install -s $(cat .ruby-version)"
+  run "rbenv local $(cat .ruby-version)"
+  run "bundle check || bundle install -j 12"
+
+  h2 "Creating Databases & Running Tests"
+  run "bundle exec rake db:create"
+  run "bundle exec rake db:migrate db:seed"
+  run "bundle exec rake db:test:prepare"
+  run.set-next show-output-on
+  run "bundle exec rspec"
 }
 
 function puma-pids() {
@@ -76,16 +100,14 @@ function kill-puma() {
 }
 
 function .err() {
-  printf -- "\n${bg_bright_red} 🖕 ${clr}${txt_red}${clr} ${txt_red}${clr}${bg_bright_red} %s ${clr}${txt_red}${clr}\n" "$*"
+  printf -- "\n${bakred} 🖕 ${clr}${txtred}${clr} ${txtred}${clr}${bakred} %s ${clr}${txtred}${clr}\n" "$*"
 }
 
 function .inf() {
-  printf -- "${bg_bright_green}  ️✔︎ ${clr}${txt_green}${clr} ${txt_yellow}%s....${clr}\n" "$*"
+  printf -- "${bakgrn}  ️✔︎ ${clr}${txtgrn}${clr} ${txtylw}%s....${clr}\n" "$*"
 }
 
 function setup() {
-  define-colors
-
   export MAKE_ENV=".make.env"
   cat <<EOF >>"${MAKE_ENV}"
 export RUBYOPT="-W0"
@@ -93,6 +115,10 @@ export MALLOC_ARENA_MAX=2
 EOF
 
   eval "$(cat "${MAKE_ENV}")"
+  ensure-postgresql || exit 1
+  ensure-ruby || exit 2
+  ensure-stripe-mock || exit 2
+  return 0
 }
 
 function main() {
@@ -112,26 +138,15 @@ function main() {
     .inf "Starting with RAILS_ENV=${RAILS_ENV}"
   fi
 
-  .inf "Running bundle install..."
-  (bundle check || bundle install) && {
-    .inf "Running migrations..."
-    bundle exec rake db:migrate &&
-      if [[ "${RAILS_ENV}" =~ production ]]; then
-        .inf "Compiling production assets..."
-        bundle exec rake assets:precompile
-      fi
-    # shellcheck disable=SC2207,SC2009
-
-    puma-running && {
-      .err "It appears that port 3000 is taken by something..."
-      exit 1
-    }
-    .inf "Starting Puma"
-    (sleep 8 && open "http://127.0.0.1:3000") &
-    bundle exec puma -C config/puma.rb
+  puma-running && {
+    .err "It appears that port 3000 is taken by something..."
+    exit 1
   }
-
-  rm -f ${MAKE_ENV}
+  .inf "Starting Puma"
+  (sleep 8 && open "http://127.0.0.1:3000") &
+  run.set-next show-output-on
+  run "bundle exec puma -C config/puma.rb"
+  rm -f "${MAKE_ENV}"
 }
 
 [[ "$1" == "--source" ]] || main "$@"

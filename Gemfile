@@ -5,6 +5,7 @@ source 'https://rubygems.org'
 gem 'rails', '~> 4.2'
 
 gem 'attribute_normalizer'
+gem 'awesome_print'
 gem 'carrierwave'
 gem 'coffee-rails'
 gem 'colored2'
@@ -41,6 +42,7 @@ group :development, :test do
   gem 'rubocop-rails'
   gem 'rubocop-rake'
   gem 'rubocop-rspec'
+  gem 'stripe-ruby-mock', '~> 2.5.0', require: 'stripe_mock'
 end
 
 group :development do
@@ -55,4 +57,5 @@ group :test do
   gem 'rspec-its'
   gem 'rspec-rails'
   gem 'simplecov'
+  gem 'timeout'
 end
