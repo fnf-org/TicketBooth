@@ -18,8 +18,9 @@ if @env == 'development'
   threads 1, 1
   workers 1
 else
-  threads 2, 2
-  workers 2
+  workers Integer(ENV['WEB_CONCURRENCY'] || 2)
+  threads_count = Integer(ENV['RAILS_MAX_THREADS'] || 2)
+  threads threads_count, threads_count
 end
 
 tag 'ticket-booth'
