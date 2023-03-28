@@ -19,7 +19,7 @@ if @env == 'development'
   workers 1
 else
   threads 2, 2
-  workers [[(2 * Etc.nprocessors), 12].min, 6].max
+  workers 2
 end
 
 tag 'ticket-booth'

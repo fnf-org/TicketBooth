@@ -1,5 +1,5 @@
 image:
-  repository: tickets
+  repository: localhost/tickets
   pullPolicy: Never
   tag: "latest"
 
