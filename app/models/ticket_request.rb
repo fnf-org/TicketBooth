@@ -13,11 +13,11 @@ class TicketRequest < ActiveRecord::Base
   ].freeze
 
   TICKET_LIMITS = {
-    (ROLE_UBER_COORDINATOR = 'uber_coordinator') => 6,
-    (ROLE_COORDINATOR = 'coordinator') => 6,
-    (ROLE_CONTRIBUTOR = 'contributor') => 4,
-    (ROLE_VOLUNTEER = 'volunteer') => 2,
-    (ROLE_OTHER = 'other') => 2
+    (ROLE_UBER_COORDINATOR = 'uber_coordinator') => 10,
+    (ROLE_COORDINATOR = 'coordinator') => 10,
+    (ROLE_CONTRIBUTOR = 'contributor') => 10,
+    (ROLE_VOLUNTEER = 'volunteer') => 10,
+    (ROLE_OTHER = 'other') => 10
   }.freeze
 
   ROLES = {

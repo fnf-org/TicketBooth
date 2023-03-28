@@ -1,4 +1,4 @@
-FROM ruby:2.5.8-slim
+FROM docker.io/ruby:2.6-bullseye
 
 # Needed by Ruby to process UTF8-encoded files
 ENV LANG C.UTF-8
@@ -20,7 +20,6 @@ RUN set -eus; \
     netcat \
     htop \
     strace \
-    python-ptrace \
     pg-activity \
     ; \
     apt-get clean; \
