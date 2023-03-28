@@ -1,153 +1,162 @@
 #!/usr/bin/env bash
 # vim: ft=bash
 
+export BASHMATIC_HOME="${BASHMATIC_HOME:-"${HOME}/.bashmatic"}"
 [[ -z ${BASHMATIC_HOME} ]] && export BASHMATIC_HOME="${HOME}/.bashmatic"
 [[ -d ${BASHMATIC_HOME} ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install"
 [[ -d ${BASHMATIC_HOME} ]] || {
-  echo "Can't find Bashmatic, even after attempting an installation."
-  echo "Please install Bashmatic with the following command line:"
-  echo 'bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install"'
-  exit 1
+    echo "Can't find Bashmatic, even after attempting an installation."
+    echo "Please install Bashmatic with the following command line:"
+    echo 'bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install"'
+    exit 1
 }
 
 source "${BASHMATIC_HOME}/init.sh"
 output.constrain-screen-width 100
 
+export python_version="2.7.18"
+
 function ensure-postgresql() {
-  ps -ef | grep -q "[p]ostgres" && {
-    success "PostgreSQL is already running."
-    return 0
-  }
-
-  (command -v brew >/dev/null) && {
-    run.set-all abort-on-error
-    h1 "Installing and starting PostgreSQL using Homebrew..."
-    run "brew install postgresql"
-    run "brew unlink postgresql && brew link postgresql"
-    run "brew services postgresql start"
-    sleep 3
-    pg_isready && success "Database is UP." 
-    pg_isready || {
-      error "Unable to start PostgreSQL. Please install it manually" \
-        "from: https://www.postgresql.org/download/"
-      open "https://www.postgresql.org/download/"
-      exit 1
+    ps -ef | grep -q "[p]ostgres" && {
+        success "PostgreSQL is already running."
+        return 0
     }
-
-    run "createuser -s postgres -U ${USER}"
-    run "createuser -s root -U ${USER}"
-  } 
+    
+    (command -v brew >/dev/null) && {
+        run.set-all continue-on-error
+        run "brew uninstall postgresql || true"
+        
+        h1 "Installing and starting PostgreSQL using Homebrew..."
+        
+        run "brew install postgresql@14"
+        run "brew link postgresql@14"
+        run "brew services start postgresql@14"
+        sleep 3
+        pg_isready && success "Database is UP."
+        pg_isready || {
+            error "Unable to start PostgreSQL. Please install it manually" \
+            "from: https://www.postgresql.org/download/"
+            open "https://www.postgresql.org/download/"
+            exit 1
+        }
+        
+        run "createuser -s postgres -U ${USER}"
+        run "createuser -s root -U ${USER}"
+    }
 }
 
 function ensure-stripe-mock() {
-  run "brew install stripe/stripe-mock/stripe-mock"
-  run "brew upgrade stripe-mock"
-  run "brew services start stripe-mock"
+    run "brew install stripe/stripe-mock/stripe-mock"
+    run "brew upgrade stripe-mock"
+    run "brew services start stripe-mock"
 }
 
 function ensure-ruby() {
-  h2 "Ensuring Ruby & Gems are Installed..."
-  if command -v rbenv >/dev/null; then
-    run "brew upgrade rbenv ruby-build"
-  else
-    run "brew install rbenv ruby-build"
-  fi
-
-  eval "$(rbenv init -)"
-
-  run "rbenv install -s $(cat .ruby-version)"
-  run "rbenv local $(cat .ruby-version)"
-  run "gem install bundler --version 1.17.3 -N"
-  run "bundle check || bundle install -j 12"
-
-  h2 "Creating Databases & Running Tests"
-  run "bundle exec rake db:create"
-  run "bundle exec rake db:migrate db:seed"
-  run "bundle exec rake db:test:prepare"
-  run.set-next show-output-on
-  run "bundle exec rspec"
+    h2 "Ensuring Ruby & Gems are Installed..."
+    if command -v rbenv >/dev/null; then
+        run "brew upgrade rbenv ruby-build"
+    else
+        run "brew install rbenv ruby-build"
+    fi
+    
+    eval "$(rbenv init -)"
+    
+    local bundler_version=$(gem.gemfile.bundler-version)
+    test -z ${bundler_version} && bundler_version="1.17.3"
+    
+    run "rbenv install -s $(cat .ruby-version)"
+    run "rbenv local $(cat .ruby-version)"
+    run "gem install bundler --version ${bundler_version} -N"
+    run "bundle check || bundle install -j 12"
+    
+    h2 "Creating Databases & Running Tests"
+    run "bundle exec rake db:create"
+    run "bundle exec rake db:migrate db:seed"
+    run "bundle exec rake db:test:prepare"
+    run.set-next show-output-on
+    run "bundle exec rspec"
 }
 
 function puma-pids() {
-  # shellcheck disable=SC2009
-  ps -ef | grep "[p]uma" | cut -d ' ' -f 4
+    # shellcheck disable=SC2009
+    ps -ef | grep "[p]uma" | cut -d ' ' -f 4
 }
 
 function puma-running() {
-  netstat -an | grep LISTEN | grep -q 3000
+    netstat -an | grep LISTEN | grep -q 3000
 }
 
 # shellcheck disable=SC2207
 function kill-puma() {
-  local counter=0
-  while puma-running; do
-    counter=$((counter + 1))
-    if [[ ${counter} -gt 10 ]]; then
-      .err "Too many attempts to kill puma, please whack it manually."
-      exit 1
-    fi
-    local -a pids=($(puma-pids))
-    if [[ ${#pids[@]} -gt 0 ]]; then
-      set +e
-      kill -TERM "${pids[@]}"
-      sleep 5
-      pids=($(puma-pids))
-      [[ ${#pids[@]} -gt 0 ]] && {
-        kill -KILL "${pids[@]}"
-        sleep 2
-      }
-    fi
-  done
+    local counter=0
+    while puma-running; do
+        counter=$((counter + 1))
+        if [[ ${counter} -gt 10 ]]; then
+            .err "Too many attempts to kill puma, please whack it manually."
+            exit 1
+        fi
+        local -a pids=($(puma-pids))
+        if [[ ${#pids[@]} -gt 0 ]]; then
+            set +e
+            kill -TERM "${pids[@]}"
+            sleep 5
+            pids=($(puma-pids))
+            [[ ${#pids[@]} -gt 0 ]] && {
+                kill -KILL "${pids[@]}"
+                sleep 2
+            }
+        fi
+    done
 }
 
 function .err() {
-  printf -- "\n${bakred} 🖕 ${clr}${txtred}${clr} ${txtred}${clr}${bakred} %s ${clr}${txtred}${clr}\n" "$*"
+    printf -- "\n${bakred} 🖕 ${clr}${txtred}${clr} ${txtred}${clr}${bakred} %s ${clr}${txtred}${clr}\n" "$*"
 }
 
 function .inf() {
-  printf -- "${bakgrn}  ️✔︎ ${clr}${txtgrn}${clr} ${txtylw}%s....${clr}\n" "$*"
+    printf -- "${bakgrn}  ️✔︎ ${clr}${txtgrn}${clr} ${txtylw}%s....${clr}\n" "$*"
 }
 
 function setup() {
-  export MAKE_ENV=".make.env"
+    export MAKE_ENV=".make.env"
   cat <<EOF >>"${MAKE_ENV}"
 export RUBYOPT="-W0"
 export MALLOC_ARENA_MAX=2
 EOF
-
-  eval "$(cat "${MAKE_ENV}")"
-  ensure-postgresql || exit 1
-  ensure-ruby || exit 2
-  ensure-stripe-mock || exit 2
-  return 0
+    
+    eval "$(cat "${MAKE_ENV}")"
+    ensure-postgresql || exit 1
+    ensure-ruby || exit 2
+    ensure-stripe-mock || exit 2
+    return 0
 }
 
 function main() {
-  setup
-
-  if [[ -z "${RAILS_ENV}" ]]; then
-    .err "RAILS_ENV must be set prior to calling this script."
-    echo
-    .inf "To boot the application via the 'make' target, run one of the: "
-    echo
-    .inf '		make development boot'
-    .inf '		make staging     boot'
-    .inf '		make production  boot'
-    echo
-    exit 1
-  else
-    .inf "Starting with RAILS_ENV=${RAILS_ENV}"
-  fi
-
-  puma-running && {
-    .err "It appears that port 3000 is taken by something..."
-    exit 1
-  }
-  .inf "Starting Puma"
-  (sleep 8 && open "http://127.0.0.1:3000") &
-  run.set-next show-output-on
-  run "bundle exec puma -C config/puma.rb"
-  rm -f "${MAKE_ENV}"
+    setup
+    
+    if [[ -z "${RAILS_ENV}" ]]; then
+        .err "RAILS_ENV must be set prior to calling this script."
+        echo
+        .inf "To boot the application via the 'make' target, run one of the: "
+        echo
+        .inf '		make development boot'
+        .inf '		make staging     boot'
+        .inf '		make production  boot'
+        echo
+        exit 1
+    else
+        .inf "Starting with RAILS_ENV=${RAILS_ENV}"
+    fi
+    
+    puma-running && {
+        .err "It appears that port 3000 is taken by something..."
+        exit 1
+    }
+    .inf "Starting Puma"
+    (sleep 8 && open "http://127.0.0.1:3000") &
+    run.set-next show-output-on
+    run "bundle exec puma -C config/puma.rb"
+    rm -f "${MAKE_ENV}"
 }
 
 [[ "$1" == "--source" ]] || main "$@"
