@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1091,SC2002,SC2207
 # vim: ft=bash
 
+export BASHMATIC_HOME="${BASHMATIC_HOME:-"${HOME}/.bashmatic"}"
 [[ -z ${BASHMATIC_HOME} ]] && export BASHMATIC_HOME="${HOME}/.bashmatic"
-[[ -d ${BASHMATIC_HOME} ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install"
+[[ -d ${BASHMATIC_HOME} ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install -q"
 [[ -d ${BASHMATIC_HOME} ]] || {
   echo "Can't find Bashmatic, even after attempting an installation."
   echo "Please install Bashmatic with the following command line:"
@@ -10,23 +12,34 @@
   exit 1
 }
 
-source "${BASHMATIC_HOME}/init.sh"
+# shellcheck source="${BASHMATIC_HOME}/init.sh"
+source "${BASHMATIC_HOME}/init.sh" >/dev/null 2>&1
 output.constrain-screen-width 100
 
+export default_bundler_version="1.17.3"
+export python_version="2.7.18"
+export python_major_version="$(echo "${python_version}" | cut -d '.' -f 1)"
+
+export ruby_version="$(cat .ruby-version | tr -d '\n')"
+
 function ensure-postgresql() {
-  ps -ef | grep -q "[p]ostgres" && {
+  [[ -n "$( ps -ef | grep "[p]ostg" )" ]] && pg_isready >/dev/null && {
     success "PostgreSQL is already running."
     return 0
   }
 
   (command -v brew >/dev/null) && {
-    run.set-all abort-on-error
+    run.set-all continue-on-error
+
     h1 "Installing and starting PostgreSQL using Homebrew..."
-    run "brew install postgresql"
-    run "brew unlink postgresql && brew link postgresql"
-    run "brew services postgresql start"
+
+    run "brew install postgresql@14"
+    run "brew link postgresql@14"
+    run "brew services start postgresql@14"
+
     sleep 3
-    pg_isready && success "Database is UP." 
+
+    pg_isready && success "Database is UP."
     pg_isready || {
       error "Unable to start PostgreSQL. Please install it manually" \
         "from: https://www.postgresql.org/download/"
@@ -36,13 +49,49 @@ function ensure-postgresql() {
 
     run "createuser -s postgres -U ${USER}"
     run "createuser -s root -U ${USER}"
-  } 
+  }
 }
 
 function ensure-stripe-mock() {
+  run.set-all continue-on-error
   run "brew install stripe/stripe-mock/stripe-mock"
   run "brew upgrade stripe-mock"
   run "brew services start stripe-mock"
+}
+
+function ensure-python() {
+  local local_python_version
+  local -a version_parts
+  run.set-all continue-on-error
+  command -v python >/dev/null && {
+    version_parts=( $(python -c 'import sys; print(sys.version_info[0])' | tr '.' ' ') )
+  }
+
+  local_python_version="${version_parts[0]}"
+
+  if [[ ${local_python_version} -eq ${python_major_version} ]]; then
+    success "Python ${python_version} is already installed."
+    return 0
+  else
+    h1 "Installing Python ${python_version} using pyenv..."
+    command -v pyenv >/dev/null || run "brew install pyenv"
+    eval "$(pyenv init -)"
+    run "pyenv install -s ${python_version}"
+    run "pyenv global ${python_version}"
+  fi
+}
+
+function ensure-ruby-via-ruby-install() {
+  run "brew install ruby-install --formulae"
+  export CFLAGS="-Wno-error=implicit-function-declaration"
+  run "mkdir -p ${HOME}/.rbenv/versions"
+  run "ruby-install --install-dir ${HOME}/.rbenv/versions ${ruby_version} -- --enable-shared"
+}
+
+
+function ensure-ruby-via-rbenv() {
+  export CFLAGS="-Wno-error=implicit-function-declaration"
+  run "rbenv install -s ${ruby_version}"
 }
 
 function ensure-ruby() {
@@ -55,10 +104,26 @@ function ensure-ruby() {
 
   eval "$(rbenv init -)"
 
-  run "rbenv install -s $(cat .ruby-version)"
-  run "rbenv local $(cat .ruby-version)"
-  run "gem install bundler --version 1.17.3 -N"
-  run "bundle check || bundle install -j 12"
+  local bundler_version=$(gem.gemfile.bundler-version)
+  test -z "${bundler_version}" && bundler_version="${default_bundler_version}"
+
+  if ${use_ruby_install}; then
+    ensure-ruby-via-ruby-install
+  else
+    ensure-ruby-via-rbenv
+  fi
+}
+
+
+function ensure-bundle() {
+  h2 "Installing Dependent Gems..."
+  run "gem install bundler --version ${bundler_version} -N"
+
+  run "bundle config set          --local path 'vendor/bundle'"
+  run "bundle config pg           --with-pg-config=$(command -v pg_config)"
+  run "bundle config libv8        --with-system-v8"
+  run "bundle config therubyracer --with-v8-dir=$(brew --prefix)/opt/v8@3.15"
+  run "bundle check || bundle install -j 12 || bundler update --bundler && bundle install"
 
   h2 "Creating Databases & Running Tests"
   run "bundle exec rake db:create"
@@ -116,9 +181,17 @@ export MALLOC_ARENA_MAX=2
 EOF
 
   eval "$(cat "${MAKE_ENV}")"
-  ensure-postgresql || exit 1
-  ensure-ruby || exit 2
-  ensure-stripe-mock || exit 2
+
+  local v8pkg="$(brew list | grep v8)"
+  [[ -z "${v8pkg}" || ${v8pkg} == "v8" ]] && brew uninstall v8 >/dev/null 2>&1
+
+  run "brew list | grep -q v8@3.15 || brew install v8@3.15 2>/dev/null"
+
+  ensure-postgresql     || exit 1
+  ensure-ruby           || exit 4
+  ensure-python         || exit 3
+  ensure-bundle         || exit 5
+  ensure-stripe-mock    || exit 6
   return 0
 }
 
@@ -143,11 +216,26 @@ function main() {
     .err "It appears that port 3000 is taken by something..."
     exit 1
   }
-  .inf "Starting Puma"
+  .inf "Starting Puma on port 3000"
   (sleep 8 && open "http://127.0.0.1:3000") &
   run.set-next show-output-on
   run "bundle exec puma -C config/puma.rb"
   rm -f "${MAKE_ENV}"
 }
 
+export use_ruby_install=false
+
+[[ "$1" == "-h" || "$1" == "--help" ]] && {
+  echo "Usage: $0 [--source] [--ruby-install]"
+  echo
+  echo "  --source        -  load the source code of this script but don't run main()"
+  echo "  --ruby-install  -  Use ruby-install to build ruby instead of rbenv"
+  echo
+  exit 0
+}
+
+[[ "$*" =~ "--ruby-install" ]] && use_ruby_install=true
+
 [[ "$1" == "--source" ]] || main "$@"
+
+
