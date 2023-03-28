@@ -57,6 +57,7 @@ function ensure-ruby() {
 
   run "rbenv install -s $(cat .ruby-version)"
   run "rbenv local $(cat .ruby-version)"
+  run "gem install bundler --version 1.17.3 -N"
   run "bundle check || bundle install -j 12"
 
   h2 "Creating Databases & Running Tests"
