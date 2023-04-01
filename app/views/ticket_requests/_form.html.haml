@@ -198,10 +198,22 @@
 
   - if is_update
     .control-group
-
-    = f.label :guests do
-      = 'Guest'.pluralize(@ticket_request.guest_count)
-      (including yourself)
+    %h4 Guests
+    %p
+      Include yourself as a guest. Use First Name and Last Name. One initial is okay.
+      DJ names or monikers must be accompanied by some variation of their real name.
+      If we cannot identify the name, we will ask you to change it.
+    %b Examples of good names
+    %ol
+      %li Tim Bergling
+      %li Tim B.
+      %li T. Bergling
+      %li Tim Bergling (Avicii)
+    %b Examples of bad names
+    %ol
+      %li Tim
+      %li Bergling
+      %li T. B.
     %br
     - list_finalized = (@event.start_time - Time.now) < 2.days
     - if list_finalized
