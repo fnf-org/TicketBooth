@@ -8,7 +8,7 @@ class PaymentsController < ApplicationController
     @charge = Stripe::Charge.retrieve(@payment.stripe_charge_id) if @payment.stripe_charge_id
     @ticket_request = @payment.ticket_request
     @event = @ticket_request.event
-    return redirect_to root_path unless @payment.can_view?(current_user)
+    redirect_to root_path unless @payment.can_view?(current_user)
   end
 
   def new

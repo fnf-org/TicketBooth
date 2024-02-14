@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'abstract_event'
-
+require_relative 'ticket_request_event'
 module FnF
   module Events
     # This event fires whenever the ticket request is declined

@@ -39,7 +39,7 @@ require 'newrelic_rpm'
 
 lowlevel_error_handler do |exception|
   begin
-    ::NewRelic::Agent.notice_error(exception)
+    NewRelic::Agent.notice_error(exception)
   rescue StandardError
     nil
   end

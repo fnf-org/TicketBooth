@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddRoleToTicketRequests < ActiveRecord::Migration
+class AddRoleToTicketRequests < ActiveRecord::Migration[6.0]
   def change
     change_table :ticket_requests do |t|
       t.string :role,             null: false, default: 'volunteer'

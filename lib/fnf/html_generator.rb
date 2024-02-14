@@ -44,8 +44,8 @@ module FnF
       $stdout.puts(string)
     end
 
-    def generate(&block)
-      instance_exec(&block)
+    def generate(&)
+      instance_exec(&)
     end
 
     private

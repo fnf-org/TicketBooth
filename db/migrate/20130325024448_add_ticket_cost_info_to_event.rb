@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddTicketCostInfoToEvent < ActiveRecord::Migration
+class AddTicketCostInfoToEvent < ActiveRecord::Migration[6.0]
   def change
     change_table :events do |t|
       t.column :adult_ticket_price, :decimal, precision: 8, scale: 2

@@ -139,7 +139,7 @@ describe Event do
     end
 
     context 'when given an event admin' do
-      let(:user) { EventAdmin.make!(event: event).user }
+      let(:user) { EventAdmin.make!(event:).user }
       it { should be true }
     end
 
@@ -153,7 +153,7 @@ describe Event do
     let(:cabin_price) { nil }
     let(:max_cabin_requests) { nil }
     let(:event) do
-      Event.make! cabin_price: cabin_price, max_cabin_requests: max_cabin_requests
+      Event.make! cabin_price:, max_cabin_requests:
     end
     subject { event.cabins_available? }
 
@@ -179,7 +179,7 @@ describe Event do
 
         context 'when the number of cabins requested has met or exceeded the maximum' do
           before do
-            TicketRequest.make! event: event, cabins: max_cabin_requests
+            TicketRequest.make! event:, cabins: max_cabin_requests
           end
 
           it { should be false }
@@ -195,8 +195,8 @@ describe Event do
     let(:ticket_sale_end_time) { nil }
 
     let(:event) do
-      Event.make! start_time: start_time,
-                  end_time: end_time,
+      Event.make! start_time:,
+                  end_time:,
                   ticket_sales_start_time: ticket_sale_start_time,
                   ticket_sales_end_time: ticket_sale_end_time
     end

@@ -7,10 +7,13 @@ TicketBooth::Application.configure do
   # every request. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
-  # Enable threaded mode
-  # config.threadsafe!
 
-  config.eager_load = false
+  # Use a different cache store in production
+  config.cache_store = :mem_cache_store
+
+  config.autoloader = :zeitwerk
+
+  # config.eager_load = false
 
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
@@ -20,7 +23,7 @@ TicketBooth::Application.configure do
   config.active_support.deprecation = :log
 
   # Raise exception on mass assignment protection for Active Record models
-  config.active_record.mass_assignment_sanitizer = :strict
+  # config.active_record.mass_assignment_sanitizer = :strict
 
   # Expands the lines which load the assets
   config.assets.debug = true

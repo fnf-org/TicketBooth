@@ -22,12 +22,12 @@ end
 # using FnF::Events::BuildingOnFireEvent @see spec/support/events.rb
 RSpec.describe 'Observers' do
   let(:worker) { Worker }
-  let(:event) { ::FnF::Events::BuildingOnFireEvent }
+  let(:event) { FnF::Events::BuildingOnFireEvent }
 
   before do
     event.configure { notifies Worker }
 
-    ::FnF::Events.set_building_on_fire!
+    FnF::Events.set_building_on_fire!
   end
 
   subject { worker.events }

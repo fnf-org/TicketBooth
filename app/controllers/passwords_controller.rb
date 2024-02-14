@@ -4,7 +4,7 @@
 class PasswordsController < ApplicationController
   def reset
     email = params[:email].presence
-    if email && user = User.where(email: email).first
+    if email && user = User.where(email:).first
       user.send_reset_password_instructions
     end
 

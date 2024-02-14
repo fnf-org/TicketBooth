@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreatePriceRules < ActiveRecord::Migration
+class CreatePriceRules < ActiveRecord::Migration[6.0]
   def change
     create_table :price_rules do |t|
       t.string :type
@@ -10,7 +10,5 @@ class CreatePriceRules < ActiveRecord::Migration
 
       t.timestamps
     end
-
-    add_index :price_rules, :event_id
   end
 end

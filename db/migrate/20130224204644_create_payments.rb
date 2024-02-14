@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreatePayments < ActiveRecord::Migration
+class CreatePayments < ActiveRecord::Migration[6.0]
   def change
     create_table :payments do |t|
       t.integer :ticket_request_id, null: false
