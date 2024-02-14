@@ -11,7 +11,7 @@ describe TicketRequest do
     subject { ticket_request }
 
     describe '#user' do
-      let(:ticket_request) { TicketRequest.make user: user }
+      let(:ticket_request) { TicketRequest.make user: }
 
       context 'when not present' do
         let(:user) { nil }
@@ -31,11 +31,11 @@ describe TicketRequest do
       context 'when the user has other ticket requests' do
         let(:event) { Event.make! }
         let(:user) { User.make! }
-        let(:ticket_request) { TicketRequest.make event: event, user: user }
+        let(:ticket_request) { TicketRequest.make event:, user: }
 
         context 'and they already have a request for this event' do
           before do
-            TicketRequest.make! event: event, user: user
+            TicketRequest.make! event:, user:
           end
 
           # TODO: Decide whether we would rather allow editing of ticket
@@ -45,7 +45,7 @@ describe TicketRequest do
 
         context 'and they have created requests only for other events' do
           before do
-            TicketRequest.make user: user
+            TicketRequest.make user:
           end
 
           it { should be_valid }
@@ -54,7 +54,7 @@ describe TicketRequest do
     end
 
     describe '#event' do
-      let(:ticket_request) { TicketRequest.make event: event }
+      let(:ticket_request) { TicketRequest.make event: }
 
       context 'when not present' do
         let(:event) { nil }
@@ -69,7 +69,7 @@ describe TicketRequest do
     end
 
     describe '#adults' do
-      let(:ticket_request) { TicketRequest.make adults: adults }
+      let(:ticket_request) { TicketRequest.make adults: }
 
       context 'when not present' do
         let(:adults) { nil }
@@ -88,7 +88,7 @@ describe TicketRequest do
     end
 
     describe '#kids' do
-      let(:ticket_request) { TicketRequest.make kids: kids }
+      let(:ticket_request) { TicketRequest.make kids: }
 
       context 'when not present' do
         let(:kids) { nil }
@@ -107,7 +107,7 @@ describe TicketRequest do
     end
 
     describe '#cabins' do
-      let(:ticket_request) { TicketRequest.make cabins: cabins }
+      let(:ticket_request) { TicketRequest.make cabins: }
 
       context 'when not present' do
         let(:cabins) { nil }
@@ -126,7 +126,7 @@ describe TicketRequest do
     end
 
     describe '#notes' do
-      let(:ticket_request) { TicketRequest.make notes: notes }
+      let(:ticket_request) { TicketRequest.make notes: }
 
       context 'when not present' do
         let(:notes) { nil }
@@ -147,7 +147,7 @@ describe TicketRequest do
     end
 
     describe '#special_price' do
-      let(:ticket_request) { TicketRequest.make special_price: special_price }
+      let(:ticket_request) { TicketRequest.make special_price: }
 
       context 'when not present' do
         let(:special_price) { nil }
@@ -157,7 +157,7 @@ describe TicketRequest do
   end
 
   describe '#create' do
-    let(:ticket_request) { TicketRequest.make! event: event }
+    let(:ticket_request) { TicketRequest.make! event: }
 
     context 'when the event requires approval for tickets' do
       let(:event) { Event.make! tickets_require_approval: true }
@@ -247,16 +247,16 @@ describe TicketRequest do
       Event.make!(
         adult_ticket_price: adult_price,
         kid_ticket_price: kid_price,
-        cabin_price: cabin_price
+        cabin_price:
       )
     end
     let(:ticket_request) do
       TicketRequest.make(
-        event: event,
-        adults: adults,
-        kids: kids,
-        cabins: cabins,
-        special_price: special_price
+        event:,
+        adults:,
+        kids:,
+        cabins:,
+        special_price:
       )
     end
     subject { ticket_request.price }
@@ -298,8 +298,8 @@ describe TicketRequest do
       let(:custom_price) { 5 }
 
       before do
-        PriceRule::KidsEqualTo.create! event: event,
-                                       trigger_value: trigger_value,
+        PriceRule::KidsEqualTo.create! event:,
+                                       trigger_value:,
                                        price: custom_price
       end
 

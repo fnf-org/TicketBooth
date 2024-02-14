@@ -79,7 +79,7 @@ class EventsController < ApplicationController
     return redirect_to :back unless @event.admin?(current_user)
 
     user_id = params[:user_id]
-    event_admin = EventAdmin.where(event_id: @event, user_id: user_id).first
+    event_admin = EventAdmin.where(event_id: @event, user_id:).first
     return redirect_to :back, notice: "No user with id #{user_id} exists" unless event_admin
 
     event_admin.destroy

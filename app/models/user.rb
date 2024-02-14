@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
   MAX_PASSWORD_LENGTH = 255
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :name, :email, :password, :remember_me
+  # attr_accessible :name, :email, :password, :remember_me
 
   normalize_attributes :name, :email
 

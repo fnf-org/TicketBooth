@@ -14,9 +14,9 @@ describe EventAdmin do
 
       context 'when the user is already an admin for the event' do
         let(:event) { Event.make! }
-        let(:event_admin) { EventAdmin.make! event: event }
+        let(:event_admin) { EventAdmin.make! event: }
         let(:user) { event_admin.user }
-        subject { EventAdmin.make event: event }
+        subject { EventAdmin.make event: }
 
         it { should_not accept_values_for(:user_id, user.id) }
       end

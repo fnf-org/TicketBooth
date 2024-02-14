@@ -3,3 +3,4 @@
 --order rand
 --profile 5
 --require spec_helper
+-b

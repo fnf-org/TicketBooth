@@ -6,7 +6,7 @@ describe EmailsController, type: :controller do
   describe 'GET #index' do
     let(:email) { nil }
 
-    before { get :index, email: email }
+    before { get :index, email: }
 
     context 'when no email is provided' do
       it { response.status.should eq 404 }

@@ -17,9 +17,9 @@ class TimeSlotsController < ApplicationController
       slots = last_time_slot.slots
     end
 
-    @time_slot = TimeSlot.new start_time: start_time,
-                              end_time: end_time,
-                              slots: slots
+    @time_slot = TimeSlot.new start_time:,
+                              end_time:,
+                              slots:
   end
 
   def edit

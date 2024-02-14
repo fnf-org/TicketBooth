@@ -22,10 +22,10 @@ class EaldPaymentsController < ApplicationController
     early_arrival_passes  = params.fetch(:early_arrival_passes, 1)
     late_departure_passes = params.fetch(:late_departure_passes, 1)
     @eald_payment         = EaldPayment.new(event_id: @event.id,
-                                            email: email,
+                                            email:,
                                             name: full_name,
-                                            early_arrival_passes: early_arrival_passes,
-                                            late_departure_passes: late_departure_passes)
+                                            early_arrival_passes:,
+                                            late_departure_passes:)
   end
 
   def create

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateTimeSlots < ActiveRecord::Migration
+class CreateTimeSlots < ActiveRecord::Migration[6.0]
   def change
     create_table :time_slots do |t|
       t.belongs_to :job, null: false

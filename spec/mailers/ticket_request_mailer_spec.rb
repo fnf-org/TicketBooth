@@ -8,8 +8,8 @@ describe TicketRequestMailer do
   let(:price) { nil }
 
   let(:ticket_request) do
-    TicketRequest.make! event: event,
-                        user: user,
+    TicketRequest.make! event:,
+                        user:,
                         special_price: price
   end
 

@@ -7,15 +7,16 @@ require 'codecov' if ENV['CODECOV_TOKEN']
 SimpleCov.start 'rails'
 
 require File.expand_path('../config/environment', __dir__)
+
 require 'rspec/rails'
 require 'accept_values_for'
 require 'stripe_mock'
 require 'timeout'
 
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 def example_with_timeout(example)
-  ::Timeout.timeout(20) { example.run }
+  Timeout.timeout(20) { example.run }
 end
 
 TicketBooth::Application.configure do

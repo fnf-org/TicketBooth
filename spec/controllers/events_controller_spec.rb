@@ -21,7 +21,7 @@ describe EventsController, type: :controller do
       end
 
       context 'and is an event admin' do
-        let(:viewer) { EventAdmin.make!(event: event, user: User.make!).user }
+        let(:viewer) { EventAdmin.make!(event:, user: User.make!).user }
         it { succeeds }
       end
     end

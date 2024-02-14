@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RemoveDefaultStatusFromTicketRequests < ActiveRecord::Migration
+class RemoveDefaultStatusFromTicketRequests < ActiveRecord::Migration[6.0]
   def up
     execute <<-SQL
       ALTER TABLE ticket_requests

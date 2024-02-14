@@ -9,7 +9,7 @@ describe User do
 
   describe 'validation' do
     describe '#name' do
-      let(:user) { User.make name: name }
+      let(:user) { User.make name: }
       subject { user }
 
       context 'when not present' do
@@ -66,7 +66,7 @@ describe User do
     end
 
     describe '#email' do
-      let(:user) { User.make email: email }
+      let(:user) { User.make email: }
       subject { user }
 
       context 'when not present' do

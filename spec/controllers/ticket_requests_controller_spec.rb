@@ -21,7 +21,7 @@ describe TicketRequestsController, type: :controller do
     end
 
     context 'when viewer is the event admin' do
-      let(:viewer) { EventAdmin.make!(event: event).user }
+      let(:viewer) { EventAdmin.make!(event:).user }
       it { succeeds }
     end
 
@@ -33,7 +33,7 @@ describe TicketRequestsController, type: :controller do
 
   describe 'GET #show' do
     let(:user) { User.make! }
-    let(:ticket_request) { TicketRequest.make! user: user }
+    let(:ticket_request) { TicketRequest.make! user: }
 
     before do
       get :show, event_id: ticket_request.event.to_param,
@@ -81,7 +81,7 @@ describe TicketRequestsController, type: :controller do
 
   describe 'GET #edit' do
     let(:user) { User.make! }
-    let(:ticket_request) { TicketRequest.make! user: user }
+    let(:ticket_request) { TicketRequest.make! user: }
 
     before do
       get :edit, event_id: ticket_request.event.to_param,
@@ -151,14 +151,14 @@ describe TicketRequestsController, type: :controller do
       let(:user_attributes) do
         {
           name: Sham.words(2),
-          email: email,
-          password: password
+          email:,
+          password:
         }
       end
 
       let(:valid_params) do
         TicketRequest.valid_attributes event_id: event.to_param,
-                                       user_attributes: user_attributes
+                                       user_attributes:
       end
 
       it 'creates a user with the specified email address' do

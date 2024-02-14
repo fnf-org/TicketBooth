@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RemoveNotNullConstraintFromTicketRequestAddress < ActiveRecord::Migration
+class RemoveNotNullConstraintFromTicketRequestAddress < ActiveRecord::Migration[6.0]
   def up
     execute <<-SQL
       ALTER TABLE ticket_requests

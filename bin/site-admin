@@ -25,7 +25,7 @@ class God
 
   def initialize(user_email:)
     @email = user_email
-    @user  = ::User.where(email: email).first
+    @user  = ::User.where(email:).first
     if user.present?
       puts "\nNice to meet you, #{user.name.bold.blue} ;-)".yellow
     else
@@ -65,4 +65,4 @@ class God
   end
 end
 
-God.new(user_email: user_email).divine_intervention(action.to_sym)
+God.new(user_email:).divine_intervention(action.to_sym)
