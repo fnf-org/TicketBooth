@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe TicketRequestMailer do
   let(:user) { User.make! }
   let(:event) { Event.make! name: 'Test Event' }
   let(:price) { nil }
 
   let(:ticket_request) do
-    TicketRequest.make! event: event,
-                        user: user,
+    TicketRequest.make! event:,
+                        user:,
                         special_price: price
   end
 

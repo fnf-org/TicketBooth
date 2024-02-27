@@ -2,7 +2,7 @@
 **/.DS_Store
 .idea
 .vscode
-/log
+/log/*.log
 /tmp
 
 # Ignore file uploads in development

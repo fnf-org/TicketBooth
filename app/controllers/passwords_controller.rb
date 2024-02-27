@@ -4,10 +4,10 @@
 class PasswordsController < ApplicationController
   def reset
     email = params[:email].presence
-    if email && user = User.where(email: email).first
+    if email && user = User.where(email:).first
       user.send_reset_password_instructions
     end
 
-    redirect_to request.referrer, alert: 'A password reset link has been sent to your email!'
+    redirect_to request.referer, alert: 'A password reset link has been sent to your email!'
   end
 end

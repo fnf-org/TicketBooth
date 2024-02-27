@@ -2,38 +2,41 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '~> 4.2'
+gem 'rails', '~> 6.0.2'
 
 gem 'attribute_normalizer'
 gem 'awesome_print'
+gem 'bootsnap'
+gem 'bootstrap-sass' # , '3.0.2.1'
 gem 'carrierwave'
 gem 'coffee-rails'
 gem 'colored2'
 gem 'commonjs'
 gem 'country_select'
+gem 'dalli'
 gem 'devise'
 gem 'haml'
 gem 'jquery-rails'
-gem 'less'
-gem 'less-rails'
 gem 'libv8'
 gem 'mini_magick'
+gem 'mini_racer'
 gem 'newrelic_rpm'
-gem 'pg', '~> 0.20'
-gem 'protected_attributes'
-gem 'psych', '< 4'
+gem 'pg', '~> 1.4'
+gem 'protected_attributes_continued'
+gem 'psych'
 gem 'puma'
 gem 'puma-status'
 gem 'rake'
 gem 'rollbar'
+gem 'sass', '~> 3.4'
 gem 'sass-rails'
 gem 'sentry-raven'
 gem 'stripe'
-gem 'therubyracer', platforms: :ruby
 gem 'twitter-bootstrap-rails'
 gem 'uglifier'
 gem 'ventable'
 gem 'yard'
+gem 'annotate'
 
 group :development, :test do
   gem 'codecov'
@@ -46,7 +49,6 @@ group :development, :test do
 end
 
 group :development do
-  gem 'annotate'
   gem 'asciidoctor'
   gem 'capistrano', '< 3'
 end

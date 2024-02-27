@@ -17,9 +17,9 @@ class TimeSlotsController < ApplicationController
       slots = last_time_slot.slots
     end
 
-    @time_slot = TimeSlot.new start_time: start_time,
-                              end_time: end_time,
-                              slots: slots
+    @time_slot = TimeSlot.new start_time:,
+                              end_time:,
+                              slots:
   end
 
   def edit
@@ -43,7 +43,7 @@ class TimeSlotsController < ApplicationController
     params[:time_slot][:start_time] = Time.from_picker(params.delete(:start_time))
     params[:time_slot][:end_time] = Time.from_picker(params.delete(:end_time))
 
-    if @time_slot.update_attributes(params[:time_slot])
+    if @time_slot.update(params[:time_slot])
       redirect_to event_job_path(@event, @job)
     else
       render action: 'edit'

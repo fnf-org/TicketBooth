@@ -9,6 +9,6 @@ class Time
   )
 
   def self.from_picker(datetimepicker_string)
-    strptime(datetimepicker_string, '%Y/%m/%d %H:%M:%S').to_time unless datetimepicker_string.blank?
+    strptime(datetimepicker_string, '%Y/%m/%d %H:%M:%S').to_time if datetimepicker_string.present?
   end
 end

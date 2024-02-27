@@ -1,17 +1,34 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: eald_payments
+#
+#  id                    :bigint           not null, primary key
+#  amount_charged_cents  :integer          not null
+#  early_arrival_passes  :integer          default(0), not null
+#  email                 :string(255)      not null
+#  late_departure_passes :integer          default(0), not null
+#  name                  :string(255)      not null
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  event_id              :bigint
+#  stripe_charge_id      :string           not null
+#
+# Indexes
+#
+#  index_eald_payments_on_event_id  (event_id)
+#
 # Payment for early arrival/late departures passes.
 #
 # We only associate this with an event, as we want to treat these separately
 # from ticket requests.
-class EaldPayment < ActiveRecord::Base
+class EaldPayment < ApplicationRecord
   include PaymentsHelper
 
   belongs_to :event
 
   attr_accessible :event_id, :name, :email, :early_arrival_passes, :late_departure_passes, :stripe_card_token
-
-  validates :event_id, presence: true
 
   validates :early_arrival_passes, presence: true,
                                    numericality: { only_integer: true, greater_than_or_equal_to: 0 }

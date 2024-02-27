@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddEaldColumns < ActiveRecord::Migration
+class AddEaldColumns < ActiveRecord::Migration[6.0]
   def change
     change_table :ticket_requests do |t|
       t.integer :early_arrival_passes, null: false, default: 0

@@ -32,14 +32,14 @@ DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S %z'
 
 log_requests
 log_formatter do |str|
-  "#{format '%5d', $PROCESS_ID} | #{Time.now.strftime DATETIME_FORMAT} : |puma| #{str}"
+  "#{format '%5d', $PROCESS_ID} | #{Time.zone.now.strftime DATETIME_FORMAT} : |puma| #{str}"
 end
 
 require 'newrelic_rpm'
 
 lowlevel_error_handler do |exception|
   begin
-    ::NewRelic::Agent.notice_error(exception)
+    NewRelic::Agent.notice_error(exception)
   rescue StandardError
     nil
   end
