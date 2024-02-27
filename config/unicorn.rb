@@ -3,7 +3,7 @@
 # Set environment to production unless something else is specified
 app_name = 'tickets'
 env = ENV['RAILS_ENV'] || 'production'
-deploy_path = "#{ENV['HOME']}/deploy"
+deploy_path = "#{Dir.home}/deploy"
 shared_path = "#{deploy_path}/shared"
 
 # listen on both a Unix domain socket and a TCP port,

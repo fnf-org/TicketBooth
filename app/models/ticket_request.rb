@@ -1,9 +1,43 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: ticket_requests
+#
+#  id                      :bigint           not null, primary key
+#  address_line1           :string(200)
+#  address_line2           :string(200)
+#  admin_notes             :string(512)
+#  adults                  :integer          default(1), not null
+#  agrees_to_terms         :boolean
+#  cabins                  :integer          default(0), not null
+#  car_camping             :boolean
+#  car_camping_explanation :string(200)
+#  city                    :string(50)
+#  country_code            :string(4)
+#  donation                :decimal(8, 2)    default(0.0)
+#  early_arrival_passes    :integer          default(0), not null
+#  guests                  :text
+#  kids                    :integer          default(0), not null
+#  late_departure_passes   :integer          default(0), not null
+#  needs_assistance        :boolean          default(FALSE), not null
+#  notes                   :string(500)
+#  previous_contribution   :string(250)
+#  role                    :string           default("volunteer"), not null
+#  role_explanation        :string(200)
+#  special_price           :decimal(8, 2)
+#  state                   :string(50)
+#  status                  :string(1)        not null
+#  zip_code                :string(32)
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  event_id                :integer          not null
+#  user_id                 :integer          not null
+#
 # Individual request for one or more tickets.
 # This is intended to capture as much information as possible about the ticket,
 # as well as the state of the request.
-class TicketRequest < ActiveRecord::Base
+class TicketRequest < ApplicationRecord
   STATUSES = [
     STATUS_PENDING = 'P',
     STATUS_AWAITING_PAYMENT = 'A',
@@ -48,8 +82,6 @@ class TicketRequest < ActiveRecord::Base
 
   validates :user, presence: { unless: -> { user.try(:new_record?) } }
 
-  validates :event_id, presence: true
-
   validates :status, presence: true, inclusion: { in: STATUSES }
 
   validates :address_line1, :city, :state, :zip_code, :country_code,
@@ -90,7 +122,7 @@ class TicketRequest < ActiveRecord::Base
   scope :awaiting_payment, -> { where(status: STATUS_AWAITING_PAYMENT) }
   scope :approved, -> { awaiting_payment }
   scope :declined, -> { where(status: STATUS_DECLINED) }
-  scope :not_declined, -> { where('status != ?', STATUS_DECLINED) }
+  scope :not_declined, -> { where.not(status: STATUS_DECLINED) }
 
   before_validation do
     if event
@@ -114,7 +146,7 @@ class TicketRequest < ActiveRecord::Base
   end
 
   def mark_complete
-    update_attributes status: STATUS_COMPLETED
+    update status: STATUS_COMPLETED
   end
 
   def pending?
@@ -130,7 +162,7 @@ class TicketRequest < ActiveRecord::Base
   end
 
   def approve
-    update_attributes status: (free? ? STATUS_COMPLETED : STATUS_AWAITING_PAYMENT)
+    update status: (free? ? STATUS_COMPLETED : STATUS_AWAITING_PAYMENT)
   end
 
   def declined?
@@ -159,7 +191,7 @@ class TicketRequest < ActiveRecord::Base
     begin
       TicketRequest.transaction do
         Stripe::Charge.retrieve(payment.stripe_charge_id).refund
-        return update_attributes(status: STATUS_REFUNDED)
+        return update(status: STATUS_REFUNDED)
       end
     rescue Stripe::StripeError => e
       errors.add(:base, "Cannot refund ticket: #{e.message}")

@@ -15,11 +15,11 @@ if is_dev_test
   require 'yard'
 
   namespace :todolist do
-    task :statsetup do
+    task statsetup: :environment do
       require 'rails/code_statistics'
-      ::STATS_DIRECTORIES << %w[Uploaders app/uploaders]
+      STATS_DIRECTORIES << %w[Uploaders app/uploaders]
       # For test folders not defined in CodeStatistics::TEST_TYPES (ie: spec/)
-      ::STATS_DIRECTORIES << %w[Specs spec]
+      STATS_DIRECTORIES << %w[Specs spec]
       CodeStatistics::TEST_TYPES << 'Specs'
     end
   end

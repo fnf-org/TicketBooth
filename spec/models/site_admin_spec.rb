@@ -1,21 +1,24 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
+# == Schema Information
+#
+# Table name: site_admins
+#
+#  id         :bigint           not null, primary key
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  user_id    :integer          not null
+#
 describe SiteAdmin do
-  it 'has a valid factory' do
-    SiteAdmin.make.should be_valid
-  end
-
   describe 'validations' do
     describe '#user' do
-      it { should accept_values_for(:user_id, User.make!.id) }
-      it { should_not accept_values_for(:user_id, nil) }
+      it { is_expected.to accept_values_for(:user_id, User.make!.id) }
+      it { is_expected.not_to accept_values_for(:user_id, nil) }
 
       context 'when the user is already a site admin' do
         let(:user) { User.make! :site_admin }
 
-        it { should_not accept_values_for(:user_id, user.id) }
+        it { is_expected.not_to accept_values_for(:user_id, user.id) }
       end
     end
   end

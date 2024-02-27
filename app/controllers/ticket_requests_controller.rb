@@ -45,7 +45,7 @@ class TicketRequestsController < ApplicationController
   def download
     temp_csv = Tempfile.new('csv')
 
-    raise(ArgumentError, 'Blank temp_csv') unless temp_csv && temp_csv&.path
+    raise(ArgumentError, 'Blank temp_csv') unless temp_csv&.path
 
     CSV.open(temp_csv.path, 'wb') do |csv|
       csv << (%w[name email] + TicketRequest.columns.map(&:name))
@@ -96,12 +96,12 @@ class TicketRequestsController < ApplicationController
 
   def create
     unless @event.ticket_sales_open?
-      flash[:error] = 'Sorry, but ticket sales have closed'
+      flash.now[:error] = 'Sorry, but ticket sales have closed'
       return render action: 'new'
     end
 
-    params[:ticket_request][:user] = current_user if signed_in?
-    @ticket_request = TicketRequest.new(params[:ticket_request])
+    permitted_params[:ticket_request][:user] = current_user if signed_in?
+    @ticket_request = TicketRequest.new(permitted_params[:ticket_request])
 
     if @ticket_request.save
       FnF::Events::TicketRequestEvent.new(
@@ -123,9 +123,9 @@ class TicketRequestsController < ApplicationController
 
   def update
     # Allow ticket request to edit guests and nothing else
-    params[:ticket_request].slice!(:guests) unless @event.admin?(current_user)
+    permitted_params[:ticket_request].slice!(:guests) unless @event.admin?(current_user)
 
-    if @ticket_request.update_attributes(params[:ticket_request])
+    if @ticket_request.update(permitted_params[:ticket_request])
       redirect_to event_ticket_request_path(@event, @ticket_request)
     else
       render action: 'edit'
@@ -147,7 +147,7 @@ class TicketRequestsController < ApplicationController
   end
 
   def decline
-    if @ticket_request.update_attributes(status: TicketRequest::STATUS_DECLINED)
+    if @ticket_request.update(status: TicketRequest::STATUS_DECLINED)
       ::FnF::Events::TicketRequestDeclinedEvent.new(
         user: current_user,
         target: @ticket_request
@@ -185,11 +185,15 @@ class TicketRequestsController < ApplicationController
   private
 
   def set_event
-    @event = Event.find(params[:event_id])
+    @event = Event.find(permitted_params[:event_id])
   end
 
   def set_ticket_request
-    @ticket_request = TicketRequest.find(params[:id])
+    @ticket_request = TicketRequest.find(permitted_params[:id])
     redirect_to @event unless @ticket_request.event == @event
+  end
+
+  def permitted_params
+    params.permit(:event_id, :id, ticket_request: %i[address_line1 address_line2])
   end
 end

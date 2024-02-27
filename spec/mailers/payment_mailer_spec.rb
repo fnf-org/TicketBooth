@@ -1,17 +1,15 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe PaymentMailer do
   let(:user) { User.make! }
   let(:event) { Event.make! name: 'Test Event' }
 
   let(:ticket_request) do
-    TicketRequest.make! event: event,
-                        user: user
+    TicketRequest.make! event:,
+                        user:
   end
 
-  let(:payment) { Payment.make! ticket_request: ticket_request }
+  let(:payment) { Payment.make! ticket_request: }
 
   describe '#payment_received' do
     let(:mail) { described_class.payment_received(payment) }

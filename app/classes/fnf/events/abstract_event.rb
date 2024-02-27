@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative '../event_reporter'
 require 'ventable'
+
 module FnF
   module Events
     class AbstractEvent

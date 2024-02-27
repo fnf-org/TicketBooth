@@ -66,3 +66,7 @@ docker-image:	## Builds a docker image named 'tickets'
 
 shellcheck:	## Run shellcheck on the shell files
 		$(CURRENT_DIR)/bin/shchk	
+
+dev-install:    ## Optional install of VIM configuration and other dev tools
+		$(CURRENT_DIR)/development/dev-install
+

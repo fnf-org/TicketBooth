@@ -23,7 +23,7 @@ class HomeController < ApplicationController
   end
 
   def oops
-    flash[:error] = 'No events exist at the moment, please have your Site Administrator create a public event first.'
+    flash.now[:error] = 'No events exist at the moment, please have your Site Administrator create a public event first.'
     render
   end
 end

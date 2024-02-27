@@ -1,6 +1,22 @@
 # frozen_string_literal: true
 
-class TimeSlot < ActiveRecord::Base
+# == Schema Information
+#
+# Table name: time_slots
+#
+#  id         :bigint           not null, primary key
+#  end_time   :datetime         not null
+#  slots      :integer          not null
+#  start_time :datetime         not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  job_id     :bigint           not null
+#
+# Indexes
+#
+#  index_time_slots_on_job_id  (job_id)
+#
+class TimeSlot < ApplicationRecord
   belongs_to :job
   has_many :shifts, dependent: :destroy
 
@@ -10,7 +26,7 @@ class TimeSlot < ActiveRecord::Base
   validates :end_time, presence: true
   validate  :end_time_after_start_time
 
-  validates :job_id, presence: true, numericality: { only_integer: true },
+  validates :job_id, numericality: { only_integer: true },
                      allow_nil: false
   validates :slots, presence: true,
                     numericality: { only_integer: true, greater_than: 0 }

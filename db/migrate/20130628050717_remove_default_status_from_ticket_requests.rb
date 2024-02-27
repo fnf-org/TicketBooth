@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-class RemoveDefaultStatusFromTicketRequests < ActiveRecord::Migration
+class RemoveDefaultStatusFromTicketRequests < ActiveRecord::Migration[6.0]
   def up
-    execute <<-SQL
+    execute <<-SQL.squish
       ALTER TABLE ticket_requests
           ALTER COLUMN status DROP DEFAULT
     SQL
   end
 
   def down
-    execute <<-SQL
+    execute <<-SQL.squish
       ALTER TABLE ticket_requests
           ALTER COLUMN status SET DEFAULT 'P'
     SQL
