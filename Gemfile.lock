@@ -307,9 +307,7 @@ GEM
     ventable (1.2.0)
     warden (1.2.7)
       rack (>= 1.0)
-    webrick (1.7.0)
-    yard (0.9.27)
-      webrick (~> 1.7.0)
+    yard (0.9.36)
 
 PLATFORMS
   ruby
