@@ -317,39 +317,39 @@ describe TicketRequest do
     end
 
     context 'when kid ticket price is not set on the event' do
-      it { is_expected.to == adult_price * adults }
+      it { is_expected.to eql(adult_price * adults) }
     end
 
     context 'when the ticket request includes kids' do
       let(:kids) { 2 }
       let(:kid_price) { 10 }
 
-      it { is_expected.to == (adult_price * adults) + (kid_price * kids) }
+      it { is_expected.to eql((adult_price * adults) + (kid_price * kids)) }
     end
 
     context 'when the ticket request does not include kids' do
       let(:kids) { nil }
 
-      it { is_expected.to == adult_price * adults }
+      it { is_expected.to eql(adult_price * adults) }
     end
 
     context 'when the ticket request includes cabins' do
       let(:cabins) { 2 }
       let(:cabin_price) { 100 }
 
-      it { is_expected.to == (adult_price * adults) + (cabin_price * cabins) }
+      it { is_expected.to eql((adult_price * adults) + (cabin_price * cabins)) }
     end
 
     context 'when the ticket request does not include cabins' do
       let(:cabins) { nil }
 
-      it { is_expected.to == adult_price * adults }
+      it { is_expected.to eql(adult_price * adults) }
     end
 
     context 'when a special price is set' do
       let(:special_price) { BigDecimal(99.99, 10) }
 
-      it { is_expected.to == special_price }
+      it { is_expected.to eql(special_price) }
     end
 
     context 'when custom price rules are defined' do
@@ -366,13 +366,13 @@ describe TicketRequest do
       context 'and the rule does not apply' do
         let(:kids) { trigger_value - 1 }
 
-        it { is_expected.to == (adult_price * adults) + (kid_price * kids) }
+        it { is_expected.to eql((adult_price * adults) + (kid_price * kids)) }
       end
 
       context 'and the rule applies' do
         let(:kids) { trigger_value }
 
-        it { is_expected.to == (adult_price * adults) + 5 }
+        it { is_expected.to eql((adult_price * adults) + 5) }
       end
     end
   end

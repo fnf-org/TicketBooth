@@ -34,9 +34,6 @@
 #  event_id                :integer          not null
 #  user_id                 :integer          not null
 #
-# Individual request for one or more tickets.
-# This is intended to capture as much information as possible about the ticket,
-# as well as the state of the request.
 class TicketRequest < ApplicationRecord
   STATUSES = [
     STATUS_PENDING = 'P',

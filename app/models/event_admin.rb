@@ -25,4 +25,9 @@ class EventAdmin < ApplicationRecord
 
   validates :user_id,
             uniqueness: { scope: :event_id, message: 'already admin for this event' }
+
+  validate do |record|
+    raise ArgumentError, 'event_id is nil' if record.event_id.nil?
+    raise ArgumentError, 'user_id is nil' if record.user_id.nil?
+  end
 end
