@@ -19,10 +19,6 @@
 #
 #  index_eald_payments_on_event_id  (event_id)
 #
-# Payment for early arrival/late departures passes.
-#
-# We only associate this with an event, as we want to treat these separately
-# from ticket requests.
 class EaldPayment < ApplicationRecord
   include PaymentsHelper
 

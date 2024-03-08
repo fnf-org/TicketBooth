@@ -28,7 +28,6 @@
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
 #
-# Core object containing all information related to an actual event being held.
 class Event < ApplicationRecord
   has_many :event_admins
   has_many :admins, through: :event_admins, source: :user

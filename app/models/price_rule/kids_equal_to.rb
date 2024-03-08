@@ -16,8 +16,6 @@
 #
 #  index_price_rules_on_event_id  (event_id)
 #
-# Applied when a ticket request has indicated that they are bringing a specific
-# number of kids.
 class PriceRule
   class KidsEqualTo < PriceRule
     def calc_price(ticket_request)

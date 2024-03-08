@@ -20,8 +20,27 @@
 describe EventAdmin do
   describe 'validations' do
     describe '#user' do
-      it { is_expected.to accept_values_for(:user_id, User.make!.id) }
-      it { is_expected.not_to accept_values_for(:user_id, nil) }
+      describe 'valid admin' do
+        subject(:event_admin) { EventAdmin.make! }
+
+        it { is_expected.to be_valid }
+      end
+
+      describe 'nil user id' do
+        subject(:event_admin_without_user) { EventAdmin.make!.tap { |ea| ea.user = nil }.validate! }
+
+        it 'invalidates nil user_id' do
+          expect { event_admin_without_user }.to raise_error(ArgumentError)
+        end
+      end
+
+      describe 'nil event id' do
+        subject(:event_admin_without_event) { EventAdmin.make!.tap { |ea| ea.event = nil }.validate! }
+
+        it 'invalidates nil event_id' do
+          expect { event_admin_without_event }.to raise_error(ArgumentError)
+        end
+      end
 
       context 'when the user is already an admin for the event' do
         subject { described_class.make event: }
@@ -32,11 +51,6 @@ describe EventAdmin do
 
         it { is_expected.not_to accept_values_for(:user_id, user.id) }
       end
-    end
-
-    describe '#event' do
-      it { is_expected.to accept_values_for(:event_id, Event.make!.id) }
-      it { is_expected.not_to accept_values_for(:event_id, nil) }
     end
   end
 end
