@@ -4,7 +4,7 @@
 #
 # This workflow will install a prebuilt Ruby version, install dependencies, and
 # run tests and linters.
-name: "TicketBooth CI: Ruby on Rails"
+name: "Ruby on Rails CI"
 on:
   push:
     branches: [ "main" ]
@@ -14,13 +14,14 @@ jobs:
   test:
     runs-on: ubuntu-latest
     services:
-      postgres:
-        image: postgres
+        image: postgres:15-alpine
         ports:
           - "5432:5432"
         env:
-          POSTGRES_USER: "postgres"
-          POSTGRES_PASSWORD: ""
+          POSTGRES_DB: tickets_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_USER: postgres
           POSTGRES_HOST_AUTH_METHOD: "trust"
 
       redis:
@@ -42,16 +43,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - uses: ruby/setup-ruby@v1
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@55283cc23133118229fd3f97f9336ee23a179fcf # v1.146.0
         with:
-          ruby-version: '3.2.3'
           bundler-cache: true
-
+          
       - name: Set up database schema
         run: bin/rails db:schema:load
 
       - name: Run tests
-        run: bundle exec rspec
+        run: bundle exec rspec --format documentation -p 2
 
   lint:
     runs-on: ubuntu-latest
@@ -59,10 +60,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - uses: ruby/setup-ruby@v1
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@55283cc23133118229fd3f97f9336ee23a179fcf # v1.146.0
         with:
-          ruby-version: '3.2.3'
           bundler-cache: true
 
-      - name: RuboCop
+      - name: Lint Ruby files
         run: bin/rubocop --parallel
