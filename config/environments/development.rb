@@ -13,7 +13,7 @@ TicketBooth::Application.configure do
 
   config.autoloader = :zeitwerk
 
-  # config.eager_load = false
+  config.eager_load = false
 
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true

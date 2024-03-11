@@ -9,7 +9,7 @@ TicketBooth::Application.configure do
   # and recreated between test runs. Don't rely on the data there!
   config.cache_classes = false
 
-  config.eager_load = true
+  config.eager_load = false
 
   # Prepend all log lines with the following tags
   config.log_tags = [->(_req) { DateTime.now }, :uuid]
