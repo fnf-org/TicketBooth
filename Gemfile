@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '~> 6.0.2'
 
+gem 'annotate'
 gem 'attribute_normalizer'
 gem 'awesome_print'
 gem 'bootsnap'
@@ -36,7 +37,6 @@ gem 'twitter-bootstrap-rails'
 gem 'uglifier'
 gem 'ventable'
 gem 'yard'
-gem 'annotate'
 
 group :development, :test do
   gem 'codecov'

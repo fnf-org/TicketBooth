@@ -646,13 +646,6 @@ CREATE INDEX index_eald_payments_on_event_id ON public.eald_payments USING btree
 
 
 --
--- Name: index_event_admins_on_event_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_event_admins_on_event_id ON public.event_admins USING btree (event_id);
-
-
---
 -- Name: index_event_admins_on_event_id_and_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -664,13 +657,6 @@ CREATE UNIQUE INDEX index_event_admins_on_event_id_and_user_id ON public.event_a
 --
 
 CREATE INDEX index_event_admins_on_user_id ON public.event_admins USING btree (user_id);
-
-
---
--- Name: index_event_admins_on_user_id_only; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_event_admins_on_user_id_only ON public.event_admins USING btree (user_id);
 
 
 --
@@ -788,6 +774,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20140706232217'),
 ('20150609064608'),
 ('20160611234315'),
-('20180527021019');
+('20180527021019'),
+('20240311182346');
 
 

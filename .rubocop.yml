@@ -8,3 +8,5 @@ require:
  - rubocop-rake
  - rubocop-rspec
 
+Style/IfUnlessModifier:
+  Enabled: false

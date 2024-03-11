@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Annotate.set_defaults(
   'active_admin' => 'false',
   'additional_file_patterns' => [],
