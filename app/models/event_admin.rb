@@ -12,10 +12,8 @@
 #
 # Indexes
 #
-#  index_event_admins_on_event_id              (event_id)
 #  index_event_admins_on_event_id_and_user_id  (event_id,user_id) UNIQUE
 #  index_event_admins_on_user_id               (user_id)
-#  index_event_admins_on_user_id_only          (user_id)
 #
 class EventAdmin < ApplicationRecord
   attr_accessible :event_id, :user_id

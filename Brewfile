@@ -68,6 +68,10 @@ brew 'yq'
 brew 'zlib'
 brew 'v8'
 
+# k8s
+brew 'minikube'
+brew 'kubernetes-cli'
+
 cask 'chromedriver'
 cask 'github'
 
