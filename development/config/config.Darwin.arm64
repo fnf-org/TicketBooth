@@ -1,0 +1,8 @@
+---
+BUNDLE_JOBS: "12"
+BUNDLE_BUILD__PG: "--with-pg-config=/opt/homebrew/opt/postgresql@15/bin/pg_config"
+BUNDLE_BUILD__LIBV8: "--with-system-v8"
+BUNDLE_BUILD__FFI: "--with-v8-dir=/opt/homebrew/opt/v8"
+BUNDLE_BUILD__THERUBYRACER: "--with-v8-dir=/opt/homebrew/opt/v8"
+BUNDLE_BUILD: "--with-cflags=-Wno-error=implicit-function-declaration --with-cppflags=-Wno-warning=compound-token-split-by-macro"
+BUNDLE_GEMFILE: "Gemfile"

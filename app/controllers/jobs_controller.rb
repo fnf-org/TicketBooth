@@ -37,7 +37,7 @@ class JobsController < ApplicationController
   def update
     @job = Job.find(params[:id])
 
-    if @job.update_attributes(params[:job])
+    if @job.update(params[:job])
       redirect_to event_job_path(@event, @job),
                   notice: 'Job was successfully updated.'
     else

@@ -13,50 +13,50 @@ module ActiveRecord
   class Base
     class << self
       # Wrapper for FactoryBot.build
-      def make(*args, &block)
-        make_with(name.underscore, *args, &block)
+      def make(...)
+        make_with(name.underscore, ...)
       end
 
       # Like #make, but allows the caller to explicitly specify a factory name.
-      def make_with(factory_name, *args, &block)
-        factory_bot_delegate :build, factory_name, *args, &block
+      def make_with(factory_name, ...)
+        factory_bot_delegate(:build, factory_name, ...)
       end
 
       # Wrapper for FactoryBot.build_list
-      def make_list(count, *args, &block)
-        factory_bot_delegate :build_list, name.underscore, count, *args, &block
+      def make_list(count, ...)
+        factory_bot_delegate(:build_list, name.underscore, count, ...)
       end
 
       # Wrapper for FactoryBot.create
-      def make!(*args, &block)
-        make_with!(name.underscore, *args, &block)
+      def make!(...)
+        make_with!(name.underscore, ...)
       end
 
       # Like #make!, but allows the caller to explicitly specify a factory name.
-      def make_with!(factory_name, *args, &block)
-        factory_bot_delegate :create, factory_name, *args, &block
+      def make_with!(factory_name, ...)
+        factory_bot_delegate(:create, factory_name, ...)
       end
 
       # Wrapper for FactoryBot.build_list
-      def make_list!(count, *args, &block)
-        factory_bot_delegate :create_list, name.underscore, count, *args, &block
+      def make_list!(count, ...)
+        factory_bot_delegate(:create_list, name.underscore, count, ...)
       end
 
       # Wrapper for FactoryBot.attributes_for
-      def valid_attributes(*args, &block)
-        valid_attributes_with(name.underscore, *args, &block)
+      def valid_attributes(...)
+        valid_attributes_with(name.underscore, ...)
       end
 
       # Like #valid_attributes, but allows the caller to explicitly specify a
       # factory name.
-      def valid_attributes_with(factory_name, *args, &block)
-        factory_bot_delegate :attributes_for, factory_name, *args, &block
+      def valid_attributes_with(factory_name, ...)
+        factory_bot_delegate(:attributes_for, factory_name, ...)
       end
 
       private
 
-      def factory_bot_delegate(method, factory_name, *args)
-        object = FactoryBot.__send__(method, factory_name, *args)
+      def factory_bot_delegate(method, factory_name, *)
+        object = FactoryBot.__send__(method, factory_name, *)
         yield object if block_given?
         object
       end

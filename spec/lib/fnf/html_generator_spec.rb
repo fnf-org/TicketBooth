@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
 require 'fnf/html_generator'
 
 module FnF
   RSpec.describe HTMLGenerator do
     let(:generator) { described_class.new }
+    let(:expected) do
+      '<html ><body ><ol ><li ><strong ><a  href="https://google.com" >0</a></strong></li><li ><strong ><a  href="https://google.com" >1</a></strong></li></ol></body></html>'
+    end
+
     before do
       generator.generate do
         html do
@@ -25,10 +28,6 @@ module FnF
           end
         end
       end
-    end
-
-    let(:expected) do
-      '<html ><body ><ol ><li ><strong ><a  href="https://google.com" >0</a></strong></li><li ><strong ><a  href="https://google.com" >1</a></strong></li></ol></body></html>'
     end
 
     subject { generator.string }

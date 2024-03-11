@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
 require 'fnf/csv_reader'
 
 module FnF
@@ -23,7 +22,7 @@ module FnF
 
     subject { described_class.new(path) }
 
-    it 'should yield each line of the CSV' do
+    it 'yields each line of the CSV' do
       subject.read { block[] }
       expect(counter.counter).to eq(19)
     end

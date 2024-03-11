@@ -33,7 +33,7 @@ module FnF
       options = " #{options}" if options
       self.print "<#{method}#{options}" if options
       process_block(block, method)
-      puts if args.include?(:br)
+      Rails.logger.debug if args.include?(:br)
     end
 
     HTML_ELEMENTS.each do |element|
@@ -44,20 +44,20 @@ module FnF
       $stdout.puts(string)
     end
 
-    def generate(&block)
-      instance_exec(&block)
+    def generate(&)
+      instance_exec(&)
     end
 
     private
 
     def process_block(block, method)
       if block
-        print '>'
+        Rails.logger.debug '>'
         result = instance_exec(&block)
-        print result unless result.nil?
-        print "</#{method}>"
+        Rails.logger.debug result unless result.nil?
+        Rails.logger.debug { "</#{method}>" }
       else
-        print '/>'
+        Rails.logger.debug '/>'
       end
     end
   end
