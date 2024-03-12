@@ -4,7 +4,7 @@
 #
 # This workflow will install a prebuilt Ruby version, install dependencies, and
 # run tests and linters.
-name: "Ruby on Rails CI"
+name: "TicketBooth CI: Ruby on Rails"
 on:
   push:
     branches: [ "main" ]
@@ -14,7 +14,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     services:
-        image: postgres:15-alpine
+      postgres:
+        image: postgres:16-alpine
         ports:
           - "5432:5432"
         env:
@@ -46,8 +47,8 @@ jobs:
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@55283cc23133118229fd3f97f9336ee23a179fcf # v1.146.0
         with:
+          ruby-version: '3.2.3'
           bundler-cache: true
-          
       - name: Set up database schema
         run: bin/rails db:schema:load
 
@@ -60,10 +61,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - uses: ruby/setup-ruby@v1
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@55283cc23133118229fd3f97f9336ee23a179fcf # v1.146.0
         with:
+          ruby-version: '3.2.3'
           bundler-cache: true
 
-      - name: Lint Ruby files
+      - name: RuboCop
         run: bin/rubocop --parallel
