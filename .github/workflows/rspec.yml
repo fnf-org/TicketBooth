@@ -1,5 +1,5 @@
 # .github/workflows/main.yaml
-name: "TicketBooth CI: rspec"
+name: "TicketBooth CI: RSpec"
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   main:
-    name: CI
+    name: RSpec
     runs-on: ubuntu-latest
 
     # If you need DB like MySQL then define service below.
@@ -64,21 +64,3 @@ jobs:
 
       - name: "Run Rspec"
         run: bundle exec rspec --format documentation
-
-      - name: "Run Rubocop"
-        run: bundle exec rubocop
-
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2.3'
-          bundler-cache: true
-
-      - name: RuboCop
-        run: bin/rubocop --parallel
