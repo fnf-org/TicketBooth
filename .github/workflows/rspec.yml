@@ -65,4 +65,4 @@ jobs:
           bin/rails db:test:prepare
 
       - name: "Run Rspec"
-        run: bundle exec rspec --format documentation
+        run: bundle exec rspec
