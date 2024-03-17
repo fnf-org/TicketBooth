@@ -3,7 +3,7 @@
 require 'rspec'
 require 'tempfile'
 
-RSpec.describe 'bin/music-submissions' do
+RSpec.describe 'music-submissions-links' do
   subject { File.read(result) }
 
   let(:pwd) { Dir.pwd }
@@ -12,6 +12,8 @@ RSpec.describe 'bin/music-submissions' do
   let(:expected) { File.read('spec/fixtures/chill_sets.html') }
 
   before do
+    FileUtils.rm_f(result)
+
     system("bash -c '#{script} #{pwd}/spec/fixtures/chill_sets.csv > #{result.path}'")
   end
 

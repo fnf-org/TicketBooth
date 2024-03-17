@@ -23,7 +23,7 @@ jobs:
           POSTGRES_PASSWORD: ""
           POSTGRES_HOST_AUTH_METHOD: "trust"
         ports:
-          - 5432
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -33,7 +33,7 @@ jobs:
       redis:
         image: redis
         ports:
-          - 6379/tcp
+          - 6379:6379
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
@@ -44,7 +44,7 @@ jobs:
       - uses: niden/actions-memcached@v7
 
       - run: sudo apt-get update -yqq
-      - run: sudo apt-get install -yqq netcat libpq-dev
+      - run: sudo apt-get install -yqq netcat libpq-dev postgresql-client-16
 
       - name: "Verify Memcached is running"
         run: echo -e "stats\nquit" | nc localhost 11211  | grep -e "accepting_conns 1" -q

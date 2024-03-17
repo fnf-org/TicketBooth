@@ -33,7 +33,9 @@
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #  index_users_on_unlock_token          (unlock_token) UNIQUE
-#
+
+require 'rails_helper'
+
 describe User do
   it 'has a valid factory' do
     described_class.make.should be_valid

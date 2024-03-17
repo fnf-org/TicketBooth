@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '~> 6.0.2'
+gem 'rails', '~> 6.1'
 
 gem 'annotate'
 gem 'attribute_normalizer'
@@ -56,6 +56,7 @@ end
 group :test do
   gem 'accept_values_for'
   gem 'factory_bot_rails'
+  gem 'faker'
   gem 'rspec-its'
   gem 'rspec-rails'
   gem 'simplecov'

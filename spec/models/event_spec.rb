@@ -27,11 +27,13 @@
 #  tickets_require_approval      :boolean          default(TRUE), not null
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
-#
-describe Event do
-  it 'has a valid factory' do
-    described_class.make.should be_valid
-  end
+
+require 'rails_helper'
+
+RSpec.describe Event do
+  subject(:event) { build(:event) }
+
+  it { is_expected.to be_valid }
 
   describe 'normalization' do
     it { is_expected.to normalize(:name) }
@@ -42,7 +44,7 @@ describe Event do
   describe 'validations' do
     describe '#name' do
       it { is_expected.to accept_values_for(:name, 'CloudWatch 2013') }
-      it { is_expected.not_to accept_values_for(:name, nil, '', Sham.string(101)) }
+      it { is_expected.not_to accept_values_for(:name, nil, '', 'x' * 101) }
     end
 
     describe '#start_time' do
@@ -56,13 +58,13 @@ describe Event do
     end
 
     context 'when start time is before end time' do
-      subject { described_class.make start_time: Time.zone.now, end_time: 1.day.from_now }
+      subject { build(:event, start_time: Time.zone.now, end_time: 1.day.from_now) }
 
       it { is_expected.to be_valid }
     end
 
     context 'when start time is after end time' do
-      subject { described_class.make start_time: 1.day.from_now, end_time: Time.zone.now }
+      subject { build(:event, start_time: 1.day.from_now, end_time: Time.zone.now) }
 
       it { is_expected.not_to be_valid }
     end
@@ -77,7 +79,7 @@ describe Event do
 
     context 'when ticket sales start time is before end time' do
       subject do
-        described_class.make ticket_sales_start_time: Time.zone.now, ticket_sales_end_time: 1.day.from_now
+        build(:event, ticket_sales_start_time: Time.zone.now, ticket_sales_end_time: 1.day.from_now)
       end
 
       it { is_expected.to be_valid }
@@ -85,7 +87,7 @@ describe Event do
 
     context 'when ticket sales start time is after end time' do
       subject do
-        described_class.make ticket_sales_start_time: 1.day.from_now, ticket_sales_end_time: Time.zone.now
+        build(:event, ticket_sales_start_time: 1.day.from_now, ticket_sales_end_time: Time.zone.now)
       end
 
       it { is_expected.not_to be_valid }
@@ -113,14 +115,14 @@ describe Event do
 
     describe '#max_kid_tickets_per_request' do
       context 'when kid_ticket_price is set' do
-        subject { described_class.make kid_ticket_price: 10 }
+        subject { build(:event, kid_ticket_price: 10) }
 
         it { is_expected.to accept_values_for(:max_kid_tickets_per_request, nil, '', 10) }
         it { is_expected.not_to accept_values_for(:max_kid_tickets_per_request, 0, -1) }
       end
 
       context 'when kid_ticket_price is not set' do
-        subject { described_class.make kid_ticket_price: nil }
+        subject { build(:event, kid_ticket_price: nil) }
 
         it { is_expected.not_to accept_values_for(:max_kid_tickets_per_request, 10) }
       end
@@ -128,14 +130,14 @@ describe Event do
 
     describe '#max_cabins_per_request' do
       context 'when cabin_price is set' do
-        subject { described_class.make cabin_price: 10 }
+        subject { build(:event, cabin_price: 10) }
 
         it { is_expected.to accept_values_for(:max_cabins_per_request, nil, '', 10) }
         it { is_expected.not_to accept_values_for(:max_cabins_per_request, 0, -1) }
       end
 
       context 'when cabin_price is not set' do
-        subject { described_class.make cabin_price: nil }
+        subject { build(:event, cabin_price: nil) }
 
         it { is_expected.not_to accept_values_for(:max_cabins_per_request, 10) }
       end
@@ -143,14 +145,14 @@ describe Event do
 
     describe '#max_cabin_requests' do
       context 'when cabin_price is set' do
-        subject { described_class.make cabin_price: 10 }
+        subject { build(:event, cabin_price: 10) }
 
         it { is_expected.to accept_values_for(:max_cabin_requests, nil, '', 10) }
         it { is_expected.not_to accept_values_for(:max_cabin_requests, 0, -1) }
       end
 
       context 'when cabin_price is not set' do
-        subject { described_class.make cabin_price: nil }
+        subject { build(:event, cabin_price: nil) }
 
         it { is_expected.to accept_values_for(:max_cabin_requests, nil, '') }
         it { is_expected.not_to accept_values_for(:max_cabin_requests, 10) }
@@ -161,28 +163,31 @@ describe Event do
   describe '#admin?' do
     subject { event.admin?(user) }
 
-    let(:event) { described_class.make! }
+    let(:event) { build(:event) }
 
-    context 'when given a normal user' do
-      let(:user) { User.make! }
-
-      it { is_expected.to be false }
-    end
-
-    context 'when given a site admin' do
-      let(:user) { User.make! :site_admin }
+    describe 'site admin' do
+      let(:user) { create(:user, :site_admin) }
 
       it { is_expected.to be true }
     end
 
-    context 'when given an event admin' do
-      let(:user) { EventAdmin.make!(event:).user }
+    context 'when given a normal user' do
+      let(:user) { build(:user) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when given a event admin' do
+      let(:event) { create(:event, :with_admins) }
+      let(:user) { event.admins.first }
 
       it { is_expected.to be true }
     end
 
     context 'when given an admin of another event' do
-      let(:user) { EventAdmin.make!.user }
+      let(:another_event) { create(:event, :with_admins) }
+
+      let(:user) { another_event.admins.first }
 
       it { is_expected.to be false }
     end
@@ -191,11 +196,10 @@ describe Event do
   describe '#cabins_available?' do
     subject { event.cabins_available? }
 
+    let(:event) { build(:event, cabin_price:, max_cabin_requests:) }
+
     let(:cabin_price) { nil }
     let(:max_cabin_requests) { nil }
-    let(:event) do
-      described_class.make! cabin_price:, max_cabin_requests:
-    end
 
     context 'when no cabin price is set' do
       let(:cabin_price) { nil }
@@ -221,7 +225,7 @@ describe Event do
 
         context 'when the number of cabins requested has met or exceeded the maximum' do
           before do
-            TicketRequest.make! event:, cabins: max_cabin_requests
+            create(:ticket_request, event:, cabins: max_cabin_requests)
           end
 
           it { is_expected.to be false }
@@ -239,10 +243,9 @@ describe Event do
     let(:ticket_sale_end_time) { nil }
 
     let(:event) do
-      described_class.make! start_time:,
-                            end_time:,
-                            ticket_sales_start_time: ticket_sale_start_time,
-                            ticket_sales_end_time: ticket_sale_end_time
+      build(:event, start_time:, end_time:,
+                    ticket_sales_start_time: ticket_sale_start_time,
+                    ticket_sales_end_time: ticket_sale_end_time)
     end
 
     context 'when the event has ended' do

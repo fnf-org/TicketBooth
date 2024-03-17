@@ -33,7 +33,9 @@
 #  updated_at              :datetime         not null
 #  event_id                :integer          not null
 #  user_id                 :integer          not null
-#
+
+require 'rails_helper'
+
 describe TicketRequest do
   describe 'validations' do
     subject { ticket_request }

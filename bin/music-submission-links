@@ -14,32 +14,14 @@
 #
 # frozen_string_literal: true
 
-require_relative '../lib/fnf/html_generator'
-require_relative '../lib/fnf/csv_reader'
+require_relative '../lib/fnf/submission_links'
 
-path = ARGV.first
-if path.nil?
-  puts "USAGE: #{$PROGRAM_NAME} csv-file"
-  puts 'Where the CSV file has three columns: DJ Name, Real Name, URL'
-  exit 1
-end
+simple_css = if ARGV.include?('--simple-css')
+               true
+             else
+               false
+             end
 
-generator = FnF::HTMLGenerator.new
-reader    = FnF::CSVReader.new(path)
+csv_file = ARGV.find { |arg| arg.match?(/\.csv$/) }
 
-generator.ol(:br) do
-  reader.read do |dj_name, real_name, url|
-    li do
-      strong { a(href: url, target: '_blank', ref: 'canonical') { dj_name } }
-      print ' '
-      if dj_name != real_name
-        span class: 'djName' do
-          "(#{real_name.split(/ /).map(&:capitalize).join(' ')})"
-        end
-      end
-    end
-    generator.puts
-  end
-end
-
-generator.render
+FnF::SubmissionLinks.new(csv_file, simple_css: simple_css).run

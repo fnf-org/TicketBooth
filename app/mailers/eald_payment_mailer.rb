@@ -4,7 +4,7 @@ class EaldPaymentMailer < ActionMailer::Base
   DEFAULT_SENDER_EMAIL = 'tickets@fnf.org'
   DEFAULT_REPLY_TO_EMAIL = 'tickets@fnf.org'
 
-  add_template_helper(PaymentsHelper)
+  helper PaymentsHelper
 
   layout 'email'
 

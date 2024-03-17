@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 describe EventsController do
   let(:event) { Event.make! }
   let(:viewer) { nil }

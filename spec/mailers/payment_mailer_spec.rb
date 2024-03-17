@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 describe PaymentMailer do
   let(:user) { User.make! }
   let(:event) { Event.make! name: 'Test Event' }

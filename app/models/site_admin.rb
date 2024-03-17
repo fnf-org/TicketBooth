@@ -10,10 +10,8 @@
 #  user_id    :integer          not null
 #
 class SiteAdmin < ApplicationRecord
-  attr_accessible :user_id
-
   belongs_to :user
 
-  validates :user_id,
+  validates :user,
             uniqueness: { message: 'already site admin' }
 end

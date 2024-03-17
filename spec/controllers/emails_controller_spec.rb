@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 describe EmailsController do
   describe 'GET #index' do
     let(:email) { nil }
