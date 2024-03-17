@@ -92,21 +92,41 @@ To generate the HTML (we'll use the CSV file checked into the fixtures):
 
 [source,bash]
 ----
-bin/music-submission-links spec/fixtures/chill_sets.csv [ --simple-css ] > chill_set.html
+# eg, using the fixture file:
+$ bin/music-submission-links spec/fixtures/chill_sets.csv > chill_set.html
+
+# or, to include the simple CSS into the header:
+$ bin/music-submission-links spec/fixtures/chill_sets.csv --simple-css > chill_set.html
 open chill_set.html
 ----
 
-WARNING: if you add `--simple-css` to the arguments, the generated HTML will include `<head>` element with the https://simplecss.org/[Simple CSS Stylesheet].
+====
+WARNING: If you add `--simple-css` to the arguments, the generated HTML will include `<head>` element with the https://simplecss.org/[Simple CSS Stylesheet]. Do not use this flag if you plan to paste the output into the WordPress text box. Use this flag if you simply want to verify the resulting HTML in a browser by running `open chill_set.html`.
+====
 
-Now you can open WordPress, create a two-column layout and paste the contents into one of the two columns.
-
-To verify that the script is working, install a handy tool called `bat`:
+To verify that the script is working and generating correct HTML, you might want to install a handy tool called `bat`, eg using Homebrew on Mac OS-X:
 
 [source,bash]
 ----
-brew install bat
-bin/music-submission-links spec/fixtures/chill_sets.csv | bat
+$ brew install bat
+$ bin/music-submission-links spec/fixtures/chill_sets.csv | bat
 ----
+
+===== Adding Submissions to WordPress
+
+Now you can open WordPress, create a two-column layout on the submissions page and paste the contents into one of the two columns, typically:
+
+ 1. Night time / Peak Hour
+ 2. Chill / Daytime
+
+First, let's copy the resulting HTML into clipboard:
+
+[source,bash]
+----
+$ bin/music-submission-links chill_sets.csv | pbcopy
+----
+
+Now we can paste it into WordPress directly.
 
 === Developer Setup
 
@@ -118,10 +138,9 @@ Yard-generated documentation is available via running:
 
 [source,bash]
 ----
-bundle exec rake doc
+$ bundle exec rake doc
 # this will automatically open the index.html
 ----
 
-b
 
 
