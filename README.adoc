@@ -6,6 +6,7 @@
 :icons: font
 :license: MIT
 
+
 ====
 image::https://github.com/fnf-org/TicketBooth/actions/workflows/rspec.yml/badge.svg[TicketBooth CI: RSpec,link=https://github.com/fnf-org/TicketBooth/actions/workflows/rspec.yml]
 
