@@ -43,6 +43,8 @@ jobs:
     steps:
       - uses: niden/actions-memcached@v7
 
+      - run: sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+      - run: wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
       - run: sudo apt-get update -yqq
       - run: sudo apt-get install -yqq netcat libpq-dev postgresql-client-16
 
