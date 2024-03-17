@@ -96,16 +96,16 @@ bin/music-submission-links spec/fixtures/chill_sets.csv [ --simple-css ] > chill
 open chill_set.html
 ----
 
-NOTE: if you add `--simple-css` to the arguments, the generated HTML will include `<head>` element with the [Simple CSS Stylesheet](https://simplecss.org/).
+WARNING: if you add `--simple-css` to the arguments, the generated HTML will include `<head>` element with the https://simplecss.org/[Simple CSS Stylesheet].
 
 Now you can open WordPress, create a two-column layout and paste the contents into one of the two columns.
 
-To verify that the script is working, install a handy tool called `highlight`:
+To verify that the script is working, install a handy tool called `bat`:
 
 [source,bash]
 ----
-npm i -g highlight
-bin/music-submission-links spec/fixtures/chill_sets.csv | highlight -l html
+brew install bat
+bin/music-submission-links spec/fixtures/chill_sets.csv | bat
 ----
 
 === Developer Setup
