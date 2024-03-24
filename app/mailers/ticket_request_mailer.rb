@@ -3,9 +3,6 @@
 require 'awesome_print'
 
 class TicketRequestMailer < ActionMailer::Base
-  DEFAULT_SENDER_EMAIL = 'tickets@fnf.org'
-  DEFAULT_REPLY_TO_EMAIL = 'tickets@fnf.org'
-
   layout 'email'
 
   def request_received(ticket_request)

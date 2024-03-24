@@ -26,11 +26,13 @@ class EaldPayment < ApplicationRecord
 
   attr_accessible :event_id, :name, :email, :early_arrival_passes, :late_departure_passes, :stripe_card_token
 
-  validates :early_arrival_passes, presence: true,
-                                   numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :early_arrival_passes,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  validates :late_departure_passes, presence: true,
-                                    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :late_departure_passes,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   attr_accessor :stripe_card_token
 

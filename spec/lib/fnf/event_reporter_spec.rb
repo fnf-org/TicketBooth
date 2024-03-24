@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fnf/csv_reader'
+require 'rails_helper'
 
 module FnF
   RSpec.describe EventReporter do

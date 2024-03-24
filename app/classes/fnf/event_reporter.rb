@@ -2,6 +2,7 @@
 
 require 'newrelic_rpm'
 require 'singleton'
+
 module FnF
   class EventReporter
     class << self

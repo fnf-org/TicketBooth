@@ -37,7 +37,7 @@ class PaymentsController < ApplicationController
     return redirect_to root_path unless @payment.can_view?(current_user)
 
     if @payment.save_and_charge!
-      PaymentMailer.payment_received(@payment).deliver_now
+      PaymentReceivedMailer.payment_received(@payment).deliver_now
       @payment.ticket_request.mark_complete
       redirect_to @payment, notice: 'Payment was successfully received.'
     else
@@ -83,7 +83,7 @@ class PaymentsController < ApplicationController
     if @payment
       @payment.mark_received
       @payment.ticket_request.mark_complete
-      PaymentMailer.payment_received(@payment).deliver_now
+      PaymentReceivedMailer.payment_received(@payment).deliver_now
       redirect_to :back
     end
   end

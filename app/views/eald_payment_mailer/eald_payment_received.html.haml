@@ -1,13 +1,13 @@
 %p
-  Hi #{@eald_payment.name},
+  Hi #{@payment.name},
 
 %p
   Your payment of
-  %b= number_to_currency(@eald_payment.amount_charged_cents.to_f / 100)
+  %b= number_to_currency(@payment.amount_charged_cents.to_f / 100)
   for
-  %b= @eald_payment.early_arrival_passes
+  %b= @payment.early_arrival_passes
   early arrival passes and
-  %b= @eald_payment.late_departure_passes
+  %b= @payment.late_departure_passes
   late departure passes for
   %b= @event.name
   was received. Thank you!
@@ -23,5 +23,4 @@
 
 %p
   More information can be found at:
-  = link_to 'Early Arrival / Late Departure Policy',
-    'https://fnf.page.link/eald-policy'
+  = link_to 'Early Arrival / Late Departure Policy', 'https://fnf.page.link/eald-policy'

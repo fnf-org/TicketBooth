@@ -1,18 +1,9 @@
 # frozen_string_literal: true
 
-class PaymentMailer < ActionMailer::Base
-  DEFAULT_SENDER_EMAIL = 'tickets@fnf.org'
-  DEFAULT_REPLY_TO_EMAIL = 'tickets@fnf.org'
-
-  helper PaymentsHelper
-
-  layout 'email'
-
+class PaymentReceivedMailer < ApplicationMailer
   def payment_received(payment)
-    @payment = payment
-    @ticket_request = @payment.ticket_request
-    @event = @ticket_request.event
-    @user = @ticket_request.user
+    self.payment = payment
+
     mail to: "#{@user.name} <#{@user.email}>",
          from: from_email,
          reply_to: reply_to_email,
@@ -27,5 +18,12 @@ class PaymentMailer < ActionMailer::Base
 
   def reply_to_email
     "#{@event.name} Ticketing <#{DEFAULT_REPLY_TO_EMAIL}>"
+  end
+
+  def payment=(payment)
+    @payment = payment
+    @ticket_request = @payment.ticket_request
+    @event = @ticket_request&.event
+    @user = @ticket_request&.user
   end
 end
