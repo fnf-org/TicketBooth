@@ -13,14 +13,22 @@ require 'rails_helper'
 
 describe SiteAdmin do
   describe 'validations' do
-    describe '#user' do
-      it { is_expected.to accept_values_for(:user_id, User.make!.id) }
-      it { is_expected.not_to accept_values_for(:user_id, nil) }
+    describe '#site_admin' do
+      subject(:site_admin) { create(:site_admin) }
+
+      let(:user) { site_admin.user }
+
+      describe 'when the user is not a site admin' do
+        it { is_expected.to accept_values_for(:user, user) }
+        it { is_expected.not_to accept_values_for(:user, nil) }
+      end
 
       context 'when the user is already a site admin' do
-        let(:user) { User.make! :site_admin }
+        let(:site_admin2) { create(:site_admin, user:) }
 
-        it { is_expected.not_to accept_values_for(:user_id, user.id) }
+        it 'is not able to save' do
+          expect { site_admin2 }.to raise_error(ActiveRecord::RecordInvalid)
+        end
       end
     end
   end

@@ -12,6 +12,5 @@
 class SiteAdmin < ApplicationRecord
   belongs_to :user
 
-  validates :user,
-            uniqueness: { message: 'already site admin' }
+  validates :user, uniqueness: { message: 'already site admin' }
 end
