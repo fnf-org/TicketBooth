@@ -18,12 +18,12 @@ describe SiteAdmin do
 
       let(:user) { site_admin.user }
 
-      describe 'when the user is not a site admin' do
+      describe 'when the user is already a site admin' do
         it { is_expected.to accept_values_for(:user, user) }
         it { is_expected.not_to accept_values_for(:user, nil) }
       end
 
-      context 'when the user is already a site admin' do
+      context 'when the user is not a site admin, to become one it must create a mew site admin row' do
         let(:site_admin2) { create(:site_admin, user:) }
 
         it 'is not able to save' do
