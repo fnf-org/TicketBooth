@@ -100,8 +100,18 @@ class TicketRequestsController < ApplicationController
       return render action: 'new'
     end
 
-    permitted_params[:ticket_request][:user] = current_user if signed_in?
-    @ticket_request = TicketRequest.new(permitted_params[:ticket_request])
+    tr_params = permitted_params[:ticket_request].to_h || {}
+
+    Rails.logger.debug { "#create: params=#{tr_params.inspect}" }
+
+    tr_params[:user_id] = current_user.id if signed_in? && current_user.present?
+
+    if tr_params.empty?
+      flash.now[:error] = 'Please enter some information'
+      redirect_to new_event_ticket_request_path(@event)
+    end
+
+    @ticket_request = TicketRequest.new(tr_params)
 
     if @ticket_request.save
       FnF::Events::TicketRequestEvent.new(
@@ -194,6 +204,13 @@ class TicketRequestsController < ApplicationController
   end
 
   def permitted_params
-    params.permit(:event_id, :id, ticket_request: %i[address_line1 address_line2])
+    params.permit(:event_id, :id,
+                  ticket_request: %i[user_id adults kids cabins needs_assistance
+                                     notes status special_price event_id
+                                     user_attributes user donation role role_explanation
+                                     car_camping car_camping_explanation previous_contribution
+                                     address_line1 address_line2 city state zip_code
+                                     country_code admin_notes agrees_to_terms
+                                     early_arrival_passes late_departure_passes guests])
   end
 end

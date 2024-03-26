@@ -4,15 +4,15 @@
 # write.
 module ResponseHelpers
   def succeeds
-    response.status.should eq 200
+    expect(response).to have_http_status(:ok)
   end
 
   def redirects
-    response.should be_redirect
+    expect(response).to have_http_status(:redirect)
   end
 
   def redirects_to(path)
-    response.should redirect_to(path)
+    expect(response).to redirect_to(path)
   end
 end
 

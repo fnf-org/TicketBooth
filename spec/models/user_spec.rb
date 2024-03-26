@@ -38,14 +38,12 @@ require 'rails_helper'
 
 describe User do
   it 'has a valid factory' do
-    described_class.make.should be_valid
+    expect(build(:user)).to be_valid
   end
 
   describe 'validation' do
     describe '#name' do
-      subject { user }
-
-      let(:user) { described_class.make name: }
+      subject(:user) { build(:user, name:) }
 
       context 'when not present' do
         let(:name) { nil }
@@ -60,7 +58,7 @@ describe User do
       end
 
       context 'when longer than 70 characters' do
-        let(:name) { "#{Sham.string(35)} #{Sham.string(35)}" }
+        let(:name) { 'x' * 100 }
 
         it { is_expected.not_to be_valid }
       end
@@ -107,9 +105,7 @@ describe User do
     end
 
     describe '#email' do
-      subject { user }
-
-      let(:user) { described_class.make email: }
+      subject(:user) { build(:user, email:) }
 
       context 'when not present' do
         let(:email) { nil }
@@ -124,7 +120,7 @@ describe User do
       end
 
       context 'when email longer than 254 characters' do
-        let(:email) { "#{Sham.string(243)}@example.com" }
+        let(:email) { "#{Faker::Alphanumeric.alpha(number: 254)}@example.com" }
 
         it { is_expected.not_to be_valid }
       end
@@ -146,7 +142,7 @@ describe User do
   describe '#first_name' do
     let(:first_name) { 'John' }
     let(:last_name) { 'Smith' }
-    let(:user) { described_class.make name: [first_name, last_name].join(' ') }
+    let(:user) { create(:user, name: [first_name, last_name].join(' ')) }
 
     it 'returns the first name' do
       user.first_name.should == first_name
@@ -155,18 +151,18 @@ describe User do
 
   describe '#site_admin?' do
     context 'when user is a site admin' do
-      let(:user) { described_class.make! :site_admin }
+      let(:user) { create(:site_admin).user }
 
       it 'returns true' do
-        user.should be_site_admin
+        expect(user).to be_site_admin
       end
     end
 
     context 'when user is not a site admin' do
-      let(:user) { described_class.make! }
+      let(:user) { create(:user) }
 
       it 'returns false' do
-        user.should_not be_site_admin
+        expect(user).not_to be_site_admin
       end
     end
   end
@@ -177,11 +173,11 @@ describe User do
     end
 
     context 'when user is a site admin' do
-      let(:user) { described_class.make! :site_admin }
-      let(:site_admin) { user.site_admin }
+      let(:site_admin) { create(:site_admin) }
+      let(:user) { site_admin.user }
 
       it 'destroys the associated site admin' do
-        site_admin.should be_destroyed
+        expect(site_admin).to be_destroyed
       end
     end
   end

@@ -60,5 +60,6 @@ group :test do
   gem 'rspec-its'
   gem 'rspec-rails'
   gem 'simplecov'
+  gem 'timecop'
   gem 'timeout'
 end

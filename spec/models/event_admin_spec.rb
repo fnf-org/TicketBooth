@@ -25,7 +25,7 @@ describe EventAdmin do
 
   let(:event_admin_maker) do
     lambda do |nil_method = nil|
-      described_class.make!.tap { |ea| nil_method ? ea.send("#{nil_method}=", nil) : ea }
+      create(:event_admin).tap { |ea| nil_method ? ea.send("#{nil_method}=", nil) : ea }
     end
   end
 
@@ -57,7 +57,7 @@ describe EventAdmin do
         end
 
         describe 'when the user is already an admin for the event' do
-          subject(:another_event_admin) { described_class.make!(event:, user:) }
+          subject(:another_event_admin) { create(:event_admin, event:, user:) }
 
           it 'raises validation error' do
             expect { another_event_admin }.to raise_error(ActiveRecord::RecordInvalid)

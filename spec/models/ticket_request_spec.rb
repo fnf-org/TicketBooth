@@ -41,7 +41,7 @@ describe TicketRequest do
     subject { ticket_request }
 
     describe '#user' do
-      let(:ticket_request) { described_class.make user: }
+      let(:ticket_request) { build(:ticket_request, user:) }
 
       context 'when not present' do
         let(:user) { nil }
@@ -50,36 +50,25 @@ describe TicketRequest do
       end
 
       context 'when user exists' do
-        let(:user) { User.make! }
-
-        it { is_expected.to be_valid }
-      end
-
-      context 'when user is new' do
-        let(:user) { User.make }
+        let(:user) { build(:user) }
 
         it { is_expected.to be_valid }
       end
 
       context 'when the user has other ticket requests' do
-        let(:event) { Event.make! }
-        let(:user) { User.make! }
-        let(:ticket_request) { described_class.make event:, user: }
+        let(:event) { create(:event) }
+        let(:user) { create(:user) }
+
+        let(:ticket_request) { build(:ticket_request, event:, user:) }
 
         context 'and they already have a request for this event' do
-          before do
-            described_class.make! event:, user:
-          end
+          before { create(:ticket_request, event:, user:) }
 
-          # TODO: Decide whether we would rather allow editing of ticket
-          # requests instead of making multiple requests
           it { is_expected.to be_valid }
         end
 
         context 'and they have created requests only for other events' do
-          before do
-            described_class.make user:
-          end
+          before { create(:ticket_request, user:) }
 
           it { is_expected.to be_valid }
         end
@@ -87,7 +76,7 @@ describe TicketRequest do
     end
 
     describe '#event' do
-      let(:ticket_request) { described_class.make event: }
+      let(:ticket_request) { build(:ticket_request, event:) }
 
       context 'when not present' do
         let(:event) { nil }
@@ -96,14 +85,14 @@ describe TicketRequest do
       end
 
       context 'when event exists' do
-        let(:event) { Event.make! }
+        let(:event) { create(:event) }
 
         it { is_expected.to be_valid }
       end
     end
 
     describe '#adults' do
-      let(:ticket_request) { described_class.make adults: }
+      let(:ticket_request) { build(:ticket_request, adults:) }
 
       context 'when not present' do
         let(:adults) { nil }
@@ -125,7 +114,7 @@ describe TicketRequest do
     end
 
     describe '#kids' do
-      let(:ticket_request) { described_class.make kids: }
+      let(:ticket_request) { build(:ticket_request, kids:) }
 
       context 'when not present' do
         let(:kids) { nil }
@@ -147,7 +136,7 @@ describe TicketRequest do
     end
 
     describe '#cabins' do
-      let(:ticket_request) { described_class.make cabins: }
+      let(:ticket_request) { build(:ticket_request, cabins:) }
 
       context 'when not present' do
         let(:cabins) { nil }
@@ -169,7 +158,7 @@ describe TicketRequest do
     end
 
     describe '#notes' do
-      let(:ticket_request) { described_class.make notes: }
+      let(:ticket_request) { build(:ticket_request, notes:) }
 
       context 'when not present' do
         let(:notes) { nil }
@@ -178,22 +167,24 @@ describe TicketRequest do
       end
 
       context 'when longer than 500 characters' do
-        let(:notes) { Sham.string(501) }
+        let(:notes) { Faker::Alphanumeric.alpha(number: 501) }
 
         it { is_expected.not_to be_valid }
       end
 
       describe 'normalization' do
-        subject { described_class.new }
+        subject { build(:ticket_request) }
 
         it { is_expected.to normalize(:notes) }
+
         it { is_expected.to normalize(:notes).from(' Blah ').to('Blah') }
+
         it { is_expected.to normalize(:notes).from('Blah  Blah').to('Blah Blah') }
       end
     end
 
     describe '#special_price' do
-      let(:ticket_request) { described_class.make special_price: }
+      let(:ticket_request) { create(:ticket_request, special_price:) }
 
       context 'when not present' do
         let(:special_price) { nil }
@@ -204,10 +195,10 @@ describe TicketRequest do
   end
 
   describe '#create' do
-    let(:ticket_request) { described_class.make! event: }
+    let(:ticket_request) { create(:ticket_request, event:) }
 
     context 'when the event requires approval for tickets' do
-      let(:event) { Event.make! tickets_require_approval: true }
+      let(:event) { create(:event, tickets_require_approval: true) }
 
       it 'sets the default status to pending' do
         ticket_request.status.should == TicketRequest::STATUS_PENDING
@@ -215,7 +206,7 @@ describe TicketRequest do
     end
 
     context 'when the event does not require approval for tickets' do
-      let(:event) { Event.make! tickets_require_approval: false }
+      let(:event) { create(:event, tickets_require_approval: false) }
 
       it 'sets the default status to awaiting payment' do
         ticket_request.status.should == TicketRequest::STATUS_AWAITING_PAYMENT
@@ -224,12 +215,12 @@ describe TicketRequest do
   end
 
   describe '#can_view?' do
-    subject { described_class.make(user: requester).can_view?(user) }
+    subject { create(:ticket_request, user: requester).can_view?(user) }
 
-    let(:requester) { User.make! }
+    let(:requester) { create(:user) }
 
     context 'when the user is a site admin' do
-      let(:user) { User.make! :site_admin }
+      let(:user) { create(:site_admin).user }
 
       it { is_expected.to be true }
     end
@@ -241,7 +232,7 @@ describe TicketRequest do
     end
 
     context 'when the user is anybody else' do
-      let(:user) { User.make! }
+      let(:user) { create(:user) }
 
       it { is_expected.to be false }
     end
@@ -249,26 +240,24 @@ describe TicketRequest do
 
   describe '#pending?' do
     context 'when the ticket request is pending' do
-      subject { described_class.make(:pending).pending? }
+      subject { create(:ticket_request, status: TicketRequest::STATUS_PENDING) }
 
-      it { is_expected.to be true }
+      it { is_expected.to be_pending }
     end
   end
 
   describe '#approved?' do
     context 'when the ticket request is approved' do
-      subject { described_class.make(:approved).approved? }
+      subject { create(:ticket_request, status: TicketRequest::STATUS_AWAITING_PAYMENT) }
 
-      it { is_expected.to be true }
+      it { is_expected.to be_approved }
     end
   end
 
   describe '#approve' do
-    subject { described_class.make(:pending, special_price: price) }
+    subject { create(:ticket_request, special_price: price, status: TicketRequest::STATUS_PENDING) }
 
-    before do
-      subject.approve
-    end
+    before { subject.approve }
 
     context 'when the ticket request has a price of zero dollars' do
       let(:price) { 0 }
@@ -285,9 +274,9 @@ describe TicketRequest do
 
   describe '#declined?' do
     context 'when the ticket request is declined' do
-      subject { described_class.make(:declined).declined? }
+      subject { build(:ticket_request, status: TicketRequest::STATUS_DECLINED) }
 
-      it { is_expected.to be true }
+      it { is_expected.to be_declined }
     end
   end
 
@@ -302,20 +291,18 @@ describe TicketRequest do
     let(:cabins) { nil }
     let(:special_price) { nil }
     let(:event) do
-      Event.make!(
-        adult_ticket_price: adult_price,
-        kid_ticket_price: kid_price,
-        cabin_price:
-      )
+      build(:event,
+             adult_ticket_price: adult_price,
+             kid_ticket_price: kid_price,
+             cabin_price:)
     end
     let(:ticket_request) do
-      described_class.make(
-        event:,
-        adults:,
-        kids:,
-        cabins:,
-        special_price:
-      )
+      build(:ticket_request,
+             event:,
+             adults:,
+             kids:,
+             cabins:,
+             special_price:)
     end
 
     context 'when kid ticket price is not set on the event' do
@@ -380,8 +367,8 @@ describe TicketRequest do
   end
 
   describe '#total_tickets' do
-    it 'is the sum of the number of adults and children' do
-      described_class.make(adults: 3, kids: 2).total_tickets == 5
-    end
+    subject(:ticket_request) { create(:ticket_request, adults: 3, kids: 2) }
+
+    its(:total_tickets) { is_expected.to eql(5) }
   end
 end

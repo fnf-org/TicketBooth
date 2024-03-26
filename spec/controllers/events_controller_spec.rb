@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe EventsController, type: :controller do
-  let(:event) { Event.make! }
+  let(:event) { create(:event) }
   let(:viewer) { nil }
 
   before { sign_in viewer if viewer }
@@ -17,13 +17,13 @@ describe EventsController, type: :controller do
 
     context 'when the user is signed in' do
       context 'and is not an event admin' do
-        let(:viewer) { User.make! }
+        let(:viewer) { create(:user) }
 
         it { redirects_to new_event_ticket_request_path(event) }
       end
 
       context 'and is an event admin' do
-        let(:viewer) { EventAdmin.make!(event:, user: User.make!).user }
+        let(:viewer) { create(:event_admin, event:).user }
 
         it { succeeds }
       end
