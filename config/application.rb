@@ -12,7 +12,7 @@ Bundler.require(*Rails.groups)
 module TicketBooth
   class Application < ::Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.0
+    config.load_defaults 6.1
 
     config.time_zone = 'Pacific Time (US & Canada)'
 
@@ -42,6 +42,7 @@ module TicketBooth
     config.assets.initialize_on_precompile = false
 
     config.eager_load_paths << Rails.root.join('app/classes')
+    config.eager_load_paths << Rails.root.join('app/concerns')
   end
 end
 

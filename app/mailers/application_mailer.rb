@@ -7,4 +7,14 @@ class ApplicationMailer < ActionMailer::Base
   layout 'email'
 
   abstract!
+
+  protected
+
+  def from_email
+    "#{@event.name} <#{DEFAULT_SENDER_EMAIL}>" if defined?(:@event)
+  end
+
+  def reply_to_email
+    "#{@event.name} Ticketing <#{DEFAULT_REPLY_TO_EMAIL}>" if defined?(:@event)
+  end
 end

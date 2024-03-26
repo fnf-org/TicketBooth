@@ -83,7 +83,7 @@ class PaymentsController < ApplicationController
     if @payment
       @payment.mark_received
       @payment.ticket_request.mark_complete
-      PaymentReceivedMailer.payment_received(@payment).deliver_now
+      PaymentMailer.payment_received(@payment).deliver_now
       redirect_to :back
     end
   end

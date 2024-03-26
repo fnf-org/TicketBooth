@@ -4,7 +4,7 @@
 %p
   We have received your ticket request for #{@event.name}.
 
--# XXX: This is temporary until tickets stop selling
+-# TODO: This is temporary until tickets stop selling
 -#- if @ticket_request.role == 'volunteer'
 -#  %p
 -#    At this point, all available tickets have been requested. However,
@@ -28,5 +28,4 @@
   P.S. You can see the status of your request at any time by
   visiting
   = succeed '.' do
-    = link_to 'this page',
-      event_ticket_request_url(@event, @ticket_request)
+    = link_to 'this page', @ticket_request_url

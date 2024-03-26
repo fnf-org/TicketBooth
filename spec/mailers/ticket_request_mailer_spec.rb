@@ -3,70 +3,46 @@
 require 'rails_helper'
 
 describe TicketRequestMailer do
-  let(:user) { User.make! }
-  let(:event) { Event.make! name: 'Test Event' }
+  let(:user) { ticket_request.user }
+  let(:event) { ticket_request.event }
+  let(:ticket_request) { create(:ticket_request, special_price: price) }
   let(:price) { nil }
 
-  let(:ticket_request) do
-    TicketRequest.make! event:,
-                        user:,
-                        special_price: price
-  end
-
   describe '#request_received' do
-    let(:mail) { described_class.request_received(ticket_request) }
+    subject(:mail) { described_class.request_received(ticket_request) }
 
-    it 'renders the subject' do
-      mail.subject.should == 'Test Event ticket request confirmation'
-    end
+    its(:subject) { is_expected.to eql "#{event.name} ticket request confirmation" }
 
-    it 'renders the receiver email' do
-      mail.to.should == [user.email]
-    end
+    its(:to) { is_expected.to eql [user.email] }
 
-    it "includes the user's name" do
-      mail.body.encoded.should match(user.first_name)
-    end
+    its('body.encoded') { is_expected.to match(user.first_name) }
 
-    it "includes the event's name" do
-      mail.body.encoded.should match('Test Event')
-    end
+    its('body.encoded') { is_expected.to match(event.name) }
   end
 
   describe '#request_approved' do
-    let(:mail) { described_class.request_approved(ticket_request) }
+    subject(:mail) { described_class.request_approved(ticket_request) }
+
     let(:body) { mail.body.encoded }
 
-    it 'renders the subject' do
-      mail.subject.should == 'Your Test Event ticket request has been approved!'
-    end
+    its(:subject) { is_expected.to eq "Your #{event.name} ticket request has been approved!" }
 
-    it 'renders the receiver email' do
-      mail.to.should == [user.email]
-    end
+    its(:to) { is_expected.to eq [user.email] }
 
-    it "includes the user's name" do
-      body.should match(user.first_name)
-    end
+    its(:body) { is_expected.to match(user.first_name) }
 
-    it "includes the event's name" do
-      body.should match('Test Event')
-    end
+    its('body.decoded') { is_expected.to match(event.name) }
 
     context 'when the ticket request is free' do
       let(:price) { 0 }
 
-      it 'includes the correct phrase' do
-        body.should match("You're good to go!")
-      end
+      its(:body) { is_expected.to match("You're good to go!") }
     end
 
     context 'when the ticket request is not free' do
       let(:price) { 10 }
 
-      it 'includes the word "purchase"' do
-        body.should match('purchase')
-      end
+      its(:body) { is_expected.to match('purchase') }
     end
   end
 end

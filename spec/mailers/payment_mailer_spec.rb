@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe PaymentReceivedMailer do
+describe PaymentMailer do
   let(:ticket_request) { create(:ticket_request) }
   let(:user) { ticket_request.user }
   let(:event) { ticket_request.event }
