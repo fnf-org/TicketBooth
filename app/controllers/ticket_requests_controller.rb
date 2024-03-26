@@ -4,6 +4,7 @@ require 'tempfile'
 require 'csv'
 
 # Manage all pages related to ticket requests.
+# rubocop: disable Metrics/ClassLength
 class TicketRequestsController < ApplicationController
   before_action :authenticate_user!, except: %i[new create]
   before_action :set_event
@@ -214,3 +215,4 @@ class TicketRequestsController < ApplicationController
                                      early_arrival_passes late_departure_passes guests])
   end
 end
+# rubocop: enable Metrics/ClassLength

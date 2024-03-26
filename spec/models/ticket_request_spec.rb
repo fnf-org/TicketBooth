@@ -292,17 +292,17 @@ describe TicketRequest do
     let(:special_price) { nil }
     let(:event) do
       build(:event,
-             adult_ticket_price: adult_price,
-             kid_ticket_price: kid_price,
-             cabin_price:)
+            adult_ticket_price: adult_price,
+            kid_ticket_price: kid_price,
+            cabin_price:)
     end
     let(:ticket_request) do
       build(:ticket_request,
-             event:,
-             adults:,
-             kids:,
-             cabins:,
-             special_price:)
+            event:,
+            adults:,
+            kids:,
+            cabins:,
+            special_price:)
     end
 
     context 'when kid ticket price is not set on the event' do
@@ -369,6 +369,6 @@ describe TicketRequest do
   describe '#total_tickets' do
     subject(:ticket_request) { create(:ticket_request, adults: 3, kids: 2) }
 
-    its(:total_tickets) { is_expected.to eql(5) }
+    its(:total_tickets) { is_expected.to be(5) }
   end
 end

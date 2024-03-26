@@ -194,7 +194,7 @@ describe TicketRequestsController, type: :controller do
         end
 
         it 'assigns the ticket request to the created user' do
-          expect(users_request_count[]).to eq(1)
+          expect(users_request_count[]).to be(1)
         end
 
         it 'signs in the created user' do
