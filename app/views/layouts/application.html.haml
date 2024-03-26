@@ -12,36 +12,41 @@
         &mdash;
         = yield(:title)
 
-    /[if lt IE9]
-      %script{ src: '//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js',
-               type: 'text/javascript' }
-
+    = javascript_include_tag 'application'
     = stylesheet_link_tag 'application', media: 'all'
 
     = yield :head
 
   %body
-    .navbar
-      .navbar-inner
-        .container
-          %a.brand{ href: root_path }
+    .navbar.navbar-expand-lg.navbar-dark.bg-primary
+      .container-fluid
+        %a.navbar-brand{ href: root_path }
+          .h2
             = PRODUCT_NAME
-          %ul.nav.pull-right
-            - if user_signed_in?
-              %li
-                = link_to edit_user_registration_path do
-                  %i.icon-user
-                  %span.user-name
-                    = current_user.first_name
+        %button.navbar-toggler{"aria-controls" => "navbarSupportedContent", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-bs-target" => "#navbarSupportedContent", "data-bs-toggle" => "collapse", :type => "button"}
+          %span.navbar-toggler-icon
 
-              %li
-                = link_to destroy_user_session_path, method: :delete do
-                  %span.sign-out-text Logout
-                  %i.icon-off
+        .collapse.navbar-collapse#navbarSupportedContent
+          %ul.navbar-nav.me-auto.mb-2.mb-lg-0.justify-content-center.navbar-nav-scroll{style: "--bs-scroll-height: 100px;" }
+            - if user_signed_in?
+              %li.nav-item
+                %a.nav-link{ href: edit_user_registration_path }
+                  Edit Profile
+              %li.nav-item
+                = link_to destroy_user_session_path, method: :delete, class: 'nav-link' do
+                  Logouts
+
             - else
-              %li
-                = link_to new_user_session_path do
-                  Sign in
+              %li.nav-item.d-flex
+                %a.nav-link{ href:  new_user_session_path }
+                  Login
+
+        - if user_signed_in?
+          %form{onsubmit: 'window.alert("Not yet implemented"); return false;', action: root_path, method: :get, class: 'd-flex'}
+            %input.form-control.me-2{"aria-label" => "Search", :placeholder => "Search", :type => "search"}/
+            %button.btn.btn-info{:type => "submit", onclick: 'document.alert("Not yet implemented")'} Search
+
+
 
     .container
       = bootstrap_flash
@@ -51,5 +56,3 @@
       .container
         %p.muted.text-center#footer-text
           <small>Crafted with ♡</small>
-
-    = javascript_include_tag 'application'

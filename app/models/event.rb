@@ -75,6 +75,12 @@ class Event < ApplicationRecord
     user && (user.site_admin? || admins.exists?(id: user))
   end
 
+  def make_admin(user)
+    return false if admin?(user)
+
+    EventAdmin.create(user_id: user.id, event_id: id)
+  end
+
   def cabins_available?
     return false unless cabin_price
     return true unless max_cabin_requests

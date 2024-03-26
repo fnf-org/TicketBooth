@@ -216,3 +216,4 @@ class TicketRequestsController < ApplicationController
   end
 end
 # rubocop: enable Metrics/ClassLength
+1

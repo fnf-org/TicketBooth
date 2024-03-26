@@ -1,3 +1,13 @@
+GIT
+  remote: https://github.com/seyhunak/twitter-bootstrap-rails.git
+  revision: 6e0fbcb0b200f2dac8a40a5cfec54e7c7b35f442
+  specs:
+    twitter-bootstrap-rails (5.0.0)
+      actionpack (>= 5.0, < 8.0)
+      execjs (~> 2.7)
+      less-rails (>= 3.0, < 5.0)
+      railties (>= 5.0, < 8.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -103,7 +113,6 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    colored2 (4.0.0)
     colorize (0.8.1)
     commonjs (0.2.7)
     concurrent-ruby (1.2.3)
@@ -365,11 +374,6 @@ GEM
     tilt (2.3.0)
     timecop (0.9.8)
     timeout (0.4.1)
-    twitter-bootstrap-rails (5.0.0)
-      actionpack (>= 5.0, < 8.0)
-      execjs (~> 2.7)
-      less-rails (>= 3.0, < 5.0)
-      railties (>= 5.0, < 8.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uglifier (4.2.0)
@@ -404,7 +408,7 @@ DEPENDENCIES
   carrierwave
   codecov
   coffee-rails
-  colored2
+  colorize
   commonjs
   country_select
   dalli
@@ -440,7 +444,7 @@ DEPENDENCIES
   stripe-ruby-mock (~> 2.5.0)
   timecop
   timeout
-  twitter-bootstrap-rails
+  twitter-bootstrap-rails!
   uglifier
   ventable
   yard
