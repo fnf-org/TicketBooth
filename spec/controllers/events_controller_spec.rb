@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe EventsController do
+describe EventsController, type: :controller do
   let(:event) { Event.make! }
   let(:viewer) { nil }
 

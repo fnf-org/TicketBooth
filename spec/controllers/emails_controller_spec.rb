@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe EmailsController do
+describe EmailsController, type: :controller do
   describe 'GET #index' do
     let(:email) { nil }
 

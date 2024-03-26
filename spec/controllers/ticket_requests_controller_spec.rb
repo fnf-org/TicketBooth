@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe TicketRequestsController do
+describe TicketRequestsController, type: :controller do
   let(:viewer) { nil }
 
   before { sign_in viewer if viewer }
