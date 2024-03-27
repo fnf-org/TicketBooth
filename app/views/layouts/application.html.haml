@@ -18,7 +18,7 @@
     = yield :head
 
   %body
-    .navbar.navbar-expand-lg.navbar-dark.bg-primary
+    .navbar.navbar-expand-md.navbar-dark.bg-primary
       .container-fluid
         %a.navbar-brand{ href: root_path }
           .h2
@@ -27,14 +27,14 @@
           %span.navbar-toggler-icon
 
         .collapse.navbar-collapse#navbarSupportedContent
-          %ul.navbar-nav.me-auto.mb-2.mb-lg-0.justify-content-center.navbar-nav-scroll{style: "--bs-scroll-height: 100px;" }
+          %ul.navbar-nav.justify-content-center
             - if user_signed_in?
               %li.nav-item
                 %a.nav-link{ href: edit_user_registration_path }
                   Edit Profile
               %li.nav-item
                 = link_to destroy_user_session_path, method: :delete, class: 'nav-link' do
-                  Logouts
+                  Log Out
 
             - else
               %li.nav-item.d-flex
@@ -45,8 +45,6 @@
           %form{onsubmit: 'window.alert("Not yet implemented"); return false;', action: root_path, method: :get, class: 'd-flex'}
             %input.form-control.me-2{"aria-label" => "Search", :placeholder => "Search", :type => "search"}/
             %button.btn.btn-info{:type => "submit", onclick: 'document.alert("Not yet implemented")'} Search
-
-
 
     .container
       = bootstrap_flash

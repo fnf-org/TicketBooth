@@ -31,9 +31,8 @@ class EventsController < ApplicationController
   end
 
   def create
-    populate_permitted_params_event(permitted_params)
-
-    @event = Event.new(permitted_params[:event])
+    create_params = populate_permitted_params_event(converted_params[:event])
+    @event = Event.new(create_params)
 
     if @event.save
       redirect_to @event
@@ -43,9 +42,8 @@ class EventsController < ApplicationController
   end
 
   def update
-    populate_permitted_params_event(permitted_params)
-
-    if @event.update(permitted_params[:event])
+    update_params = populate_permitted_params_event(converted_params[:event])
+    if @event.update(update_params)
       redirect_to @event
     else
       render action: 'edit'
@@ -111,12 +109,17 @@ class EventsController < ApplicationController
 
   private
 
-  def populate_permitted_params_event(permitted_params)
-    permitted_params[:event][:start_time]               = Time.from_picker(permitted_params.delete(:start_time))
-    permitted_params[:event][:end_time]                 = Time.from_picker(permitted_params.delete(:end_time))
-    permitted_params[:event][:ticket_sales_start_time]  = Time.from_picker(permitted_params.delete(:ticket_sales_start_time))
-    permitted_params[:event][:ticket_sales_end_time]    = Time.from_picker(permitted_params.delete(:ticket_sales_end_time))
-    permitted_params[:event][:ticket_requests_end_time] = Time.from_picker(permitted_params.delete(:ticket_requests_end_time))
+  def converted_params
+    @converted_params ||= permitted_params.to_h.tap(&:symbolize_keys!)
+  end
+
+  def populate_permitted_params_event(permitted_parameters)
+    permitted_parameters[:start_time] = Time.from_picker(permitted_parameters.delete(:start_time))
+    permitted_parameters[:end_time] = Time.from_picker(permitted_parameters.delete(:end_time))
+    permitted_parameters[:ticket_sales_start_time] = Time.from_picker(permitted_parameters.delete(:ticket_sales_start_time))
+    permitted_parameters[:ticket_sales_end_time] = Time.from_picker(permitted_parameters.delete(:ticket_sales_end_time))
+    permitted_parameters[:ticket_requests_end_time] = Time.from_picker(permitted_parameters.delete(:ticket_requests_end_time))
+    permitted_parameters
   end
 
   def completed_ticket_requests
@@ -133,6 +136,35 @@ class EventsController < ApplicationController
   end
 
   def permitted_params
-    params.permit(:id, :event, :user_email, :user_id, :start_time, :end_time, :ticket_sales_start_time, :ticket_sales_end_time, :ticket_requests_end_time)
+    params.permit(
+      :id,
+      :user_email,
+      :user_id,
+      :start_time,
+      :end_time,
+      :ticket_sales_start_time,
+      :ticket_sales_end_time,
+      :ticket_requests_end_time,
+      event: %i[
+        adult_ticket_price
+        allow_donations
+        allow_financial_assistance
+        cabin_price
+        early_arrival_price
+        end_time
+        kid_ticket_price
+        late_departure_price
+        max_adult_tickets_per_request
+        max_cabin_requests
+        max_cabins_per_request
+        max_kid_tickets_per_request
+        name
+        require_mailing_address
+        start_time
+        tickets_require_approval
+      ]
+    )
+          .to_hash
+          .with_indifferent_access
   end
 end
