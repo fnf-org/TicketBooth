@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :event do
-    name { Sham.words(3) }
+    name { Faker::FunnyName.three_word_name }
     start_time { 1.year.from_now }
     end_time { 1.year.from_now + 1.day }
 
@@ -21,6 +21,12 @@ FactoryBot.define do
     trait :cabins_available do
       cabin_price { Random.rand(100) }
       max_cabins_per_request { Random.rand(1...1) }
+    end
+
+    trait :with_admins do
+      after(:create) do |event|
+        create_list(:event_admin, 2, event:)
+      end
     end
   end
 end

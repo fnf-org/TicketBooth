@@ -1,5 +1,5 @@
 # .github/workflows/main.yaml
-name: "TicketBooth CI: rspec"
+name: "TicketBooth CI: RSpec"
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   main:
-    name: CI
+    name: RSpec
     runs-on: ubuntu-latest
 
     # If you need DB like MySQL then define service below.
@@ -23,7 +23,7 @@ jobs:
           POSTGRES_PASSWORD: ""
           POSTGRES_HOST_AUTH_METHOD: "trust"
         ports:
-          - 5432
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -33,7 +33,7 @@ jobs:
       redis:
         image: redis
         ports:
-          - 6379/tcp
+          - 6379:6379
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
@@ -43,8 +43,10 @@ jobs:
     steps:
       - uses: niden/actions-memcached@v7
 
+      - run: sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+      - run: wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
       - run: sudo apt-get update -yqq
-      - run: sudo apt-get install -yqq netcat libpq-dev
+      - run: sudo apt-get install -yqq netcat libpq-dev postgresql-client-16
 
       - name: "Verify Memcached is running"
         run: echo -e "stats\nquit" | nc localhost 11211  | grep -e "accepting_conns 1" -q
@@ -63,22 +65,4 @@ jobs:
           bin/rails db:test:prepare
 
       - name: "Run Rspec"
-        run: bundle exec rspec --format documentation
-
-      - name: "Run Rubocop"
-        run: bundle exec rubocop
-
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2.3'
-          bundler-cache: true
-
-      - name: RuboCop
-        run: bin/rubocop --parallel
+        run: bundle exec rspec

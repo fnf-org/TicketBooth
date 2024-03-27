@@ -6,11 +6,11 @@ FactoryBot.define do
     kids { Random.rand(2) }
     cabins { Random.rand(2) }
     needs_assistance { [true, false].sample }
-    notes { Sham.words(10) }
+    notes { Faker::Lorem.paragraph }
     agrees_to_terms { true }
 
-    user { FactoryBot.create(:user) }
-    event { FactoryBot.create(:event) }
+    user
+    event
 
     trait :pending do |*|
       status { TicketRequest::STATUS_PENDING }

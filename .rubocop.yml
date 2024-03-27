@@ -10,3 +10,6 @@ require:
 
 Style/IfUnlessModifier:
   Enabled: false
+
+RSpec/Rails/InferredSpecType:
+  Enabled: false

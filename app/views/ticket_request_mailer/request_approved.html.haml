@@ -11,9 +11,7 @@
   - else
     You can now
     = succeed '.' do
-      = link_to new_payment_url(ticket_request_id: @ticket_request,
-                                user_id: @ticket_request.user_id,
-                                user_token: @auth_token) do
+      = link_to @payment_url do
         purchase your
         = 'ticket'.pluralize(@ticket_request.total_tickets)
 
@@ -21,14 +19,7 @@
   %p
     %b Planning to arrive early or leave late?
     %br
-    :ruby
-      extra_params = {}
-      extra_params[:early_arrival_passes] = @ticket_request.early_arrival_passes
-      extra_params[:late_departure_passes] = @ticket_request.late_departure_passes
-      extra_params[:email] = @ticket_request.user.email
-      extra_params[:name] = @ticket_request.user.name
-    = link_to 'Early Arrival / Late Departure Passes',
-      new_event_eald_payment_url(@event, extra_params)
+    = link_to 'Early Arrival / Late Departure Passes', @eald_url
     must be purchased separately!
 
 %p

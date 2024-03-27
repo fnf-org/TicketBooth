@@ -4,14 +4,14 @@ require 'csv'
 
 module FnF
   class CSVReader
-    attr_reader :path
+    attr_reader :csv_file
 
     def initialize(path)
-      @path = path
+      @csv_file = path
     end
 
     def read(skip_first: true, before_block: nil, after_block: nil, &_block)
-      File.open(path) do |file|
+      File.open(csv_file) do |file|
         first_line = true
         before_block[] if before_block
         CSV.foreach(file) do |row|

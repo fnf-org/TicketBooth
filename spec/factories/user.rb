@@ -2,14 +2,12 @@
 
 FactoryBot.define do
   factory :user do
-    name { Sham.words(2) }
-    email { Sham.email_address }
-    password { 'password' }
+    name { Faker::Name.name }
+    email { Faker::Internet.email }
+    password { Faker::Internet.password(min_length: 8) }
 
     trait :site_admin do
-      after :create do |user|
-        SiteAdmin.make! user:
-      end
+      site_admin
     end
   end
 end

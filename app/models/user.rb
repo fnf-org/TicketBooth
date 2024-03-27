@@ -52,14 +52,11 @@ class User < ApplicationRecord
   MAX_EMAIL_LENGTH = 254 # Based on RFC 3696; see http://isemail.info/about
   MAX_PASSWORD_LENGTH = 255
 
-  # Setup accessible (or protected) attributes for your model
-  # attr_accessible :name, :email, :password, :remember_me
-
   normalize_attributes :name, :email
 
   validates :name, presence: true,
                    length: { maximum: MAX_NAME_LENGTH },
-                   format: { with: /\A[^\s]+\s[^\s]+(\s[^\s]+)*\z/i,
+                   format: { with: /\A\S+\s\S+(\s\S+)*\z/i,
                              message: 'must contain first and last name' }
 
   validates :email, presence: true,
@@ -71,11 +68,11 @@ class User < ApplicationRecord
   end
 
   def site_admin?
-    !site_admin.nil?
+    site_admin.present?
   end
 
   def event_admin?
-    event_admins.exists?
+    event_admins.present? && !event_admins.empty?
   end
 
   def generate_auth_token!

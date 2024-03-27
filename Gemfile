@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '~> 6.0.2'
+gem 'rails', '~> 6.1'
 
 gem 'annotate'
 gem 'attribute_normalizer'
@@ -11,7 +11,7 @@ gem 'bootsnap'
 gem 'bootstrap-sass' # , '3.0.2.1'
 gem 'carrierwave'
 gem 'coffee-rails'
-gem 'colored2'
+gem 'colorize'
 gem 'commonjs'
 gem 'country_select'
 gem 'dalli'
@@ -33,13 +33,14 @@ gem 'sass', '~> 3.4'
 gem 'sass-rails'
 gem 'sentry-raven'
 gem 'stripe'
-gem 'twitter-bootstrap-rails'
+gem 'twitter-bootstrap-rails', git: 'https://github.com/seyhunak/twitter-bootstrap-rails.git'
 gem 'uglifier'
 gem 'ventable'
 gem 'yard'
 
 group :development, :test do
   gem 'codecov'
+  gem 'faker'
   gem 'relaxed-rubocop'
   gem 'rubocop'
   gem 'rubocop-rails'
@@ -59,5 +60,6 @@ group :test do
   gem 'rspec-its'
   gem 'rspec-rails'
   gem 'simplecov'
+  gem 'timecop'
   gem 'timeout'
 end
