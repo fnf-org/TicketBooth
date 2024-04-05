@@ -25,6 +25,14 @@ RSpec.configure do |config|
 
   config.after { StripeMock.stop }
 
+  config.before :example, :ventable_disabled do
+    Ventable.disable
+  end
+
+  config.after :example, :ventable_disabled do
+    Ventable.enable
+  end
+
   config.around { |example| example_with_timeout(example) }
 
   config.use_transactional_fixtures = true

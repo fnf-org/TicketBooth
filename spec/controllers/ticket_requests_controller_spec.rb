@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe TicketRequestsController, type: :controller do
-  let!(:user) { create(:user) }
-  let!(:event) { create(:event) }
+  let(:user) { create(:user) }
+  let(:event) { create(:event) }
 
   let(:viewer) { nil }
 
@@ -41,7 +41,7 @@ describe TicketRequestsController, type: :controller do
   describe 'GET #show' do
     subject do
       get :show, params: { event_id: ticket_request.event.to_param,
-                           id: ticket_request.to_param }
+        id: ticket_request.to_param }
     end
 
     let(:ticket_request) { create(:ticket_request, user:) }
@@ -94,7 +94,7 @@ describe TicketRequestsController, type: :controller do
   describe 'GET #edit' do
     subject do
       get :edit, params: { event_id: ticket_request.event.to_param,
-                           id: ticket_request.to_param }
+        id: ticket_request.to_param }
     end
 
     let(:ticket_request) { create(:ticket_request, event:) }
@@ -130,74 +130,117 @@ describe TicketRequestsController, type: :controller do
   end
 
   describe 'POST #create' do
-    let(:make_request) { ->(params = {}) { post :create, params: { event_id: event.id, ticket_request: ticket_request_params.merge(params) } } }
+    let(:event) { create(:event, tickets_require_approval: true) }
 
     let(:ticket_request_params) { build(:ticket_request, event:).as_json }
 
-    it 'has a ticket request hash' do
-      expect(ticket_request_params).to be_a(Hash)
+    let(:post_params) { { event_id: event.id, ticket_request: ticket_request_params } }
+
+    let(:make_request) do
+      lambda { |params = {}|
+        post_params[:ticket_request].merge!(params) unless params.empty?
+        post :create, params: post_params
+      }
     end
 
-    context 'when event ticket sales are closed' do
-      it 'has no error message before the request' do
-        Timecop.freeze(event.end_time + 1.hour) do
-          make_request.call
-          expect(flash[:error]).to be('Sorry, but ticket sales have closed')
-        end
-      end
-    end
+    describe 'without Ventable callbacks', :ventable_disabled do
 
-    context 'when viewer already signed in' do
-      subject(:response) { make_request[user_id: viewer.id] }
+      describe 'ticket_request_params' do
+        subject { ticket_request_params }
 
-      let(:viewer) { create(:user) }
-
-      it 'creates a ticket request' do
-        expect { response }.to(change(TicketRequest, :count))
+        it { is_expected.to be_a(Hash) }
+        it { is_expected.to include('event_id' => event.id) }
+        it { is_expected.not_to include('ticket_request' => ['status']) }
       end
 
-      it 'assigned the ticket request to the viewer' do
-        expect { subject }.to change { viewer.reload.reload.ticket_requests }.by(1)
-      end
-    end
-
-    context 'when viewer is not signed in' do
-      let(:email) { Faker::Internet.email }
-      let(:password) { Faker::Internet.password }
-
-      let(:user_attributes) do
-        {
-          name: Faker::Name.name,
-          email:,
-          password:
-        }
-      end
-
-      let(:valid_params) { { event_id: event.to_param, user_attributes: } }
-
-      describe '#create' do
-        subject { make_request[user_attributes:] }
-
-        let(:users_request_count) { -> { User.find_by(email:).ticket_requests.count } }
-
-        its(:current_user) { is_expected.not_to be_nil }
-
-        it 'creates a ticket request' do
-          expect { subject }.to have_changed(TicketRequest, :count).by(1)
-        end
-
-        it 'assigns the ticket request to the created user' do
-          expect(users_request_count[]).to be(1)
-        end
-
-        it 'signs in the created user' do
-          expect(controller.current_user).to eql(User.find_by(email:))
+      context 'when event ticket sales are closed' do
+        it 'has no error message before the request' do
+          Timecop.freeze(event.end_time + 1.hour) do
+            make_request.call
+            expect(flash[:error]).to be('Sorry, but ticket sales have closed')
+          end
         end
       end
 
-      it 'creates a user with the specified email address' do
-        User.find_by(email:).should_not be_nil
+      context 'when viewer already signed in' do
+        subject { make_request.call }
+
+        let(:viewer) { user }
+
+        before { TicketRequest.where(user_id: viewer.id).destroy_all }
+
+        describe '#create HTTP status' do
+          it { succeeds }
+
+          it 'has no errors' do
+            expect(flash[:error]).to be_nil
+          end
+        end
+
+        describe 'database state' do
+          subject(:response) { make_request[] }
+
+          it 'creates a ticket request' do
+            expect { subject }.to(change(TicketRequest, :count))
+          end
+
+          it 'assigned the ticket request to the viewer' do
+            expect { subject }.to change { viewer.ticket_requests.count }.by(1)
+          end
+        end
+      end
+
+      # rubocop: disable RSpec/MultipleMemoizedHelpers
+      context 'when viewer is not signed in' do
+        before { make_request[user_attributes:] }
+
+        let(:email) { Faker::Internet.email }
+        let(:name) { Faker::Internet.name }
+        let(:password) { Faker::Internet.password }
+
+        let(:user_attributes) do
+          {
+            name:,
+            email:,
+            password:,
+            password_confirmation: password
+          }
+        end
+
+        let(:created_user) { User.find_by(email:) }
+        let(:users_request_count) { -> { created_user&.ticket_requests&.count } }
+
+        it { succeeds }
+
+        it 'has no errors' do
+          expect(flash[:error]).to be_nil
+        end
+
+        describe 'ticket requests count' do
+          it 'creates a ticket request' do
+            expect(subject).to have_changed(TicketRequest, :count).by(1)
+          end
+
+          it 'assigns the ticket request to the created user' do
+            expect(users_request_count[]).to be(1)
+          end
+        end
+
+        describe '#current_user' do
+          subject { controller&.current_user }
+
+          it { is_expected.not_to be_nil }
+
+          it { is_expected.to eql(created_user) }
+        end
+
+        describe 'created user' do
+          subject { created_user }
+
+          it { is_expected.not_to be_nil }
+        end
       end
     end
+    # rubocop: enable RSpec/MultipleMemoizedHelpers
   end
 end

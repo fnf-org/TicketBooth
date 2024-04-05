@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+#
+# rubocop: disable Metrics/ClassLength
+
 # == Schema Information
 #
 # Table name: ticket_requests
@@ -35,6 +38,9 @@
 #  user_id                 :integer          not null
 #
 class TicketRequest < ApplicationRecord
+  include ActiveModel::Validations
+  include ActiveModel::Validations::Callbacks
+
   STATUSES = [
     STATUS_PENDING = 'P',
     STATUS_AWAITING_PAYMENT = 'A',
@@ -59,9 +65,13 @@ class TicketRequest < ApplicationRecord
     ROLE_OTHER => 'Other'
   }.freeze
 
-  belongs_to :user
-  belongs_to :event
-  has_one :payment
+  belongs_to :user, inverse_of: :ticket_requests
+  belongs_to :event, inverse_of: :ticket_requests
+
+  has_one :payment, inverse_of: :ticket_request
+
+  # Serialize guest emails as an array in a text field.
+  # TODO: This should probably be switched to a separate table or at least a JSONB format column.
   serialize :guests, Array
 
   attr_accessible :user_id, :adults, :kids, :cabins, :needs_assistance,
@@ -77,7 +87,11 @@ class TicketRequest < ApplicationRecord
 
   accepts_nested_attributes_for :user
 
-  validates :user, presence: { unless: -> { user.try(:new_record?) } }
+  before_validation :set_defaults
+
+  validates :user, presence: { unless: -> { user&.id&.nil? } }
+
+  validates :event, presence: { unless: -> { event.try(:new_record?) } }
 
   validates :status, presence: true, inclusion: { in: STATUSES }
 
@@ -120,19 +134,6 @@ class TicketRequest < ApplicationRecord
   scope :approved, -> { awaiting_payment }
   scope :declined, -> { where(status: STATUS_DECLINED) }
   scope :not_declined, -> { where.not(status: STATUS_DECLINED) }
-
-  before_validation do
-    if event
-      self.status ||= if event.tickets_require_approval
-                        STATUS_PENDING
-                      else
-                        STATUS_AWAITING_PAYMENT
-                      end
-    end
-
-    # Remove empty guests
-    self.guests = Array(guests).map { |guest| guest.strip.presence }.compact
-  end
 
   def can_view?(user)
     self.user == user || event.admin?(user)
@@ -241,4 +242,25 @@ class TicketRequest < ApplicationRecord
   def country_name
     ISO3166::Country[country_code]
   end
+
+  private
+
+  def set_defaults
+    self.status = nil if status.blank?
+    self.status ||= if event
+                      if event.tickets_require_approval
+                        STATUS_PENDING
+                      else
+                        STATUS_AWAITING_PAYMENT
+                      end
+                    else
+                      STATUS_PENDING
+                    end
+
+    # Remove empty guests
+    # Note that guests are serialized as an array field.
+    self.guests = Array(guests).map { |guest| guest&.strip }.select(&:present?).compact
+  end
 end
+
+# rubocop: enable Metrics/ClassLength

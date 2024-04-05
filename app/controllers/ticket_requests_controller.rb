@@ -6,10 +6,12 @@ require 'csv'
 # Manage all pages related to ticket requests.
 # rubocop: disable Metrics/ClassLength
 class TicketRequestsController < ApplicationController
-  before_action :set_event
   before_action :authenticate_user!, except: %i[new create]
+
+  before_action :set_event
+
   before_action :require_event_admin, except: %i[new create show edit update]
-  before_action :set_ticket_request, except: %i[index new create download]
+  before_action :set_ticket_request, except: %i[new create index download]
 
   def index
     @ticket_requests = TicketRequest
@@ -41,7 +43,7 @@ class TicketRequestsController < ApplicationController
   def download
     temp_csv = Tempfile.new('csv')
 
-    raise(ArgumentError, 'Blank temp_csv') unless temp_csv&.path
+    raise ArgumentError('Tempfile is nil') if temp_csv.nil? || temp_csv.path.nil?
 
     CSV.open(temp_csv.path, 'wb') do |csv|
       csv << (%w[name email] + TicketRequest.columns.map(&:name))
@@ -65,7 +67,7 @@ class TicketRequestsController < ApplicationController
 
   def new
     if signed_in?
-      existing_request = TicketRequest.where(user_id: current_user, event_id: @event).first
+      existing_request = TicketRequest.where(user_id: current_user, event_id: @event).order(:created_at).first
 
       return redirect_to event_ticket_request_path(@event, existing_request) if existing_request
     end
@@ -73,10 +75,12 @@ class TicketRequestsController < ApplicationController
     @user = current_user if signed_in?
     @ticket_request = TicketRequest.new
 
-    last_ticket_request = TicketRequest.where(user_id: @user).order(:created_at).last
-    if last_ticket_request
-      %w[address_line1 address_line2 city state zip_code country_code].each do |field|
-        @ticket_request.send(:"#{field}=", last_ticket_request.send(field))
+    if @user
+      last_ticket_request = TicketRequest.where(user_id: @user&.id).order(:created_at).last
+      if last_ticket_request
+        %w[address_line1 address_line2 city state zip_code country_code].each do |field|
+          @ticket_request.send(:"#{field}=", last_ticket_request.send(field))
+        end
       end
     end
   end
@@ -105,20 +109,26 @@ class TicketRequestsController < ApplicationController
     end
 
     @ticket_request = TicketRequest.new(tr_params)
-    if @ticket_request.save
-      FnF::Events::TicketRequestEvent.new(
-        user: current_user,
-        target: @ticket_request
-      ).fire!
+    @ticket_request.validate
+    if @ticket_request.valid?
+      if @ticket_request.save
+        FnF::Events::TicketRequestEvent.new(
+          user: current_user,
+          target: @ticket_request
+        ).fire!
 
-      sign_in(@ticket_request.user) unless signed_in?
+        sign_in(@ticket_request.user) unless signed_in?
 
-      if @event.tickets_require_approval || @ticket_request.free?
-        redirect_to event_ticket_request_path(@event, @ticket_request)
+        if @event.tickets_require_approval || @ticket_request.free?
+          redirect_to event_ticket_request_path(@event, @ticket_request)
+        else
+          redirect_to new_payment_url(ticket_request_id: @ticket_request)
+        end
       else
-        redirect_to new_payment_url(ticket_request_id: @ticket_request)
+        render action: 'new'
       end
     else
+      flash[:error] = @ticket_request.errors.full_messages.join('. ')
       render action: 'new'
     end
   end
@@ -198,7 +208,7 @@ class TicketRequestsController < ApplicationController
   def permitted_params
     params.permit(:event_id, :id,
                   ticket_request: %i[user_id adults kids cabins needs_assistance
-                                     notes status special_price event_id
+                                     notes special_price event_id
                                      user_attributes user donation role role_explanation
                                      car_camping car_camping_explanation previous_contribution
                                      address_line1 address_line2 city state zip_code
@@ -206,5 +216,5 @@ class TicketRequestsController < ApplicationController
                                      early_arrival_passes late_departure_passes guests])
   end
 end
+
 # rubocop: enable Metrics/ClassLength
-1

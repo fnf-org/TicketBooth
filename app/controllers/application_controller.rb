@@ -20,6 +20,12 @@ class ApplicationController < ActionController::Base
     redirect_to new_event_ticket_request_path(@event) unless @event.admin?(current_user)
   end
 
+  def require_logged_in_user
+    unless current_user&.id
+      redirect_to new_user_session_path
+    end
+  end
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
   end
