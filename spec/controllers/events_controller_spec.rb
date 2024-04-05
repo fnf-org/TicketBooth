@@ -122,11 +122,12 @@ describe EventsController, type: :controller do
         end
 
         describe 'newly created event' do
-          subject { Event.last }
+          subject { Event.find_by(name: new_event_params['name']) }
 
           before { make_request[] }
 
           it { is_expected.to be_valid }
+          it { is_expected.to be_persisted }
         end
 
         describe 'event creation' do

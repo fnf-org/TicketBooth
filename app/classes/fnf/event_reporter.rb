@@ -16,6 +16,10 @@ module FnF
         ::NewRelic::Agent.record_metric(event_name(event), value)
       end
 
+      def handle_event(event)
+        metric(event, 1)
+      end
+
       protected
 
       def event_name(event)

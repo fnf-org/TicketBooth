@@ -141,26 +141,19 @@ describe TicketRequestsController, type: :controller do
     context 'when event ticket sales are closed' do
       it 'has no error message before the request' do
         Timecop.freeze(event.end_time + 1.hour) do
-          expect(flash[:error]).to be_nil
           make_request.call
-        end
-      end
-
-      it 'renders an error message after the request' do
-        Timecop.freeze(event.end_time + 1.hour) do
-          make_request.call
-          expect(flash[:error]).not_to be_nil
+          expect(flash[:error]).to be('Sorry, but ticket sales have closed')
         end
       end
     end
 
     context 'when viewer already signed in' do
-      subject { make_request[user_id: viewer.id] }
+      subject(:response) { make_request[user_id: viewer.id] }
 
       let(:viewer) { create(:user) }
 
       it 'creates a ticket request' do
-        expect { subject }.to(change(TicketRequest, :count))
+        expect { response }.to(change(TicketRequest, :count))
       end
 
       it 'assigned the ticket request to the viewer' do

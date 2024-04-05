@@ -381,7 +381,8 @@ GEM
     unaccent (0.4.0)
     unicode-display_width (2.5.0)
     uri (0.13.0)
-    ventable (1.2.0)
+    ventable (1.3.1)
+      activesupport (>= 5)
     warden (1.2.9)
       rack (>= 2.0.9)
     websocket-driver (0.7.6)
@@ -446,7 +447,7 @@ DEPENDENCIES
   timeout
   twitter-bootstrap-rails!
   uglifier
-  ventable
+  ventable (>= 1.3)
   yard
 
 BUNDLED WITH

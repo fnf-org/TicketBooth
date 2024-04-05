@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :ticket_request do
-    adults { Random.rand(1..4) }
+    adults { event&.max_adult_tickets_per_request || 1 }
     kids { Random.rand(2) }
     cabins { Random.rand(2) }
     needs_assistance { [true, false].sample }

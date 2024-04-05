@@ -1,17 +1,20 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 class Worker
   @events = {}
 
   class << self
-    attr_accessor :events
+    attr_reader :events
 
     def register(event)
-      events[event.class.name] ||= 0
-      events[event.class.name] += 1
+      @events ||= {}
+      @events[event.class.name] ||= 0
+      @events[event.class.name] += 1
     end
 
-    def building_on_fire_event(event)
+    def building_on_fire(event)
       register(event)
     end
   end
@@ -27,7 +30,7 @@ RSpec.describe 'Observers' do
   before do
     event.configure { notifies Worker }
 
-    FnF::Events.set_building_on_fire!
+    FnF::Events.set_building_on_fire
   end
 
   it { is_expected.not_to be_empty }

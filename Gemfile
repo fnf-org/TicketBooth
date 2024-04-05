@@ -35,7 +35,7 @@ gem 'sentry-raven'
 gem 'stripe'
 gem 'twitter-bootstrap-rails', git: 'https://github.com/seyhunak/twitter-bootstrap-rails.git'
 gem 'uglifier'
-gem 'ventable'
+gem 'ventable', '>= 1.3'
 gem 'yard'
 
 group :development, :test do

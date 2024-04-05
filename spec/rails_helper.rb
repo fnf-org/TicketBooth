@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'spec_helper'
+
 ENV['RAILS_ENV'] = 'test'
 
 require File.expand_path('../config/environment', __dir__)
@@ -8,8 +10,6 @@ require 'rspec/rails'
 require 'accept_values_for'
 require 'stripe_mock'
 require 'timeout'
-
-require_relative 'spec_helper'
 
 def example_with_timeout(example)
   Timeout.timeout(20) { example.run }
@@ -26,6 +26,8 @@ RSpec.configure do |config|
   config.after { StripeMock.stop }
 
   config.around { |example| example_with_timeout(example) }
+
+  config.use_transactional_fixtures = true
 
   config.expect_with(:rspec) do |c|
     c.syntax = %i[should expect]

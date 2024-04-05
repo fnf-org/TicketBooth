@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'ventable'
+require_relative '../event_reporter'
 
 module FnF
   module Events
@@ -13,17 +14,22 @@ module FnF
       end
 
       class << self
-        # @param [Object] klass
-        def inherited(klass)
-          super(klass)
-          klass.instance_eval do
-            include Ventable::Event
+        # @param [Object] subclass
+        def inherited(subclass)
+          # noinspection RubyMismatchedArgumentType
+          super(subclass)
 
-            notifies ->(event) { EventReporter.metric(event, 1) }
+          subclass.include Ventable::Event
 
+          subclass.notifies(EventReporter)
+
+          subclass.instance_eval do
             # For eg FnF::Events::TicketRequestEvent this should return :ticket_request
             def ventable_callback_method_name
-              name.gsub(/^FnF::Events::/, '').underscore.downcase.to_sym
+              ActiveSupport::Inflector.underscore(name)
+                                      .gsub(%r{^fnf/events/}, '')
+                                      .gsub(/_event$/, '')
+                                      .to_sym
             end
           end
         end

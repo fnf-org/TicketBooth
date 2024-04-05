@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'ventable'
+
+require_relative 'events/abstract_event'
 require_relative 'events/ticket_request_event'
 require_relative 'events/ticket_request_approved_event'
 require_relative 'events/ticket_request_declined_event'
@@ -26,5 +28,3 @@ module FnF
     end
   end
 end
-
-FnF::Events.initialize_events!

@@ -6,15 +6,10 @@ require 'csv'
 # Manage all pages related to ticket requests.
 # rubocop: disable Metrics/ClassLength
 class TicketRequestsController < ApplicationController
-  before_action :authenticate_user!, except: %i[new create]
   before_action :set_event
+  before_action :authenticate_user!, except: %i[new create]
   before_action :require_event_admin, except: %i[new create show edit update]
   before_action :set_ticket_request, except: %i[index new create download]
-
-  # Uncomment this if we start getting too many requests
-  # http_basic_authenticate_with name: Rails.application.secrets.ticket_request_username,
-  # password: Rails.application.secrets.ticket_request_password,
-  # only: :new
 
   def index
     @ticket_requests = TicketRequest
@@ -102,18 +97,14 @@ class TicketRequestsController < ApplicationController
     end
 
     tr_params = permitted_params[:ticket_request].to_h || {}
-
-    Rails.logger.debug { "#create: params=#{tr_params.inspect}" }
-
     tr_params[:user_id] = current_user.id if signed_in? && current_user.present?
 
     if tr_params.empty?
-      flash.now[:error] = 'Please enter some information'
+      flash.now[:error] = 'Please fill out the form below to request tickets.'
       redirect_to new_event_ticket_request_path(@event)
     end
 
     @ticket_request = TicketRequest.new(tr_params)
-
     if @ticket_request.save
       FnF::Events::TicketRequestEvent.new(
         user: current_user,
