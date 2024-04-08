@@ -29,11 +29,11 @@ gem 'uglifier'
 gem 'ventable', '>= 1.3'
 gem 'yard'
 
+gem 'coffee-rails'
 gem 'commonjs'
-gem 'libv8'
 gem 'haml'
 gem 'jquery-rails'
-gem 'coffee-rails'
+gem 'libv8'
 
 gem 'sassc-rails'
 gem 'twitter-bootstrap-rails', git: 'https://github.com/seyhunak/twitter-bootstrap-rails.git'
