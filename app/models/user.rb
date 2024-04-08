@@ -43,6 +43,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :lockable,
          :recoverable, :rememberable, :trackable, :validatable
 
+
   has_many :event_admins, dependent: :destroy
   has_many :events_administrated, through: :event_admins, source: :event
   has_many :ticket_requests

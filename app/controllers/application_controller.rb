@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
 
   def authenticate_user_from_token!
     user_id = params[:user_id].presence
-    user    = User.find_by(id: user_id)
+    user    = user_id ? User.find_by(id: user_id) : nil
 
     if user && Devise.secure_compare(user.authentication_token, params[:user_token])
       user.update_attribute(:authentication_token, nil) # One-time use

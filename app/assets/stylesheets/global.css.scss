@@ -1,8 +1,17 @@
+.container {
+  padding-top: 20px;
+}
+
+.clear-right {
+  clear: right;
+}
+
 a {
+  color: #ff7800 !important;
   &:focus,
   &:hover {
-    color: #ffbd24;
-    text-decoration: none;
+    color: #ff3850 !important;
+    text-decoration: none !important;
   }
 }
 
@@ -12,6 +21,20 @@ a {
     content: '*';
     font-weight: bold;
     margin-left: .1em;
+  }
+}
+
+form {
+  label {
+    margin-top: 25px;
+    margin-bottom: 5px;
+    display: block;
+  }
+  input {
+    margin-top: 5px;
+    margin-bottom: 15px;
+    display: block;
+    max-width: 80%;
   }
 }
 

@@ -12,6 +12,5 @@
 //
 //= require jquery.min
 //= require rails.min
-//= require bootstrap.min
 //= require bootstrap-datetimepicker.min
 //= require_tree .
