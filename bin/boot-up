@@ -16,9 +16,40 @@ export BASHMATIC_HOME="${BASHMATIC_HOME:-"${HOME}/.bashmatic"}"
 source "${BASHMATIC_HOME}/init.sh" >/dev/null 2>&1
 output.constrain-screen-width 100
 
+h1 "Installing Brew Packages..."
+run.set-all continue-on-error
 run "brew bundle --no-upgrade --no-lock"
+run.set-all abort-on-error
+
+run "brew services start postgresql@16"
+run "brew services start memcached"
+
+command -V direnv >/dev/null && {
+  h1 "Setting up direnv..."
+  eval "$(direnv hook bash)" # this script evaluates within BASH
+  run "direnv allow ."
+}
+
+h1 "Installing Dependencies"
+rbenv install -s "$(cat .ruby-version)"
+
+eval "$(rbenv init -)"
+
+run "curl https://get.volta.sh | bash"
+run "volta install node@lts"
 run "rbenv install -s $(cat .ruby-version)"
+run "rbenv local $(cat .ruby-version)"
+
 run "mkdir -p .bundle"
 run "cp development/config/config.Darwin.arm64 .bundle/config"
 run "bundle install -j 12"
+
+h1 "Running Migrations..."
 run "bin/rails db:migrate"
+run "bin/rails db:seed"
+run "bin/rails test:prepare"
+
+h1 "Starting Rails Server..."
+run.set-next show-output-on
+run "sleep 5 && open http://0.0.0.0:3000/" 2>/dev/null 1>&2 &
+run "bin/rails server"

@@ -17,40 +17,110 @@ image:https://github.com/fnf-org/TicketBooth/actions/workflows/build.yaml/badge.
 
 NOTE: This app is formerly known as **Helping Culture**, which in turn was originally conceived and inspired by Tracy Page. This project was originally written by https://github.com/sds[Shane de Silva]. It is currently maintained by the https://github.com/fnf-org[FnF] org, and within it specifically https://github.com/kigster[Konstantin Gredeskoul] for any application issues, and https://github.com/mike-matera[Mike Matera] for any issues related to deployment to the Google Public Cloud. Please use labels to tag any reported issues.
 
+NOTE: Please see the xref:README.pdf[following link] for a PDF version of this README.
 
 == Welcome to the *Ticket Booth*!
 
-=== Ticket Booth is an open source Rails App meant to be self-hosted
-
 The goal of the app is to make ticket and volunteer management for community events easier and automated.
 
-=== Initialization
+== Development Environment Setup
 
-Please make sure you have PostgreSQL running locally, or install it via Homebrew:
+The following walks through a local setup on OS-X M1.
+
+=== Streamlined Setup
+
+If you installed https://brew.sh[Homebrew] on your laptop, you should be able to boot the app.
+
+You can run the following setup script to attempt a complete set up of the development environment, as well as the installation of the Rubies, Gems and Database:
 
 [source,bash]
 ----
 bin/boot-up
 ----
 
-After that:
+This should automatically open the browser at the `http://localhost:3000` URL, if all the steps succeed.
+
+The `bin/boot-up` script will start the Rails server, or show an error that needs to be fixed.
+
+==== Additional Information
+
+We dedicated a separate document to the xref:DEVELOPERS.pdf[developer setup], which helps you get the application running locally.
+
+Alternatively, keep reading for step-by-step manual instructions.
+
+
+=== Optional Manual Setup
+
+If you prefer to run all the steps manually, then follow the guide below.
+
+==== Manual 1: Services
+
+Please make sure you have PostgreSQL and running locally, or install it via Homebrew:
 
 [source,bash]
 ----
-brew install rbenv ruby-build
+brew install direnv
+
+brew install postgresql@16
+brew services postgresql@16 start
+
+brew install memcached
+brew services memcached start
+----
+
+==== Manual 2: Direnv Setup
+
+Before you can start the Ruby Server, you need to configure `direnv` so that the environment in the file `.envrc` is loaded on OS-X.
+
+To do that follow the instructions for setting direnv on https://direnv.net/docs/hook.html#bash[bash] or https://direnv.net/docs/hook.html#zsh[zsh] depending on what you are running. To find out, run `echo $SHELL`.
+
+After you setup the shell initialization file, restart your terminal or reload the shell configuration.
+
+Once you are back in the project's folder, run:
+
+[source,bash]
+direnv allow .
+
+This will load the environment variables from the `.envrc` file.
+
+==== Manual 3: Ruby Setup
+
+[source,bash]
+----
+# install brew from https://brew.sh
+brew bundle 2>/dev/null
+
+# ensure the following packages exist
+brew install rbenv ruby-build direnv volta
+
 eval "$(rbenv init -)"
+eval "$(direnv hook ${SHELL/*\/})"
+
 rbenv install -s $(cat .ruby-version)
 rbenv local $(cat .ruby-version)
-bundle install
-bundle exec rake db:create
-bundle exec rake db:migrate db:seed
-bundle exec rake db:test:prepare
+volta install node@lts
+
+bundle install -j 12
+rails db:create
+rails db:migrate db:seed
+rails db:test:prepare
+
+# Run Specs at the end:
 bundle exec rspec
 ----
 
-=== Starting the Server
+==== Manual 4: Starting the Server
 
-We recommend that you use the `Makefile`:
+To start the server post-setup, run:
+
+[source,bash]
+----
+bin/rails s
+# or just
+rails s
+----
+
+You can also use the `Makefile`:
 
 [source,bash]
 ----
@@ -127,10 +197,6 @@ $ bin/music-submission-links chill_sets.csv | pbcopy
 ----
 
 Now we can paste it into WordPress directly.
-
-=== Developer Setup
-
-We dedicated a separate document to the xref:DEVELOPERS.pdf[developer setup], which helps you get the application running locally.
 
 == API Documentation
 
