@@ -7,9 +7,10 @@ require:
  - rubocop-rails
  - rubocop-rake
  - rubocop-rspec
+ - rubocop-rspec_rails
 
 Style/IfUnlessModifier:
   Enabled: false
 
-RSpec/Rails/InferredSpecType:
+RSpecRails/InferredSpecType:
   Enabled: false
