@@ -8,10 +8,13 @@
 
 a {
   color: #ff7800 !important;
+  text-decoration: none !important;
+  padding: 6px !important;
   &:focus,
   &:hover {
-    color: #ff3850 !important;
-    text-decoration: none !important;
+    color: #000 !important;
+    background-color: #ff7800 !important;
+    border-radius: 10px !important;
   }
 }
 
