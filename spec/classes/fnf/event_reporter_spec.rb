@@ -21,9 +21,7 @@ module FnF
 
     # rubocop: disable RSpec
     describe '#event_name' do
-      before :suite do
-        ::FnF::Events::BuildingOnFireEvent.configure { notifies EventReporter }
-      end
+      before(:all) { ::FnF::Events::BuildingOnFireEvent.configure { notifies EventReporter } }
 
       it 'invokes metric for all events' do
         expect(described_class).to receive(:metric).with(FnF::Events::BuildingOnFireEvent, 1).once
