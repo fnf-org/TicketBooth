@@ -1,4 +1,4 @@
-FROM docker.io/ruby:2.6-bullseye
+FROM docker.io/ruby:3.2-bookworm
 
 # Needed by Ruby to process UTF8-encoded files
 ENV LANG C.UTF-8
@@ -13,20 +13,15 @@ RUN set -eus; \
     libpq-dev \
     libxml2-dev \
     libxslt1-dev \
-    libjemalloc2 \
     postgresql-client \
     iputils-ping \
     net-tools \
-    netcat \
     htop \
     strace \
     pg-activity \
     ; \
     apt-get clean; \
     rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*;
-
-# @see https://engineering.binti.com/jemalloc-with-ruby-and-docker/
-ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
 
 WORKDIR /app
 COPY Gemfile Gemfile.lock ./
