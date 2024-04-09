@@ -217,11 +217,11 @@ describe TicketRequestsController, type: :controller do
 
         describe 'ticket requests count' do
           it 'creates a ticket request' do
-            expect(subject).to have_changed(TicketRequest, :count).by(1)
+            expect { subject }.to change(TicketRequest, :count).by(1)
           end
 
           it 'assigns the ticket request to the created user' do
-            expect(users_request_count[]).to be(1)
+            expect(users_request_count[]).to eq(1)
           end
         end
 

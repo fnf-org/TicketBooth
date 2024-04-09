@@ -1,11 +1,12 @@
-(function($) {
-  var $popupMarkers = $('.help-popover');
-
-  $popupMarkers.popover({
-    trigger: 'manual'
-  }).on('click', function(e) {
-    var $popover = $(this);
-    $popover.popover('toggle');
-    e.preventDefault();
-  });
-})(jQuery);
+document.addEventListener("load", function() {
+  (function ($) {
+    const {popover} = $('.help-popover');
+    popover({
+      trigger: 'manual'
+    }).on('click', function (e) {
+      const {popover: popoverClicked} = $(this);
+      popoverClicked('toggle');
+      e.preventDefault();
+    });
+  })(jQuery);
+});

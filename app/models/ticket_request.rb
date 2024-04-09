@@ -89,7 +89,7 @@ class TicketRequest < ApplicationRecord
 
   before_validation :set_defaults
 
-  validates :user, presence: { unless: -> { user&.id&.nil? } }
+  validates :user, presence: { unless: -> { user.try(:new_record?) } }
 
   validates :event, presence: { unless: -> { event.try(:new_record?) } }
 

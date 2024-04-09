@@ -23,7 +23,7 @@ class ShiftsController < ApplicationController
     if @shift.save
       redirect_to event_shifts_path(@event),
                   notice: "Successfully volunteered for #{@shift.time_slot.job.name} " \
-                          "for #{@shift.time_slot.start_time.localtime.to_s(:dhmm)}"
+                          "for #{@shift.time_slot.start_time.localtime.to_fs(:dhmm)}"
     else
       render action: 'index'
     end
@@ -35,7 +35,7 @@ class ShiftsController < ApplicationController
 
     redirect_to event_shifts_url(@event),
                 notice: "Unvolunteered from #{@shift.time_slot.job.name} " \
-                        "for #{@shift.time_slot.start_time.localtime.to_s(:dhmm)}"
+                        "for #{@shift.time_slot.start_time.localtime.to_fs(:dhmm)}"
   end
 
   private

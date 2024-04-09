@@ -101,14 +101,15 @@ class TicketRequestsController < ApplicationController
     end
 
     tr_params = permitted_params[:ticket_request].to_h || {}
-    tr_params[:user_id] = current_user.id if signed_in? && current_user.present?
 
+    tr_params[:user_id] = current_user.id if signed_in? && current_user.present?
     if tr_params.empty?
       flash.now[:error] = 'Please fill out the form below to request tickets.'
       redirect_to new_event_ticket_request_path(@event)
     end
 
     @ticket_request = TicketRequest.new(tr_params)
+
     @ticket_request.validate
     if @ticket_request.valid?
       if @ticket_request.save

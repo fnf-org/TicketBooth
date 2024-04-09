@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '~> 6.1'
+gem 'rails', '~> 7.1'
 
 gem 'annotate'
 gem 'attribute_normalizer'
@@ -52,6 +52,7 @@ end
 group :development do
   gem 'asciidoctor'
   gem 'capistrano', '< 3'
+  gem 'spring'
 end
 
 group :test do

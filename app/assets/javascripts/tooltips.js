@@ -1,1 +1,1 @@
-$('.hover-tooltip').tooltip();
+$('.hover-tooltip').tooltip;

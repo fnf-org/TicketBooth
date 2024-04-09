@@ -22,9 +22,9 @@
 
 %dl.dl-horizontal
   %dt Start Time
-  %dd= @event.start_time.localtime.to_s(:friendly)
+  %dd= @event.start_time.localtime.to_formatted_s(:friendly)
   %dt End Time
-  %dd= @event.end_time.localtime.to_s(:friendly)
+  %dd= @event.end_time.localtime.to_formatted_s(:friendly)
   %dt Adult Ticket Price
   %dd
     = number_to_currency(@event.adult_ticket_price)

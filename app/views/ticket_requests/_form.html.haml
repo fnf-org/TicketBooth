@@ -1,7 +1,7 @@
 - form_action_name = action_name == 'edit' ? :update : :create
 - is_update = form_action_name == :update
-= form_for @ticket_request,
-           url: { controller: :ticket_requests, action: form_action_name } do |f|
+
+= form_for @ticket_request, url: { controller: :ticket_requests, action: form_action_name } do |f|
   = render 'shared/form_errors', resource: @ticket_request
 
   = f.hidden_field :event_id, value: @event.id
@@ -18,7 +18,7 @@
 
         = ff.label :email, class: 'required-label' do
           Email (username)
-        = ff.email_field :email, class: 'input-xlarge',
+        = ff.email_field :email,
           maxlength: User::MAX_EMAIL_LENGTH, required: true,
           placeholder: 'email@example.com',
           data: { lookup_url: emails_path }
@@ -34,196 +34,206 @@
               = link_to 'password reset email', new_user_password_path,
                         data: { reset_url: reset_passwords_path },
                         id: 'password-reset-link'
+
         .alert.alert-block.hidden#email-reset-sent
           %h4 Password reset email sent!
           %p
             Check your email!
 
         = ff.label :name, 'Full Name', class: 'required-label'
-        = ff.text_field :name, class: 'input-xlarge',
+        = ff.text_field :name,
           maxlength: User::MAX_NAME_LENGTH, required: true,
           placeholder: 'First and last name'
 
         = ff.label :password, 'Create Password', class: 'required-label'
         = ff.password_field :password,
           required: true,
-          maxlength: User::MAX_PASSWORD_LENGTH, class: 'input-xlarge'
+          maxlength: User::MAX_PASSWORD_LENGTH
 
-    %fieldset
-      %p
-        = f.label :role_volunteer do
-          How are you contributing to the campout this year?
-        = f.label :role_volunteer, class: 'radio inline' do
-          = f.radio_button :role, TicketRequest::ROLE_VOLUNTEER,
-            data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_VOLUNTEER] }
-          = TicketRequest::ROLES[TicketRequest::ROLE_VOLUNTEER]
-        = f.label :role_contributor, class: 'radio inline' do
-          = f.radio_button :role, TicketRequest::ROLE_CONTRIBUTOR,
-            data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_CONTRIBUTOR] }
-          = TicketRequest::ROLES[TicketRequest::ROLE_CONTRIBUTOR]
-        = f.label :role_coordinator, class: 'radio inline' do
-          = f.radio_button :role, TicketRequest::ROLE_COORDINATOR,
-            data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_COORDINATOR] }
-          = TicketRequest::ROLES[TicketRequest::ROLE_COORDINATOR]
-        = f.label :role_uber_coordinator, class: 'radio inline' do
-          = f.radio_button :role, TicketRequest::ROLE_UBER_COORDINATOR,
-            data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_UBER_COORDINATOR] }
-          = TicketRequest::ROLES[TicketRequest::ROLE_UBER_COORDINATOR]
-        = f.label :role_other, class: 'radio inline' do
-          = f.radio_button :role, TicketRequest::ROLE_OTHER,
-            data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_OTHER] }
-          = TicketRequest::ROLES[TicketRequest::ROLE_OTHER]
-      %p.muted.role-explanation{ class: TicketRequest::ROLE_VOLUNTEER }
-        You are working one or more shifts at the event
-      %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_CONTRIBUTOR }
-        Working before and during or during and after; actively involved in
-        planning the campout e.g. a coordinator assistant or apprentice. Bringing
-        gear, driving trucks, art committee, etc.
-      %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_COORDINATOR }
-        Listed on the Coordinator Sheet as someone who is leading a major area of
-        campout planning; working before, during, and after the event including
-        things like resource coordination, significant gear prep, pre/post-site
-        visits, etc.
-      %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_OTHER }
-        Art Grantee or DJ
-      = f.text_area :role_explanation, class: 'input-xlarge hidden',
-        placeholder: 'Briefly describe your role (required)',
-        rows: 2, maxlength: 200, required: false
-
-    = f.label :previous_contribution, 'What was your role last year?'
-    = f.text_area :previous_contribution, class: 'input-xlarge',
-        rows: 2, maxlength: 250
-
-    - if signed_in? && @event.admin?(current_user) && form_action_name == :update
-      .well
-        = f.label :special_price, 'Special Total Price ($)'
-        %p.text-error
-          Editable by event admins only. Leave blank to use default price.
-        = f.number_field :special_price, class: 'input-small', min: 0
-
-    = f.label :adults, 'Number of tickets'
-    = f.number_field :adults, class: 'input-mini', min: 1, required: true,
-      max: (TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_VOLUNTEER] unless form_action_name == :update),
-      data: { default_price: @event.adult_ticket_price.to_i }
-    %span.help-inline.inline-price
-
-    - if @event.kid_ticket_price
-      = f.label :kids do
-        Number of children you are bringing with you (not transferable to adults; babes in arms are free)
-        = help_mark help_text_for(:kids)
-      = f.number_field :kids, class: 'input-mini', min: 0,
-        max: @event.max_kid_tickets_per_request,
-        data: { default_price: @event.kid_ticket_price.to_i,
-                custom_prices: price_rules_to_json(@event) }
-      %span.help-inline.inline-price
-      %p.help-inline-block.muted
-        Please include the ages of the children (including infants) you are
-        bringing with you in the notes below.
-
-    - if @event.cabin_price
-      = f.label :cabins do
-        How many cabins did you want?
-        = help_mark help_text_for(:cabins)
-      = f.number_field :cabins, class: 'input-mini', min: 0,
-        max: @event.max_cabins_per_request,
-        data: { default_price: @event.cabin_price.to_i },
-        disabled: !@event.cabins_available?
-      %span.help-inline.inline-price
-        - unless @event.cabins_available?
-          Sorry, we are sold out of cabins at this point in time.
-
-    .control-group
-
-    - if @event.allow_financial_assistance
-      = f.label :needs_assistance, class: 'checkbox' do
-        = f.check_box :needs_assistance
-        I’m requesting financial assistance with purchasing my ticket(s)
-        = help_mark help_text_for(:needs_assistance)
-
-    .control-group
-
-    - if @event.require_mailing_address
+    .input-group-large
       %fieldset
-        = f.label :address_line1, class: 'required-label' do
-          Address
-          = help_mark help_text_for(:address)
-        = f.text_field :address_line1, required: true, class: 'input-xlarge',
-          placeholder: 'Street address, P.O. box, etc.',
-          maxlength: 200
+        %p
+          = f.label :role_volunteer do
+            How are you contributing to the campout this year?
+          = f.label :role_volunteer, class: 'radio inline' do
+            = f.radio_button :role, TicketRequest::ROLE_VOLUNTEER,
+              data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_VOLUNTEER] }
+            = TicketRequest::ROLES[TicketRequest::ROLE_VOLUNTEER]
+          = f.label :role_contributor, class: 'radio inline' do
+            = f.radio_button :role, TicketRequest::ROLE_CONTRIBUTOR,
+              data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_CONTRIBUTOR] }
+            = TicketRequest::ROLES[TicketRequest::ROLE_CONTRIBUTOR]
+          = f.label :role_coordinator, class: 'radio inline' do
+            = f.radio_button :role, TicketRequest::ROLE_COORDINATOR,
+              data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_COORDINATOR] }
+            = TicketRequest::ROLES[TicketRequest::ROLE_COORDINATOR]
+          = f.label :role_uber_coordinator, class: 'radio inline' do
+            = f.radio_button :role, TicketRequest::ROLE_UBER_COORDINATOR,
+              data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_UBER_COORDINATOR] }
+            = TicketRequest::ROLES[TicketRequest::ROLE_UBER_COORDINATOR]
+          = f.label :role_other, class: 'radio inline' do
+            = f.radio_button :role, TicketRequest::ROLE_OTHER,
+              data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_OTHER] }
+            = TicketRequest::ROLES[TicketRequest::ROLE_OTHER]
+
+        %p.muted.role-explanation{ class: TicketRequest::ROLE_VOLUNTEER }
+          You are working one or more shifts at the event
+
+        %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_CONTRIBUTOR }
+          Working before and during or during and after; actively involved in
+          planning the campout e.g. a coordinator assistant or apprentice. Bringing
+          gear, driving trucks, art committee, etc.
+
+        %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_COORDINATOR }
+          Listed on the Coordinator Sheet as someone who is leading a major area of
+          camp out planning; working before, during, and after the event including
+          things like resource coordination, significant gear prep, pre/post-site
+          visits, etc.
+
+        %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_OTHER }
+          Art Grantee or DJ
+
+        = f.text_area :role_explanation, class: 'input-xlarge hidden',
+          placeholder: 'Briefly describe your role (required)',
+          rows: 2, maxlength: 200, required: false
+
+      = f.label :previous_contribution, 'What was your role last year?'
+      = f.text_area :previous_contribution,
+          rows: 2, maxlength: 250
+
+      - if signed_in? && @event.admin?(current_user) && form_action_name == :update
+        .well
+          = f.label :special_price, 'Special Total Price ($)'
+
+          %p.text-error
+            Editable by event admins only. Leave blank to use default price.
+          = f.number_field :special_price, class: 'input-small', min: 0
+
+      = f.label :adults, 'Number of tickets'
+
+      = f.number_field :adults, class: 'input-mini', min: 1, required: true,
+        max: (TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_VOLUNTEER] unless form_action_name == :update),
+        data: { default_price: @event.adult_ticket_price.to_i }
+
+      %span.help-inline.inline-price
+
+      - if @event.kid_ticket_price
+
+        = f.label :kids do
+          Number of children you are bringing with you (not transferable to adults; babes in arms are free)
+          = help_mark help_text_for(:kids)
+
+        = f.number_field :kids, class: 'input-mini', min: 0,
+          max: @event.max_kid_tickets_per_request,
+          data: { default_price: @event.kid_ticket_price.to_i,
+                  custom_prices: price_rules_to_json(@event) }
+
+        %span.help-inline.inline-price
+        %p.help-inline-block.muted
+          Please include the ages of the children (including infants) you are
+          bringing with you in the notes below.
+
+      - if @event.cabin_price
+
+        = f.label :cabins do
+          How many cabins did you want?
+          = help_mark help_text_for(:cabins)
+
+        = f.number_field :cabins, class: 'input-mini', min: 0,
+          max: @event.max_cabins_per_request,
+          data: { default_price: @event.cabin_price.to_i },
+          disabled: !@event.cabins_available?
+
+        %span.help-inline.inline-price
+          - unless @event.cabins_available?
+            Sorry, we are sold out of cabins at this point in time.
+
+      .control-group
+
+      - if @event.allow_financial_assistance
+        = f.label :needs_assistance, class: 'checkbox' do
+          = f.check_box :needs_assistance
+          I’m requesting financial assistance with purchasing my ticket(s)
+          = help_mark help_text_for(:needs_assistance)
+
+      .control-group
+
+      - if @event.require_mailing_address
+        %fieldset
+          = f.label :address_line1, class: 'required-label' do
+            Address
+            = help_mark help_text_for(:address)
+          = f.text_field :address_line1, required: true, placeholder: 'Street address, P.O. box, etc.', maxlength: 200
+          = f.text_field :address_line2, placeholder: 'Apartment, suite, unit, building, floor, etc.', maxlength: 200
+          = f.label :city, 'City', class: 'required-label'
+          = f.text_field :city, required: true, maxlength: 50
+          = f.label :state, 'State/Province/Region', class: 'required-label'
+          = f.text_field :state, required: true, maxlength: 50
+          = f.label :zip_code, 'Zip/Postal Code', class: 'required-label'
+          = f.text_field :zip_code, required: true, maxlength: 32
+          = f.label :country_code, 'Country', class: 'required-label'
+          = f.country_select "country_code", iso_codes: true
+
+      = f.label :notes do
+        Who did you hear about this event from?
+        Any special requests or things you want to mention?
+
+      = f.text_area :notes,
+        rows: 10, columns: 20, maxlength: 500
+
+      - if signed_in? && @event.admin?(current_user) && form_action_name == :update
+        .well
+          = f.label :admin_notes do
+            Additional Notes
+          %p.text-error
+            Visible by event admins only.
+          = f.text_area :admin_notes, rows: 5, maxlength: 512
+
+      %hr
+
+      - unless is_update
+        %p
+          Every year, every attendee, no matter how long they've been coming, must
+          acquaint themselves with our values and Code of Conduct. Please acknowledge
+          you've done so this year.
+        = f.label :agrees_to_terms, class: 'checkbox' do
+          = f.check_box :agrees_to_terms
+          I’ve read
+          = link_to 'The FnF Way', 'http://cfaea.net/the-fnf-way/', target: '_blank'
+          and
+          = link_to 'Code of Conduct', 'https://fnf.page.link/coc', target: '_blank'
+          and agree to follow the principles outlined therein
         %br
-        = f.text_field :address_line2, class: 'input-xlarge',
-          placeholder: 'Apartment, suite, unit, building, floor, etc.',
-          maxlength: 200
-        = f.label :city, 'City', class: 'required-label'
-        = f.text_field :city, required: true, maxlength: 50, class: 'input-xlarge'
-        = f.label :state, 'State/Province/Region', class: 'required-label'
-        = f.text_field :state, required: true, class: 'input-xlarge',
-                       maxlength: 50
-        = f.label :zip_code, 'Zip/Postal Code', class: 'required-label'
-        = f.text_field :zip_code, required: true, maxlength: 32, class: 'input-small'
-        = f.label :country_code, 'Country', class: 'required-label'
-        = f.country_select :country_code, %w[US CA GB], iso_codes: true
 
-    = f.label :notes do
-      Who did you hear about this event from?
-      Any special requests or things you want to mention?
-    = f.text_area :notes, class: 'input-xxlarge',
-      rows: 3, maxlength: 500
-
-    - if signed_in? && @event.admin?(current_user) && form_action_name == :update
-      .well
-        = f.label :admin_notes do
-          Additional Notes
-        %p.text-error
-          Visible by event admins only.
-        = f.text_area :admin_notes, class: 'input-xxlarge', rows: 5, maxlength: 512
-
-    %hr
-
-    - unless is_update
+    - if is_update
+      .control-group
+      %h4 Guests
       %p
-        Every year, every attendee, no matter how long they've been coming, must
-        acquaint themselves with our values and Code of Conduct. Please acknowledge
-        you've done so this year.
-      = f.label :agrees_to_terms, class: 'checkbox' do
-        = f.check_box :agrees_to_terms
-        I’ve read
-        = link_to 'The FnF Way', 'http://cfaea.net/the-fnf-way/', target: '_blank'
-        and
-        = link_to 'Code of Conduct',
-                  'https://fnf.page.link/coc',
-                  target: '_blank'
-        and agree to follow the principles outlined therein
+        Include yourself as a guest. Use First Name and Last Name.
+        DJ names or monikers should be accompanied with their real name.
+        If we cannot identify the name, we will ask you to change it.
+      %b Examples of good names
+      %ol
+        %li Tim Bergling
+        %li Tim Bergling (Avicii)
+      %b Examples of bad names
+      %ol
+        %li Tim
+        %li Bergling
+        %li T. B.
       %br
+      - list_finalized = (@event.start_time - Time.now) < 2.days
+      - if list_finalized
+        Guest list has been finalized. If you need to update your guests, please email
+        = mail_to 'tickets@fnf.org'
+        %br
+      - @ticket_request.guest_count.times do |guest_id|
+        = f.text_field :guests, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests)[guest_id]
+        %br
 
-  - if is_update
-    .control-group
-    %h4 Guests
-    %p
-      Include yourself as a guest. Use First Name and Last Name.
-      DJ names or monikers should be accompanied with their real name.
-      If we cannot identify the name, we will ask you to change it.
-    %b Examples of good names
-    %ol
-      %li Tim Bergling
-      %li Tim Bergling (Avicii)
-    %b Examples of bad names
-    %ol
-      %li Tim
-      %li Bergling
-      %li T. B.
-    %br
-    - list_finalized = (@event.start_time - Time.now) < 2.days
-    - if list_finalized
-      Guest list has been finalized. If you need to update your guests, please email
-      = mail_to 'tickets@fnf.org'
-      %br
-    - @ticket_request.guest_count.times do |guest_id|
-      = f.text_field :guests, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests)[guest_id]
-      %br
+    .actions
+      - submit_btn_text = is_update ? 'Update Request' : 'Submit Request'
+      = f.submit submit_btn_text, class: 'btn btn-primary btn-large', disabled: !is_update,
+                 id: 'submit-request',
+                 data: { disable_with: 'Submitting...' }
 
-  .actions
-    - submit_btn_text = is_update ? 'Update Request' : 'Submit Request'
-    = f.submit submit_btn_text, class: 'btn btn-primary btn-large', disabled: !is_update,
-               id: 'submit-request',
-               data: { disable_with: 'Submitting...' }
