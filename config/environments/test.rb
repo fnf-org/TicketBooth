@@ -8,10 +8,8 @@ TicketBooth::Application.configure do
   # your test database is "scratch space" for the test suite and is wiped
   # and recreated between test runs. Don't rely on the data there!
   config.cache_classes = false
-  # Enable threaded mode
-  # config.threadsafe!
 
-  config.eager_load = true
+  config.eager_load = false
 
   # Prepend all log lines with the following tags
   config.log_tags = [->(_req) { DateTime.now }, :uuid]
@@ -37,7 +35,7 @@ TicketBooth::Application.configure do
   config.action_controller.allow_forgery_protection = false
 
   # Raise exception on mass assignment protection for Active Record models
-  config.active_record.mass_assignment_sanitizer = :strict
+  # config.active_record.mass_assignment_sanitizer = :strict
 
   # Tell Action Mailer not to deliver emails to the real world.
   # The :test delivery method accumulates sent emails in the

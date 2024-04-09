@@ -1,7 +1,21 @@
 # frozen_string_literal: true
 
-# Applied when a ticket request has indicated that they are bringing a specific
-# number of kids.
+# == Schema Information
+#
+# Table name: price_rules
+#
+#  id            :bigint           not null, primary key
+#  price         :decimal(8, 2)
+#  trigger_value :integer
+#  type          :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  event_id      :bigint
+#
+# Indexes
+#
+#  index_price_rules_on_event_id  (event_id)
+#
 class PriceRule
   class KidsEqualTo < PriceRule
     def calc_price(ticket_request)

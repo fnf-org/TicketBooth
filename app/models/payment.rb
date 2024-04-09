@@ -1,6 +1,18 @@
 # frozen_string_literal: true
 
-class Payment < ActiveRecord::Base
+# == Schema Information
+#
+# Table name: payments
+#
+#  id                :bigint           not null, primary key
+#  explanation       :string
+#  status            :string(1)        default("P"), not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  stripe_charge_id  :string(255)
+#  ticket_request_id :integer          not null
+#
+class Payment < ApplicationRecord
   include PaymentsHelper
 
   STATUSES = [
@@ -18,8 +30,8 @@ class Payment < ActiveRecord::Base
 
   attr_accessor :stripe_card_token
 
-  validates :ticket_request, presence: true,
-                             uniqueness: { message: 'ticket request has already been paid' }
+  validates :ticket_request,
+            uniqueness: { message: 'ticket request has already been paid' }
   validates :status, presence: true, inclusion: { in: STATUSES }
 
   def save_and_charge!
@@ -50,9 +62,7 @@ class Payment < ActiveRecord::Base
     save!
   end
 
-  def can_view?(user)
-    ticket_request.can_view?(user)
-  end
+  delegate :can_view?, to: :ticket_request
 
   def due_date
     (created_at + 2.weeks).to_date
@@ -75,7 +85,7 @@ class Payment < ActiveRecord::Base
   def modifying_forbidden_attributes?(attributed)
     # Only allow donation field to be updated
     attributed.any? do |attribute, _value|
-      !%w[donation id].include?(attribute.to_s)
+      %w[donation id].exclude?(attribute.to_s)
     end
   end
 end
