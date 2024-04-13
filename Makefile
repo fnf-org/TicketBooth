@@ -66,7 +66,7 @@ docker-image:	## Builds a docker image named 'tickets'
 		docker build -t tickets .
 
 shellcheck:	## Run shellcheck on the shell files
-		$(CURRENT_DIR)/bin/shchk	
+		$(CURRENT_DIR)/bin/shchk
 
 dev-install:    ## Optional install of VIM configuration and other dev tools
 		$(CURRENT_DIR)/development/dev-install
@@ -89,7 +89,7 @@ assets:    	## Build JS & CSS assets
 dev:            development assets ## Start the development environment
 		@bash -c "source $(MAKE_ENV); bundle exec foreman start -f Procfile.dev"
 
-		
+
 ci: 		## Run all tests and linters as if on CI
 		bin/rails db:migrate
 		bin/rails db:test:prepare

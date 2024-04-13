@@ -9,7 +9,11 @@ WORKDIR /rails
 
 # Install base packages
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client
+    apt-get install --no-install-recommends -y \
+    curl \
+    libjemalloc2 \
+    libvips \
+    postgresql-client
 
 # Set production environment
 ENV RAILS_ENV="production" \
@@ -21,7 +25,22 @@ ENV RAILS_ENV="production" \
 FROM base as build
 
 # Install packages needed to build gems and node modules
-RUN apt-get install --no-install-recommends -y build-essential git libpq-dev node-gyp pkg-config python-is-python3
+RUN apt-get install --no-install-recommends -y \
+  build-essential \
+    git \
+    libpq-dev \
+    node-gyp \
+    pkg-config \
+    python-is-python3
+
+RUN set -eus; \
+    apt-get install -y --no-install-recommends \
+    shared-mime-info \
+    libpq-dev \
+    net-tools \
+    netcat \
+    htop \
+    strace
 
 # Install JavaScript dependencies
 ARG NODE_VERSION=20.12.1
