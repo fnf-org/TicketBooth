@@ -1,166 +1,204 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+# == Schema Information
+#
+# Table name: ticket_requests
+#
+#  id                      :bigint           not null, primary key
+#  address_line1           :string(200)
+#  address_line2           :string(200)
+#  admin_notes             :string(512)
+#  adults                  :integer          default(1), not null
+#  agrees_to_terms         :boolean
+#  cabins                  :integer          default(0), not null
+#  car_camping             :boolean
+#  car_camping_explanation :string(200)
+#  city                    :string(50)
+#  country_code            :string(4)
+#  donation                :decimal(8, 2)    default(0.0)
+#  early_arrival_passes    :integer          default(0), not null
+#  guests                  :text
+#  kids                    :integer          default(0), not null
+#  late_departure_passes   :integer          default(0), not null
+#  needs_assistance        :boolean          default(FALSE), not null
+#  notes                   :string(500)
+#  previous_contribution   :string(250)
+#  role                    :string           default("volunteer"), not null
+#  role_explanation        :string(200)
+#  special_price           :decimal(8, 2)
+#  state                   :string(50)
+#  status                  :string(1)        not null
+#  zip_code                :string(32)
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  event_id                :integer          not null
+#  user_id                 :integer          not null
+
+require 'rails_helper'
 
 describe TicketRequest do
-  it 'has a valid factory' do
-    TicketRequest.make.should be_valid
-  end
-
   describe 'validations' do
     subject { ticket_request }
 
     describe '#user' do
-      let(:ticket_request) { TicketRequest.make user: user }
+      let(:ticket_request) { build(:ticket_request, user:) }
 
       context 'when not present' do
         let(:user) { nil }
-        it { should_not be_valid }
+
+        it { is_expected.not_to be_valid }
       end
 
       context 'when user exists' do
-        let(:user) { User.make! }
-        it { should be_valid }
-      end
+        let(:user) { build(:user) }
 
-      context 'when user is new' do
-        let(:user) { User.make }
-        it { should be_valid }
+        it { is_expected.to be_valid }
       end
 
       context 'when the user has other ticket requests' do
-        let(:event) { Event.make! }
-        let(:user) { User.make! }
-        let(:ticket_request) { TicketRequest.make event: event, user: user }
+        let(:event) { create(:event) }
+        let(:user) { create(:user) }
+
+        let(:ticket_request) { build(:ticket_request, event:, user:) }
 
         context 'and they already have a request for this event' do
-          before do
-            TicketRequest.make! event: event, user: user
-          end
+          before { create(:ticket_request, event:, user:) }
 
-          # TODO: Decide whether we would rather allow editing of ticket
-          # requests instead of making multiple requests
-          it { should be_valid }
+          it { is_expected.to be_valid }
         end
 
         context 'and they have created requests only for other events' do
-          before do
-            TicketRequest.make user: user
-          end
+          before { create(:ticket_request, user:) }
 
-          it { should be_valid }
+          it { is_expected.to be_valid }
         end
       end
     end
 
     describe '#event' do
-      let(:ticket_request) { TicketRequest.make event: event }
+      let(:ticket_request) { build(:ticket_request, event:) }
 
       context 'when not present' do
         let(:event) { nil }
-        it { should_not be_valid }
+
+        it { is_expected.not_to be_valid }
       end
 
       context 'when event exists' do
-        let(:event) { Event.make! }
+        let(:event) { create(:event) }
 
-        it { should be_valid }
+        it { is_expected.to be_valid }
       end
     end
 
     describe '#adults' do
-      let(:ticket_request) { TicketRequest.make adults: adults }
+      let(:ticket_request) { build(:ticket_request, adults:) }
 
       context 'when not present' do
         let(:adults) { nil }
-        it { should_not be_valid }
+
+        it { is_expected.not_to be_valid }
       end
 
       context 'when not a number' do
         let(:adults) { 'not a number' }
-        it { should_not be_valid }
+
+        it { is_expected.not_to be_valid }
       end
 
       context 'when a number' do
         let(:adults) { 2 }
-        it { should be_valid }
+
+        it { is_expected.to be_valid }
       end
     end
 
     describe '#kids' do
-      let(:ticket_request) { TicketRequest.make kids: kids }
+      let(:ticket_request) { build(:ticket_request, kids:) }
 
       context 'when not present' do
         let(:kids) { nil }
-        it { should be_valid }
+
+        it { is_expected.to be_valid }
       end
 
       context 'when not a number' do
         let(:kids) { 'not a number' }
-        it { should_not be_valid }
+
+        it { is_expected.not_to be_valid }
       end
 
       context 'when a number' do
         let(:kids) { 2 }
-        it { should be_valid }
+
+        it { is_expected.to be_valid }
       end
     end
 
     describe '#cabins' do
-      let(:ticket_request) { TicketRequest.make cabins: cabins }
+      let(:ticket_request) { build(:ticket_request, cabins:) }
 
       context 'when not present' do
         let(:cabins) { nil }
-        it { should be_valid }
+
+        it { is_expected.to be_valid }
       end
 
       context 'when not a number' do
         let(:cabins) { 'not a number' }
-        it { should_not be_valid }
+
+        it { is_expected.not_to be_valid }
       end
 
       context 'when a number' do
         let(:cabins) { 2 }
-        it { should be_valid }
+
+        it { is_expected.to be_valid }
       end
     end
 
     describe '#notes' do
-      let(:ticket_request) { TicketRequest.make notes: notes }
+      let(:ticket_request) { build(:ticket_request, notes:) }
 
       context 'when not present' do
         let(:notes) { nil }
-        it { should be_valid }
+
+        it { is_expected.to be_valid }
       end
 
       context 'when longer than 500 characters' do
-        let(:notes) { Sham.string(501) }
-        it { should_not be_valid }
+        let(:notes) { Faker::Alphanumeric.alpha(number: 501) }
+
+        it { is_expected.not_to be_valid }
       end
 
       describe 'normalization' do
-        subject { TicketRequest.new }
-        it { should normalize(:notes) }
-        it { should normalize(:notes).from(' Blah ').to('Blah') }
-        it { should normalize(:notes).from('Blah  Blah').to('Blah Blah') }
+        subject { build(:ticket_request) }
+
+        it { is_expected.to normalize(:notes) }
+
+        it { is_expected.to normalize(:notes).from(' Blah ').to('Blah') }
+
+        it { is_expected.to normalize(:notes).from('Blah  Blah').to('Blah Blah') }
       end
     end
 
     describe '#special_price' do
-      let(:ticket_request) { TicketRequest.make special_price: special_price }
+      let(:ticket_request) { create(:ticket_request, special_price:) }
 
       context 'when not present' do
         let(:special_price) { nil }
-        it { should be_valid }
+
+        it { is_expected.to be_valid }
       end
     end
   end
 
   describe '#create' do
-    let(:ticket_request) { TicketRequest.make! event: event }
+    let(:ticket_request) { create(:ticket_request, event:) }
 
     context 'when the event requires approval for tickets' do
-      let(:event) { Event.make! tickets_require_approval: true }
+      let(:event) { create(:event, tickets_require_approval: true) }
 
       it 'sets the default status to pending' do
         ticket_request.status.should == TicketRequest::STATUS_PENDING
@@ -168,7 +206,7 @@ describe TicketRequest do
     end
 
     context 'when the event does not require approval for tickets' do
-      let(:event) { Event.make! tickets_require_approval: false }
+      let(:event) { create(:event, tickets_require_approval: false) }
 
       it 'sets the default status to awaiting payment' do
         ticket_request.status.should == TicketRequest::STATUS_AWAITING_PAYMENT
@@ -177,65 +215,74 @@ describe TicketRequest do
   end
 
   describe '#can_view?' do
-    let(:requester) { User.make! }
-    subject { TicketRequest.make(user: requester).can_view?(user) }
+    subject { create(:ticket_request, user: requester).can_view?(user) }
+
+    let(:requester) { create(:user) }
 
     context 'when the user is a site admin' do
-      let(:user) { User.make! :site_admin }
-      it { should be true }
+      let(:user) { create(:site_admin).user }
+
+      it { is_expected.to be true }
     end
 
     context 'when the user is the ticket request creator' do
       let(:user) { requester }
-      it { should be true }
+
+      it { is_expected.to be true }
     end
 
     context 'when the user is anybody else' do
-      let(:user) { User.make! }
-      it { should be false }
+      let(:user) { create(:user) }
+
+      it { is_expected.to be false }
     end
   end
 
   describe '#pending?' do
     context 'when the ticket request is pending' do
-      subject { TicketRequest.make(:pending).pending? }
-      it { should be true }
+      subject { create(:ticket_request, status: TicketRequest::STATUS_PENDING) }
+
+      it { is_expected.to be_pending }
     end
   end
 
   describe '#approved?' do
     context 'when the ticket request is approved' do
-      subject { TicketRequest.make(:approved).approved? }
-      it { should be true }
+      subject { create(:ticket_request, status: TicketRequest::STATUS_AWAITING_PAYMENT) }
+
+      it { is_expected.to be_approved }
     end
   end
 
   describe '#approve' do
-    subject { TicketRequest.make(:pending, special_price: price) }
+    subject { create(:ticket_request, special_price: price, status: TicketRequest::STATUS_PENDING) }
 
-    before do
-      subject.approve
-    end
+    before { subject.approve }
 
     context 'when the ticket request has a price of zero dollars' do
       let(:price) { 0 }
-      it { should be_completed }
+
+      it { is_expected.to be_completed }
     end
 
     context 'when the ticket request has a price greater than zero dollars' do
       let(:price) { 10 }
-      it { should be_approved }
+
+      it { is_expected.to be_approved }
     end
   end
 
   describe '#declined?' do
     context 'when the ticket request is declined' do
-      subject { TicketRequest.make(:declined).declined? }
-      it { should be true }
+      subject { build(:ticket_request, status: TicketRequest::STATUS_DECLINED) }
+
+      it { is_expected.to be_declined }
     end
   end
 
   describe '#price' do
+    subject { ticket_request.price }
+
     let(:adult_price) { 10 }
     let(:adults) { 2 }
     let(:kid_price) { nil }
@@ -244,52 +291,54 @@ describe TicketRequest do
     let(:cabins) { nil }
     let(:special_price) { nil }
     let(:event) do
-      Event.make!(
-        adult_ticket_price: adult_price,
-        kid_ticket_price: kid_price,
-        cabin_price: cabin_price
-      )
+      build(:event,
+            adult_ticket_price: adult_price,
+            kid_ticket_price: kid_price,
+            cabin_price:)
     end
     let(:ticket_request) do
-      TicketRequest.make(
-        event: event,
-        adults: adults,
-        kids: kids,
-        cabins: cabins,
-        special_price: special_price
-      )
+      build(:ticket_request,
+            event:,
+            adults:,
+            kids:,
+            cabins:,
+            special_price:)
     end
-    subject { ticket_request.price }
 
     context 'when kid ticket price is not set on the event' do
-      it { should == adult_price * adults }
+      it { is_expected.to eql(adult_price * adults) }
     end
 
     context 'when the ticket request includes kids' do
       let(:kids) { 2 }
       let(:kid_price) { 10 }
-      it { should == (adult_price * adults) + (kid_price * kids) }
+
+      it { is_expected.to eql((adult_price * adults) + (kid_price * kids)) }
     end
 
     context 'when the ticket request does not include kids' do
       let(:kids) { nil }
-      it { should == adult_price * adults }
+
+      it { is_expected.to eql(adult_price * adults) }
     end
 
     context 'when the ticket request includes cabins' do
       let(:cabins) { 2 }
       let(:cabin_price) { 100 }
-      it { should == (adult_price * adults) + (cabin_price * cabins) }
+
+      it { is_expected.to eql((adult_price * adults) + (cabin_price * cabins)) }
     end
 
     context 'when the ticket request does not include cabins' do
       let(:cabins) { nil }
-      it { should == adult_price * adults }
+
+      it { is_expected.to eql(adult_price * adults) }
     end
 
     context 'when a special price is set' do
       let(:special_price) { BigDecimal(99.99, 10) }
-      it { should == special_price }
+
+      it { is_expected.to eql(special_price) }
     end
 
     context 'when custom price rules are defined' do
@@ -298,26 +347,28 @@ describe TicketRequest do
       let(:custom_price) { 5 }
 
       before do
-        PriceRule::KidsEqualTo.create! event: event,
-                                       trigger_value: trigger_value,
+        PriceRule::KidsEqualTo.create! event:,
+                                       trigger_value:,
                                        price: custom_price
       end
 
       context 'and the rule does not apply' do
         let(:kids) { trigger_value - 1 }
-        it { should == (adult_price * adults) + (kid_price * kids) }
+
+        it { is_expected.to eql((adult_price * adults) + (kid_price * kids)) }
       end
 
       context 'and the rule applies' do
         let(:kids) { trigger_value }
-        it { should == (adult_price * adults) + 5 }
+
+        it { is_expected.to eql((adult_price * adults) + 5) }
       end
     end
   end
 
   describe '#total_tickets' do
-    it 'is the sum of the number of adults and children' do
-      TicketRequest.make(adults: 3, kids: 2).total_tickets == 5
-    end
+    subject(:ticket_request) { create(:ticket_request, adults: 3, kids: 2) }
+
+    its(:total_tickets) { is_expected.to be(5) }
   end
 end

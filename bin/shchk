@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# vim: ft=bash
+
+[[ -d ${HOME}/.bashmatic ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install -q" ;
+source "${HOME}/.bashmatic/init.sh" 2>/dev/null
+
+command -v shellcheck >/dev/null || brew install shellcheck
+
+shellcheck -a --color -x bin/boot-up bin/start
+
+code=$?
+
+if [[ ${code} -eq 0 ]]; then
+  success "ShellCheck PASSED"
+else 
+  abort "ShellChecl FAILED"
+fi

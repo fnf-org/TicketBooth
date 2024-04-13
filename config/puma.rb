@@ -18,8 +18,9 @@ if @env == 'development'
   threads 1, 1
   workers 1
 else
-  threads 2, 2
-  workers [[(2 * Etc.nprocessors), 12].min, 6].max
+  workers Integer(ENV['WEB_CONCURRENCY'] || 2)
+  threads_count = Integer(ENV['RAILS_MAX_THREADS'] || 2)
+  threads threads_count, threads_count
 end
 
 tag 'ticket-booth'
@@ -31,14 +32,14 @@ DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S %z'
 
 log_requests
 log_formatter do |str|
-  "#{format '%5d', $PROCESS_ID} | #{Time.now.strftime DATETIME_FORMAT} : |puma| #{str}"
+  "#{format '%5d', $PROCESS_ID} | #{Time.zone.now.strftime DATETIME_FORMAT} : |puma| #{str}"
 end
 
 require 'newrelic_rpm'
 
 lowlevel_error_handler do |exception|
   begin
-    ::NewRelic::Agent.notice_error(exception)
+    NewRelic::Agent.notice_error(exception)
   rescue StandardError
     nil
   end

@@ -1,73 +1,44 @@
 # frozen_string_literal: true
 
-require File.expand_path('boot', __dir__)
+require_relative 'boot'
 
-require 'rails/all'
+require 'rails'
+# Pick the frameworks you want:
+require 'active_model/railtie'
+require 'active_job/railtie'
+require 'active_record/railtie'
+require 'active_storage/engine'
+require 'action_controller/railtie'
+require 'action_mailer/railtie'
+# require "action_mailbox/engine"
+require 'action_text/engine'
+require 'action_view/railtie'
+require 'action_cable/engine'
+# require "rails/test_unit/railtie"
 
-if defined?(Bundler)
-  # If you precompile assets before deploying to production, use this line
-  Bundler.require(:default, Rails.env)
-end
+# Require the gems listed in Gemfile, including any gems
+# you've limited to :test, :development, or :production.
+Bundler.require(*Rails.groups)
 
-# @description Main Application Class for the Ticket Booth
 module TicketBooth
-  class Application < ::Rails::Application
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
+  class Application < Rails::Application
+    # Initialize configuration defaults for originally generated Rails version.
+    config.load_defaults 7.1
 
-    # Custom directories with classes and modules you want to be autoloadable.
-    # config.autoload_paths += %W(#{config.root}/extras)
+    # Please, add to the `ignore` list any other `lib` subdirectories that do
+    # not contain `.rb` files, or that should not be reloaded or eager loaded.
+    # Common ones are `templates`, `generators`, or `middleware`, for example.
+    config.autoload_lib(ignore: %w[assets tasks])
 
-    # Only load the plugins named here, in the order given (default is alphabetical).
-    # :all can be used as a placeholder for all plugins not explicitly named.
-    # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
+    # Configuration for the application, engines, and railties goes here.
+    #
+    # These settings can be overridden in specific environments using the files
+    # in config/environments, which are processed later.
+    #
+    config.time_zone = 'Pacific Time (US & Canada)'
+    config.eager_load_paths << Rails.root.join('app/classes')
 
-    # Activate observers that should always be running.
-    # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
-
-    # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
-    # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
-    # config.time_zone = 'Central Time (US & Canada)'
-
-    # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
-    # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
-    # config.i18n.default_locale = :de
-
-    # Configure the default encoding used in templates for Ruby 1.9.
-    config.encoding = 'utf-8'
-
-    # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password]
-
-    # Enable escaping HTML in JSON.
-    config.active_support.escape_html_entities_in_json = true
-
-    # Use SQL instead of Active Record's schema dumper when creating the database.
-    # This is necessary if your schema can't be completely dumped by the schema dumper,
-    # like if you have constraints or database-specific column types
-    config.active_record.schema_format = :sql
-
-    config.active_record.raise_in_transactional_callbacks = true
-
-    # Enable the asset pipeline
-    config.assets.enabled = true
-
-    # Version of your assets, change this if you want to expire all your assets
-    config.assets.version = '1.0'
-
-    # Force application to not access DB or load models when precompiling assets
-    config.assets.initialize_on_precompile = false
-
-    config.action_mailer.delivery_method = :smtp
-    config.action_mailer.smtp_settings = {
-      address: ENV['SMTP_ADDRESS'],
-      port: ENV['SMTP_PORT'],
-      domain: ENV['SMTP_DOMAIN'],
-      user_name: ENV['SMTP_USERNAME'],
-      password: ENV['SMTP_PASSWORD'],
-      authentication: :plain,
-      enable_starttls_auto: true
-    }
+    # Don't generate system test files.
+    config.generators.system_tests = nil
   end
 end

@@ -11,6 +11,8 @@ data:
   ACTION_MAILER_DEFAULT_FROM: "{{ .Values.ticketsEmailAddress }}"
   ACTION_MAILER_DEFAULT_TO: "{{ .Values.ticketsEmailAddress }}"
   STRIPE_PUBLIC_KEY: "{{ .Values.stripePublicKey }}"
+  WEB_CONCURRENCY: "{{ .Values.pumaConcurrency }}"
+  RAILS_MAX_THREADS: "{{ .Values.pumaThreads }}"
 ---
 apiVersion: v1
 kind: Secret

@@ -1,44 +1,76 @@
-FROM ruby:2.5.8-slim
+# syntax = docker/dockerfile:1
 
-# Needed by Ruby to process UTF8-encoded files
-ENV LANG C.UTF-8
+# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
+ARG RUBY_VERSION=3.2.3
+FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
 
-RUN set -eus; \
-    apt-get update -qq; \
-    apt-get install -y --no-install-recommends \
-    git-all \
-    nodejs \
-    shared-mime-info \
-    build-essential \
-    libpq-dev \
-    libxml2-dev \
-    libxslt1-dev \
-    libjemalloc2 \
-    postgresql-client \
-    iputils-ping \
-    net-tools \
-    netcat \
-    htop \
-    strace \
-    python-ptrace \
-    pg-activity \
-    ; \
-    apt-get clean; \
-    rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*;
+# Rails app lives here
+WORKDIR /rails
 
-# @see https://engineering.binti.com/jemalloc-with-ruby-and-docker/
-ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
+# Install base packages
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client
 
-WORKDIR /app
+# Set production environment
+ENV RAILS_ENV="production" \
+    BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development"
+
+# Throw-away build stage to reduce size of final image
+FROM base as build
+
+# Install packages needed to build gems and node modules
+RUN apt-get install --no-install-recommends -y build-essential git libpq-dev node-gyp pkg-config python-is-python3
+
+# Install JavaScript dependencies
+ARG NODE_VERSION=20.12.1
+ARG YARN_VERSION=4.1.1
+ENV PATH=/usr/local/node/bin:$PATH
+RUN curl -sL https://github.com/nodenv/node-build/archive/master.tar.gz | tar xz -C /tmp/ && \
+    /tmp/node-build-master/bin/node-build "${NODE_VERSION}" /usr/local/node && \
+    npm install -g yarn@$YARN_VERSION && \
+    rm -rf /tmp/node-build-master
+
+# Install application gems
 COPY Gemfile Gemfile.lock ./
-ENV RAILS_ENV="${RAIL_ENV:-"production"}"
-RUN gem update --system -N
-RUN gem install bundler -N --version 1.17.3
-RUN bundle install -j 12 --deployment --without "test development"
+RUN bundle install && \
+    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
+    bundle exec bootsnap precompile --gemfile
 
-COPY . /app
+# Install node modules
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 
-RUN SECRET_KEY_BASE=1 bundle exec rake assets:precompile
+# Copy application code
+COPY . .
 
+# Precompile bootsnap code for faster boot times
+RUN bundle exec bootsnap precompile app/ lib/
+
+# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+
+
+# Final stage for app image
+FROM base
+
+# Clean up installation packages to reduce image size
+RUN rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# Copy built artifacts: gems, application
+COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
+COPY --from=build /rails /rails
+
+# Run and own only the runtime files as a non-root user for security
+RUN groupadd --system --gid 1000 rails && \
+    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
+    chown -R rails:rails db log storage tmp
+USER 1000:1000
+
+# Entrypoint prepares the database.
+ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+
+# Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD "./entrypoint.sh"
+CMD ["./bin/rails", "server"]

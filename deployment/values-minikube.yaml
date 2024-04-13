@@ -1,5 +1,5 @@
 image:
-  repository: tickets
+  repository: localhost/tickets
   pullPolicy: Never
   tag: "latest"
 
@@ -15,6 +15,8 @@ ticketsHost: "localhost"
 ticketsEmailAddress: "tickets@fnf.org"
 stripeSecretKey: ""
 stripePublicKey: ""
+pumaConcurrency: 2
+pumaThreads: 2
 
 postgresql:
   auth:
@@ -22,3 +24,23 @@ postgresql:
     username: ticketsuser
     password: "test"
     postgresPassword: "test"
+  primary:
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 768Mi
+  limits:
+    cpu: 1000m
+    memory: 1024Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+

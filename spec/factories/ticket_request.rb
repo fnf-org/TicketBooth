@@ -2,25 +2,26 @@
 
 FactoryBot.define do
   factory :ticket_request do
-    adults { Random.rand(1..4) }
-    kids { Random.rand(0..2) }
-    cabins { Random.rand(0..2) }
+    adults { event&.max_adult_tickets_per_request || 1 }
+    kids { Random.rand(2) }
+    cabins { Random.rand(2) }
     needs_assistance { [true, false].sample }
-    notes { Sham.words(10) }
-    agrees_to_terms true
+    notes { Faker::Lorem.paragraph }
+    agrees_to_terms { true }
+
     user
     event
 
-    trait :pending do |_ticket_request|
-      status TicketRequest::STATUS_PENDING
+    trait :pending do |*|
+      status { TicketRequest::STATUS_PENDING }
     end
 
-    trait :approved do |_ticket_request|
-      status TicketRequest::STATUS_AWAITING_PAYMENT
+    trait :approved do |*|
+      status { TicketRequest::STATUS_AWAITING_PAYMENT }
     end
 
-    trait :declined do |_ticket_request|
-      status TicketRequest::STATUS_DECLINED
+    trait :declined do |*|
+      status { TicketRequest::STATUS_DECLINED }
     end
   end
 end

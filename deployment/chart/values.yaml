@@ -84,6 +84,8 @@ ticketsHost: ""
 ticketsEmailAddress: ""
 stripeSecretKey: ""
 stripePublicKey: ""
+pumaConcurrency: 2
+pumaThreads: 2
 
 postgresql:
   auth:

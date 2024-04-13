@@ -22,9 +22,9 @@
 
 %dl.dl-horizontal
   %dt Start Time
-  %dd= @event.start_time.localtime.to_s(:friendly)
+  %dd= @event.start_time.localtime.to_formatted_s(:friendly)
   %dt End Time
-  %dd= @event.end_time.localtime.to_s(:friendly)
+  %dd= @event.end_time.localtime.to_formatted_s(:friendly)
   %dt Adult Ticket Price
   %dd
     = number_to_currency(@event.adult_ticket_price)
@@ -57,9 +57,10 @@
   %span.help-inline
     Share this link so people can create ticket requests
   %code
-    = new_event_ticket_request_url(@event)
+    = new_event_ticket_request_path(@event)
 
-.well
+.clear-right
+.container-fluid
   %h2 Event Admins
   %p
     The following individuals have administrative privileges for this event.

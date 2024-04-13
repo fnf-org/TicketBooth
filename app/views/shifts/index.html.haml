@@ -30,16 +30,16 @@
       - schedule_matrix.each do |cells|
         %tr
           %td.time-column
-            = cur_time.localtime.to_s(:dhmm)
+            = cur_time.localtime.to_formatted_s(:dhmm)
           - cells.each do |cell|
             %td{ rowspan: cell[:rowspan], class: ('nothing' unless cell[:time_slot]) }
               - time_slot = cell[:time_slot]
               - if time_slot
                 %p.text-center
                   %span.muted
-                    = time_slot.start_time.localtime.to_s(:dhmm)
+                    = time_slot.start_time.localtime.to_formatted_s(:dhmm)
                     &mdash;
-                    = time_slot.end_time.localtime.to_s(:hmm)
+                    = time_slot.end_time.localtime.to_formatted_s(:hmm)
                     %br
                     %small= time_slot.job.name
                     %br

@@ -17,6 +17,9 @@
   float: right;
 }
 
-.event-preview {
-  float: right;
+img.event-preview {
+  border: 5px solid #999;
+  margin: 0 30px;
+  border-radius: 20px;
+  float: right !important;
 }

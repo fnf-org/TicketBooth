@@ -5,10 +5,10 @@
 
   %p.lead
     %i.icon-calendar
-    = @event.start_time.localtime.to_s(:month_day)
+    = @event.start_time.localtime.to_formatted_s(:month_day)
     &ndash;
     = succeed ',' do
-      = @event.end_time.localtime.to_s(:month_day)
+      = @event.end_time.localtime.to_formatted_s(:month_day)
     = @event.end_time.year
 
   %p

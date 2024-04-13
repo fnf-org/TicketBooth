@@ -1,35 +1,24 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'rails_helper'
 
 describe PaymentMailer do
-  let(:user) { User.make! }
-  let(:event) { Event.make! name: 'Test Event' }
-
-  let(:ticket_request) do
-    TicketRequest.make! event: event,
-                        user: user
-  end
-
-  let(:payment) { Payment.make! ticket_request: ticket_request }
+  let(:ticket_request) { create(:ticket_request) }
+  let(:user) { ticket_request.user }
+  let(:event) { ticket_request.event }
+  let(:payment) { create(:payment, ticket_request:) }
 
   describe '#payment_received' do
-    let(:mail) { described_class.payment_received(payment) }
+    subject(:mail) { described_class.payment_received(payment) }
 
-    it 'renders the subject' do
-      mail.subject.should == 'Your payment for Test Event has been received'
-    end
+    let(:expected_subject) { "Your payment for #{event.name} has been received" }
 
-    it 'sends to the owner of the ticket request' do
-      mail.to.should == [user.email]
-    end
+    its(:subject) { is_expected.to eql(expected_subject) }
 
-    it "includes the user's name" do
-      mail.body.encoded.should match(user.first_name)
-    end
+    its(:to) { is_expected.to eql([user.email]) }
 
-    it "includes the event's name" do
-      mail.body.encoded.should match('Test Event')
-    end
+    its('body.encoded') { is_expected.to match(user.first_name) }
+
+    its('body.encoded') { is_expected.to match(event.name) }
   end
 end

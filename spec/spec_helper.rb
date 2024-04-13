@@ -1,17 +1,14 @@
 # frozen_string_literal: true
 
-ENV['RAILS_ENV'] ||= 'test'
+ENV['RAILS_ENV'] = 'test'
 
-if ENV['RAILS_ENV'] == 'test'
-  require 'simplecov'
-  require 'codecov' if ENV['CODECOV_TOKEN']
-  SimpleCov.start 'rails'
-end
+require 'simplecov'
+SimpleCov.start 'rails'
 
-require File.expand_path('../config/environment', __dir__)
-require 'rspec/rails'
-
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
+require 'rspec'
+require 'rspec/its'
+require 'timeout'
+require 'faker'
 
 RSpec.configure do |config|
   config.expect_with(:rspec) do |c|

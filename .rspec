@@ -1,4 +1,5 @@
 --format progress
 --color
 --order rand
---profile 2
+--profile 5
+--require rails_helper

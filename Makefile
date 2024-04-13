@@ -28,6 +28,7 @@ MAKEFILE_PATH 	:= $(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_DIR 	:= $(shell ( cd .; pwd -P ) )
 BASHMATIC_HOME  := $(shell echo $(CURRENT_DIR)/dev/bashmatic)
 MAKE_ENV	:= .make.env
+DEV_DB          := $(shell grep database config/database.yml | grep development | awk '{print $$2}' | sed 's/^$$/ticketing_app_development/g')
 
 help:	   	## Prints help message auto-generated from the comments.
 		@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' | sort
@@ -64,3 +65,34 @@ boot: 		## Boots Rails sserver in the whatever RAILS_ENV is set to — eg: make 
 docker-image:	## Builds a docker image named 'tickets'
 		docker build -t tickets .
 
+shellcheck:	## Run shellcheck on the shell files
+		$(CURRENT_DIR)/bin/shchk	
+
+dev-install:    ## Optional install of VIM configuration and other dev tools
+		$(CURRENT_DIR)/development/dev-install
+
+rebuild-dev-db: development ## Rebuild and re-seed the dev database
+		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Dropping dev database $(DEV_DB)...$(clear)\n"
+		@dropdb $(DEV_DB) || true
+		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Creating dev database...$(clear)\n"
+		@rails db:create
+		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Migrating dev database...$(clear)\n"
+		@rails db:migrate
+		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Seeding dev database...$(clear)\n"
+		rails db:seed
+
+assets:    	## Build JS & CSS assets
+		@yarn install
+		@yarn run build
+		@yarn run build:css
+
+dev:            development assets ## Start the development environment
+		@bash -c "source $(MAKE_ENV); bundle exec foreman start -f Procfile.dev"
+
+		
+ci: 		## Run all tests and linters as if on CI
+		bin/rails db:migrate
+		bin/rails db:test:prepare
+		bundle exec rspec
+		bundle exec rubocop
+		bin/shchk

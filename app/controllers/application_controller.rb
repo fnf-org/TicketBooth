@@ -2,6 +2,8 @@
 
 # General controller configuration and helpers.
 class ApplicationController < ActionController::Base
+  # allow_browser versions: :modern
+
   protect_from_forgery
 
   # Allow user to log in via authentication token
@@ -20,13 +22,19 @@ class ApplicationController < ActionController::Base
     redirect_to new_event_ticket_request_path(@event) unless @event.admin?(current_user)
   end
 
+  def require_logged_in_user
+    unless current_user&.id
+      redirect_to new_user_session_path
+    end
+  end
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
   end
 
   def authenticate_user_from_token!
     user_id = params[:user_id].presence
-    user    = User.find_by_id(user_id)
+    user    = user_id ? User.find_by(id: user_id) : nil
 
     if user && Devise.secure_compare(user.authentication_token, params[:user_token])
       user.update_attribute(:authentication_token, nil) # One-time use

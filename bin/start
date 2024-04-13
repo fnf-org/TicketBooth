@@ -1,11 +1,21 @@
 #!/bin/bash
+[[ -z ${BASHMATIC_HOME} ]] && export BASHMATIC_HOME="${HOME}/.bashmatic"
+[[ -d ${BASHMATIC_HOME} ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install"
+[[ -d ${BASHMATIC_HOME} ]] || {
+  echo "Can't find Bashmatic, even after attempting an installation."
+  echo "Please install Bashmatic with the following command line:"
+  echo 'bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install"'
+  exit 1
+}
 
-set -euo pipefail
+source "${BASHMATIC_HOME}/init.sh"
+output.constrain-screen-width 100
+run.set-all abort-on-error
 
 # Magic: if you create a group named "docker" the Docker daemon will
 # automatically set the group of the daemon's socket to "docker". Thus we create
 # a group with the same GID as the app's group.
-groupadd --non-unique -g $(id -g) docker
+run "groupadd --non-unique -g \"\$(id -g)\" docker"
 
 # Start daemon and wait for it to be ready
 dockerd \
@@ -26,11 +36,13 @@ if ! docker info >/dev/null 2>&1; then
 fi
 
 # Install gems if necessary
-bundle check >/dev/null || bundle install
+run "bundle check >/dev/null || bundle install"
 
 exit_handler="trap 'docker-compose stop' EXIT INT QUIT TERM"
 eval "$exit_handler"
-docker-compose pull
-docker-compose up -d postgres
+run "docker-compose pull"
+run.set-next show-output-on
+run "docker-compose up -d postgres"
 
 exec bash --rcfile <(echo "$exit_handler") -il
+?

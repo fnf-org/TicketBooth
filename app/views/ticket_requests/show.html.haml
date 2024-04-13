@@ -22,7 +22,7 @@
 
 %p
   %b Date Requested:
-  = @ticket_request.created_at.localtime.to_s(:friendly)
+  = @ticket_request.created_at.localtime.to_formatted_s(:friendly)
 
 %p
   %b Status:

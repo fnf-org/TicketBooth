@@ -1,9 +1,43 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: users
+#
+#  id                     :bigint           not null, primary key
+#  authentication_token   :string(64)
+#  confirmation_sent_at   :datetime
+#  confirmation_token     :string
+#  confirmed_at           :datetime
+#  current_sign_in_at     :datetime
+#  current_sign_in_ip     :string
+#  email                  :string           not null
+#  encrypted_password     :string           not null
+#  failed_attempts        :integer          default(0)
+#  last_sign_in_at        :datetime
+#  last_sign_in_ip        :string
+#  locked_at              :datetime
+#  name                   :string(70)       not null
+#  remember_created_at    :datetime
+#  reset_password_sent_at :datetime
+#  reset_password_token   :string
+#  sign_in_count          :integer          default(0)
+#  unconfirmed_email      :string
+#  unlock_token           :string
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#
+# Indexes
+#
+#  index_users_on_confirmation_token    (confirmation_token) UNIQUE
+#  index_users_on_email                 (email) UNIQUE
+#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_unlock_token          (unlock_token) UNIQUE
+#
 require 'securerandom'
 
 # A real-life living breathing human.
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :token_authenticatable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :lockable,
@@ -18,14 +52,11 @@ class User < ActiveRecord::Base
   MAX_EMAIL_LENGTH = 254 # Based on RFC 3696; see http://isemail.info/about
   MAX_PASSWORD_LENGTH = 255
 
-  # Setup accessible (or protected) attributes for your model
-  attr_accessible :name, :email, :password, :remember_me
-
   normalize_attributes :name, :email
 
   validates :name, presence: true,
                    length: { maximum: MAX_NAME_LENGTH },
-                   format: { with: /\A[^\s]+\s[^\s]+(\s[^\s]+)*\z/i,
+                   format: { with: /\A\S+\s\S+(\s\S+)*\z/i,
                              message: 'must contain first and last name' }
 
   validates :email, presence: true,
@@ -37,11 +68,11 @@ class User < ActiveRecord::Base
   end
 
   def site_admin?
-    !site_admin.nil?
+    site_admin.present?
   end
 
   def event_admin?
-    event_admins.exists?
+    event_admins.present? && !event_admins.empty?
   end
 
   def generate_auth_token!
