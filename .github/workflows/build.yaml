@@ -3,10 +3,17 @@ name: Create and publish a Docker image
 on:
   push:
     branches: [ 'release', 'releases/**']
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build'
+        required: true
+        default: 'main'
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+
 
 jobs:
   build-and-push-image:
@@ -18,6 +25,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.branch || github.ref }}
 
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
@@ -31,6 +40,16 @@ jobs:
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          # In order to support deploying multiple versions that don't stomp on
+          # each other some new tagging rules are created.
+          # The tagging below follows:
+          # - When a properly formatted tag is created, as in a release, put the semver version x.y.z in the tag
+          # - If a build is triggered manually, then mark the branch and short sha in the tag
+          # - When the default branch is updated, create a release candiate tag
+          tags: |
+            type=semver,pattern={{version}}
+            type=sha,prefix={{branch || tag}}-{{sha}},event=workflow_dispatch
+            type=raw,value={{date 'YYYYMMDD-HHmm' tz='America/Los_Angeles'}}-rc,event=branch,branch={{is_default_branch}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
