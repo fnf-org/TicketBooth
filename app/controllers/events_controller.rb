@@ -114,11 +114,11 @@ class EventsController < ApplicationController
   end
 
   def populate_permitted_params_event(permitted_parameters)
-    permitted_parameters[:start_time] = Time.from_picker(permitted_parameters.delete(:start_time))
-    permitted_parameters[:end_time] = Time.from_picker(permitted_parameters.delete(:end_time))
-    permitted_parameters[:ticket_sales_start_time] = Time.from_picker(permitted_parameters.delete(:ticket_sales_start_time))
-    permitted_parameters[:ticket_sales_end_time] = Time.from_picker(permitted_parameters.delete(:ticket_sales_end_time))
-    permitted_parameters[:ticket_requests_end_time] = Time.from_picker(permitted_parameters.delete(:ticket_requests_end_time))
+    permitted_parameters[:start_time] = TimeHelper.from_picker(permitted_parameters.delete(:start_time))
+    permitted_parameters[:end_time] = TimeHelper.from_picker(permitted_parameters.delete(:end_time))
+    permitted_parameters[:ticket_sales_start_time] = TimeHelper.from_picker(permitted_parameters.delete(:ticket_sales_start_time))
+    permitted_parameters[:ticket_sales_end_time] = TimeHelper.from_picker(permitted_parameters.delete(:ticket_sales_end_time))
+    permitted_parameters[:ticket_requests_end_time] = TimeHelper.from_picker(permitted_parameters.delete(:ticket_requests_end_time))
     permitted_parameters
   end
 

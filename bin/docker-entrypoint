@@ -1,13 +1,46 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+
+set -e
+
+if [[ -z $RAILS_ENV ]]; then
+  echo "Please set RAILS_ENV before invoking this script."
+  exit 1
+fi
+#
+# Discourse Settings to optimize Garbage Collection
+export RUBY_GC_HEAP_INIT_SLOTS=997339
+export RUBY_GC_HEAP_FREE_SLOTS=626600
+export RUBY_GC_HEAP_GROWTH_FACTOR=1.03
+export RUBY_GC_HEAP_GROWTH_MAX_SLOTS=88792
+export RUBY_GC_HEAP_OLDOBJECT_LIMIT_FACTOR=2.4
+export RUBY_GC_MALLOC_LIMIT=34393793
+export RUBY_GC_MALLOC_LIMIT_MAX=41272552
+export RUBY_GC_MALLOC_LIMIT_GROWTH_FACTOR=1.32
+export RUBY_GC_OLDMALLOC_LIMIT=39339204
+export RUBY_GC_OLDMALLOC_LIMIT_MAX=47207045
+export RUBY_GC_OLDMALLOC_LIMIT_GROWTH_FACTOR=1.2
 
 # Enable jemalloc for reduced memory usage and latency.
-if [ -z "${LD_PRELOAD+x}" ] && [ -f /usr/lib/*/libjemalloc.so.2 ]; then
+if [[ -z "${LD_PRELOAD+x}" ]] && [[ -f /usr/lib/*/libjemalloc.so.2 ]]; then
   export LD_PRELOAD="$(echo /usr/lib/*/libjemalloc.so.2)"
 fi
 
 # If running the rails server then create or migrate existing database
-if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
+if [[ "${1}" == "./bin/rails" ]] && [[ "${2}" == "server" ]]; then
   ./bin/rails db:prepare
+elif [[ "${1}" == "migrate" ]]; then
+  ./bin/rails db:migrate
 fi
 
+# https://www.mikeperham.com/2018/04/25/taming-rails-memory-bloat/
+export MALLOC_ARENA_MAX=2
+
+if [[ -n ${TICKET_DB_HOST} ]]; then
+  export DATABASE_URL="postgres://${TICKET_DB_USER}:${TICKET_DB_PASSWORD}@${TICKET_DB_HOST}:${TICKET_DB_PORT}/${TICKET_DB_NAME}?"
+else
+  export DATABASE_URL="postgres://postgres:@localhost:5432/ticketing_app_production"
+fi
+
+RAILS_ENV=${RAILS_ENV} bundle exec rails s -p 3000 -b '0.0.0.0'
 exec "${@}"
+

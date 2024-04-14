@@ -2,8 +2,8 @@
 
 ENV['RAILS_ENV'] = 'test'
 
-require 'simplecov'
-SimpleCov.start 'rails'
+# require 'simplecov'
+# SimpleCov.start 'rails'
 
 require 'rspec'
 require 'rspec/its'

@@ -17,7 +17,7 @@
 #  index_price_rules_on_event_id  (event_id)
 #
 class PriceRule
-  class KidsEqualTo < PriceRule
+  class KidsEqualTo < ::PriceRule
     def calc_price(ticket_request)
       price if ticket_request.kids == trigger_value
     end

@@ -471,6 +471,7 @@ PLATFORMS
 
 DEPENDENCIES
   accept_values_for
+  activesupport (= 7.1.3.2)
   annotate
   asciidoctor
   attribute_normalizer

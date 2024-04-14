@@ -2,6 +2,15 @@
 
 require_relative 'boot'
 
+require 'time'
+class Time
+  # Ruby 1.9 has Date#xmlschema which converts to a string without the time component.
+  # Moved the following line out of class Date.
+  unless method_defined?(:xmlschema)
+    def xmlschema; end
+  end
+end
+
 require 'rails'
 # Pick the frameworks you want:
 require 'active_model/railtie'

@@ -65,8 +65,8 @@ class JobsController < ApplicationController
   def create_time_slots
     return unless params[:start_time]
 
-    start_time = Time.from_picker(params.delete(:start_time))
-    end_time = Time.from_picker(params.delete(:end_time))
+    start_time = TimeHelper.from_picker(params.delete(:start_time))
+    end_time = TimeHelper.from_picker(params.delete(:end_time))
 
     return if end_time < start_time # Prevent infinite loop
 
