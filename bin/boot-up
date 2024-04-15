@@ -47,7 +47,7 @@ run "bundle install -j 12"
 h1 "Running Migrations..."
 run "bin/rails db:migrate"
 run "bin/rails db:seed"
-run "bin/rails test:prepare"
+run "bundle exec rake db:test:prepare"
 
 h1 "Starting Rails Server..."
 run.set-next show-output-on
