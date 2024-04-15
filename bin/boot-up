@@ -24,12 +24,6 @@ run.set-all abort-on-error
 run "brew services start postgresql@16"
 run "brew services start memcached"
 
-command -V direnv >/dev/null && {
-  h1 "Setting up direnv..."
-  eval "$(direnv hook bash)" # this script evaluates within BASH
-  run "direnv allow ."
-}
-
 h1 "Installing Dependencies"
 rbenv install -s "$(cat .ruby-version)"
 
@@ -40,6 +34,12 @@ run "volta install node@lts"
 run "volta install yarn@4.1.1"
 run "volta pin node"
 run "volta pin yarn"
+
+command -V direnv >/dev/null && {
+  h1 "Setting up direnv..."
+  eval "$(direnv hook bash)" # this script evaluates within BASH
+  run "direnv allow ."
+}
 
 run "yarn install"
 run "yarn run build"
