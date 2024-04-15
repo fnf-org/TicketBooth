@@ -37,6 +37,13 @@ eval "$(rbenv init -)"
 
 run "curl https://get.volta.sh | bash"
 run "volta install node@lts"
+run "volta install yarn@4.1.1"
+run "volta pin node"
+run "volta pin yarn"
+
+run "yarn install"
+run "yarn run build"
+
 run "rbenv install -s $(cat .ruby-version)"
 run "rbenv local $(cat .ruby-version)"
 
