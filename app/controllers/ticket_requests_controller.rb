@@ -72,7 +72,7 @@ class TicketRequestsController < ApplicationController
       return redirect_to event_ticket_request_path(@event, existing_request) if existing_request
     end
 
-    @user = current_user if signed_in?
+    @user           = current_user if signed_in?
     @ticket_request = TicketRequest.new
 
     if @user
@@ -100,25 +100,41 @@ class TicketRequestsController < ApplicationController
       return render action: 'new'
     end
 
+    ticket_request_user = if signed_in? && current_user.present?
+                            current_user
+                          else
+                            User.build(email: permitted_params[:email],
+                                       name: permitted_params[:name],
+                                       password: permitted_params[:password],
+                                       password_confirmation: permitted_params[:password]).tap do |user|
+                              if user.valid?
+                                user.save! && sign_in(user)
+                              else
+                                flash.now[:error] = user.errors.full_messages.join('. ')
+                                @ticket_request = TicketRequest.new(tr_params, user: user, event: @event)
+                                return render action: 'new'
+                              end
+                            end
+                          end
+
     tr_params = permitted_params[:ticket_request].to_h || {}
 
-    tr_params[:user_id] = current_user.id if signed_in? && current_user.present?
     if tr_params.empty?
       flash.now[:error] = 'Please fill out the form below to request tickets.'
       redirect_to new_event_ticket_request_path(@event)
     end
 
-    @ticket_request = TicketRequest.new(tr_params)
+    tr_params[:user_id] = ticket_request_user.id
 
+    @ticket_request = TicketRequest.new(tr_params, user_id: ticket_request_user.id, event_id: @event.id)
     @ticket_request.validate
+
     if @ticket_request.valid?
       if @ticket_request.save
         FnF::Events::TicketRequestEvent.new(
-          user: current_user,
+          user: ticket_request_user,
           target: @ticket_request
         ).fire!
-
-        sign_in(@ticket_request.user) unless signed_in?
 
         if @event.tickets_require_approval || @ticket_request.free?
           redirect_to event_ticket_request_path(@event, @ticket_request)
@@ -207,10 +223,10 @@ class TicketRequestsController < ApplicationController
   end
 
   def permitted_params
-    params.permit(:event_id, :id,
+    params.permit(:event_id, :id, :email, :name, :password,
                   ticket_request: %i[user_id adults kids cabins needs_assistance
                                      notes special_price event_id
-                                     user_attributes user donation role role_explanation
+                                     user donation role role_explanation
                                      car_camping car_camping_explanation previous_contribution
                                      address_line1 address_line2 city state zip_code
                                      country_code admin_notes agrees_to_terms

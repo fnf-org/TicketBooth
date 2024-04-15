@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 
+# rubocop: disable RSpec
 describe TicketRequestsController, type: :controller do
   let(:user) { create(:user) }
   let(:event) { create(:event) }
@@ -138,7 +139,7 @@ describe TicketRequestsController, type: :controller do
 
     let(:make_request) do
       lambda { |params = {}|
-        post_params[:ticket_request].merge!(params) unless params.empty?
+        post_params.merge!(params) unless params.empty?
         post :create, params: post_params
       }
     end
@@ -189,12 +190,11 @@ describe TicketRequestsController, type: :controller do
         end
       end
 
-      # rubocop: disable RSpec/MultipleMemoizedHelpers
       context 'when viewer is not signed in' do
-        before { make_request[user_attributes:] }
+        subject { make_request[user_attributes] }
 
         let(:email) { Faker::Internet.email }
-        let(:name) { Faker::Internet.name }
+        let(:name) { "#{Faker::Name.first_name} #{Faker::Name.last_name}" }
         let(:password) { Faker::Internet.password }
 
         let(:user_attributes) do
@@ -216,30 +216,40 @@ describe TicketRequestsController, type: :controller do
         end
 
         describe 'ticket requests count' do
+          describe 'user creation' do
+            it 'creates a user' do
+              expect { subject }.to change(User, :count).by(1)
+            end
+          end
+
           it 'creates a ticket request' do
             expect { subject }.to change(TicketRequest, :count).by(1)
           end
 
-          it 'assigns the ticket request to the created user' do
-            expect(users_request_count[]).to eq(1)
+          it 'creates a user' do
+            expect { subject }.to change(User, :count).by(1)
+          end
+
+          describe 'creates a ticket request that' do
+            before { subject }
+            it 'belongs to the created user' do
+              expect(created_user.ticket_requests.count).to be(1)
+            end
           end
         end
 
         describe '#current_user' do
           subject { controller&.current_user }
 
+          before { make_request[user_attributes] }
+
           it { is_expected.not_to be_nil }
 
           it { is_expected.to eql(created_user) }
         end
 
-        describe 'created user' do
-          subject { created_user }
-
-          it { is_expected.not_to be_nil }
-        end
       end
     end
-    # rubocop: enable RSpec/MultipleMemoizedHelpers
   end
 end
+# rubocop: enable RSpec
