@@ -13,7 +13,9 @@ class Time
     def xmlschema; end
   end
 
-  TIME_FORMAT = '%Y/%m/%d %H:%M:%S'
+  # rubocop: disable Lint/OrAssignmentToConstant
+  TIME_FORMAT ||= '%Y/%m/%d %H:%M:%S'
+  # rubocop: enable Lint/OrAssignmentToConstant
 
   DATE_FORMATS.merge!({
                         friendly: '%A, %B %-d, %Y %l:%M %p %Z',

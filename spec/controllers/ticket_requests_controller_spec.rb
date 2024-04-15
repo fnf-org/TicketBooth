@@ -247,7 +247,6 @@ describe TicketRequestsController, type: :controller do
 
           it { is_expected.to eql(created_user) }
         end
-
       end
     end
   end

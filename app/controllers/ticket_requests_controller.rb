@@ -111,7 +111,7 @@ class TicketRequestsController < ApplicationController
                                 user.save! && sign_in(user)
                               else
                                 flash.now[:error] = user.errors.full_messages.join('. ')
-                                @ticket_request = TicketRequest.new(tr_params, user: user, event: @event)
+                                @ticket_request = TicketRequest.new(tr_params, user:, event: @event)
                                 return render action: 'new'
                               end
                             end
