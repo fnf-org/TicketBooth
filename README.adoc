@@ -41,6 +41,15 @@ This should automatically open the browser at the `http://localhost:3000` URL, i
 
 The `bin/boot-up` script will start the Rails server, or show an error that needs to be fixed.
 
+After you stop it with `Ctrl-C`, you can restart the server using the following shortcut:
+
+[source,bash]
+make dev
+
+This actually starts Foreman via `bundle exec foreman -f Procfile.dev` — this is required to start CSS and JS just-in-time compilcation in addition to the Rails server. 
+
+CAUTION: Running `rails s` is no longer sufficient to start the application.
+
 ==== Running Tests and Linters
 
 To verify that your local environment is working, run the following:
