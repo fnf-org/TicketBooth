@@ -35,7 +35,7 @@ class EventsController < ApplicationController
 
   def create
     create_params = params_symbolized_hash[:event].dup
-    convert_event_times_for_db(create_params)
+    TimeHelper.convert_times_for_db(create_params)
 
     @event = Event.new(create_params)
 
@@ -50,7 +50,7 @@ class EventsController < ApplicationController
 
   def update
     update_params = params_symbolized_hash[:event].dup
-    convert_event_times_for_db(update_params)
+    TimeHelper.convert_times_for_db(update_params)
 
     if @event.update(update_params)
       redirect_to @event, notice: 'The event has been updated.'
