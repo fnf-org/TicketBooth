@@ -58,6 +58,12 @@ jobs:
           ruby-version: '3.2.3'
           bundler-cache: true
 
+      - name: "Create config/master.key"
+        run: echo -n "${RAILS_MASTER_KEY}" > config/master.key
+
+      - name: "Check master key"
+        run: cat config/master.key | wc
+
       - name: "Create and migrate the DB"
         run: |
           bin/rails db:create
