@@ -253,6 +253,11 @@ GEM
       racc
     pg (1.5.6)
     popper_js (2.11.8)
+    propshaft (0.8.0)
+      actionpack (>= 7.0.0)
+      activesupport (>= 7.0.0)
+      rack
+      railties (>= 7.0.0)
     protected_attributes_continued (1.9.0)
       activemodel (>= 5.0)
     psych (5.1.2)
@@ -266,8 +271,6 @@ GEM
       parallel (~> 1)
     racc (1.7.3)
     rack (3.0.10)
-    rack-mini-profiler (3.3.1)
-      rack (>= 1.2.0)
     rack-session (2.0.0)
       rack (>= 3.0.0)
     rack-test (2.1.0)
@@ -503,11 +506,11 @@ DEPENDENCIES
   mini_racer
   newrelic_rpm
   pg
+  propshaft
   protected_attributes_continued
   psych
   puma (>= 6)
   puma-status
-  rack-mini-profiler
   rails (= 7.1.3.2)
   rake
   redis (>= 4.0.1)

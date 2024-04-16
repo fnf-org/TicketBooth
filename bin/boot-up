@@ -59,6 +59,6 @@ run "bundle exec rake db:test:prepare"
 h1 "Starting Rails Server..."
 run.set-next show-output-on
 run "sleep 5 && open http://0.0.0.0:3000/" 2>/dev/null 1>&2 &
-run "bin/rails server"
+run "make dev"
 
 

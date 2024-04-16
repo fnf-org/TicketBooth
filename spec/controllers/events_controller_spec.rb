@@ -54,18 +54,33 @@ describe EventsController, type: :controller do
 
   describe 'POST #create' do
     let(:new_event) { build(:event) }
+
     let(:new_event_params) do
-      new_event.as_json.tap do |h|
-        h[:start_time] = new_event.start_time.strftime(Time::TIME_FORMAT)
-        h[:end_time] = new_event.end_time.strftime(Time::TIME_FORMAT)
+      time_hash = {}
+      hash      = new_event.attributes
+
+      hash.keys.grep(/_time/).each do |time_key|
+        time_hash[time_key.to_sym] = TimeHelper.to_string_for_flatpickr(hash[time_key].to_time) if hash[time_key]
       end
+
+      hash.merge(time_hash)
     end
+
     let(:make_request) { -> { post :create, params: { event: new_event_params } } }
 
     # rubocop: disable RSpec/AnyInstance
     before do
       allow_any_instance_of(described_class).to receive(:params).and_return(ActionController::Parameters.new(event: new_event_params))
     end
+
+    it 'does not have a nil start_time' do
+      expect(new_event.start_time).not_to be_nil
+    end
+
+    it 'has a start time thats a proper datetime' do
+      expect(new_event.start_time.to_datetime).to be_a(DateTime)
+    end
+
     # rubocop: enable RSpec/AnyInstance
 
     describe '#permitted_params' do
@@ -89,6 +104,9 @@ describe EventsController, type: :controller do
           name
           require_mailing_address
           start_time
+          ticket_requests_end_time
+          ticket_sales_end_time
+          ticket_sales_start_time
           tickets_require_approval
         ]
       end
@@ -115,19 +133,54 @@ describe EventsController, type: :controller do
       context 'and is a site admin' do
         let(:viewer) { create(:site_admin).user }
 
+        it 'creates an event' do
+          expect { make_request[] }.to change(Event, :count).by(1)
+        end
+
         describe 'flash messages' do
           before { make_request[] }
 
           its(:flash) { is_expected.to be_empty }
+
+          it { redirects_to event_path(Event.last) }
+        end
+
+        describe 'new_event_params' do
+          subject { new_event_params }
+
+          it { is_expected.to include(:start_time, :end_time) }
+
+          it 'has start times are not nil' do
+            expect(new_event_params[:start_time]).not_to be_nil
+          end
+
+          it 'has end times are not nil' do
+            expect(new_event_params[:end_time]).not_to be_nil
+          end
+
+          it 'has start_time' do
+            expect(new_event_params[:start_time]).to eql(TimeHelper.to_string_for_flatpickr(new_event.start_time.to_time))
+          end
+
+          it 'has end_time' do
+            expect(new_event_params[:end_time]).to eql(TimeHelper.to_string_for_flatpickr(new_event.end_time.to_time))
+          end
+
+          it 'is properly formatted' do
+            expect(new_event_params[:start_time]).to match(%r{\d{2}/\d{2}/\d{4}, \d{2}:\d{2} (AM|PM)})
+          end
         end
 
         describe 'newly created event' do
-          subject { Event.find_by(name: new_event_params['name']) }
-
           before { make_request[] }
 
-          it { is_expected.to be_valid }
-          it { is_expected.to be_persisted }
+          describe 'event' do
+            subject { Event.where(name: new_event.name).first }
+
+            it { is_expected.not_to be_nil }
+            it { is_expected.to be_valid }
+            it { is_expected.to be_persisted }
+          end
         end
 
         describe 'event creation' do

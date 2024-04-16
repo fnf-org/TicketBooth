@@ -100,6 +100,8 @@ class TicketRequestsController < ApplicationController
       return render action: 'new'
     end
 
+    tr_params = permitted_params[:ticket_request].to_h || {}
+
     ticket_request_user = if signed_in? && current_user.present?
                             current_user
                           else
@@ -111,13 +113,11 @@ class TicketRequestsController < ApplicationController
                                 user.save! && sign_in(user)
                               else
                                 flash.now[:error] = user.errors.full_messages.join('. ')
-                                @ticket_request = TicketRequest.new(tr_params, user:, event: @event)
+                                @ticket_request   = TicketRequest.new(tr_params, user:, event: @event)
                                 return render action: 'new'
                               end
                             end
                           end
-
-    tr_params = permitted_params[:ticket_request].to_h || {}
 
     if tr_params.empty?
       flash.now[:error] = 'Please fill out the form below to request tickets.'
@@ -127,26 +127,27 @@ class TicketRequestsController < ApplicationController
     tr_params[:user_id] = ticket_request_user.id
 
     @ticket_request = TicketRequest.new(tr_params, user_id: ticket_request_user.id, event_id: @event.id)
-    @ticket_request.validate
 
-    if @ticket_request.valid?
-      if @ticket_request.save
-        FnF::Events::TicketRequestEvent.new(
-          user: ticket_request_user,
-          target: @ticket_request
-        ).fire!
+    Rails.logger.info("Newly created request: #{@ticket_request.inspect}")
 
-        if @event.tickets_require_approval || @ticket_request.free?
-          redirect_to event_ticket_request_path(@event, @ticket_request)
-        else
-          redirect_to new_payment_url(ticket_request_id: @ticket_request)
-        end
+    begin
+      @ticket_request.save!
+      Rails.logger.info("Saved Ticket Request, ID = #{@ticket_request.id}")
+
+      FnF::Events::TicketRequestEvent.new(
+        user: ticket_request_user,
+        target: @ticket_request
+      ).fire!
+
+      if @event.tickets_require_approval || @ticket_request.free?
+        redirect_to event_ticket_request_path(@event, @ticket_request)
       else
-        render action: 'new'
+        redirect_to new_payment_url(ticket_request_id: @ticket_request)
       end
-    else
-      flash[:error] = @ticket_request.errors.full_messages.join('. ')
-      render action: 'new'
+    rescue StandardError => e
+      Rails.logger.error("Error saving request: #{e.message}\n\n#{@ticket_request.errors.full_messages.join(", ")}")
+      flash.now[:error] = "Error saving request: #{e.message}<br ><ul>#{@ticket_request.errors.full_messages.join("\n<li>")}"
+      render_flash
     end
   end
 
@@ -223,7 +224,7 @@ class TicketRequestsController < ApplicationController
   end
 
   def permitted_params
-    params.permit(:event_id, :id, :email, :name, :password,
+    params.permit(:event_id, :id, :email, :name, :password, :authenticity_token, :commit,
                   ticket_request: %i[user_id adults kids cabins needs_assistance
                                      notes special_price event_id
                                      user donation role role_explanation

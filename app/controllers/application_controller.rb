@@ -12,6 +12,8 @@ class ApplicationController < ActionController::Base
   # Allow additional parameters to be passed to Devise-managed controllers
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  add_flash_types :info, :error, :warning
+
   protected
 
   def require_site_admin
@@ -40,5 +42,9 @@ class ApplicationController < ActionController::Base
       user.update_attribute(:authentication_token, nil) # One-time use
       sign_in user
     end
+  end
+
+  def render_flash
+    render turbo_stream: turbo_stream.update('flash', partial: 'shared/flash')
   end
 end

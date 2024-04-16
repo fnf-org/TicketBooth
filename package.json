@@ -1,10 +1,12 @@
 {
-  "name": "app",
+  "name": "ticket-booth",
   "private": true,
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.4",
     "@popperjs/core": "^2.11.8",
+    "@stimulus-components/rails-nested-form": "^5.0.0",
+    "@stripe/stripe-js": "^3.3.0",
     "autoprefixer": "^10.4.19",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
@@ -15,20 +17,37 @@
     "nodemon": "^3.1.0",
     "postcss": "^8.4.38",
     "postcss-cli": "^11.0.0",
-    "sass": "^1.75.0",
-    "stripe": "^15.1.0"
+    "sass": "^1.75.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.4",
+    "@babel/eslint-parser": "^7.24.1",
+    "@babel/plugin-syntax-class-properties": "^7.12.13",
+    "@babel/preset-env": "^7.24.4",
+    "@types/babel__core": "^7",
+    "@types/babel__preset-env": "^7",
+    "@types/jquery": "^3",
+    "@typescript-eslint/eslint-plugin": "^7.7.0",
+    "@typescript-eslint/parser": "^7.7.0",
+    "cypress": "^13.7.3",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-cypress": "^2.15.2",
+    "eslint-plugin-prettier": "^5.1.3",
+    "prettier": "^3.2.5",
+    "tsc-watch": "^6.2.0",
+    "typescript": "^5.4.5"
   },
   "scripts": {
     "build": "yarn run build:js; yarn run build:css",
-    "build:js": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
+    "build:css": "yarn build:css:compile --verbose && yarn build:css:prefix --verbose ",
     "build:css:compile": "sass ./app/assets/stylesheets/application.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules",
     "build:css:prefix": "postcss ./app/assets/builds/application.css --use=autoprefixer --output=./app/assets/builds/application.css",
-    "build:css": "yarn build:css:compile --verbose && yarn build:css:prefix --verbose ",
+    "build:js": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
+    "dev": "tsc-watch --noClear -p tsconfig.json --onSuccess \"yarn build:js\" --onFailure \"yarn failure:js\"",
+    "failure:js": "rm ./app/assets/builds/application.js && rm ./app/assets/builds/application.js.map",
     "watch:css": "nodemon --watch ./app/assets/stylesheets/ --ext scss --exec \"yarn build:css\""
   },
-  "browserslist": [
-    "defaults"
-  ],
   "volta": {
     "node": "20.12.2",
     "yarn": "4.1.1"
