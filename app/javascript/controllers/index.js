@@ -4,5 +4,14 @@
 
 import { application } from "./application"
 
-import HelloController from "./hello_controller"
-application.register("hello", HelloController)
+import FlatpickrController from "./flatpickr_controller"
+application.register("flatpickr", FlatpickrController)
+
+import PaymentsController from "./payments_controller"
+application.register("payments", PaymentsController)
+
+import PopoversController from "./popovers_controller"
+application.register("popovers", PopoversController)
+
+import TicketRequestsController from "./ticket_requests_controller"
+application.register("ticket-requests", TicketRequestsController)

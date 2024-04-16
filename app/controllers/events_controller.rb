@@ -27,26 +27,37 @@ class EventsController < ApplicationController
   end
 
   def edit
+    params_symbolized_hash[:event]&.each_pair do |key, value|
+      @event.send("#{key}=", value) if @event.respond_to?("#{key}=")
+    end
     render
   end
 
   def create
-    create_params = populate_permitted_params_event(converted_params[:event])
+    create_params = params_symbolized_hash[:event].dup
+    convert_event_times_for_db(create_params)
+
     @event = Event.new(create_params)
 
     if @event.save
       redirect_to @event
     else
-      render action: 'new'
+      Rails.logger.error("Can't create event: #{@event.errors.full_messages}")
+      flash.now[:error] = "There was a problem creating the event: #{@event.errors.full_messages.join('. ')}"
+      render_flash
     end
   end
 
   def update
-    update_params = populate_permitted_params_event(converted_params[:event])
+    update_params = params_symbolized_hash[:event].dup
+    convert_event_times_for_db(update_params)
+
     if @event.update(update_params)
-      redirect_to @event
+      redirect_to @event, notice: 'The event has been updated.'
     else
-      render action: 'edit'
+      Rails.logger.error "UPDATE ERROR: There was a problem updating the event: #{@event.errors.full_messages}"
+      flash.now[:error] = "There was a problem updating the event: #{@event.errors.full_messages}"
+      render_flash
     end
   end
 
@@ -60,7 +71,7 @@ class EventsController < ApplicationController
     return redirect_to :back unless @event.admin?(current_user)
 
     email = permitted_params[:user_email]
-    user = User.find_by(email:)
+    user  = User.find_by(email:)
     return redirect_to :back, notice: "No user with email '#{email}' exists" unless user
 
     @event.admins << user
@@ -76,7 +87,7 @@ class EventsController < ApplicationController
   def remove_admin
     return redirect_to :back unless @event.admin?(current_user)
 
-    user_id = permitted_params[:user_id]
+    user_id     = permitted_params[:user_id]
     event_admin = EventAdmin.where(event_id: @event, user_id:).first
     return redirect_to :back, notice: "No user with id #{user_id} exists" unless event_admin
 
@@ -109,17 +120,16 @@ class EventsController < ApplicationController
 
   private
 
-  def converted_params
-    @converted_params ||= permitted_params.to_h.tap(&:symbolize_keys!)
+  def params_symbolized_hash
+    @params_symbolized_hash ||= permitted_params.to_h.tap(&:symbolize_keys!)
   end
 
-  def populate_permitted_params_event(permitted_parameters)
-    permitted_parameters[:start_time] = TimeHelper.from_picker(permitted_parameters.delete(:start_time))
-    permitted_parameters[:end_time] = TimeHelper.from_picker(permitted_parameters.delete(:end_time))
-    permitted_parameters[:ticket_sales_start_time] = TimeHelper.from_picker(permitted_parameters.delete(:ticket_sales_start_time))
-    permitted_parameters[:ticket_sales_end_time] = TimeHelper.from_picker(permitted_parameters.delete(:ticket_sales_end_time))
-    permitted_parameters[:ticket_requests_end_time] = TimeHelper.from_picker(permitted_parameters.delete(:ticket_requests_end_time))
-    permitted_parameters
+  def convert_event_times_for_db(event_hash)
+    converted_times = {}
+    event_hash.keys.grep(/_time$/).each do |key|
+      converted_times[key] = TimeHelper.to_datetime_from_picker(event_hash[key])
+    end
+    event_hash.merge!(converted_times)
   end
 
   def completed_ticket_requests
@@ -140,12 +150,15 @@ class EventsController < ApplicationController
       :id,
       :user_email,
       :user_id,
-      :start_time,
-      :end_time,
-      :ticket_sales_start_time,
-      :ticket_sales_end_time,
-      :ticket_requests_end_time,
+      :_method,
+      :authenticity_token,
+      :commit,
       event: %i[
+        start_time
+        end_time
+        ticket_sales_start_time
+        ticket_sales_end_time
+        ticket_requests_end_time
         adult_ticket_price
         allow_donations
         allow_financial_assistance

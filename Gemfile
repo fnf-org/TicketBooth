@@ -14,6 +14,7 @@ gem 'pg'
 gem 'puma', '>= 6'
 gem 'puma-status'
 
+gem 'propshaft'
 # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
 gem 'jsbundling-rails'
 # Hotwire"s SPA-like page accelerator [https://turbo.hotwired.dev]
@@ -24,12 +25,14 @@ gem 'stimulus-rails'
 gem 'cssbundling-rails'
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem 'jbuilder'
-# Use Redis adapter to run Action Cable in production
-gem 'redis', '>= 4.0.1'
 
+# Use Redis adapter to run Action Cable in production
 gem 'flatpickr'
 gem 'newrelic_rpm'
+gem 'redis', '>= 4.0.1'
 gem 'sassc-rails'
+
+gem 'twitter-bootstrap-rails'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -52,7 +55,6 @@ gem 'colorize'
 gem 'commonjs'
 gem 'haml'
 gem 'haml-rails'
-gem 'twitter-bootstrap-rails'
 
 gem 'attribute_normalizer'
 gem 'country_select'
@@ -89,7 +91,7 @@ end
 group :development do
   gem 'asciidoctor'
   gem 'capistrano'
-  gem 'rack-mini-profiler'
+  # gem 'rack-mini-profiler'
   gem 'web-console'
 end
 

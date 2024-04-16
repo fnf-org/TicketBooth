@@ -56,10 +56,11 @@ describe EventsController, type: :controller do
     let(:new_event) { build(:event) }
     let(:new_event_params) do
       new_event.as_json.tap do |h|
-        h[:start_time] = new_event.start_time.strftime(Time::TIME_FORMAT)
-        h[:end_time] = new_event.end_time.strftime(Time::TIME_FORMAT)
+        h[:start_time] = new_event.start_time.strftime(TimeHelper::TIME_FORMAT)
+        h[:end_time]   = new_event.end_time.strftime(TimeHelper::TIME_FORMAT)
       end
     end
+
     let(:make_request) { -> { post :create, params: { event: new_event_params } } }
 
     # rubocop: disable RSpec/AnyInstance
@@ -115,19 +116,47 @@ describe EventsController, type: :controller do
       context 'and is a site admin' do
         let(:viewer) { create(:site_admin).user }
 
+        it 'creates an event' do
+          expect { make_request[] }.to change(Event, :count).by(1)
+        end
+
         describe 'flash messages' do
           before { make_request[] }
 
           its(:flash) { is_expected.to be_empty }
+
+          it { succeeds }
+          it { redirects_to event_path(Event.last) }
+
+        end
+
+        describe 'new_event_params' do
+          subject { new_event_params }
+
+          it { is_expected.to include(:start_time, :end_time) }
+
+          it 'has start_time' do
+            expect(new_event_params[:start_time]).to eql(new_event.start_time.strftime(TimeHelper::TIME_FORMAT))
+          end
+
+          it 'has end_time' do
+            expect(new_event_params[:end_time]).to eql(new_event.end_time.strftime(TimeHelper::TIME_FORMAT))
+          end
+
+          it 'is properly formatted' do
+            expect(new_event.start_time.strftime(TimeHelper::TIME_FORMAT)).to match(%r{\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}})
+          end
         end
 
         describe 'newly created event' do
-          subject { Event.find_by(name: new_event_params['name']) }
-
           before { make_request[] }
+          describe 'event' do
+            subject { Event.where(name: new_event_params[:name]).first }
 
-          it { is_expected.to be_valid }
-          it { is_expected.to be_persisted }
+            it { is_expected.to_not be_nil }
+            it { is_expected.to be_valid }
+            it { is_expected.to be_persisted }
+          end
         end
 
         describe 'event creation' do

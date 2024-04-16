@@ -31,14 +31,23 @@ a {
 form {
   label {
     margin-top: 25px;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
     display: block;
+    min-width: 400px;
+    font-size: 10pt;
+
   }
   input {
-    margin-top: 5px;
+    background-color: #efe;
+    color: #000;
+    border: 0.5px solid #777;
+    border-radius: 5px;
+    padding: 5px;
+    margin-top: 0;
     margin-bottom: 15px;
     display: block !important;
     max-width: 80%;
+    min-width: 400px !important;
   }
 }
 

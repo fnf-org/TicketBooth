@@ -1,4 +1,5 @@
 /*
+/*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
  *
@@ -9,18 +10,19 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require_tree .
- *
- *= require global
- *= require events
- *= require home
- *= require jobs
- *= require payments
- *= require shifts
- *= require time_slots
- *= require bootstrap_and_overrides
  */
 
-@import 'bootstrap/scss/bootstrap';
-@import 'bootstrap-icons/font/bootstrap-icons';
+@import '../../../node_modules/bootstrap/dist/css/bootstrap';
+@import '../../../node_modules/bootstrap/scss/bootstrap';
+@import '../../../node_modules/bootstrap-icons/font/bootstrap-icons.min';
+@import '../../../node_modules/flatpickr/dist/flatpickr.min';
+@import '../../../node_modules/flatpickr/dist/themes/material_orange';
+
+@import './global.css.scss';
+@import './events.css.scss';
+@import './home.css.scss';
+@import './jobs.css.scss';
+@import './payments.css.scss';
+@import './shifts.css.scss';
+@import './time_slots.css.scss';
 

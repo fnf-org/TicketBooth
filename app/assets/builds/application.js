@@ -6967,6 +6967,30 @@ var require_jquery = __commonJS({
   }
 });
 
+// app/javascript/popovers.ts
+var require_popovers = __commonJS({
+  "app/javascript/popovers.ts"(exports) {
+    var import_jquery2 = __toESM(require_jquery());
+    (function($2) {
+      const popover = $2(".help-popover");
+      popover({
+        trigger: "manual"
+      }).on("click", function(e) {
+        const popoverClicked = $2(this);
+        popoverClicked("toggle");
+        e.preventDefault();
+      });
+    })(import_jquery2.default);
+    (function() {
+      (0, import_jquery2.default)(function() {
+        $("a[rel~=popover], .has-popover").popover();
+        return $("a[rel~=tooltip], .has-tooltip").tooltip();
+      });
+    }).call(exports);
+    $(".hover-tooltip").tooltip();
+  }
+});
+
 // node_modules/@hotwired/turbo/dist/turbo.es2017-esm.js
 var turbo_es2017_esm_exports = {};
 __export(turbo_es2017_esm_exports, {
@@ -14661,24 +14685,6 @@ Controller.targets = [];
 Controller.outlets = [];
 Controller.values = {};
 
-// app/javascript/controllers/application.js
-var application = Application.start();
-application.debug = false;
-window.Stimulus = application;
-
-// app/javascript/controllers/hello_controller.js
-var hello_controller_default = class extends Controller {
-  connect() {
-    this.element.textContent = "Hello World!";
-  }
-};
-
-// app/javascript/controllers/index.js
-application.register("hello", hello_controller_default);
-
-// app/javascript/application.js
-var import_jquery = __toESM(require_jquery());
-
 // node_modules/@popperjs/core/lib/index.js
 var lib_exports = {};
 __export(lib_exports, {
@@ -16354,14 +16360,14 @@ var onDOMContentLoaded = (callback) => {
 var isRTL = () => document.documentElement.dir === "rtl";
 var defineJQueryPlugin = (plugin) => {
   onDOMContentLoaded(() => {
-    const $ = getjQuery();
-    if ($) {
+    const $2 = getjQuery();
+    if ($2) {
       const name = plugin.NAME;
-      const JQUERY_NO_CONFLICT = $.fn[name];
-      $.fn[name] = plugin.jQueryInterface;
-      $.fn[name].Constructor = plugin;
-      $.fn[name].noConflict = () => {
-        $.fn[name] = JQUERY_NO_CONFLICT;
+      const JQUERY_NO_CONFLICT = $2.fn[name];
+      $2.fn[name] = plugin.jQueryInterface;
+      $2.fn[name].Constructor = plugin;
+      $2.fn[name].noConflict = () => {
+        $2.fn[name] = JQUERY_NO_CONFLICT;
         return plugin.jQueryInterface;
       };
     }
@@ -16560,16 +16566,16 @@ var EventHandler = {
     if (typeof event !== "string" || !element) {
       return null;
     }
-    const $ = getjQuery();
+    const $2 = getjQuery();
     const typeEvent = getTypeEvent(event);
     const inNamespace = event !== typeEvent;
     let jQueryEvent = null;
     let bubbles = true;
     let nativeDispatch = true;
     let defaultPrevented = false;
-    if (inNamespace && $) {
-      jQueryEvent = $.Event(event, args);
-      $(element).trigger(jQueryEvent);
+    if (inNamespace && $2) {
+      jQueryEvent = $2.Event(event, args);
+      $2(element).trigger(jQueryEvent);
       bubbles = !jQueryEvent.isPropagationStopped();
       nativeDispatch = !jQueryEvent.isImmediatePropagationStopped();
       defaultPrevented = jQueryEvent.isDefaultPrevented();
@@ -19838,6 +19844,16 @@ var Toast = class _Toast extends BaseComponent {
 enableDismissTrigger(Toast);
 defineJQueryPlugin(Toast);
 
+// app/javascript/add_jquery.js
+var import_jquery = __toESM(require_jquery());
+window.jQuery = import_jquery.default;
+window.$ = import_jquery.default;
+
+// app/javascript/controllers/application.js
+var application = Application.start();
+application.debug = false;
+window.Stimulus = application;
+
 // node_modules/flatpickr/dist/esm/types/options.js
 var HOOKS = [
   "onChange",
@@ -22175,6 +22191,327 @@ Date.prototype.fp_incr = function(days) {
 if (typeof window !== "undefined") {
   window.flatpickr = flatpickr;
 }
+var esm_default = flatpickr;
+
+// app/javascript/controllers/flatpickr_controller.js
+var flatpickrController = class extends Controller {
+  connect() {
+    esm_default(
+      ".flatpickr-date-time",
+      {
+        enableTime: true,
+        altInput: false,
+        dateFormat: "m/d/Y, h:i K",
+        minDate: "today"
+      }
+    );
+    esm_default(
+      ".flatpickr-date",
+      {
+        altInput: false,
+        enableTime: false,
+        dateFormat: "m/d/Y"
+      }
+    );
+  }
+};
+
+// node_modules/@stripe/stripe-js/dist/index.mjs
+var V3_URL = "https://js.stripe.com/v3";
+var V3_URL_REGEX = /^https:\/\/js\.stripe\.com\/v3\/?(\?.*)?$/;
+var EXISTING_SCRIPT_MESSAGE = "loadStripe.setLoadParameters was called but an existing Stripe.js script already exists in the document; existing script parameters will be used";
+var findScript = function findScript2() {
+  var scripts = document.querySelectorAll('script[src^="'.concat(V3_URL, '"]'));
+  for (var i = 0; i < scripts.length; i++) {
+    var script = scripts[i];
+    if (!V3_URL_REGEX.test(script.src)) {
+      continue;
+    }
+    return script;
+  }
+  return null;
+};
+var injectScript = function injectScript2(params) {
+  var queryString = params && !params.advancedFraudSignals ? "?advancedFraudSignals=false" : "";
+  var script = document.createElement("script");
+  script.src = "".concat(V3_URL).concat(queryString);
+  var headOrBody = document.head || document.body;
+  if (!headOrBody) {
+    throw new Error("Expected document.body not to be null. Stripe.js requires a <body> element.");
+  }
+  headOrBody.appendChild(script);
+  return script;
+};
+var registerWrapper = function registerWrapper2(stripe, startTime) {
+  if (!stripe || !stripe._registerWrapper) {
+    return;
+  }
+  stripe._registerWrapper({
+    name: "stripe-js",
+    version: "3.3.0",
+    startTime
+  });
+};
+var stripePromise = null;
+var onErrorListener = null;
+var onLoadListener = null;
+var onError = function onError2(reject) {
+  return function() {
+    reject(new Error("Failed to load Stripe.js"));
+  };
+};
+var onLoad = function onLoad2(resolve, reject) {
+  return function() {
+    if (window.Stripe) {
+      resolve(window.Stripe);
+    } else {
+      reject(new Error("Stripe.js not available"));
+    }
+  };
+};
+var loadScript = function loadScript2(params) {
+  if (stripePromise !== null) {
+    return stripePromise;
+  }
+  stripePromise = new Promise(function(resolve, reject) {
+    if (typeof window === "undefined" || typeof document === "undefined") {
+      resolve(null);
+      return;
+    }
+    if (window.Stripe && params) {
+      console.warn(EXISTING_SCRIPT_MESSAGE);
+    }
+    if (window.Stripe) {
+      resolve(window.Stripe);
+      return;
+    }
+    try {
+      var script = findScript();
+      if (script && params) {
+        console.warn(EXISTING_SCRIPT_MESSAGE);
+      } else if (!script) {
+        script = injectScript(params);
+      } else if (script && onLoadListener !== null && onErrorListener !== null) {
+        var _script$parentNode;
+        script.removeEventListener("load", onLoadListener);
+        script.removeEventListener("error", onErrorListener);
+        (_script$parentNode = script.parentNode) === null || _script$parentNode === void 0 ? void 0 : _script$parentNode.removeChild(script);
+        script = injectScript(params);
+      }
+      onLoadListener = onLoad(resolve, reject);
+      onErrorListener = onError(reject);
+      script.addEventListener("load", onLoadListener);
+      script.addEventListener("error", onErrorListener);
+    } catch (error2) {
+      reject(error2);
+      return;
+    }
+  });
+  return stripePromise["catch"](function(error2) {
+    stripePromise = null;
+    return Promise.reject(error2);
+  });
+};
+var initStripe = function initStripe2(maybeStripe, args, startTime) {
+  if (maybeStripe === null) {
+    return null;
+  }
+  var stripe = maybeStripe.apply(void 0, args);
+  registerWrapper(stripe, startTime);
+  return stripe;
+};
+var stripePromise$1;
+var loadCalled = false;
+var getStripePromise = function getStripePromise2() {
+  if (stripePromise$1) {
+    return stripePromise$1;
+  }
+  stripePromise$1 = loadScript(null)["catch"](function(error2) {
+    stripePromise$1 = null;
+    return Promise.reject(error2);
+  });
+  return stripePromise$1;
+};
+Promise.resolve().then(function() {
+  return getStripePromise();
+})["catch"](function(error2) {
+  if (!loadCalled) {
+    console.warn(error2);
+  }
+});
+var loadStripe = function loadStripe2() {
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+  loadCalled = true;
+  var startTime = Date.now();
+  return getStripePromise().then(function(maybeStripe) {
+    return initStripe(maybeStripe, args, startTime);
+  });
+};
+
+// app/javascript/controllers/payments_controller.ts
+var PaymentsController = class extends Controller {
+  connect() {
+    this.stripeKey = $('meta[name="stripe-key"]').attr("content") || this.element.getAttribute("data-stripe-publishable-key");
+    this.stripe = loadStripe(this.stripeKey);
+    this.controller = this;
+  }
+  setupForm() {
+    const controller = this;
+    $("#new_payment").submit(function() {
+      $("input[type=submit]").attr("disabled", "true");
+      if ($("#card_number").length) {
+        controller.processCard();
+        return false;
+      } else {
+        return true;
+      }
+    });
+    $(".donation-option input[type=radio]").on("change", function() {
+      let totalFee;
+      let totalPrice;
+      let amount;
+      totalPrice = $("#total_price").get(0);
+      totalFee = $("#total_fee").get(0);
+      amount = parseFloat($(this).val().toString()) + parseFloat(totalPrice.attributes["data"]("price"));
+      totalPrice.text("$" + amount.toFixed(2));
+      totalFee.text("$" + controller.extraFee(amount).toFixed(2));
+    });
+    $("#new_eald_payment").submit(function() {
+      console.log("Submitting...");
+      $("input[type=submit]").attr("disabled", "true");
+      console.log("What");
+      if ($("#card_number").length) {
+        controller.processCard();
+        return false;
+      } else {
+        return true;
+      }
+    });
+    return $("#eald_payment_early_arrival_passes, #eald_payment_late_departure_passes").on("change mouseup", this.handlePasses());
+  }
+  handlePasses() {
+    const controller = this;
+    let ealdFee;
+    let ealdPrice;
+    let earlyPasses;
+    let latePasses;
+    let price;
+    ealdPrice = $("#eald_total_price");
+    ealdFee = $("#eald_fee");
+    earlyPasses = $("#eald_payment_early_arrival_passes");
+    latePasses = $("#eald_payment_late_departure_passes");
+    price = parseFloat(earlyPasses.val().toString()) * parseFloat(earlyPasses.data("default-price")) + parseFloat(latePasses.val().toString()) * parseFloat(latePasses.data("default-price"));
+    ealdPrice.text("$" + price.toFixed(2));
+    ealdFee.text("$" + controller.extraFee(price).toFixed(2));
+    return true;
+  }
+  extraFee(amount) {
+    let fee, stripeFee, stripeRate;
+    stripeRate = 0.029;
+    stripeFee = 0.3;
+    if (amount === 0) {
+      return 0;
+    } else {
+      fee = (amount * stripeRate + stripeFee) / (1 - stripeRate);
+      return Math.ceil(fee * 100) / 100;
+    }
+  }
+  processCard() {
+    const controller = this;
+    let card;
+    card = {
+      number: $("#card_number").val().toString(),
+      cvc: $("#card_code").val().toString(),
+      expMonth: $("#card_month").val().toString(),
+      expYear: $("#card_year").val().toString()
+    };
+    return controller.stripe.createToken(card, controller.handleStripeResponse);
+  }
+  handleStripeResponse(status, response) {
+    if (status === 200) {
+      $("#stripe_card_token").val(response.id);
+      return $("form")[0].submit();
+    } else {
+      $("#stripe-error").text(response.error.message);
+      return $("input[type=submit]").attr("disabled", false);
+    }
+  }
+};
+
+// app/javascript/controllers/popovers_controller.js
+var popovers_controller_default = class extends Controller {
+  connect() {
+  }
+};
+
+// app/javascript/controllers/ticket_requests_controller.js
+var ticket_requests_controller_default = class extends Controller {
+  connect() {
+  }
+};
+
+// app/javascript/controllers/index.js
+application.register("flatpickr", flatpickrController);
+application.register("payments", PaymentsController);
+application.register("popovers", popovers_controller_default);
+application.register("ticket-requests", ticket_requests_controller_default);
+
+// app/javascript/application.js
+var import_popovers = __toESM(require_popovers());
+
+// app/javascript/ticket_requests.js
+window.addEventListener("load", function() {
+  $("#ticket_request_user_attributes_email").on("change", function(evt) {
+    var $emailField = $(this), email = $emailField.val(), lookupPath = $emailField.data("lookup-url");
+    $.get(lookupPath + "?email=" + email).success(function() {
+      $("#email-warning").removeClass("hidden");
+    }).fail(function() {
+      $("#email-warning").addClass("hidden");
+    }).always(function() {
+      $("#email-reset-sent").addClass("hidden");
+    });
+  });
+  $("#password-reset-link").on("click", function(evt) {
+    var resetUrl = $(this).data("reset-url"), $emailField = $("#ticket_request_user_attributes_email"), email = $emailField.val();
+    $.get(resetUrl + "?email=" + email).success(function() {
+      $("#email-warning").addClass("hidden");
+      $("#email-reset-sent").removeClass("hidden");
+    });
+    evt.preventDefault();
+  });
+  $("#ticket_request_adults, #ticket_request_kids, #ticket_request_cabins, #ticket_request_early_arrival_passes, #ticket_request_late_departure_passes").on("change keyup mouseup", function(evt) {
+    var $numberField = $(this), $priceDisplay = $numberField.find("+ .inline-price"), quantity = $numberField.val() || 0, prices = $numberField.data("custom-prices") || {}, price = prices[quantity] || $numberField.data("default-price") * quantity, text_price = price ? "$" + price : "";
+    $priceDisplay.text(text_price);
+  }).each(function(idx, el) {
+    var $el = $(el);
+    if (!$el.is(":disabled")) {
+      $el.change();
+    }
+  });
+  $('input[name="ticket_request[role]"]').on("change", function(evt) {
+    var $radioBtn = $(this), role = $radioBtn.val(), $roleRadioBtn = $("#ticket_request_role_" + role), maxTickets = $roleRadioBtn.data("max-tickets"), $roleExplanationField = $('textarea[name="ticket_request[role_explanation]"]'), $roleExplanations = $(".role-explanation"), $selectedRoleExplanation = $(".role-explanation." + role), $ticketsField = $('input[name="ticket_request[adults]"]');
+    $ticketsField.attr("max", maxTickets);
+    if ($ticketsField.val() > maxTickets) {
+      $ticketsField.val(maxTickets);
+      $ticketsField.change();
+    }
+    $roleExplanations.addClass("hidden");
+    $selectedRoleExplanation.removeClass("hidden");
+    $roleExplanationField.toggleClass("hidden", role == "volunteer");
+    $roleExplanationField.attr("required", role != "volunteer");
+  });
+  $('input[name="ticket_request[car_camping]"]').on("change", function(evt) {
+    var $carCampingChkbx = $(this), carCamping = $carCampingChkbx.is(":checked"), $carCampingExplanationField = $('textarea[name="ticket_request[car_camping_explanation]"]');
+    $carCampingExplanationField.toggleClass("hidden", !carCamping);
+    $carCampingExplanationField.attr("required", carCamping);
+  });
+  $('input[name="ticket_request[agrees_to_terms]"]').on("change", function(evt) {
+    var $agreesChkbx = $(this), agrees = $agreesChkbx.is(":checked");
+    $("#submit-request").attr("disabled", !agrees);
+  });
+});
 /*! Bundled license information:
 
 jquery/dist/jquery.js:

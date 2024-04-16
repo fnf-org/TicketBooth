@@ -1,17 +1,16 @@
-= form_for @event, html: { multipart: true } do |f|
+= form_for @event, html: { multipart: true }, data: { controller: "flatpickr" } do |f|
   = render 'shared/form_errors', resource: @event
 
   %fieldset
     %legend Event Details
     = f.label :name, 'Event Name'
-    = f.text_field :name, class: 'input-large', required: true,
-      maxlength: Event::MAX_NAME_LENGTH
+    = f.text_field :name, class: 'input-large', required: true, maxlength: Event::MAX_NAME_LENGTH
 
     = f.label :start_time, 'Start Time'
-    = datetimepicker(:start_time, @event.start_time || 1.day.from_now.beginning_of_day)
+    = render partial: 'shared/datetime_field', locals: {form: f, name: "start_time", datetime: (@event.start_time.to_datetime || 1.day.from_now.beginning_of_day) }
 
     = f.label :end_time, 'End Time'
-    = datetimepicker(:end_time, @event.end_time || 1.day.from_now.beginning_of_day)
+    = render partial: 'shared/datetime_field', locals: {form: f, name: "end_time", datetime: (@event.end_time || 1.day.from_now.beginning_of_day)}
 
   %fieldset
     %legend Ticket Details
@@ -19,19 +18,19 @@
       Ticket Sales Opening Time
       %p.muted
         Leave blank to begin selling tickets right away
-    = datetimepicker(:ticket_sales_start_time, @event.ticket_sales_start_time)
+    = render partial: 'shared/datetime_field', locals: {form: f, name: "ticket_sales_start_time", datetime: (@event.ticket_sales_start_time) }
 
     = f.label :ticket_sales_end_time do
       Ticket Sales Closing Time
       %p.muted
         Leave blank to allow selling tickets up to the end of the event
-    = datetimepicker(:ticket_sales_end_time, @event.ticket_sales_end_time)
+    = render partial: 'shared/datetime_field', locals: {form: f, name: "ticket_sales_end_time", datetime: (@event.ticket_sales_end_time) }
 
     = f.label :ticket_requests_end_time do
       Ticket Requests Closing Time
       %p.muted
         Leave blank to allow requesting tickets up to the end of the event
-    = datetimepicker(:ticket_requests_end_time, @event.ticket_requests_end_time)
+    = render partial: 'shared/datetime_field', locals: {form: f, name: "ticket_requests_end_time", datetime: (@event.ticket_requests_end_time) }
 
     = f.label :tickets_require_approval, class: 'checkbox' do
       = f.check_box :tickets_require_approval
