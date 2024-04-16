@@ -18,5 +18,18 @@ module TimeHelper
 
       ::DateTime.strptime("#{datetime_string.upcase} #{Time.current.strftime('%z')}Z", TIME_FORMAT).to_time
     end
+
+    # converts all values in hash to Time where key match '_time'
+    def convert_times_for_db(in_hash)
+      return in_hash if in_hash.nil? || in_hash.blank?
+
+      converted_times = {}
+      in_hash.keys.grep(/_time$/).each do |key|
+        converted_times[key] = TimeHelper.to_datetime_from_picker(in_hash[key]) if in_hash[key].present?
+      end
+
+      in_hash.merge!(converted_times)
+    end
+
   end
 end
