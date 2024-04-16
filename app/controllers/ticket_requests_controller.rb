@@ -134,10 +134,10 @@ class TicketRequestsController < ApplicationController
       @ticket_request.save!
       Rails.logger.info("Saved Ticket Request, ID = #{@ticket_request.id}")
 
-      # FnF::Events::TicketRequestEvent.new(
-      #   user: ticket_request_user,
-      #   target: @ticket_request
-      # ).fire!
+      FnF::Events::TicketRequestEvent.new(
+        user: ticket_request_user,
+        target: @ticket_request
+      ).fire!
 
       if @event.tickets_require_approval || @ticket_request.free?
         redirect_to event_ticket_request_path(@event, @ticket_request)

@@ -15,7 +15,7 @@ module FnF
       attr_accessor :initialized
 
       def initialize_events!
-        return if initialized
+        return if initialized == true
 
         TicketRequestEvent.configure { notifies ::TicketRequestMailer }
 

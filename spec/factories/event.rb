@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :event do
     name { Faker::FunnyName.three_word_name }
     start_time { 1.year.from_now }
-    end_time { 1.year.from_now + 1.day }
+    end_time { (1.year.from_now + 1.day) }
 
     adult_ticket_price { Random.rand(100..150) }
     kid_ticket_price { Random.rand(40..50) }

@@ -25,6 +25,8 @@ module FnF
 
           subclass.instance_eval do
             # For eg FnF::Events::TicketRequestEvent this should return :ticket_request
+            # For eg FnF::Events::TicketRequestDeclinedEvent this should return :ticket_request_declined
+            # For eg FnF::Events::TicketRequestApprovedEvent this should return :ticket_request_approved
             def ventable_callback_method_name
               ActiveSupport::Inflector.underscore(name)
                                       .gsub(%r{^fnf/events/}, '')
