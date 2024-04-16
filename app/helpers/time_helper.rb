@@ -16,7 +16,7 @@ module TimeHelper
     def to_datetime_from_picker(datetime_string)
       return nil if datetime_string.nil?
 
-      ::DateTime.strptime("#{datetime_string.upcase} #{Time.now.strftime('%z')}Z", TIME_FORMAT).to_time
+      ::DateTime.strptime("#{datetime_string.upcase} #{Time.current.strftime('%z')}Z", TIME_FORMAT).to_time
     end
   end
 end

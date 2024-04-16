@@ -145,7 +145,7 @@ class TicketRequestsController < ApplicationController
         redirect_to new_payment_url(ticket_request_id: @ticket_request)
       end
     rescue StandardError => e
-      Rails.logger.error("Error saving request: #{e.message}\n\n#{@ticket_request.errors.full_messages.join(", ")}")
+      Rails.logger.error("Error saving request: #{e.message}\n\n#{@ticket_request.errors.full_messages.join(', ')}")
       flash.now[:error] = "Error saving request: #{e.message}<br ><ul>#{@ticket_request.errors.full_messages.join("\n<li>")}"
       render_flash
     end
