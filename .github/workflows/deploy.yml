@@ -1,0 +1,59 @@
+---
+name: DeployToGKE
+
+# Should really add a 'release' workflow too
+on:
+  push:
+    branches:
+      - 'release'
+    tags:
+      - '*-rc'
+  workflow_dispatch:
+    inputs:
+      containerTag:
+        required: true
+        description: 'The docker tag for a container already in GCP'
+
+env:
+  GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+  GCP_REGION: us-central1
+  GKE_CLUSTER_NAME: fnf-apps
+
+jobs:
+  deploy:
+    name: TicketBoothDeploy
+    runs-on: ubuntu-latest
+    environment: ${{ vars.ENVIRONMENT }}
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - id: gcpAuth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: "projects/${{ vars.GCP_PROJECT_ID }}/locations/global/workloadIdentityPools"
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}
+
+      - id: gkeLogin
+        name: GKE Login
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER_NAME }}
+          location: ${{ env.GCP_REGION }}
+
+      - id: runHelm
+        name: Helm Update
+        uses: deliverybot/helm@v1
+        with:
+          release: ${{ vars.HELM_RELEASE }}
+          namespace: default
+          chart: deployment/chart
+          token: ${{ github.token }}
+          values: |
+            deployEnv: 
+          value-files: >-
+            [
+              "deployment/env/base.yaml",
+              "deployment/${{ environment }}.yaml"
+            ]
+          atomic: false
