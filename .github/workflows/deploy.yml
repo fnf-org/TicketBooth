@@ -1,11 +1,14 @@
 ---
 name: DeployToGKE
+concurrency: production
 
-# Should really add a 'release' workflow too
 on:
+  release:
+    types:
+      - created
   push:
     branches:
-      - 'release'
+      - 'releases/*'
     tags:
       - '*-rc'
   workflow_dispatch:
@@ -15,7 +18,6 @@ on:
         description: 'The docker tag for a container already in GCP'
 
 env:
-  GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
   GCP_REGION: us-central1
   GKE_CLUSTER_NAME: fnf-apps
 
@@ -28,6 +30,14 @@ jobs:
       contents: 'read'
       id-token: 'write'
     steps:
+      # This step is only required because the Helm chart is in this repo
+      - id: checkout
+        name: TicketBooth checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == "workflow_dispatch" && 'main' || github.ref }}
+          fetch-depth: 1
+
       - id: gcpAuth
         uses: google-github-actions/auth@v2
         with:
@@ -50,10 +60,10 @@ jobs:
           chart: deployment/chart
           token: ${{ github.token }}
           values: |
-            deployEnv: 
+            image.tag: ${{ github.event_name == "workflow_dispatch" && inputs.containerTag || github.ref_name }}
           value-files: >-
             [
               "deployment/env/base.yaml",
               "deployment/${{ environment }}.yaml"
             ]
-          atomic: false
+          atomic: ${{ github.event_name == "workflow_dispatch" && false || true }}
