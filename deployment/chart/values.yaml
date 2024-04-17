@@ -71,22 +71,39 @@ tolerations: []
 
 affinity: {}
 
-ticketsEnvironment: "production"
-ticketsSecretToken: "this-is-a-very-bogus-key"
-ticketsServeStaticFiles: "true"
-ticketsSMTPHost: ""
-ticketsSMTPPort: "" 
-ticketsSMTPDomain: ""
-ticketsSMTPUser: ""
-ticketsSMTPPassword: ""
-ticketsDBSeed: ""
-ticketsHost: ""
-ticketsEmailAddress: ""
-stripeSecretKey: ""
-stripePublicKey: ""
-pumaConcurrency: 2
-pumaThreads: 2
+config:
+  ticketsEnvironment: "production"
+  ticketsSMTPHost: ""
+  ticketsSMTPPort: "" 
+  ticketsSMTPDomain: ""
+  ticketsDBSeed: ""
+  ticketsHost: ""
+  ticketsEmailAddress: ""
+  stripePublicKey: ""
+  pumaConcurrency: 2
+  pumaThreads: 2
 
+secret:
+  # The secret should never be created with Helm because the values get stored
+  # someplace. Do this only with non-production resources.
+  create: false
+
+  # Any secrets should be contained within GCP Se
+
+  # The name of the secret to use.
+  # Default: {{ .Release.Name }}-secrets
+  #name: ""
+
+  # Data to put into a created secret. Does not need to be base64 encoded
+  # data:
+  #  ticketsSecretToken: "this-is-a-very-bogus-key"
+  #  ticketsServeStaticFiles: "true"
+  #  ticketsSMTPUser: ""
+  #  ticketsSMTPPassword: ""
+  #  stripeSecretKey: ""
+    
+
+  
 postgresql:
   auth:
     database: tickets

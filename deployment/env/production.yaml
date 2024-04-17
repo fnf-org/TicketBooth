@@ -1,0 +1,14 @@
+---
+replicaCount: 3
+
+image:
+  # The tag should be provided on the cmdline to prevent accidental deployments
+  # of untesed code to production.
+  tag: null
+
+serviceAccount:
+  annotations:
+    # Any secrets should be contained within GCP managed secrets, so an IAM
+    # ServiceAccount is needed that has the permissions to read from the named
+    # secret
+    iam.gke.io/gcp-service-account: ticket-app-sa@fnf-apps-project.iam.gserviceaccount.com

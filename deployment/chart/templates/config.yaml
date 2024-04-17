@@ -3,25 +3,14 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-config
 data:
-  RAILS_ENV: "{{ .Values.ticketsEnvironment }}"
-  SMTP_ADDRESS: "{{ .Values.ticketsSMTPHost }}"
-  SMTP_PORT: "{{ .Values.ticketsSMTPPort }}"
-  SMTP_DOMAIN: "{{ .Values.ticketsSMTPDomain }}"
-  TICKETS_HOST: "{{ .Values.ticketsHost }}"
-  ACTION_MAILER_DEFAULT_FROM: "{{ .Values.ticketsEmailAddress }}"
-  ACTION_MAILER_DEFAULT_TO: "{{ .Values.ticketsEmailAddress }}"
-  STRIPE_PUBLIC_KEY: "{{ .Values.stripePublicKey }}"
-  WEB_CONCURRENCY: "{{ .Values.pumaConcurrency }}"
-  RAILS_MAX_THREADS: "{{ .Values.pumaThreads }}"
+  {{ .Values.config | nindent 2 }}
 ---
+{{- if .Values.secret.create }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Release.Name }}-secrets
+  name: {{ default {{ .Release.Name }}"-secrets" .Values.secret.name }}
 type: Opaque
 stringData:
-  SECRET_KEY_BASE: "{{ .Values.ticketsSecretToken }}"
-  RAILS_SERVE_STATIC_FILES: "{{ .Values.ticketsServeStaticFiles }}"
-  SMTP_USERNAME: "{{ .Values.ticketsSMTPUser }}"
-  SMTP_PASSWORD: "{{ .Values.ticketsSMTPPassword }}"
-  STRIPE_SECRET_KEY: "{{ .Values.stripeSecretKey }}"
+  {{ .Values.secret.data | nindent 2 }}
+{{- end }}
