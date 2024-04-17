@@ -2,19 +2,23 @@
 
 source 'https://rubygems.org'
 
+ruby File.read('.ruby-version')
+
 # Use main development branch of Rails
-gem 'activesupport', '=7.1.3.2'
 gem 'rails', '=7.1.3.2'
 
-# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-gem 'sprockets-rails'
-# Use postgresql as the database for Active Record
+# Unclear if we need to require it explicitly
+# gem 'activesupport', '=7.1.3.2'
+
+#  Use postgresql as the database for Active Record
 gem 'pg'
 # Use the Puma web server [https://github.com/puma/puma]
 gem 'puma', '>= 6'
 gem 'puma-status'
 
+# replace sprockets with propshaft
 gem 'propshaft'
+
 # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
 gem 'jsbundling-rails'
 # Hotwire"s SPA-like page accelerator [https://turbo.hotwired.dev]
@@ -26,49 +30,51 @@ gem 'cssbundling-rails'
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem 'jbuilder'
 
-# Use Redis adapter to run Action Cable in production
-gem 'flatpickr'
-gem 'newrelic_rpm'
+# Redis
 gem 'redis', '>= 4.0.1'
-gem 'sassc-rails'
-
-gem 'twitter-bootstrap-rails'
-
-# Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
-# gem "kredis"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem 'bcrypt', '~> 3.1.7'
 
+# Report APM info to NewRelic
+gem 'newrelic_rpm'
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[windows jruby]
+
 # Reduces oot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 
+# Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
+# gem "kredis"
+
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
+# gem 'twitter-bootstrap-rails'
+# gem 'bootstrap', '~> 5.1'
+# gem 'jquery-rails', '~> 4.4'
+# gem 'commonjs'
 
-gem 'bootstrap', '~> 5.1'
-gem 'jquery-rails', '~> 4.4'
+# Modern Date Picker
+gem 'country_select'
+gem 'flatpickr'
 
 gem 'colorize'
-gem 'commonjs'
+
 gem 'haml'
 gem 'haml-rails'
 
+gem 'annotate'
 gem 'attribute_normalizer'
-gem 'country_select'
+gem 'carrierwave'
 gem 'dalli'
 gem 'devise'
-gem 'protected_attributes_continued'
-gem 'stripe'
-
-gem 'annotate'
-gem 'carrierwave'
 gem 'mini_magick'
 gem 'mini_racer'
+gem 'protected_attributes_continued'
 gem 'psych'
 gem 'rake'
+gem 'stripe'
 gem 'ventable', '>= 1.3'
 
 group :development, :test do

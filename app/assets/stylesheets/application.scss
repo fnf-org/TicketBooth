@@ -10,13 +10,17 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
+ *= require_tree .
  */
 
-@import '../../../node_modules/bootstrap/dist/css/bootstrap';
-@import '../../../node_modules/bootstrap/scss/bootstrap';
-@import '../../../node_modules/bootstrap-icons/font/bootstrap-icons.min';
-@import '../../../node_modules/flatpickr/dist/flatpickr.min';
-@import '../../../node_modules/flatpickr/dist/themes/material_orange';
+@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap-icons/font/bootstrap-icons';
+
+@import 'flatpickr/dist/flatpickr';
+@import 'flatpickr/dist/themes/material_orange';
+
+//@import '../../../node_modules/flatpickr/dist/flatpickr.min';
+//@import '../../../node_modules/flatpickr/dist/themes/material_orange';
 
 @import './global.css.scss';
 @import './events.css.scss';
@@ -25,4 +29,3 @@
 @import './payments.css.scss';
 @import './shifts.css.scss';
 @import './time_slots.css.scss';
-

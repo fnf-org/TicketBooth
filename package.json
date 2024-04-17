@@ -10,14 +10,17 @@
     "autoprefixer": "^10.4.19",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "css-loader": "^7.1.1",
     "esbuild": "^0.20.2",
     "flatpickr": "^4.6.13",
     "fs": "^0.0.1-security",
     "jquery": "^3.7.1",
+    "mini-css-extract-plugin": "^2.9.0",
     "nodemon": "^3.1.0",
     "postcss": "^8.4.38",
     "postcss-cli": "^11.0.0",
-    "sass": "^1.75.0"
+    "sass": "^1.75.0",
+    "sass-loader": "^14.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.4",
@@ -40,16 +43,26 @@
   },
   "scripts": {
     "build": "yarn run build:js; yarn run build:css",
-    "build:css": "yarn build:css:compile --verbose && yarn build:css:prefix --verbose ",
+    "build:css": "yarn build:css:compile && yarn build:css:prefix",
     "build:css:compile": "sass ./app/assets/stylesheets/application.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules",
     "build:css:prefix": "postcss ./app/assets/builds/application.css --use=autoprefixer --output=./app/assets/builds/application.css",
     "build:js": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
     "dev": "tsc-watch --noClear -p tsconfig.json --onSuccess \"yarn build:js\" --onFailure \"yarn failure:js\"",
     "failure:js": "rm ./app/assets/builds/application.js && rm ./app/assets/builds/application.js.map",
-    "watch:css": "nodemon --watch ./app/assets/stylesheets/ --ext scss --exec \"yarn build:css\""
+    "watch:css": "nodemon --watch ./app/assets/stylesheets/ --ext scss --exec \"yarn build:css\"",
+    "eslint:check": "yarn eslint .",
+    "prettier:check": "yarn prettier --check ."
   },
   "volta": {
     "node": "20.12.2",
     "yarn": "4.1.1"
-  }
+  },
+  "babel": {
+    "presets": [
+      "./webpack.babel.js"
+    ]
+  },
+  "browserslist": [
+    "defaults"
+  ]
 }

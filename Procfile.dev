@@ -2,3 +2,4 @@ web: env RUBY_DEBUG_OPEN=true bin/rails server
 js: yarn build --watch
 css: yarn watch:css
 browser: sleep 10 && open http://localhost:5000/ && while true; do sleep 100; echo .; done
+css: yarn watch:css
