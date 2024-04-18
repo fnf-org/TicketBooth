@@ -1,6 +1,7 @@
 locals {
   db_admins = [
     "evilmonkey@gmail.com",
+    "matt@fnf.org",
   ]
 }
 
@@ -40,8 +41,12 @@ resource "google_sql_database_instance" "ticket_booth" {
   }
 }
 
+output "ticket_db_instance_name" {
+  value = google.sql_database_instance.ticket_booth.name
+}
+
 resource "google_sql_database" "ticket_booth" {
-  name     = "ticket-booth"
+  name     = "tickets"
   instance = google_sql_database_instance.ticket_booth.name
 }
 
@@ -49,7 +54,7 @@ resource "google_sql_user" "fnf_apps_admin_users" {
   for_each = toset(local.db_admins)
   name     = each.value
   instance = google_sql_database_instance.ticket_booth.name
-  type     = "CLOUD_IAM_GROUP"
+  type     = "CLOUD_IAM_USER"
 }
 
 resource "google_sql_user" "fnf_apps_gke_sa" {
@@ -69,4 +74,3 @@ resource "random_password" "ticket_booth_db" {
   special          = true
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
-

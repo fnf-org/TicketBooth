@@ -31,8 +31,6 @@ resource "google_service_account_iam_binding" "ticket_booth_app" {
   role               = google_project_iam_custom_role.ticket_booth.name
 
   members = [
-    "serviceAccount:${google_service_account.ticket_booth_gke.name}",
+    "serviceAccount:${var.project_id}.svc.id.goog[${var.app_namespace}/${var.app_service_account}]",
   ]
 }
-
-
