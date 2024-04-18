@@ -18,8 +18,8 @@
 }
 
 img.event-preview {
-  border: 5px solid #999;
+  max-width: 200px;
+  max-height: 200px;
   margin: 0 30px;
-  border-radius: 20px;
   float: right !important;
 }

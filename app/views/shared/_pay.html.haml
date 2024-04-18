@@ -1,6 +1,7 @@
-%form#payment-form{"data-controller" => "checkout", "data-stripe-client-secret" => "#{@payment_intent_client_secret}", "data-stripe-publishable-key" => "#{stripe_publishable_api_key}"
+%form#payment-form{"data-controller" => "checkout", "data-stripe-client-secret" => "#{@payment_intent_client_secret}", "data-stripe-publishable-key" => "#{stripe_publishable_api_key}"}
   #payment-message.hidden
   #payment-element
-  %button#submit.btn.btn-success.mt-3
+  %button.submit.btn.btn-success.mt-3s
     #spinner.spinner.hidden
-    %span#button-text Pay now
+    %span.button-text
+      Pay now

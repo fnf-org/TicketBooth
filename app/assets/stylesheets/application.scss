@@ -10,7 +10,6 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require_tree .
  */
 
 @import 'bootstrap/scss/bootstrap';
@@ -22,10 +21,11 @@
 //@import '../../../node_modules/flatpickr/dist/flatpickr.min';
 //@import '../../../node_modules/flatpickr/dist/themes/material_orange';
 
-@import './global.css.scss';
 @import './events.css.scss';
 @import './home.css.scss';
 @import './jobs.css.scss';
 @import './payments.css.scss';
 @import './shifts.css.scss';
 @import './time_slots.css.scss';
+@import './links.css.scss';
+@import './global.css.scss';

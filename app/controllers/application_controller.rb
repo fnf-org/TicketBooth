@@ -2,8 +2,6 @@
 
 # General controller configuration and helpers.
 class ApplicationController < ActionController::Base
-  # allow_browser versions: :modern
-
   protect_from_forgery
 
   # Allow user to log in via authentication token
@@ -31,7 +29,9 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
+    attributes = %i[name first last email avatar]
+    devise_parameter_sanitizer.permit(:sign_up, keys: attributes)
+    devise_parameter_sanitizer.permit(:account_update, keys: attributes)
   end
 
   def authenticate_user_from_token!

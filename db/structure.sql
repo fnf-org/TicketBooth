@@ -434,7 +434,9 @@ CREATE TABLE public.users (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     name character varying(70) NOT NULL,
-    authentication_token character varying(64)
+    authentication_token character varying(64),
+    first text,
+    last text
 );
 
 
@@ -729,6 +731,7 @@ CREATE UNIQUE INDEX index_users_on_unlock_token ON public.users USING btree (unl
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240418004856'),
 ('20240311182346'),
 ('20180527021019'),
 ('20160611234315'),

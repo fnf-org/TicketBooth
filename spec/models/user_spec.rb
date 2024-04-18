@@ -14,8 +14,10 @@
 #  email                  :string           not null
 #  encrypted_password     :string           not null
 #  failed_attempts        :integer          default(0)
+#  first                  :text
+#  last                   :text
 #  last_sign_in_at        :datetime
-#  last_sign_in_ip        :string
+#  last_sign_in_ip        :string``
 #  locked_at              :datetime
 #  name                   :string(70)       not null
 #  remember_created_at    :datetime
@@ -33,71 +35,71 @@
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #  index_users_on_unlock_token          (unlock_token) UNIQUE
+#
 
 require 'rails_helper'
 
 describe User do
+  let(:last) { nil }
+  let(:first) { nil }
+
   it 'has a valid factory' do
     expect(build(:user)).to be_valid
   end
 
   describe 'validation' do
-    describe '#name' do
-      subject(:user) { build(:user, name:) }
+    describe '#first and #last' do
+      subject(:user) { build(:user, first:, last:) }
 
       context 'when not present' do
-        let(:name) { nil }
-
         it { is_expected.not_to be_valid }
       end
 
       context 'when empty' do
-        let(:name) { '' }
+        let(:first) { '' }
+        let(:last) { '' }
 
         it { is_expected.not_to be_valid }
       end
 
-      context 'when longer than 70 characters' do
-        let(:name) { 'x' * 100 }
+      context 'when only first name exists' do
+        let(:first) { Faker::Name.first_name }
 
         it { is_expected.not_to be_valid }
       end
 
-      context 'when just a first name' do
-        let(:name) { 'John' }
+      context 'when only the last name exists' do
+        let(:last) { 'Smith' }
 
         it { is_expected.not_to be_valid }
-      end
-
-      context 'when both first and last name' do
-        let(:name) { 'John Smith' }
-
-        it { is_expected.to be_valid }
       end
 
       context 'when first, middle and last name' do
-        let(:name) { 'John Jacob Smith' }
+        let(:first) { 'John Jacob' }
+        let(:last) { 'Smith' }
 
         it { is_expected.to be_valid }
       end
 
       context 'when multiples spaces are between names' do
-        let(:name) { 'John     Smith' }
+        let(:first) { 'John     Jacob' }
+        let(:last) { 'Smith' }
 
         it 'condenses multiple spaces into a single space' do
           user.valid?
-          user.name.should == 'John Smith'
+          user.name.should == 'John Jacob Smith'
         end
 
         it { is_expected.to be_valid }
       end
 
       context 'when leading or trailing whitespace exists' do
-        let(:name) { '  John Smith ' }
+        let(:first) { '  John    Jacob   ' }
+        let(:last) { 'Smith' }
 
         it 'removes the surrounding whitespace' do
           user.valid?
-          user.name.should == 'John Smith'
+          user.name.should == 'John Jacob Smith'
         end
 
         it { is_expected.to be_valid }
@@ -140,12 +142,12 @@ describe User do
   end
 
   describe '#first_name' do
-    let(:first_name) { 'John' }
-    let(:last_name) { 'Smith' }
-    let(:user) { create(:user, name: [first_name, last_name].join(' ')) }
+    let(:first) { 'John' }
+    let(:last) { 'Smith' }
+    let(:user) { create(:user, first:, last:) }
 
     it 'returns the first name' do
-      user.first_name.should == first_name
+      user.name.should == "#{first} #{last}"
     end
   end
 

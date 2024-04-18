@@ -18,13 +18,13 @@
     Edit
     %i.icon-edit
 
-= image_tag image_path('fnf.png'), class: 'event-preview'
+= image_tag image_path('logos/fnf-transparent.png'), class: 'event-preview'
 
 %dl.dl-horizontal
   %dt Start Time
-  %dd= @event.start_time.localtime.to_formatted_s(:friendly)
+  %dd= TimeHelper.for_display(@event.start_time.localtime)
   %dt End Time
-  %dd= @event.end_time.localtime.to_formatted_s(:friendly)
+  %dd= TimeHelper.for_display(@event.end_time.localtime)
   %dt Adult Ticket Price
   %dd
     = number_to_currency(@event.adult_ticket_price)

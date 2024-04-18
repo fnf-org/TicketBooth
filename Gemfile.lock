@@ -1,3 +1,14 @@
+GIT
+  remote: https://github.com/heartcombo/devise.git
+  revision: a259ff3c28912a27329727f4a3c2623d3f5cb6f2
+  specs:
+    devise (5.0.0.beta)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 6.0.0)
+      responders
+      warden (~> 1.2.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -129,12 +140,6 @@ GEM
     debug (1.9.2)
       irb (~> 1.10)
       reline (>= 0.3.8)
-    devise (4.9.4)
-      bcrypt (~> 3.0)
-      orm_adapter (~> 0.1)
-      railties (>= 4.1.0)
-      responders
-      warden (~> 1.2.3)
     diff-lcs (1.5.1)
     docile (1.4.0)
     drb (2.2.1)
@@ -451,7 +456,7 @@ DEPENDENCIES
   cssbundling-rails
   dalli
   debug
-  devise
+  devise!
   factory_bot_rails
   faker
   flatpickr

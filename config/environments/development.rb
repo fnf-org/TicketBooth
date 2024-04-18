@@ -79,4 +79,7 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: 'localhost:3000' }
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.delivery_method = :test
+
+  config.hosts = %w[localhost 127.0.0.1 127.0.0.1:3000 127.0.0.1:5000]
+  config.hosts << 'tickets-local.fnf.org:5000'
 end
