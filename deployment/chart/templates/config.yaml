@@ -4,13 +4,16 @@ metadata:
   name: {{ .Release.Name }}-config
 data:
   {{ .Values.config | nindent 2 }}
----
 {{- if .Values.secret.create }}
+---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ default {{ .Release.Name }}"-secrets" .Values.secret.name }}
-type: Opaque
+{{- if .Values.secret.name }}
+  name: {{ .Values.secret.name }}
+{{- else }}
+  name: {{ .Release.Name }}"-secrets"type: Opaque
+{{- end }}
 stringData:
   {{ .Values.secret.data | nindent 2 }}
 {{- end }}

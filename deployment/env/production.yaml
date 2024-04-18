@@ -4,7 +4,7 @@ replicaCount: 3
 image:
   # The tag should be provided on the cmdline to prevent accidental deployments
   # of untesed code to production.
-  tag: null
+  tag: latest
 
 serviceAccount:
   annotations:
@@ -12,3 +12,16 @@ serviceAccount:
     # ServiceAccount is needed that has the permissions to read from the named
     # secret
     iam.gke.io/gcp-service-account: ticket-app-sa@fnf-apps-project.iam.gserviceaccount.com
+
+secret:
+  name: ticket-booth-app-secrets
+  external:
+    enabled: true
+    path: ticket-booth-app-secret
+    storeRef:
+      name: fnf-external-secrets
+      kind: ClusterSecretStore
+
+postgresql:
+  # Get this value from the Terraform output
+  instance: fnf-apps-db-instance

@@ -17,3 +17,9 @@ ingress:
     # Associate a GCP FrontendConfig with the Ingress
     # networking.gke.io/v1beta1.FrontendConfig: "<name>"
 
+# The secret should be defined in the environment file
+secrets:
+  create: false
+
+podSecurityContext:
+  runAsNonRoot: true
