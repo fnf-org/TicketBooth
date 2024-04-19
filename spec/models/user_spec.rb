@@ -17,7 +17,7 @@
 #  first                  :text
 #  last                   :text
 #  last_sign_in_at        :datetime
-#  last_sign_in_ip        :string``
+#  last_sign_in_ip        :string
 #  locked_at              :datetime
 #  name                   :string(70)       not null
 #  remember_created_at    :datetime

@@ -123,7 +123,7 @@ class EventsController < ApplicationController
   def params_symbolized_hash
     @params_symbolized_hash ||= permitted_params.to_h.tap(&:symbolize_keys!)
   end
-  
+
   def completed_ticket_requests
     TicketRequest
       .includes(:payment, :user)
