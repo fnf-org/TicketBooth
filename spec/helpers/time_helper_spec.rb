@@ -35,18 +35,29 @@ RSpec.describe TimeHelper do
   end
 
   describe 'convert_times_for_db' do
-    it 'returns nil with nil' do
+    it 'returns invalid arg' do
       expect(described_class.convert_times_for_db(nil)).to be_nil
-    end
-
-    it 'returns empty with empty in hash' do
       expect(described_class.convert_times_for_db({})).to be_empty
     end
 
-    it 'converts valid time string to datetime' do
-      str = '04/17/2024, 4:20 PM'
+    it 'raises type error with bad type arg' do
+      str = '04.17.2024'
+      expect { described_class.convert_times_for_db(str) }.to raise_error(TypeError)
+    end
+
+    it 'raises date error on bad format' do
+      str = '04.17.2024'
       test_hash = { start_time: str }
-      expect(described_class.convert_times_for_db(test_hash)[:start_time]).to be_a(Time)
+      expect { described_class.convert_times_for_db(test_hash) }.to raise_error(Date::Error)
+    end
+
+    it 'converts time string to Time' do
+      str = '04/20/2024, 4:20 PM'
+      str_epoch = DateTime.parse('2024-04-20T16:20:00 -0700').to_time.to_i
+      test_hash = { start_time: str }
+      out_time = described_class.convert_times_for_db(test_hash)[:start_time]
+      expect(out_time).to be_a(Time)
+      expect(out_time.to_i).to eq(str_epoch)
     end
 
     it 'does not convert empty string for time key' do

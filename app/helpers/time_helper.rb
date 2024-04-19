@@ -22,6 +22,7 @@ module TimeHelper
     # converts all values in hash to Time where key match '_time'
     def convert_times_for_db(in_hash)
       return in_hash if in_hash.nil? || in_hash.blank?
+      raise TypeError unless in_hash.is_a?(Hash)
 
       converted_times = {}
       in_hash.keys.grep(/_time$/).each do |key|
