@@ -35,7 +35,7 @@ class EventsController < ApplicationController
 
   def create
     create_params = params_symbolized_hash[:event].dup
-    convert_event_times_for_db(create_params)
+    TimeHelper.convert_times_for_db(create_params)
 
     @event = Event.new(create_params)
 
@@ -50,7 +50,7 @@ class EventsController < ApplicationController
 
   def update
     update_params = params_symbolized_hash[:event].dup
-    convert_event_times_for_db(update_params)
+    TimeHelper.convert_times_for_db(update_params)
 
     if @event.update(update_params)
       redirect_to @event, notice: 'The event has been updated.'
@@ -122,14 +122,6 @@ class EventsController < ApplicationController
 
   def params_symbolized_hash
     @params_symbolized_hash ||= permitted_params.to_h.tap(&:symbolize_keys!)
-  end
-
-  def convert_event_times_for_db(event_hash)
-    converted_times = {}
-    event_hash.keys.grep(/_time$/).each do |key|
-      converted_times[key] = TimeHelper.to_datetime_from_picker(event_hash[key])
-    end
-    event_hash.merge!(converted_times)
   end
 
   def completed_ticket_requests
