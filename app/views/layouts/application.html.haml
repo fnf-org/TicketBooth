@@ -1,10 +1,11 @@
 !!!
-%html{ lang: 'en' }
+%html{ lang: 'en', 'data-bs-theme': 'dark' }
   %head
-    %meta{ charset: 'utf-8' }
-    %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1.0' }
-    = csrf_meta_tags
-    = yield :meta
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:content => "width=device-width,initial-scale=1", :name => "viewport"}/
+    %meta{:content => "yes", :name => "apple-mobile-web-app-capable"}/
+    %meta{:content => "#{stripe_publishable_api_key}", :name => "stripe-key"}/
+    %link{:href => "/icons/nav-bar-logo.png", :rel => "shortcut icon", :type => "image/png"}/
 
     %title
       = PRODUCT_NAME
@@ -12,44 +13,37 @@
         &mdash;
         = yield(:title)
 
-    /[if lt IE9]
-      %script{ src: '//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js',
-               type: 'text/javascript' }
+    = csrf_meta_tags
+    = csp_meta_tag
+    = yield :heads
 
-    = stylesheet_link_tag 'application', media: 'all'
+    %link{:href => "/manifest.json", :rel => "manifest"}/
 
-    = yield :head
+    // Stripe
+    %script{:src => "https://js.stripe.com/v3/"}
+
+    = stylesheet_link_tag "application", "data-turbo-track": "reload"
+    = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
 
   %body
-    .navbar
-      .navbar-inner
-        .container
-          %a.brand{ href: root_path }
-            = PRODUCT_NAME
-          %ul.nav.pull-right
-            - if user_signed_in?
-              %li
-                = link_to edit_user_registration_path do
-                  %i.icon-user
-                  %span.user-name
-                    = current_user.first_name
-
-              %li
-                = link_to destroy_user_session_path, method: :delete do
-                  %span.sign-out-text Logout
-                  %i.icon-off
-            - else
-              %li
-                = link_to new_user_session_path do
-                  Sign in
-
+    = render partial: "shared/navigation"
     .container
-      = bootstrap_flash
-      = yield
+      .row
+        .col-3.col-md-3
+        .col-6.col-md-6
+          .turbo-frame#flash
+            = render 'shared/flash'
+        .col-3.col-md-3
+
+      .row
+        .col-1.col-md-1
+        .col-10.col-md-10
+          = yield
+        .col-1.col-md-1
 
     #footer
       .container
         %p.muted.text-center#footer-text
-          <small>Crafted with ♡</small>
+          %small
+            Crafted with ♡
 
-    = javascript_include_tag 'application'

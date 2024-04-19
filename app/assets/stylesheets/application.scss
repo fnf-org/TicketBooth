@@ -1,0 +1,31 @@
+/*
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ */
+
+@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap-icons/font/bootstrap-icons';
+
+@import 'flatpickr/dist/flatpickr';
+@import 'flatpickr/dist/themes/material_orange';
+
+//@import '../../../node_modules/flatpickr/dist/flatpickr.min';
+//@import '../../../node_modules/flatpickr/dist/themes/material_orange';
+
+@import './events.css.scss';
+@import './home.css.scss';
+@import './jobs.css.scss';
+@import './payments.css.scss';
+@import './shifts.css.scss';
+@import './time_slots.css.scss';
+@import './links.css.scss';
+@import './global.css.scss';

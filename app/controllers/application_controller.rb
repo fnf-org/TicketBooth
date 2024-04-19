@@ -10,6 +10,8 @@ class ApplicationController < ActionController::Base
   # Allow additional parameters to be passed to Devise-managed controllers
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  add_flash_types :info, :error, :warning
+
   protected
 
   def require_site_admin
@@ -20,17 +22,29 @@ class ApplicationController < ActionController::Base
     redirect_to new_event_ticket_request_path(@event) unless @event.admin?(current_user)
   end
 
+  def require_logged_in_user
+    unless current_user&.id
+      redirect_to new_user_session_path
+    end
+  end
+
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
+    attributes = %i[name first last email avatar]
+    devise_parameter_sanitizer.permit(:sign_up, keys: attributes)
+    devise_parameter_sanitizer.permit(:account_update, keys: attributes)
   end
 
   def authenticate_user_from_token!
     user_id = params[:user_id].presence
-    user    = User.find_by_id(user_id)
+    user    = user_id ? User.find_by(id: user_id) : nil
 
     if user && Devise.secure_compare(user.authentication_token, params[:user_token])
       user.update_attribute(:authentication_token, nil) # One-time use
       sign_in user
     end
+  end
+
+  def render_flash
+    render turbo_stream: turbo_stream.update('flash', partial: 'shared/flash')
   end
 end

@@ -1,11 +1,12 @@
-#!/usr/bin/env rake
 # frozen_string_literal: true
 
 # Add your own tasks in files placed in lib/tasks ending in .rake,
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
-require File.expand_path('config/application', __dir__)
+require_relative 'config/application'
 require 'timeout'
+
+Rails.application.load_tasks
 
 is_dev_test = %w[development test].include?(ENV.fetch('RAILS_ENV', 'development'))
 
@@ -15,11 +16,11 @@ if is_dev_test
   require 'yard'
 
   namespace :todolist do
-    task :statsetup do
+    task statsetup: :environment do
       require 'rails/code_statistics'
-      ::STATS_DIRECTORIES << %w[Uploaders app/uploaders]
+      STATS_DIRECTORIES << %w[Classes app/classes]
       # For test folders not defined in CodeStatistics::TEST_TYPES (ie: spec/)
-      ::STATS_DIRECTORIES << %w[Specs spec]
+      STATS_DIRECTORIES << %w[Specs spec]
       CodeStatistics::TEST_TYPES << 'Specs'
     end
   end
@@ -30,5 +31,3 @@ if is_dev_test
   RuboCop::RakeTask.new
   task default: %i[spec rubocop]
 end
-
-TicketBooth::Application.load_tasks

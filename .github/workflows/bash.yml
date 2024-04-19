@@ -10,11 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run ShellCheck
-      uses: ludeeus/action-shellcheck@master
-      with:
-        check_together: 'yes'
-        scandir: './bin'
-        ignore_names: init.sh
+      run: bin/shchk
 permissions:
   checks: read
   contents: read

@@ -21,7 +21,7 @@
     - @time_slots.each do |time_slot|
       %tr
         %td
-          #{time_slot.start_time.localtime.to_s(:dhmm)} &ndash; #{time_slot.end_time.localtime.to_s(:hmm)}
+          #{time_slot.start_time.localtime.to_formatted_s(:dhmm)} &ndash; #{time_slot.end_time.localtime.to_formatted_s(:hmm)}
         %td= time_slot.slots
         %td
           = link_to edit_event_job_time_slot_path(@event, @job, time_slot), class: 'btn' do

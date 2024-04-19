@@ -1,20 +1,25 @@
 # frozen_string_literal: true
 
-TicketBooth::Application.routes.draw do
-  root to: 'home#index'
+Rails.application.routes.draw do
+  root 'home#index'
+  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+
   get 'oops', controller: :home, action: :oops
+
   devise_for :users
 
-  event_id = 9
-
-  get 'fnf-tickets', controller: :ticket_requests, action: :new, event_id: event_id
-  get 'fnf_tickets', controller: :ticket_requests, action: :new, event_id: event_id
-  get 'fnftickets', controller: :ticket_requests, action: :new, event_id: event_id
-  get 'fnf', controller: :ticket_requests, action: :new, event_id: event_id
-  get 'FNF', controller: :ticket_requests, action: :new, event_id: event_id
-  get 'FnF', controller: :ticket_requests, action: :new, event_id: event_id
-
-  get 'eald', controller: :eald_payments, action: :new, event_id: event_id
+  # WTF was this for? --@kig
+  #
+  # event_id = 9
+  #
+  # get('fnf-tickets', controller: :ticket_requests, action: :new, event_id:)
+  # get('fnf_tickets', controller: :ticket_requests, action: :new, event_id:)
+  # get('fnftickets', controller: :ticket_requests, action: :new, event_id:)
+  # get('fnf', controller: :ticket_requests, action: :new, event_id:)
+  # get('FNF', controller: :ticket_requests, action: :new, event_id:)
+  # get('FnF', controller: :ticket_requests, action: :new, event_id:)
+  #
+  # get('eald', controller: :eald_payments, action: :new, event_id:)
 
   resources :payments, only: %i[new create show] do
     collection do
@@ -67,6 +72,5 @@ TicketBooth::Application.routes.draw do
       get :reset
     end
   end
-
   resources :site_admins, only: %i[index new create destroy]
 end

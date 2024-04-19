@@ -37,7 +37,7 @@ class JobsController < ApplicationController
   def update
     @job = Job.find(params[:id])
 
-    if @job.update_attributes(params[:job])
+    if @job.update(params[:job])
       redirect_to event_job_path(@event, @job),
                   notice: 'Job was successfully updated.'
     else
@@ -65,8 +65,8 @@ class JobsController < ApplicationController
   def create_time_slots
     return unless params[:start_time]
 
-    start_time = Time.from_picker(params.delete(:start_time))
-    end_time = Time.from_picker(params.delete(:end_time))
+    start_time = TimeHelper.to_datetime_from_picker(params.delete(:start_time))
+    end_time = TimeHelper.to_datetime_from_picker(params.delete(:end_time))
 
     return if end_time < start_time # Prevent infinite loop
 

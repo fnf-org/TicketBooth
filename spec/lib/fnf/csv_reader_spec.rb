@@ -17,13 +17,13 @@ module FnF
   end
 
   RSpec.describe CSVReader do
-    let(:path) { 'spec/fixtures/chill_sets.csv' }
+    let(:csv_file) { 'spec/fixtures/chill_sets.csv' }
     let(:counter) { Counter.new }
     let(:block) { -> { counter.increment! } }
 
-    subject { described_class.new(path) }
+    subject { described_class.new(csv_file) }
 
-    it 'should yield each line of the CSV' do
+    it 'yields each line of the CSV' do
       subject.read { block[] }
       expect(counter.counter).to eq(19)
     end

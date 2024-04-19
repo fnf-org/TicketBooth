@@ -27,28 +27,37 @@ class EventsController < ApplicationController
   end
 
   def edit
+    params_symbolized_hash[:event]&.each_pair do |key, value|
+      @event.send("#{key}=", value) if @event.respond_to?("#{key}=")
+    end
     render
   end
 
   def create
-    populate_params_event(params)
+    create_params = params_symbolized_hash[:event].dup
+    convert_event_times_for_db(create_params)
 
-    @event = Event.new(params[:event])
+    @event = Event.new(create_params)
 
     if @event.save
       redirect_to @event
     else
-      render action: 'new'
+      Rails.logger.error("Can't create event: #{@event.errors.full_messages}")
+      flash.now[:error] = "There was a problem creating the event: #{@event.errors.full_messages.join('. ')}"
+      render_flash
     end
   end
 
   def update
-    populate_params_event(params)
+    update_params = params_symbolized_hash[:event].dup
+    convert_event_times_for_db(update_params)
 
-    if @event.update_attributes(params[:event])
-      redirect_to @event
+    if @event.update(update_params)
+      redirect_to @event, notice: 'The event has been updated.'
     else
-      render action: 'edit'
+      Rails.logger.error "UPDATE ERROR: There was a problem updating the event: #{@event.errors.full_messages}"
+      flash.now[:error] = "There was a problem updating the event: #{@event.errors.full_messages}"
+      render_flash
     end
   end
 
@@ -61,8 +70,8 @@ class EventsController < ApplicationController
   def add_admin
     return redirect_to :back unless @event.admin?(current_user)
 
-    email = params[:user_email]
-    user = User.find_by_email(email)
+    email = permitted_params[:user_email]
+    user  = User.find_by(email:)
     return redirect_to :back, notice: "No user with email '#{email}' exists" unless user
 
     @event.admins << user
@@ -78,8 +87,8 @@ class EventsController < ApplicationController
   def remove_admin
     return redirect_to :back unless @event.admin?(current_user)
 
-    user_id = params[:user_id]
-    event_admin = EventAdmin.where(event_id: @event, user_id: user_id).first
+    user_id     = permitted_params[:user_id]
+    event_admin = EventAdmin.where(event_id: @event, user_id:).first
     return redirect_to :back, notice: "No user with id #{user_id} exists" unless event_admin
 
     event_admin.destroy
@@ -111,12 +120,16 @@ class EventsController < ApplicationController
 
   private
 
-  def populate_params_event(params)
-    params[:event][:start_time]               = Time.from_picker(params.delete(:start_time))
-    params[:event][:end_time]                 = Time.from_picker(params.delete(:end_time))
-    params[:event][:ticket_sales_start_time]  = Time.from_picker(params.delete(:ticket_sales_start_time))
-    params[:event][:ticket_sales_end_time]    = Time.from_picker(params.delete(:ticket_sales_end_time))
-    params[:event][:ticket_requests_end_time] = Time.from_picker(params.delete(:ticket_requests_end_time))
+  def params_symbolized_hash
+    @params_symbolized_hash ||= permitted_params.to_h.tap(&:symbolize_keys!)
+  end
+
+  def convert_event_times_for_db(event_hash)
+    converted_times = {}
+    event_hash.keys.grep(/_time$/).each do |key|
+      converted_times[key] = TimeHelper.to_datetime_from_picker(event_hash[key])
+    end
+    event_hash.merge!(converted_times)
   end
 
   def completed_ticket_requests
@@ -129,6 +142,42 @@ class EventsController < ApplicationController
   end
 
   def set_event
-    @event = Event.find(params[:id])
+    @event = Event.find(permitted_params[:id])
+  end
+
+  def permitted_params
+    params.permit(
+      :id,
+      :user_email,
+      :user_id,
+      :_method,
+      :authenticity_token,
+      :commit,
+      event: %i[
+        start_time
+        end_time
+        ticket_sales_start_time
+        ticket_sales_end_time
+        ticket_requests_end_time
+        adult_ticket_price
+        allow_donations
+        allow_financial_assistance
+        cabin_price
+        early_arrival_price
+        end_time
+        kid_ticket_price
+        late_departure_price
+        max_adult_tickets_per_request
+        max_cabin_requests
+        max_cabins_per_request
+        max_kid_tickets_per_request
+        name
+        require_mailing_address
+        start_time
+        tickets_require_approval
+      ]
+    )
+          .to_hash
+          .with_indifferent_access
   end
 end

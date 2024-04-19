@@ -1,0 +1,3 @@
+%h2 Register a New Account
+
+= render partial: 'form', locals: { existing: resource&.persisted?, resource: resource, resource_name: resource_name}

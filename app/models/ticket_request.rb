@@ -1,9 +1,46 @@
 # frozen_string_literal: true
 
-# Individual request for one or more tickets.
-# This is intended to capture as much information as possible about the ticket,
-# as well as the state of the request.
-class TicketRequest < ActiveRecord::Base
+#
+# rubocop: disable Metrics/ClassLength
+
+# == Schema Information
+#
+# Table name: ticket_requests
+#
+#  id                      :bigint           not null, primary key
+#  address_line1           :string(200)
+#  address_line2           :string(200)
+#  admin_notes             :string(512)
+#  adults                  :integer          default(1), not null
+#  agrees_to_terms         :boolean
+#  cabins                  :integer          default(0), not null
+#  car_camping             :boolean
+#  car_camping_explanation :string(200)
+#  city                    :string(50)
+#  country_code            :string(4)
+#  donation                :decimal(8, 2)    default(0.0)
+#  early_arrival_passes    :integer          default(0), not null
+#  guests                  :text
+#  kids                    :integer          default(0), not null
+#  late_departure_passes   :integer          default(0), not null
+#  needs_assistance        :boolean          default(FALSE), not null
+#  notes                   :string(500)
+#  previous_contribution   :string(250)
+#  role                    :string           default("volunteer"), not null
+#  role_explanation        :string(200)
+#  special_price           :decimal(8, 2)
+#  state                   :string(50)
+#  status                  :string(1)        not null
+#  zip_code                :string(32)
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  event_id                :integer          not null
+#  user_id                 :integer          not null
+#
+class TicketRequest < ApplicationRecord
+  include ActiveModel::Validations
+  include ActiveModel::Validations::Callbacks
+
   STATUSES = [
     STATUS_PENDING = 'P',
     STATUS_AWAITING_PAYMENT = 'A',
@@ -28,10 +65,14 @@ class TicketRequest < ActiveRecord::Base
     ROLE_OTHER => 'Other'
   }.freeze
 
-  belongs_to :user
-  belongs_to :event
-  has_one :payment
-  serialize :guests, Array
+  belongs_to :user, inverse_of: :ticket_requests
+  belongs_to :event, inverse_of: :ticket_requests
+
+  has_one :payment, inverse_of: :ticket_request
+
+  # Serialize guest emails as an array in a text field.
+  # TODO: This should probably be switched to a separate table or at least a JSONB format column.
+  serialize :guests, coder: JSON, type: Array
 
   attr_accessible :user_id, :adults, :kids, :cabins, :needs_assistance,
                   :notes, :status, :special_price, :event_id,
@@ -46,9 +87,11 @@ class TicketRequest < ActiveRecord::Base
 
   accepts_nested_attributes_for :user
 
+  before_validation :set_defaults
+
   validates :user, presence: { unless: -> { user.try(:new_record?) } }
 
-  validates :event_id, presence: true
+  validates :event, presence: { unless: -> { event.try(:new_record?) } }
 
   validates :status, presence: true, inclusion: { in: STATUSES }
 
@@ -90,20 +133,7 @@ class TicketRequest < ActiveRecord::Base
   scope :awaiting_payment, -> { where(status: STATUS_AWAITING_PAYMENT) }
   scope :approved, -> { awaiting_payment }
   scope :declined, -> { where(status: STATUS_DECLINED) }
-  scope :not_declined, -> { where('status != ?', STATUS_DECLINED) }
-
-  before_validation do
-    if event
-      self.status ||= if event.tickets_require_approval
-                        STATUS_PENDING
-                      else
-                        STATUS_AWAITING_PAYMENT
-                      end
-    end
-
-    # Remove empty guests
-    self.guests = Array(guests).map { |guest| guest.strip.presence }.compact
-  end
+  scope :not_declined, -> { where.not(status: STATUS_DECLINED) }
 
   def can_view?(user)
     self.user == user || event.admin?(user)
@@ -114,7 +144,7 @@ class TicketRequest < ActiveRecord::Base
   end
 
   def mark_complete
-    update_attributes status: STATUS_COMPLETED
+    update status: STATUS_COMPLETED
   end
 
   def pending?
@@ -130,7 +160,7 @@ class TicketRequest < ActiveRecord::Base
   end
 
   def approve
-    update_attributes status: (free? ? STATUS_COMPLETED : STATUS_AWAITING_PAYMENT)
+    update status: (free? ? STATUS_COMPLETED : STATUS_AWAITING_PAYMENT)
   end
 
   def declined?
@@ -159,7 +189,7 @@ class TicketRequest < ActiveRecord::Base
     begin
       TicketRequest.transaction do
         Stripe::Charge.retrieve(payment.stripe_charge_id).refund
-        return update_attributes(status: STATUS_REFUNDED)
+        return update(status: STATUS_REFUNDED)
       end
     rescue Stripe::StripeError => e
       errors.add(:base, "Cannot refund ticket: #{e.message}")
@@ -212,4 +242,25 @@ class TicketRequest < ActiveRecord::Base
   def country_name
     ISO3166::Country[country_code]
   end
+
+  private
+
+  def set_defaults
+    self.status = nil if status.blank?
+    self.status ||= if event
+                      if event.tickets_require_approval
+                        STATUS_PENDING
+                      else
+                        STATUS_AWAITING_PAYMENT
+                      end
+                    else
+                      STATUS_PENDING
+                    end
+
+    # Remove empty guests
+    # Note that guests are serialized as an array field.
+    self.guests = Array(guests).map { |guest| guest&.strip }.select(&:present?).compact
+  end
 end
+
+# rubocop: enable Metrics/ClassLength

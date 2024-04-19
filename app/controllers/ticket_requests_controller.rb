@@ -4,16 +4,14 @@ require 'tempfile'
 require 'csv'
 
 # Manage all pages related to ticket requests.
+# rubocop: disable Metrics/ClassLength
 class TicketRequestsController < ApplicationController
   before_action :authenticate_user!, except: %i[new create]
-  before_action :set_event
-  before_action :require_event_admin, except: %i[new create show edit update]
-  before_action :set_ticket_request, except: %i[index new create download]
 
-  # Uncomment this if we start getting too many requests
-  # http_basic_authenticate_with name: Rails.application.secrets.ticket_request_username,
-  # password: Rails.application.secrets.ticket_request_password,
-  # only: :new
+  before_action :set_event
+
+  before_action :require_event_admin, except: %i[new create show edit update]
+  before_action :set_ticket_request, except: %i[new create index download]
 
   def index
     @ticket_requests = TicketRequest
@@ -45,7 +43,7 @@ class TicketRequestsController < ApplicationController
   def download
     temp_csv = Tempfile.new('csv')
 
-    raise(ArgumentError, 'Blank temp_csv') unless temp_csv && temp_csv&.path
+    raise ArgumentError('Tempfile is nil') if temp_csv.nil? || temp_csv.path.nil?
 
     CSV.open(temp_csv.path, 'wb') do |csv|
       csv << (%w[name email] + TicketRequest.columns.map(&:name))
@@ -69,18 +67,20 @@ class TicketRequestsController < ApplicationController
 
   def new
     if signed_in?
-      existing_request = TicketRequest.where(user_id: current_user, event_id: @event).first
+      existing_request = TicketRequest.where(user_id: current_user, event_id: @event).order(:created_at).first
 
       return redirect_to event_ticket_request_path(@event, existing_request) if existing_request
     end
 
-    @user = current_user if signed_in?
+    @user           = current_user if signed_in?
     @ticket_request = TicketRequest.new
 
-    last_ticket_request = TicketRequest.where(user_id: @user).order(:created_at).last
-    if last_ticket_request
-      %w[address_line1 address_line2 city state zip_code country_code].each do |field|
-        @ticket_request.send(:"#{field}=", last_ticket_request.send(field))
+    if @user
+      last_ticket_request = TicketRequest.where(user_id: @user&.id).order(:created_at).last
+      if last_ticket_request
+        %w[address_line1 address_line2 city state zip_code country_code].each do |field|
+          @ticket_request.send(:"#{field}=", last_ticket_request.send(field))
+        end
       end
     end
   end
@@ -96,36 +96,66 @@ class TicketRequestsController < ApplicationController
 
   def create
     unless @event.ticket_sales_open?
-      flash[:error] = 'Sorry, but ticket sales have closed'
+      flash.now[:error] = 'Sorry, but ticket sales have closed'
       return render action: 'new'
     end
 
-    params[:ticket_request][:user] = current_user if signed_in?
-    @ticket_request = TicketRequest.new(params[:ticket_request])
+    tr_params = permitted_params[:ticket_request].to_h || {}
 
-    if @ticket_request.save
+    ticket_request_user = if signed_in? && current_user.present?
+                            current_user
+                          else
+                            User.build(email: permitted_params[:email],
+                                       name: permitted_params[:name],
+                                       password: permitted_params[:password],
+                                       password_confirmation: permitted_params[:password]).tap do |user|
+                              if user.valid?
+                                user.save! && sign_in(user)
+                              else
+                                flash.now[:error] = user.errors.full_messages.join('. ')
+                                @ticket_request   = TicketRequest.new(tr_params, user:, event: @event)
+                                return render action: 'new'
+                              end
+                            end
+                          end
+
+    if tr_params.empty?
+      flash.now[:error] = 'Please fill out the form below to request tickets.'
+      redirect_to new_event_ticket_request_path(@event)
+    end
+
+    tr_params[:user_id] = ticket_request_user.id
+
+    @ticket_request = TicketRequest.new(tr_params, user_id: ticket_request_user.id, event_id: @event.id)
+
+    Rails.logger.info("Newly created request: #{@ticket_request.inspect}")
+
+    begin
+      @ticket_request.save!
+      Rails.logger.info("Saved Ticket Request, ID = #{@ticket_request.id}")
+
       FnF::Events::TicketRequestEvent.new(
-        user: current_user,
+        user: ticket_request_user,
         target: @ticket_request
       ).fire!
-
-      sign_in(@ticket_request.user) unless signed_in?
 
       if @event.tickets_require_approval || @ticket_request.free?
         redirect_to event_ticket_request_path(@event, @ticket_request)
       else
         redirect_to new_payment_url(ticket_request_id: @ticket_request)
       end
-    else
-      render action: 'new'
+    rescue StandardError => e
+      Rails.logger.error("Error saving request: #{e.message}\n\n#{@ticket_request.errors.full_messages.join(', ')}")
+      flash.now[:error] = "Error saving request: #{e.message}<br ><ul>#{@ticket_request.errors.full_messages.join("\n<li>")}"
+      render_flash
     end
   end
 
   def update
     # Allow ticket request to edit guests and nothing else
-    params[:ticket_request].slice!(:guests) unless @event.admin?(current_user)
+    permitted_params[:ticket_request].slice!(:guests) unless @event.admin?(current_user)
 
-    if @ticket_request.update_attributes(params[:ticket_request])
+    if @ticket_request.update(permitted_params[:ticket_request])
       redirect_to event_ticket_request_path(@event, @ticket_request)
     else
       render action: 'edit'
@@ -147,7 +177,7 @@ class TicketRequestsController < ApplicationController
   end
 
   def decline
-    if @ticket_request.update_attributes(status: TicketRequest::STATUS_DECLINED)
+    if @ticket_request.update(status: TicketRequest::STATUS_DECLINED)
       ::FnF::Events::TicketRequestDeclinedEvent.new(
         user: current_user,
         target: @ticket_request
@@ -185,11 +215,24 @@ class TicketRequestsController < ApplicationController
   private
 
   def set_event
-    @event = Event.find(params[:event_id])
+    @event = Event.find(permitted_params[:event_id])
   end
 
   def set_ticket_request
-    @ticket_request = TicketRequest.find(params[:id])
+    @ticket_request = TicketRequest.find(permitted_params[:id])
     redirect_to @event unless @ticket_request.event == @event
   end
+
+  def permitted_params
+    params.permit(:event_id, :id, :email, :name, :password, :authenticity_token, :commit,
+                  ticket_request: %i[user_id adults kids cabins needs_assistance
+                                     notes special_price event_id
+                                     user donation role role_explanation
+                                     car_camping car_camping_explanation previous_contribution
+                                     address_line1 address_line2 city state zip_code
+                                     country_code admin_notes agrees_to_terms
+                                     early_arrival_passes late_departure_passes guests])
+  end
 end
+
+# rubocop: enable Metrics/ClassLength

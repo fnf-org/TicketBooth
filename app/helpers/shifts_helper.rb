@@ -23,17 +23,17 @@ module ShiftsHelper
                        .inject(nil) do |last_time_slot, time_slot|
         offset   = (time_slot.start_time - earliest) / interval
         duration = (time_slot.end_time - time_slot.start_time) / interval
-        rows[offset] << { offset: offset, time_slot: time_slot, rowspan: duration.to_i }
+        rows[offset] << { offset:, time_slot:, rowspan: duration.to_i }
 
         # Fill in empty gaps
         if last_time_slot && last_time_slot.end_time < time_slot.start_time
           offset   = (last_time_slot.end_time - earliest) / interval
           duration = (time_slot.start_time - last_time_slot.end_time) / interval
-          rows[offset] << { offset: offset, rowspan: duration.to_i }
+          rows[offset] << { offset:, rowspan: duration.to_i }
         elsif !last_time_slot && earliest < time_slot.start_time
           offset   = 0
           duration = (time_slot.start_time - earliest) / interval
-          rows[offset] << { offset: offset, rowspan: duration.to_i }
+          rows[offset] << { offset:, rowspan: duration.to_i }
         end
 
         # TODO: last_time_slot is always nil, since it's not set anywhere, right? -- @kigster
@@ -44,7 +44,7 @@ module ShiftsHelper
       if last_time_slot && last_time_slot.end_time < latest
         offset   = (last_time_slot.end_time - earliest) / interval
         duration = (latest - last_time_slot.end_time) / interval
-        rows[offset] << { offset: offset, rowspan: duration.to_i }
+        rows[offset] << { offset:, rowspan: duration.to_i }
       elsif !last_time_slot
         rows[0] << { offset: 0, rowspan: blocks }
       end

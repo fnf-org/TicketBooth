@@ -1,0 +1,26 @@
+# .github/workflows/main.yaml
+name: "TicketBooth CI: Lint"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  main:
+    name: RuboCop
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt-get update -yqq
+      - run: sudo apt-get install -yqq netcat libpq-dev
+
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2.3'
+          bundler-cache: true
+
+      - name: RuboCop
+        run: bin/rubocop --parallel

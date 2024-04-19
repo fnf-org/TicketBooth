@@ -17,6 +17,9 @@
   float: right;
 }
 
-.event-preview {
-  float: right;
+img.event-preview {
+  max-width: 200px;
+  max-height: 200px;
+  margin: 0 30px;
+  float: right !important;
 }

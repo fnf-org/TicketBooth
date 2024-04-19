@@ -1,0 +1,11 @@
+- flash.each do |type, msg|
+  .alert{ class: alert_class(type), role: "alert"}
+    - main, rest = msg.split(/:/)
+    %h3
+      = main
+    - if rest != main && rest.present?
+      %hr
+      - rest.gsub(/.*:/, '').gsub(/["\[\]]/, '').split(', ').each do |message|
+        %ul
+          %li
+            = message

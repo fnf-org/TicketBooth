@@ -2,4 +2,4 @@
 --color
 --order rand
 --profile 5
---require spec_helper
+--require rails_helper

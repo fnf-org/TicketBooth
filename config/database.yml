@@ -6,7 +6,7 @@ development:
   pool: 5
   username: postgres
   password: postgres
-  database: tickets_development
+  database: ticketing_app_development
 
 test:
   adapter: postgresql
@@ -16,7 +16,7 @@ test:
   pool: 5
   username: postgres
   password: postgres
-  database: tickets_test
+  database: ticketing_app_test
 
 production:
   adapter: postgresql
@@ -26,5 +26,5 @@ production:
   pool: 5
   username: postgres
   password: postgres
-  database: tickets_production
+  database: ticketing_app_production
   pool: 15

@@ -1,0 +1,5 @@
+example_id                                    | status  | run_time        |
+--------------------------------------------- | ------- | --------------- |
+./spec/helpers/home_helper_spec.rb[1:1]       | pending | 0 seconds       |
+./spec/requests/home_spec.rb[1:1:1]           | failed  | 0.3845 seconds  |
+./spec/views/home/index.html.erb_spec.rb[1:1] | pending | 0.00001 seconds |
