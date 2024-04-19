@@ -5,7 +5,7 @@ require 'active_support/core_ext/date_and_time/compatibility'
 
 module TimeHelper
   TIME_FORMAT = '%m/%d/%Y, %H:%M %p %Z'
-  DISPLAY_FORMAT = '%A, %d %B %Y, %h:%M %p'
+  DISPLAY_FORMAT = '%A, %d %B %Y, %H:%M %p'
 
   class << self
     def for_display(datetime)
