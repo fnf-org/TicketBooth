@@ -15,7 +15,7 @@ module TimeHelper
     end
 
     def to_string_for_flatpickr(datetime)
-      return nil if datetime.nil?
+      return nil if datetime.blank?
 
       datetime.strftime(TIME_FORMAT) if [Date, DateTime, Time, ActiveSupport::TimeWithZone].include?(datetime.class)
     end
@@ -28,8 +28,11 @@ module TimeHelper
 
     # converts all values in hash to Time where key match '_time'
     def convert_times_for_db(in_hash)
-      return in_hash if in_hash.nil? || in_hash.blank?
-      raise TypeError unless in_hash.is_a?(Hash)
+      return in_hash if in_hash.blank?
+
+      unless in_hash.is_a?(Hash)
+        raise ArgumentError, "convert_times_for_db expects a Hash argument, got #{in_hash.class.name}"
+      end
 
       converted_times = {}
       in_hash.keys.grep(/_time$/).each do |key|

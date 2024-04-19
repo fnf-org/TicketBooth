@@ -62,7 +62,7 @@ RSpec.describe TimeHelper do
       let(:invalid_input) { '04.17.2024' }
 
       it 'raises type error with bad type arg' do
-        expect { described_class.convert_times_for_db(invalid_input) }.to raise_error(TypeError)
+        expect { described_class.convert_times_for_db(invalid_input) }.to raise_error(ArgumentError)
       end
 
       it 'raises date error on bad format' do
