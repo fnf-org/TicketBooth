@@ -71,6 +71,21 @@ class Event < ApplicationRecord
   validate :end_time_after_start_time, :sales_end_time_after_start_time,
            :ensure_prices_set_if_maximum_specified
 
+  DEFAULT_ATTRIBUTES = {
+    adult_ticket_price: 150,
+    early_arrival_price: 20,
+    kid_ticket_price: 50,
+    late_departure_price: 20,
+    max_adult_tickets_per_request: 4,
+    max_kid_tickets_per_request: 2,
+    max_cabins_per_request: 1,
+    max_cabin_requests: 2,
+    tickets_require_approval: true,
+    require_mailing_address: false,
+    allow_financial_assistance: true,
+    allow_donations: true
+  }.freeze
+
   def admin?(user)
     user && (user.site_admin? || admins.exists?(id: user))
   end
