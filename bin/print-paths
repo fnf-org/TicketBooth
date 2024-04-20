@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# vim: ft=bash
+# Prints current paths in the $PATH variable
+
+source development/shell-lib.sh
+path.dirs.by-line
