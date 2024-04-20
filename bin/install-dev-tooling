@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1091,SC2002,SC2207
+# vim: ft=bash
+
+export BASHMATIC_HOME="${BASHMATIC_HOME:-"${HOME}/.bashmatic"}"
+[[ -z ${BASHMATIC_HOME} ]] && export BASHMATIC_HOME="${HOME}/.bashmatic"
+[[ -d ${BASHMATIC_HOME} ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install -q"
+[[ -d ${BASHMATIC_HOME} ]] || {
+  echo "Can't find Bashmatic, even after attempting an installation."
+  echo "Please install Bashmatic with the following command line:"
+  echo 'bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install"'
+  exit 1
+}
+
+# shellcheck source="${BASHMATIC_HOME}/init.sh"
+source "${BASHMATIC_HOME}/init" >/dev/null
+output.constrain-screen-width 100
+
+declare -g timestamp
+export timestamp="$(time.now.db)"
+
+h1 "Installing Brew Packages..."
+run.set-all continue-on-error
+run "brew bundle --no-upgrade --no-lock"
+run.set-all abort-on-error
+
+if [[ -d ~/.vim && -f ~/.vimrc ]]; then
+  h2 "Making a backup of your Current VIM Setup"
+  run "cp -p -v ~/.vimrc ~/.vimrc.${timestamp}"
+fi
+
+h1 "Installing custom vim configuration locally..."
+run "cp -f development/config/.vimrc ${HOME}"
+run "cp -f development/config/.vimrc.customizations ${HOME}"
+
+h1 "Installing VIM Plugins... Please wait."
+run.set-next show-output-on
+run "vim -E +PlugInstall +qall"
+
+h1 "Installing ~/.psqlrc"
+run "mv ~/.psqlrc ~/.psqlrc.${timestamp}"
+run.set-next show-output-on
+run "cp -p -v development/config/.psqlrc* ${HOME}"
+
+
