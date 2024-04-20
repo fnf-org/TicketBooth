@@ -20,7 +20,7 @@ module FnF
     # rubocop: disable Rails/Output
     class Seeds
       unless defined?(SITE_ADMIN_PASSWORD)
-        SITE_ADMIN_PASSWORD = 'fubar'
+        SITE_ADMIN_PASSWORD = 'fubar!'
         SITE_ADMIN_EMAIL    = 'site-admin@fnf.org'
         DEFAULT_USER_COUNT  = 10
         DEFAULT_EVENT_COUNT = 2
