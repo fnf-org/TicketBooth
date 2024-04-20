@@ -151,11 +151,22 @@ form {
     max-width: 80%;
   }
 
+  input[type=text]#event_name {
+    width: 400px !important;
+    min-width: 400px !important;
+    font-size: 14pt;
+    background-color: #FB9 !important;
+  }
+
   input[type=text] {
     min-width: 100px;
+    width: 300px;
     text-align: left;
     padding-left: 10px;
-    width: 300px;
+  }
+
+  input[name="event[name]"] {
+    width: 500px !important;
   }
 
   input[type=submit] {

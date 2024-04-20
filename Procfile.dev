@@ -1,4 +1,5 @@
+# vim: ft=yaml
 web: env RUBY_DEBUG_OPEN=true bin/rails server -p 3000
-js: yarn watch:js --verbose
-css: yarn watch:css --verbose
+js: yarn watch:js
+css: yarn watch:css
 browser: sleep 10 && open http://localhost:3000/ && while true; do sleep 100; echo .; done
