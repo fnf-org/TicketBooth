@@ -50,6 +50,7 @@
     "dev": "tsc-watch --noClear -p tsconfig.json --onSuccess \"yarn build:js\" --onFailure \"yarn failure:js\"",
     "failure:js": "rm ./app/assets/builds/application.js && rm ./app/assets/builds/application.js.map",
     "watch:css": "nodemon --watch ./app/assets/stylesheets/ --ext scss --exec \"yarn build:css\"",
+    "watch:js": "nodemon --watch ./app/assets/javascript/ --ext js --exec \"yarn build:js\"",
     "eslint:check": "yarn eslint .",
     "prettier:check": "yarn prettier --check ."
   },
