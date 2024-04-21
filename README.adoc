@@ -47,23 +47,23 @@ After that, your `vim` sessions will have auto-complete enabled, and your `psql 
 
 ==== Running App Dependencies Installer
 
-You can run the following setup script to attempt a complete set up of the development environment, as well as the installation of the Rubies, Gems and Database:
+You can run the following setup script, but only on OS-X, to attempt a complete set up of the development environment, as well as the installation of the Rubies, Gems and Database:
 
 [source,bash]
 ----
 bin/boot-up
 ----
 
-This should automatically open the browser at the `http://localhost:3000` URL, if all the steps succeed.
+This should install all of the Brew dependencies, start PostgreSQL, memcached, and install Ruby, Node, Yarn, Gems and Node packages.
 
-The `bin/boot-up` script will start the Rails server, or show an error that needs to be fixed.
-
-After you stop it with `Ctrl-C`, you can restart the server using the following shortcut:
+==== Starting the Rails Server
 
 [source,bash]
 make dev
 
-This actually starts Foreman via `bundle exec foreman -f Procfile.dev` — this is required to start CSS and JS just-in-time compilcation in addition to the Rails server.
+This actually starts Foreman via `bundle exec foreman -f Procfile.dev` — this is required to start CSS and JS just-in-time compilcation in addition to the Rails server. 
+
+The server will run on port 8080, and in development will hot swap any locally modified files, including CSS and JS.
 
 CAUTION: Running `rails s` is no longer sufficient to start the application.
 
