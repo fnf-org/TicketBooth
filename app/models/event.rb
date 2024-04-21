@@ -83,7 +83,7 @@ class Event < ApplicationRecord
     adult_ticket_price: 250,
     early_arrival_price: 0,
     kid_ticket_price: 0,
-    late_departure_price: 25,
+    late_departure_price: 30,
 
     max_adult_tickets_per_request: 6,
     max_kid_tickets_per_request: 4,
