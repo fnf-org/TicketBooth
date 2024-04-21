@@ -16,6 +16,11 @@ export BASHMATIC_HOME="${BASHMATIC_HOME:-"${HOME}/.bashmatic"}"
 source "${BASHMATIC_HOME}/init.sh" >/dev/null 2>&1
 output.constrain-screen-width 100
 
+if [[ $(uname -s) != "Darwin" ]]; then
+  error "This script is meant for setting up OS-X Dev env."
+  exit 1
+fi
+
 h1 "Installing Brew Packages..."
 run.set-all continue-on-error
 run "brew bundle --no-upgrade --no-lock"
@@ -56,9 +61,4 @@ run "bin/rails db:migrate"
 run "bin/rails db:seed"
 run "bundle exec rake db:test:prepare"
 
-h1 "Starting Rails Server..."
-run.set-next show-output-on
-run "sleep 5 && open http://0.0.0.0:3000/" 2>/dev/null 1>&2 &
-run "make dev"
-
-
+success "Your server should be ready to roll. Run ${txtgrn}make dev${clr} to start it."

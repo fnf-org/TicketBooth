@@ -1,5 +1,5 @@
 !!!
-%html{ lang: 'en', 'data-bs-theme': 'dark' }
+%html{ lang: 'en', 'data-bs-theme': 'light' }
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %meta{:content => "width=device-width,initial-scale=1", :name => "viewport"}/
@@ -28,11 +28,11 @@
   %body
     = render partial: "shared/navigation"
     .container
+      %turbo-frame#flash_container{"data-controller": "flash", "data-flash-target": "flash"}
+        = render "shared/flash"
       .row
         .col-3.col-md-3
         .col-6.col-md-6
-          .turbo-frame#flash
-            = render 'shared/flash'
         .col-3.col-md-3
 
       .row

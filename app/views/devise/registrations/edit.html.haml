@@ -1,4 +1,4 @@
 %h2
   Edit Your Account
 
-= render partial: 'form', locals: { existing: resource&.persisted?, resource: resource, resource_name: resource_name}
+= render partial: 'form', locals: { existing: resource&.id.nil? ? false : true, resource: resource, resource_name: resource_name}

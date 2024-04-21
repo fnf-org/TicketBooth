@@ -44,7 +44,8 @@ class Event < ApplicationRecord
                   :max_kid_tickets_per_request, :max_cabins_per_request, :max_cabin_requests,
                   :photo, :photo_cache, :tickets_require_approval, :require_mailing_address,
                   :allow_financial_assistance, :allow_donations,
-                  :ticket_sales_start_time, :ticket_sales_end_time, :ticket_requests_end_time
+                  :ticket_sales_start_time, :ticket_sales_end_time,
+                  :ticket_requests_end_time
 
   mount_uploader :photo, PhotoUploader
 
@@ -71,19 +72,31 @@ class Event < ApplicationRecord
   validate :end_time_after_start_time, :sales_end_time_after_start_time,
            :ensure_prices_set_if_maximum_specified
 
-  DEFAULT_ATTRIBUTES = {
+  DEFAULT_EVENT_START_TIME = ->(delta = 0) { Date.current + 2.months + delta }
+  DEFAULT_ATTRIBUTES       = {
+    start_time: DEFAULT_EVENT_START_TIME[11.hours],
+    end_time: DEFAULT_EVENT_START_TIME[3.days + 14.hours],
+    ticket_requests_end_time: DEFAULT_EVENT_START_TIME[-14.days],
+    ticket_sales_start_time: DEFAULT_EVENT_START_TIME[-42.days],
+    ticket_sales_end_time: DEFAULT_EVENT_START_TIME[7.days],
+
     adult_ticket_price: 250,
-    early_arrival_price: 20,
+    early_arrival_price: 0,
     kid_ticket_price: 0,
     late_departure_price: 30,
+
     max_adult_tickets_per_request: 10,
     max_kid_tickets_per_request: 4,
-    max_cabins_per_request: 1,
-    max_cabin_requests: 2,
+
     tickets_require_approval: true,
-    require_mailing_address: false,
     allow_financial_assistance: true,
-    allow_donations: true
+    allow_donations: true,
+
+    require_mailing_address: false,
+
+    max_cabins_per_request: nil,
+    max_cabin_requests: nil,
+    cabin_price: nil
   }.freeze
 
   def admin?(user)

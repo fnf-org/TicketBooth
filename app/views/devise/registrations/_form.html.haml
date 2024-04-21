@@ -1,6 +1,6 @@
 
 - http_method = existing ? :put : :post
-= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: http_method }) do |f|
+= form_for(resource, as: resource_name, url: user_registration_path, html: { method: http_method }) do |f|
 
   = render "devise/shared/error_messages", resource: resource
 
@@ -43,13 +43,6 @@
           .actions
             = f.submit "Register", class: 'btn btn-primary btn-large'
 
-      .row
-        .col-12
-          .actions
-            %h3
-              Close my accounts completely.
-            %div
-              Wanna go? #{button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, class: 'btn btn-secondary btn-large', method: :delete}
 
       .row
         .col-12
