@@ -115,7 +115,12 @@ After you setup the shell initialization file, restart your terminal or reload t
 Once you are back in the project's folder, run:
 
 [source,bash]
+----
+eval "$(direnv hook ${SHELL/*\/})"
 direnv allow .
+----
+
+NOTE: the first line above should be copied to your shell RC (aka "dotfiles").
 
 This will load the environment variables from the `.envrc` file.
 
@@ -144,9 +149,6 @@ brew bundle 2>/dev/null
 brew install rbenv ruby-build direnv volta
 
 eval "$(rbenv init -)"
-eval "$(direnv hook ${SHELL/*\/})"
-
-direnv allow .
 
 rbenv install -s $(cat .ruby-version)
 rbenv local $(cat .ruby-version)
@@ -155,8 +157,14 @@ bundle install -j 12
 rails db:prepare
 rails db:test:prepare
 
-# Run Specs at the end:
-    bundle exec rspec --parallel
+# Run Specs at the end
+bundle exec rspec
+
+# Run rubocop
+bundle exec rubocop
+
+# Run ShellCheck
+bin/shchk
 ----
 
 ==== Manual 4: Starting the Server
