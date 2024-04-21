@@ -43,8 +43,8 @@ class EventsController < ApplicationController
       redirect_to @event
     else
       Rails.logger.error("Can't create event: #{@event.errors.full_messages}")
-      flash.now[:error] = "There was a problem creating the event: #{@event.errors.full_messages.join('. ')}"
-      render_flash
+      flash.now[:error] = "There was a problem creating the event: #{@event.errors.full_messages.sort.uniq.join('. ')}"
+      render_flash flash
     end
   end
 

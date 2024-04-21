@@ -56,9 +56,4 @@ run "bin/rails db:migrate"
 run "bin/rails db:seed"
 run "bundle exec rake db:test:prepare"
 
-h1 "Starting Rails Server..."
-run.set-next show-output-on
-run "sleep 5 && open http://0.0.0.0:3000/" 2>/dev/null 1>&2 &
-run "make dev"
-
-
+success "Your server should be ready to roll. Run ${txtgrn}make dev${clr} to start it."

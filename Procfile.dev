@@ -1,5 +1,5 @@
 # vim: ft=yaml
-web: env RUBY_DEBUG_OPEN=true bin/rails server -p 3000
+web: env RUBY_DEBUG_OPEN=true bin/rails server -p 5000
 js: yarn watch:js
 css: yarn watch:css
-browser: sleep 10 && open http://localhost:3000/ && while true; do sleep 100; echo .; done
+browser: sleep 10 && open http://localhost:5000/ && while true; do sleep 100; echo .; done

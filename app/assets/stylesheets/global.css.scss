@@ -44,6 +44,23 @@ a.btn {
   }
 }
 
+#flash_container {
+  position: fixed;
+
+  width: auto;
+  top: 10px;
+  left: 500px;
+  right: 20%;
+
+  .alert {
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 10px 10px 10px #222;
+  }
+  .alert-danger {
+    h3 { color: #f55 !important; }
+  }
+}
 
 nav.navbar {
   width: 100%;
