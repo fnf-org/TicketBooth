@@ -16,6 +16,11 @@ export BASHMATIC_HOME="${BASHMATIC_HOME:-"${HOME}/.bashmatic"}"
 source "${BASHMATIC_HOME}/init.sh" >/dev/null 2>&1
 output.constrain-screen-width 100
 
+if [[ $(uname -s) != "Darwin" ]]; then
+  error "This script is meant for setting up OS-X Dev env."
+  exit 1
+fi
+
 h1 "Installing Brew Packages..."
 run.set-all continue-on-error
 run "brew bundle --no-upgrade --no-lock"
