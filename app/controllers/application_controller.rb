@@ -29,9 +29,9 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    attributes = %i[name first last email avatar]
-    devise_parameter_sanitizer.permit(:sign_up, keys: attributes)
-    devise_parameter_sanitizer.permit(:account_update, keys: attributes)
+    permitted_attributes = %i[email password password_confirmation first last]
+    devise_parameter_sanitizer.permit(:sign_up) { |user| user.permit(*permitted_attributes) }
+    devise_parameter_sanitizer.permit(:account_update) { |user| user.permit(*permitted_attributes) }
   end
 
   def authenticate_user_from_token!
