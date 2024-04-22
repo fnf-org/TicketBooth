@@ -86,11 +86,14 @@ Rails.application.configure do
     port: 587,
     domain: Rails.application.credentials.development.gmail.domain,
     user_name: Rails.application.credentials.development.gmail.user_name,
-    password: Rails.application.credentials.development.gmail.password,
+    password: Rails.application.credentials.development.gmail.password, # https://myaccount.google.com/apppasswords
     authentication: 'plain',
     enable_starttls_auto: true
   }
 
-  config.hosts = %w[localhost 127.0.0.1 127.0.0.1:3000 127.0.0.1:5000]
-  config.hosts << 'tickets-local.fnf.org:5000'
+  config.hosts = %w[localhost 127.0.0.1 127.0.0.1:3000 127.0.0.1:8080 0.0.0.0:8080]
+  config.hosts << 'tickets-local.fnf.org:8080'
+
+  config.log_tags = [:request_id]
+  config.log_level = :debug
 end

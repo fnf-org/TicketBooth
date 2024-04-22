@@ -48,17 +48,23 @@ a.btn {
   position: fixed;
 
   width: auto;
-  top: 10px;
+  top: 30px;
   left: 500px;
   right: 20%;
 
   .alert {
+    padding: 15px;
     width: 100%;
     border-radius: 20px;
-    box-shadow: 10px 10px 10px #222;
+    box-shadow: 5px 5px 10px rgba(34, 34, 34, 0.75);
+    h3 {
+      font-size: 16pt;
+    }
   }
   .alert-danger {
-    h3 { color: #f55 !important; }
+    h3 {
+      color: #f55 !important;
+    }
   }
 }
 
@@ -79,21 +85,23 @@ nav.navbar {
     display: inline-block;
     position: relative;
     margin-left: 50px !important;
-    margin-right: 30px !important;
     padding: 20px !important;
   }
+  ul {
+    margin-left: 10px !important;
+    a.nav-link {
+      color: rgb(255, 255, 255) !important;
+      text-decoration: none !important;
+      padding: 6px 15px !important;
+      margin-right: 10px !important;
+      margin-left: 10 px !important;
+      font-weight: 800;
+      background-color: rgba(69, 150, 254, 0.65) !important;
 
-  a.nav-link {
-    color: #ff7800 !important;
-    text-decoration: none !important;
-    padding: 6px 15px !important;
-    margin: 0 10px;
-    background-color: #462301;
-
-    &:focus,
-    &:hover {
-      color: #000 !important;
-      background-color: #ff7800 !important;
+      &:focus,
+      &:hover {
+        background-color: rgba(69, 150, 254, 1) !important;
+      }
     }
   }
 }

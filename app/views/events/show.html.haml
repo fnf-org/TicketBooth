@@ -1,85 +1,72 @@
-%h1= @event.name
+= render partial: 'shared/event_nav', locals: { event: @event, active_tab: { event_show: 'active' } }
 
-.btn-group
-  - if current_user.site_admin?
-    = link_to events_path, class: 'btn' do
-      %i.icon-arrow-left
-      All Events
-  = link_to event_ticket_requests_path(@event), class: 'btn' do
-    Ticket Requests
-    %i.icon-inbox
-  = link_to event_eald_payments_path(@event), class: 'btn' do
-    EA/LD Passes
-    %i.icon-inbox
-  = link_to guest_list_event_path(@event), class: 'btn' do
-    Guest List
-    %i.icon-th-list
-  = link_to edit_event_path(@event), class: 'btn' do
-    Edit
-    %i.icon-edit
+.card
+  .card-body
+    = image_tag image_path('logos/fnf-transparent.png'), class: 'event-preview'
 
-= image_tag image_path('logos/fnf-transparent.png'), class: 'event-preview'
-
-%dl.dl-horizontal
-  %dt Start Time
-  %dd= TimeHelper.for_display(@event.start_time.localtime)
-  %dt End Time
-  %dd= TimeHelper.for_display(@event.end_time.localtime)
-  %dt Adult Ticket Price
-  %dd
-    = number_to_currency(@event.adult_ticket_price)
-    - if @event.max_adult_tickets_per_request
-      %span.muted
-        (max #{@event.max_adult_tickets_per_request} tickets per request)
-  %dt Kid Ticket Price
-  %dd
-    - if @event.price_rules.any?
-      %ul
-        - @event.price_rules.order(:created_at).each do |price_rule|
-          %li= price_rule.rule_text
-        %li
-          Otherwise:
+    %dl.dl-horizontal
+      %dt Start Time
+      %dd= TimeHelper.for_display(@event.start_time.localtime)
+      %dt End Time
+      %dd= TimeHelper.for_display(@event.end_time.localtime)
+      %dt Adult Ticket Price
+      %dd
+        = number_to_currency(@event.adult_ticket_price)
+        - if @event.max_adult_tickets_per_request
+          %span.muted
+            (max #{@event.max_adult_tickets_per_request} tickets per request)
+      %dt Kid Ticket Price
+      %dd
+        - if @event.price_rules.any?
+          %ul
+            - @event.price_rules.order(:created_at).each do |price_rule|
+              %li= price_rule.rule_text
+            %li
+              Otherwise:
+              = number_to_currency(@event.kid_ticket_price)
+              \/ kid
+        - else
           = number_to_currency(@event.kid_ticket_price)
-          \/ kid
-    - else
-      = number_to_currency(@event.kid_ticket_price)
-    - if @event.max_kid_tickets_per_request
-      %span.muted
-        (max #{@event.max_kid_tickets_per_request} kid tickets per request)
-  %dt Cabin Price
-  %dd
-    = number_to_currency(@event.cabin_price)
-    - if @event.max_cabins_per_request
-      %span.muted
-        (max #{@event.max_cabins_per_request} cabins per request)
+        - if @event.max_kid_tickets_per_request
+          %span.muted
+            (max #{@event.max_kid_tickets_per_request} kid tickets per request)
+      %dt Cabin Price
+      %dd
+        = number_to_currency(@event.cabin_price)
+        - if @event.max_cabins_per_request
+          %span.muted
+            (max #{@event.max_cabins_per_request} cabins per request)
 
-%p
-  %span.help-inline
-    Share this link so people can create ticket requests
-  %code
-    = new_event_ticket_request_path(@event)
+    %p
+      %span.help-inline
+        Share this link so people can create ticket requests
+      %code
+        = new_event_ticket_request_path(@event)
 
-.clear-right
-.container-fluid
-  %h2 Event Admins
-  %p
-    The following individuals have administrative privileges for this event.
-  %ul.event-admins
-    - @event.admins.each do |admin|
-      %li
-        = admin.name
-        = surround '(', ')' do
-          = mail_to admin.email
-        - if current_user.site_admin? || admin != current_user
-          = link_to remove_admin_event_path(@event, user_id: admin),
-            method: :post, class: 'btn btn-mini btn-danger remove-admin' do
-            Demote
-            %i.icon-remove
+.vertical-20
+.card
+  .card-header
+    %h4 Event Admins
+  .card-body
+    .container-fluid
+      %p
+        The following individuals have administrative privileges for this event.
+      %ul.event-admins
+        - @event.admins.each do |admin|
+          %li
+            = admin.name
+            = surround '(', ')' do
+              = mail_to admin.email
+            - if current_user.site_admin? || admin != current_user
+              = link_to remove_admin_event_path(@event, user_id: admin),
+                method: :post, class: 'btn btn-mini btn-danger remove-admin' do
+                Demote
+                %i.icon-remove
 
-  = form_tag add_admin_event_path(@event), method: :post do
-    = label_tag :user_email do
-      User Email
-      %span.muted (Must already be registered)
-    = text_field_tag :user_email, nil, class: 'input-large',
-      placeholder: 'email@example.com', maxlength: User::MAX_EMAIL_LENGTH
-    = submit_tag 'Add Admin', class: 'btn add-admin'
+      = form_tag add_admin_event_path(@event), method: :post do
+        = label_tag :user_email do
+          User Email
+          %span.muted (Must already be registered)
+        = text_field_tag :user_email, nil, class: 'input-large',
+          placeholder: 'email@example.com', maxlength: User::MAX_EMAIL_LENGTH
+        = submit_tag 'Add Admin', class: 'btn add-admin'

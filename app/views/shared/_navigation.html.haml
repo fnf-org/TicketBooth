@@ -1,4 +1,4 @@
-%nav.navbar.navbar-expand-lg.border-bottom.border-body.navbar-dark.bg-primary-subtle
+%nav.navbar.navbar-expand-lg.border-bottom.border-body.navbar-light.bg-primary-subtle
   %a.navbar-brand{ href: root_path }
     = image_tag "/icons/nav-bar-logo.png", size: "80x80"
   %button.navbar-toggler{"aria-controls" => "navbarSupportedContent", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-bs-target" => "#navbarSupportedContent", "data-bs-toggle" => "collapse", :type => "button"}
@@ -8,8 +8,11 @@
     %ul.navbar-nav.me-auto.mb-2.mb-lg-0
       - if user_signed_in?
         %li.nav-item
-          %a.nav-link{ href: events_path }
-            Events
+        %a.nav-link{ href: events_path }
+          - if current_user.site_admin?
+            All Events
+          - elsif current_user.event_admin?
+            Events You Manage
 
         %li.nav-item
           %a.nav-link{ href: edit_user_registration_path }

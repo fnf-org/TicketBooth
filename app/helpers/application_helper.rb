@@ -22,7 +22,7 @@ module ApplicationHelper
 
   def alert_class(alert_type)
     case alert_type
-    when 'notice' then 'alert-success'
+    when 'notice' then 'alert-info'
     when 'error', 'alert' then 'alert-danger'
     when 'warning' then 'alert-warning'
     else 'alert-primary'

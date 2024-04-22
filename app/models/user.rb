@@ -100,6 +100,10 @@ class User < ApplicationRecord
     event_admins.present? && !event_admins.empty?
   end
 
+  def manages_event?(event)
+    events_administrated.include?(event)
+  end
+
   def generate_auth_token!
     token = SecureRandom.hex(32)
     update_attribute(:authentication_token, token)

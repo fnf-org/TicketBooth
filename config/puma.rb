@@ -13,13 +13,17 @@ environment @env
 rackup "#{current_dir}/config.ru"
 pidfile "#{current_dir}/tmp/pids/puma-#{@env}.pid"
 
-bind 'tcp://0.0.0.0:3000'
+port = ENV.fetch('PORT', 8080)
+bind "tcp://0.0.0.0:#{port}"
+
 if @env == 'development'
   threads 1, 1
   workers 1
 else
-  workers Integer(ENV['WEB_CONCURRENCY'] || 2)
-  threads_count = Integer(ENV['RAILS_MAX_THREADS'] || 2)
+  cpu_cores = Etc.nprocessors
+
+  workers Integer(ENV['PUMA_THREADS'] || 3)
+  threads_count = Integer(ENV['PUMA_WORKERS'] || cpu_cores)
   threads threads_count, threads_count
 end
 
@@ -30,10 +34,10 @@ activate_control_app 'tcp://127.0.0.1:32123', { auth_token: 'fnf' }
 
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S %z'
 
-log_requests
-log_formatter do |str|
-  "#{format '%5d', $PROCESS_ID} | #{Time.zone.now.strftime DATETIME_FORMAT} : |puma| #{str}"
-end
+# log_requests
+# log_formatter do |str|
+#   "#{format '%5d', $PROCESS_ID} | #{Time.zone.now.strftime DATETIME_FORMAT} : |puma| #{str}"
+# end
 
 require 'newrelic_rpm'
 

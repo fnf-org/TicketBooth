@@ -94,9 +94,18 @@ assets:    	node_modules ## Build JS & CSS assets
 		@yarn run build
 		@yarn run build:css
 
-dev:          node_modules db-create ## Start the development environment
+gems: 		## Runs bundle install
+		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Running bundle install...$(clear)\n"
+		bundle install -j 4
+
+foreman: 	## Start Foreman using Procfile.dev
 		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Starting up Foreman in ENV=[$(MAKE_ENV)], db=[$(DEV_DB)]$(clear)\n"
 		@bash -c "source $(MAKE_ENV); foreman start -f Procfile.dev"
+
+dev:          	gems node_modules db-create foreman ## Start the development environment, but run yarn install and db-create
+
+
+
 
 ci: 		## Run all tests and linters as if on CI
 		bin/rails db:migrate
