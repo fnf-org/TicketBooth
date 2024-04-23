@@ -1,5 +1,5 @@
 ---
-name: DeployToGKE
+name: Deploy to Google Cloud
 concurrency: production
 
 on:
