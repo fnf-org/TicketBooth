@@ -44,6 +44,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def alert_log_level(alert_type)
+    case alert_type
+    when 'notice' then :info
+    when 'error', 'alert' then :error
+    when 'warning' then :warn
+    else :debug
+    end
+  end
+
   def render_flash(flash)
     flash.each do |type, msg|
       log_level = alert_log_level(type) || :error

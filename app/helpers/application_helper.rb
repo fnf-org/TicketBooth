@@ -28,13 +28,4 @@ module ApplicationHelper
     else 'alert-primary'
     end
   end
-
-  def alert_log_level(alert_type)
-    case alert_type
-    when 'notice' then :info
-    when 'error', 'alert' then :error
-    when 'warning' then :warn
-    else :debug
-    end
-  end
 end

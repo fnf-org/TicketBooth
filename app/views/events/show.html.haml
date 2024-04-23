@@ -38,15 +38,6 @@
             - if @event.max_cabins_per_request
               %span.muted
                 (max #{@event.max_cabins_per_request} cabins per request)
-      .card-footer
-        %p
-          %span.help-inline
-            Share this link so people can create ticket requests.
-          %br
-          %span.muted
-            (Right click and copy the link to your clipboard)
-          %code
-            = link_to new_event_ticket_request_path(@event), new_event_ticket_request_path(@event)
   .col-sm-12.col-md-12.col-lg-6
     .card
       .card-header.bg-secondary-subtle
@@ -71,8 +62,6 @@
                 = mail_to admin.email
 
           .vertical-20
-          %hr
-          .vertical-20
           = form_tag add_admin_event_path(@event), method: :post do
             = label_tag :user_email do
               User Email
@@ -81,5 +70,19 @@
               = text_field_tag :user_email, nil, class: 'd-inline',
                 placeholder: 'email@example.com', maxlength: User::MAX_EMAIL_LENGTH
               = submit_tag "Add Admin", data: {"turbo-frame": "_top", "turbo-method": "post"}, class: "btn btn-primary btn-large"
+
+.vertical-20
+.row
+  .col-sm-12.col-md-12.col-lg-12.col-xl-12
+    .card
+      .card-header
+        %span.help-inline
+          Share this link so people can create ticket requests.
+        %span.muted
+          (Right click and copy the link to your clipboard)
+        %br
+      .card-body
+        %code
+          = link_to new_event_ticket_request_path(@event), new_event_ticket_request_path(@event)
 
 
