@@ -127,6 +127,8 @@ module FnF
         (0..event_count).to_a.each do |index|
           start_time = (Time.zone.today + Random.rand(2..3).months).to_time
 
+          seasons = %w[Summer Fall Spring Winter].freeze
+
           event = events[index] || Event.create!(
             name: "#{seasons[Random.rand(4)]} Campout ",
             adult_ticket_price: Faker::Commerce.price(range: 100...200),
