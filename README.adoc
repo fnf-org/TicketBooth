@@ -15,7 +15,8 @@ https://github.com/fnf-org/TicketBooth/actions/workflows/lint.yml[image:https://
 
 | https://github.com/fnf-org/TicketBooth/actions/workflows/deploy.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/deploy.yml/badge.svg[Deploy to Google Cloud]]
 
-https://github.com/fnf-org/TicketBooth/actions/workflows/build.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/build.yml/badge.svg[Publish Docker Image]]
+https://github.com/fnf-org/TicketBooth/actions/workflows/publish.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/publish.yml/badge.svg[Publish Docker Image]]
+
 |===
 
 ====
