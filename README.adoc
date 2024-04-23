@@ -6,21 +6,25 @@
 :icons: font
 :license: MIT
 
+[cols="<h,<h", width="70%"]
+|===
+| Test & Lint Status | Build & Packaging Status
+|https://github.com/fnf-org/TicketBooth/actions/workflows/rspec.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/rspec.yml/badge.svg[TicketBooth CI: RSpec]]
+
+https://github.com/fnf-org/TicketBooth/actions/workflows/lint.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/lint.yml/badge.svg[TicketBooth CI: RuboCop]]
+
+| https://github.com/fnf-org/TicketBooth/actions/workflows/deploy.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/deploy.yml/badge.svg[Deploy to Google Cloud]]
+
+https://github.com/fnf-org/TicketBooth/actions/workflows/build.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/build.yml/badge.svg[Publish Docker Image]]
+|===
+
 ====
-image::https://github.com/fnf-org/TicketBooth/actions/workflows/rspec.yml/badge.svg[TicketBooth CI: RSpec,link=https://github.com/fnf-org/TicketBooth/actions/workflows/rspec.yml]
-
-image::https://github.com/fnf-org/TicketBooth/actions/workflows/lint.yml/badge.svg[TicketBooth CI: RuboCop,link=https://github.com/fnf-org/TicketBooth/actions/workflows/lint.yml]
-
-https://github.com/fnf-org/TicketBooth/actions/workflows/deploy.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/deploy.yml/badge.svg[DeployToGKE]]
-
-https://github.com/fnf-org/TicketBooth/actions/workflows/build.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/build.yml/badge.svg[Create
-and publish a Docker image]]
-
-====
-
 NOTE: Please see the https://github.com/fnf-org/TicketBooth/blob/main/README.pdf[README.pdf] for the PDF version of this README.
 
+---
+
 NOTE: Please see the xref:#acknowledgements[Acknowledgements] at the end of this page.
+====
 
 == Welcome to the *Ticket Booth*!
 
@@ -61,7 +65,7 @@ This should install all of the Brew dependencies, start PostgreSQL, memcached, a
 [source,bash]
 make dev
 
-This actually starts Foreman via `bundle exec foreman -f Procfile.dev` — this is required to start CSS and JS just-in-time compilcation in addition to the Rails server. 
+This actually starts Foreman via `bundle exec foreman -f Procfile.dev` — this is required to start CSS and JS just-in-time compilcation in addition to the Rails server.
 
 The server will run on port 8080, and in development will hot swap any locally modified files, including CSS and JS.
 
