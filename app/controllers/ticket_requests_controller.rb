@@ -56,7 +56,7 @@ class TicketRequestsController < ApplicationController
     temp_csv.close
     send_file(temp_csv.path,
               filename: "#{@event.name} Ticket Requests.csv",
-              type: 'text/csv')
+              type:     'text/csv')
   end
 
   def show
@@ -94,6 +94,7 @@ class TicketRequestsController < ApplicationController
     @user = @ticket_request.user
   end
 
+  # rubocop: disable Metrics/AbcSize
   def create
     unless @event.ticket_sales_open?
       flash.now[:error] = 'Sorry, but ticket sales have closed'
@@ -105,16 +106,16 @@ class TicketRequestsController < ApplicationController
     ticket_request_user = if signed_in? && current_user.present?
                             current_user
                           else
-                            User.build(email: permitted_params[:email],
-                                       name: permitted_params[:name],
-                                       password: permitted_params[:password],
+                            User.build(email:                 permitted_params[:email],
+                                       name:                  permitted_params[:name],
+                                       password:              permitted_params[:password],
                                        password_confirmation: permitted_params[:password]).tap do |user|
                               if user.valid?
                                 user.save! && sign_in(user)
                               else
                                 flash.now[:error] = user.errors.full_messages.join('. ')
                                 @ticket_request   = TicketRequest.new(tr_params, user:, event: @event)
-                                return render action: 'new'
+                                return render_flash(flash)
                               end
                             end
                           end
@@ -135,7 +136,7 @@ class TicketRequestsController < ApplicationController
       Rails.logger.info("Saved Ticket Request, ID = #{@ticket_request.id}")
 
       FnF::Events::TicketRequestEvent.new(
-        user: ticket_request_user,
+        user:   ticket_request_user,
         target: @ticket_request
       ).fire!
 
@@ -147,9 +148,10 @@ class TicketRequestsController < ApplicationController
     rescue StandardError => e
       Rails.logger.error("Error saving request: #{e.message}\n\n#{@ticket_request.errors.full_messages.join(', ')}")
       flash.now[:error] = "Error saving request: #{e.message}<br ><ul>#{@ticket_request.errors.full_messages.join("\n<li>")}"
-      render_flash
+      render_flash(flash)
     end
   end
+  # rubocop: enable Metrics/AbcSize
 
   def update
     # Allow ticket request to edit guests and nothing else
@@ -165,7 +167,7 @@ class TicketRequestsController < ApplicationController
   def approve
     if @ticket_request.approve
       ::FnF::Events::TicketRequestApprovedEvent.new(
-        user: current_user,
+        user:   current_user,
         target: @ticket_request
       ).fire!
       flash[:notice] = "#{@ticket_request.user.name}'s request was approved"
@@ -179,7 +181,7 @@ class TicketRequestsController < ApplicationController
   def decline
     if @ticket_request.update(status: TicketRequest::STATUS_DECLINED)
       ::FnF::Events::TicketRequestDeclinedEvent.new(
-        user: current_user,
+        user:   current_user,
         target: @ticket_request
       ).fire!
       flash[:notice] = "#{@ticket_request.user.name}'s request was declined"
@@ -215,7 +217,7 @@ class TicketRequestsController < ApplicationController
   private
 
   def set_event
-    @event = Event.find(permitted_params[:event_id])
+    @event = Event.where(id: permitted_params[:event_id].to_i).first
   end
 
   def set_ticket_request
@@ -224,14 +226,45 @@ class TicketRequestsController < ApplicationController
   end
 
   def permitted_params
-    params.permit(:event_id, :id, :email, :name, :password, :authenticity_token, :commit,
-                  ticket_request: %i[user_id adults kids cabins needs_assistance
-                                     notes special_price event_id
-                                     user donation role role_explanation
-                                     car_camping car_camping_explanation previous_contribution
-                                     address_line1 address_line2 city state zip_code
-                                     country_code admin_notes agrees_to_terms
-                                     early_arrival_passes late_departure_passes guests])
+    params.permit(
+      :id,
+      :event_id,
+      :email,
+      :name,
+      :password,
+      :authenticity_token,
+      :commit,
+      ticket_request: %i[
+        user_id
+        adults
+        kids
+        cabins
+        needs_assistance
+        notes
+        special_price
+        event_id
+        user
+        donation
+        role
+        role_explanation
+        car_camping
+        car_camping_explanation
+        previous_contribution
+        address_line1
+        address_line2
+        city
+        state
+        zip_code
+        country_code
+        admin_notes
+        agrees_to_terms
+        early_arrival_passes
+        late_departure_passes
+        guests
+      ]
+    )
+          .to_hash
+          .with_indifferent_access
   end
 end
 

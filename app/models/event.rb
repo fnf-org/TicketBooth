@@ -20,6 +20,7 @@
 #  name                          :string
 #  photo                         :string
 #  require_mailing_address       :boolean          default(FALSE), not null
+#  slug                          :text
 #  start_time                    :datetime
 #  ticket_requests_end_time      :datetime
 #  ticket_sales_end_time         :datetime
@@ -50,6 +51,8 @@ class Event < ApplicationRecord
   mount_uploader :photo, PhotoUploader
 
   normalize_attributes :name
+
+  before_validation :generate_slug!
 
   validates :name, presence: true, length: { maximum: MAX_NAME_LENGTH }
   validates :start_time, presence: true
@@ -143,7 +146,17 @@ class Event < ApplicationRecord
     early_arrival_price.positive? || late_departure_price.positive?
   end
 
+  def to_param
+    return nil unless persisted?
+
+    [id, slug].join('--') # 1--summer-campout-xii
+  end
+
   private
+
+  def generate_slug!
+    self.slug = name&.parameterize
+  end
 
   def end_time_after_start_time
     errors.add(:end_time, 'must be after start time') if start_time && end_time && end_time <= start_time

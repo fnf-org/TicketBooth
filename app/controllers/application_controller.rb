@@ -45,7 +45,11 @@ class ApplicationController < ActionController::Base
   end
 
   def render_flash(flash)
-    # render turbo_stream: turbo_stream.update('flash_container', partial: 'shared/flash')
+    flash.each do |type, msg|
+      log_level = alert_log_level(type) || :error
+      Rails.logger.send(log_level, msg)
+    end
+
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [turbo_stream.replace(:flash, partial: 'shared/flash', locals: { flash: })]

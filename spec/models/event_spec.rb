@@ -37,10 +37,26 @@ RSpec.describe Event do
 
   it { is_expected.to be_valid }
 
+  describe '#to_param' do
+    context 'given an event that exists in the database' do
+      subject(:event) { create(:event, name: 'Summer Campout XII') }
+
+      its(:to_param) { is_expected.to eq "#{event.id}--summer-campout-xii" }
+    end
+  end
+
   describe 'normalization' do
     it { is_expected.to normalize(:name) }
     it { is_expected.to normalize(:name).from('  Trim Spaces  ').to('Trim Spaces') }
     it { is_expected.to normalize(:name).from('Squish  Spaces').to('Squish Spaces') }
+
+    describe '#slug' do
+      let(:params) { { name: 'Summer Campout XIII' } }
+
+      before { event.validate }
+
+      its(:slug) { is_expected.to eq 'summer-campout-xiii' }
+    end
   end
 
   describe 'event title' do

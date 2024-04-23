@@ -42,7 +42,6 @@ class EventsController < ApplicationController
     if @event.save
       redirect_to @event
     else
-      Rails.logger.error("Can't create event: #{@event.errors.full_messages}")
       flash.now[:error] = "There was a problem creating the event: #{@event.errors.full_messages.sort.uniq.join('. ')}"
       render_flash flash
     end
@@ -55,9 +54,8 @@ class EventsController < ApplicationController
     if @event.update(update_params)
       redirect_to @event, notice: 'The event has been updated.'
     else
-      Rails.logger.error "UPDATE ERROR: There was a problem updating the event: #{@event.errors.full_messages}"
       flash.now[:error] = "There was a problem updating the event: #{@event.errors.full_messages}"
-      render_flash
+      render_flash(flash)
     end
   end
 
@@ -137,7 +135,7 @@ class EventsController < ApplicationController
   end
 
   def set_event
-    @event = Event.find(permitted_params[:id])
+    @event = Event.where(id: permitted_params[:id].to_i).first
   end
 
   def permitted_params
