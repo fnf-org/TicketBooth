@@ -77,7 +77,7 @@ class User < ApplicationRecord
 
   validates :name, presence: true,
                    length: { maximum: MAX_NAME_LENGTH },
-                   format: { with: /\A\S+\s\S+(\s\S+)*\z/i,
+                   format: { with:    /\A\S+\s\S+(\s\S+)*\z/i,
                              message: 'must contain first and last name' }
 
   validates :email, presence: true,
@@ -98,6 +98,10 @@ class User < ApplicationRecord
 
   def event_admin?
     event_admins.present? && !event_admins.empty?
+  end
+
+  def manages_event?(event)
+    events_administrated.include?(event)
   end
 
   def generate_auth_token!

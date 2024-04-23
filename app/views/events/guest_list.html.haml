@@ -1,19 +1,21 @@
-%h1 #{@event.name} Guest List
+= render partial: 'shared/nav_event', locals: { event: @event, active_tab: { guest_list: 'active' } }
 
-.btn-group
-  = link_to download_guest_list_event_path(@event),
-    class: 'btn btn-info hover-tooltip',
-    title: 'Download CSV of the guest list' do
-    %i.icon-th-list
-      Download CSV
-
-%table.table.table-condensed
-  %thead
-    %tr
-      %th Name
-      %th Guests
-  %tbody
-    - @ticket_requests.each do |ticket_request|
-      %tr
-        %td= ticket_request.user.name
-        %td= ticket_request.guests.join(', ')
+.card
+  .card-header.bg-secondary-subtle
+    .btn-group
+      = link_to download_guest_list_event_path(@event),
+        class: 'btn hover-tooltip',
+        title: 'Download CSV of the guest list' do
+        %i.icon-th-list
+        Download CSV &darr;
+  .card-body
+    %table.table.table-condensed
+      %thead
+        %tr
+          %th Name
+          %th Guests
+      %tbody
+        - @ticket_requests.each do |ticket_request|
+          %tr
+            %td= ticket_request.user.name
+            %td= ticket_request.guests.join(', ')

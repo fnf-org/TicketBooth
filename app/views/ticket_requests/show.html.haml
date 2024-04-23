@@ -1,173 +1,176 @@
-%h2 #{@event.name} Ticket Request
+.card
+  .card-header
+    %h2 #{@event.name} — Ticket Request
 
-%p.lead
-- if @ticket_request.user == current_user
-  - if @ticket_request.pending?
+  .card-body
     %p.lead
-      Thanks for requesting a ticket!
-      %br
-      You'll receive an email at
-      %b= @ticket_request.user.email
-      if your request is approved.
-  - elsif @payment
-    %p.lead
-      Thanks for paying for your
-      = succeed '!' do
-        = 'ticket'.pluralize(@ticket_request.total_tickets)
-  %hr
-
-%p
-  %b Name:
-  = @ticket_request.user.name
-
-%p
-  %b Date Requested:
-  = @ticket_request.created_at.localtime.to_formatted_s(:friendly)
-
-%p
-  %b Status:
-  %span{ class: text_class_for_status(@ticket_request) }
-    = text_for_status @ticket_request
-  - if @event.admin?(current_user) && @ticket_request.pending?
-    .btn-group
-      = link_to approve_event_ticket_request_path(@event, @ticket_request),
-        method: :post,
-        class: 'btn btn-primary btn-mini' do
-        Approve
-        %i.icon-ok
-      = link_to decline_event_ticket_request_path(@event, @ticket_request),
-        method: :post,
-        class: 'btn btn-danger btn-mini',
-        data: { confirm: "Are you sure you want to decline #{@ticket_request.user.name}'s request?" } do
-        Decline
-        %i.icon-remove
-
-- if @ticket_request.approved? || @ticket_request.completed?
-  %p
-    %b Payment:
-    - if @payment
-      - if @ticket_request.refunded?
-        %span.text-warning Refunded
-      - elsif @ticket_request.paid_via_credit?
-        = link_to 'Received', payment_path(@payment)
-        - if @event.admin?(current_user)
-          = link_to 'Refund', refund_event_ticket_request_path(@event, @ticket_request),
-            method: :post,
-            class: 'btn btn-small btn-danger',
-            data: { confirm: "Are you sure you want to refund #{@ticket_request.user.name}'s ticket? This cannot be undone!",
-                    disable_with: 'Refunding...' }
-    - elsif @ticket_request.free?
-      Free
-    - else
-      Not yet received
-      - if @event.ticket_sales_open?
-        = link_to @ticket_request.all_guests_specified? ? 'Purchase your ticket now' : 'All guests must be filled out before purchasing ticket',
-          new_payment_path(ticket_request_id: @ticket_request),
-          class: 'btn btn-small btn-primary'
-      - else
-        %span.text-warning
-          Unfortunately, ticket sales are now closed. You can no longer purchase your
-          = succeed '.' do
+    - if @ticket_request.user == current_user
+      - if @ticket_request.pending?
+        %p.lead
+          Thanks for requesting a ticket!
+          %br
+          You'll receive an email at
+          %b= @ticket_request.user.email
+          if your request is approved.
+      - elsif @payment
+        %p.lead
+          Thanks for paying for your
+          = succeed '!' do
             = 'ticket'.pluralize(@ticket_request.total_tickets)
+      %hr
 
-%p
-  %b Email:
-  = mail_to @ticket_request.user.email
+    %p
+      %b Name:
+      = @ticket_request.user.name
 
-- if @event.require_mailing_address
-  %p
-    %b Mailing Address:
-    %address
-      = @ticket_request.address_line1
-      - if @ticket_request.address_line2.present?
+    %p
+      %b Date Requested:
+      = @ticket_request.created_at.localtime.to_formatted_s(:friendly)
+
+    %p
+      %b Status:
+      %span{ class: text_class_for_status(@ticket_request) }
+        = text_for_status @ticket_request
+      - if @event.admin?(current_user) && @ticket_request.pending?
+        .btn-group
+          = link_to approve_event_ticket_request_path(@event, @ticket_request),
+            method: :post,
+            class: 'btn btn-primary btn-mini' do
+            Approve
+            %i.icon-ok
+          = link_to decline_event_ticket_request_path(@event, @ticket_request),
+            method: :post,
+            class: 'btn btn-danger btn-mini',
+            data: { confirm: "Are you sure you want to decline #{@ticket_request.user.name}'s request?" } do
+            Decline
+            %i.icon-remove
+
+    - if @ticket_request.approved? || @ticket_request.completed?
+      %p
+        %b Payment:
+        - if @payment
+          - if @ticket_request.refunded?
+            %span.text-warning Refunded
+          - elsif @ticket_request.paid_via_credit?
+            = link_to 'Received', payment_path(@payment)
+            - if @event.admin?(current_user)
+              = link_to 'Refund', refund_event_ticket_request_path(@event, @ticket_request),
+                method: :post,
+                class: 'btn btn-small btn-danger',
+                data: { confirm: "Are you sure you want to refund #{@ticket_request.user.name}'s ticket? This cannot be undone!",
+                        disable_with: 'Refunding...' }
+        - elsif @ticket_request.free?
+          Free
+        - else
+          Not yet received
+          - if @event.ticket_sales_open?
+            = link_to @ticket_request.all_guests_specified? ? 'Purchase your ticket now' : 'All guests must be filled out before purchasing ticket',
+              new_payment_path(ticket_request_id: @ticket_request),
+              class: 'btn btn-small btn-primary'
+          - else
+            %span.text-warning
+              Unfortunately, ticket sales are now closed. You can no longer purchase your
+              = succeed '.' do
+                = 'ticket'.pluralize(@ticket_request.total_tickets)
+
+    %p
+      %b Email:
+      = mail_to @ticket_request.user.email
+
+    - if @event.require_mailing_address
+      %p
+        %b Mailing Address:
+        %address
+          = @ticket_request.address_line1
+          - if @ticket_request.address_line2.present?
+            %br
+            = @ticket_request.address_line2
+          %br
+          #{@ticket_request.city}, #{@ticket_request.state}, #{@ticket_request.zip_code}
+          %br
+          = @ticket_request.country_name
+
+    %p
+      %b Role:
+      = TicketRequest::ROLES[@ticket_request.role]
+      - if @ticket_request.role_explanation.present?
+        %blockquote= @ticket_request.role_explanation
+
+    %p
+      %b Tickets:
+      = @ticket_request.adults
+
+    - if @event.kid_ticket_price
+      %p
+        %b Child Tickets:
+        = @ticket_request.kids
+
+    - if @event.cabin_price
+      %p
+        %b Cabins:
+        = @ticket_request.cabins
+
+    - if @event.admin?(current_user)
+      %p
+        %b Total Ticket Price:
+        %span{ class: ('label label-info' if @ticket_request.special_price) }
+          = number_to_currency(@ticket_request.price, precision: 0)
+
+    - if @ticket_request.previous_contribution.present?
+      %p
+        %b Contribution(s) last year:
         %br
-        = @ticket_request.address_line2
-      %br
-      #{@ticket_request.city}, #{@ticket_request.state}, #{@ticket_request.zip_code}
-      %br
-      = @ticket_request.country_name
+        = @ticket_request.previous_contribution
 
-%p
-  %b Role:
-  = TicketRequest::ROLES[@ticket_request.role]
-  - if @ticket_request.role_explanation.present?
-    %blockquote= @ticket_request.role_explanation
+    - if @ticket_request.car_camping
+      %p
+        %b Car Camping Requested because:
+        = @ticket_request.car_camping_explanation
 
-%p
-  %b Tickets:
-  = @ticket_request.adults
+    - if @ticket_request.needs_assistance
+      %p.text-warning
+        %b Financial assistance or custom payment plan requested
 
-- if @event.kid_ticket_price
-  %p
-    %b Child Tickets:
-    = @ticket_request.kids
+    - if @ticket_request.notes.present?
+      %p
+        %b Notes:
+        = @ticket_request.notes
 
-- if @event.cabin_price
-  %p
-    %b Cabins:
-    = @ticket_request.cabins
+    - if @ticket_request.guest_count > 0
+      %p
+        %b= 'Guest'.pluralize(@ticket_request.guest_count)
+        %br
+        - @ticket_request.guest_count.times do |guest_id|
+          = Array(@ticket_request.guests)[guest_id] || 'Unspecified'
+          %br
 
-- if @event.admin?(current_user)
-  %p
-    %b Total Ticket Price:
-    %span{ class: ('label label-info' if @ticket_request.special_price) }
-      = number_to_currency(@ticket_request.price, precision: 0)
+    - if @event.admin?(current_user) && @ticket_request.admin_notes.present?
+      .well
+        %h4 Ticket Coordinator Notes:
+        = @ticket_request.admin_notes
 
-- if @ticket_request.previous_contribution.present?
-  %p
-    %b Contribution(s) last year:
-    %br
-    = @ticket_request.previous_contribution
+    - if @payment && @event.eald?
+      %p
+        %b Planning to arrive early or leave late?
+        %br
+        :ruby
+          extra_params = {}
+          extra_params[:early_arrival_passes] = @ticket_request.early_arrival_passes
+          extra_params[:late_departure_passes] = @ticket_request.late_departure_passes
+          extra_params[:email] = @ticket_request.user.email
+          extra_params[:name] = @ticket_request.user.name
+        = link_to 'Early Arrival / Late Departure Passes',
+          new_event_eald_payment_path(@event, extra_params),
+          target: '_blank'
+        must be purchased separately!
 
-- if @ticket_request.car_camping
-  %p
-    %b Car Camping Requested because:
-    = @ticket_request.car_camping_explanation
+    .btn-group
+      - if @event.admin?(current_user)
+        = link_to event_ticket_requests_path(@event), class: 'btn' do
+          %i.icon-arrow-left
+          All Requests
 
-- if @ticket_request.needs_assistance
-  %p.text-warning
-    %b Financial assistance or custom payment plan requested
-
-- if @ticket_request.notes.present?
-  %p
-    %b Notes:
-    = @ticket_request.notes
-
-- if @ticket_request.guest_count > 0
-  %p
-    %b= 'Guest'.pluralize(@ticket_request.guest_count)
-    %br
-    - @ticket_request.guest_count.times do |guest_id|
-      = Array(@ticket_request.guests)[guest_id] || 'Unspecified'
-      %br
-
-- if @event.admin?(current_user) && @ticket_request.admin_notes.present?
-  .well
-    %h4 Ticket Coordinator Notes:
-    = @ticket_request.admin_notes
-
-- if @payment && @event.eald?
-  %p
-    %b Planning to arrive early or leave late?
-    %br
-    :ruby
-      extra_params = {}
-      extra_params[:early_arrival_passes] = @ticket_request.early_arrival_passes
-      extra_params[:late_departure_passes] = @ticket_request.late_departure_passes
-      extra_params[:email] = @ticket_request.user.email
-      extra_params[:name] = @ticket_request.user.name
-    = link_to 'Early Arrival / Late Departure Passes',
-      new_event_eald_payment_path(@event, extra_params),
-      target: '_blank'
-    must be purchased separately!
-
-.btn-group
-  - if @event.admin?(current_user)
-    = link_to event_ticket_requests_path(@event), class: 'btn' do
-      %i.icon-arrow-left
-      All Requests
-
-  - if @event.admin?(current_user) || @ticket_request.guest_count > 0
-    = link_to edit_event_ticket_request_path(@event, @ticket_request), class: 'btn btn-success' do
-      = @event.admin?(current_user) ? 'Edit' : 'Edit guests'
-      %i.icon-edit
+      - if @event.admin?(current_user) || @ticket_request.guest_count > 0
+        = link_to edit_event_ticket_request_path(@event, @ticket_request), class: 'btn btn-success' do
+          = @event.admin?(current_user) ? 'Edit' : 'Edit guests'
+          %i.icon-edit

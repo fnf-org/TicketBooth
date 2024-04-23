@@ -6,6 +6,9 @@
     %meta{:content => "yes", :name => "apple-mobile-web-app-capable"}/
     %meta{:content => "#{stripe_publishable_api_key}", :name => "stripe-key"}/
     %link{:href => "/icons/nav-bar-logo.png", :rel => "shortcut icon", :type => "image/png"}/
+    %link{:href => "https://fonts.googleapis.com", :rel => "preconnect"}/
+    %link{:crossorigin => "", :href => "https://fonts.gstatic.com", :rel => "preconnect"}/
+    %link{:href => "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap", :rel => "stylesheet"}/
 
     %title
       = PRODUCT_NAME
@@ -26,24 +29,21 @@
     = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
 
   %body
-    = render partial: "shared/navigation"
+    = render partial: "shared/nav_main"
     .container
       %turbo-frame#flash_container{"data-controller": "flash", "data-flash-target": "flash"}
         = render "shared/flash"
-      .row
-        .col-3.col-md-3
-        .col-6.col-md-6
-        .col-3.col-md-3
 
       .row
-        .col-1.col-md-1
-        .col-10.col-md-10
+        .col-sm-0.col-md-.col-lg-0
+        .col-sm-12.col-md-12.col-lg-12
           = yield
-        .col-1.col-md-1
+        .col-sm-0.col-md-0.col-lg-0
 
-    #footer
+    #footer.mb-0.pb-1
       .container
-        %p.muted.text-center#footer-text
-          %small
-            Crafted with ♡
+        .card
+          .card-header
+            %small
+              Crafted with ♡ in San Francisco
 

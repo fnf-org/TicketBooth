@@ -1,3 +1,38 @@
+@import "fonts.css.scss";
+@import "bootstrap/scss/functions";
+
+body {
+  @include titillium-web-regular;
+  font-size: 14pt;
+}
+
+h1, h2, h3, h4, h5 {
+  @include bebas-neue-regular;
+}
+
+h1 { font-size: 50pt; }
+h2 { font-size: 47pt; }
+h3 { font-size: 44pt; margin: 25px auto; color: #f91; text-shadow: 1px 1px 2px #000; }
+h4 { font-size: 32pt; margin: 15px auto; }
+h5 { font-size: 27pt; margin: 25px auto; }
+
+h3.flash-header {
+  font-size: 50pt;
+  margin: 25px auto;
+  color: $body-color;
+  text-shadow: 0 0 0;
+  font-family: Oswald, "Bebas Neue", sans-serif;
+}
+
+legend {
+  font-family: Oswald, "Bebas Neue", sans-serif;
+  font-size: 20pt;
+  margin: 30px 30px 10px 0px;
+  color: #555 !important;
+  font-weight: 400;
+  border-bottom: 1px solid $body-color-dark !important;
+}
+
 .container {
   padding-top: 20px;
 }
@@ -27,6 +62,17 @@
   margin-left: 22px;
 }
 
+.caution {
+  color: $body-color;
+  background-color: $danger-bg-subtle;
+  padding: 9px;
+  border-radius: 5px;
+}
+
+label.strong {
+  font-weight: 800;
+}
+
 a.btn {
   color: #ff7800 !important;
   text-decoration: none !important;
@@ -47,53 +93,23 @@ a.btn {
 #flash_container {
   position: fixed;
 
-  width: auto;
-  top: 10px;
-  left: 500px;
+  width: 60%;
+  top: 50pt;
+  left: 20%;
   right: 20%;
 
   .alert {
+    padding: 15px;
     width: 100%;
     border-radius: 20px;
-    box-shadow: 10px 10px 10px #222;
+    box-shadow: 5px 5px 10px rgba(34, 34, 34, 0.75);
+    h3 {
+      font-size: 16pt;
+    }
   }
   .alert-danger {
-    h3 { color: #f55 !important; }
-  }
-}
-
-nav.navbar {
-  width: 100%;
-  padding-left: 20px;
-
-  a.nav-brand {
-    display: inline-block;
-    border-width: 0 !important;
-    padding: 0 !important;
-    background-color: transparent !important;
-    border-radius: 0;
-    margin-left: 30px;
-  }
-
-  a.nav-brand img {
-    display: inline-block;
-    position: relative;
-    margin-left: 50px !important;
-    margin-right: 30px !important;
-    padding: 20px !important;
-  }
-
-  a.nav-link {
-    color: #ff7800 !important;
-    text-decoration: none !important;
-    padding: 6px 15px !important;
-    margin: 0 10px;
-    background-color: #462301;
-
-    &:focus,
-    &:hover {
-      color: #000 !important;
-      background-color: #ff7800 !important;
+    h3 {
+      color: #f55 !important;
     }
   }
 }
@@ -107,9 +123,6 @@ nav.navbar {
   }
 }
 
-h1, h2, h3, h4, h5, legend {
-  margin-top: 20px;
-}
 
 .alert {
   h3 {
@@ -139,68 +152,13 @@ dl.dl-horizontal {
   margin-top: 20px;
 
   dt {
-    color: #fa2;
-    font-weight: 900;
-  }
-}
-
-form {
-  label {
-    margin-top: 25px;
-    margin-bottom: 2px;
-    display: block;
-    min-width: auto;
-    font-size: 12pt;
-    vertical-align: top;
-
+    color: rgba(143, 70, 3, 0.75);
+    font-weight: 400;
+    font-size: 15pt;
   }
 
-  input {
-    background-color: #efe;
-    color: #000;
-    border: 0.5px solid #777;
-    border-radius: 5px;
-    padding: 5px 0;
-    margin-top: 0;
-    margin-right: 5px;
-    margin-bottom: 0;
-    display: inline-block !important;
-    max-width: 80%;
-  }
-
-  input[type=text]#event_name {
-    width: 400px !important;
-    min-width: 400px !important;
-    font-size: 14pt;
-    background-color: #FB9 !important;
-  }
-
-  input[type=text] {
-    min-width: 100px;
-    width: 300px;
-    text-align: left;
-    padding-left: 10px;
-  }
-
-  input[name="event[name]"] {
-    width: 500px !important;
-  }
-
-  input[type=submit] {
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-
-  input[type=number] {
-    text-align: right;
-    width: 80px;
-    min-width: 30px;
-  }
-
-  input[type=email], input[type=password] {
-    padding: 9px !important;
-    width: 300px;
-    min-width: 100px;
+  dd {
+    font-weight: 600;
   }
 }
 

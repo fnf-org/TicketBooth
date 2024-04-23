@@ -35,14 +35,13 @@ class EventsController < ApplicationController
 
   def create
     create_params = params_symbolized_hash[:event].dup
-    TimeHelper.convert_times_for_db(create_params)
+    TimeHelper.normalize_time_attributes(create_params)
 
     @event = Event.new(create_params)
 
     if @event.save
       redirect_to @event
     else
-      Rails.logger.error("Can't create event: #{@event.errors.full_messages}")
       flash.now[:error] = "There was a problem creating the event: #{@event.errors.full_messages.sort.uniq.join('. ')}"
       render_flash flash
     end
@@ -50,14 +49,13 @@ class EventsController < ApplicationController
 
   def update
     update_params = params_symbolized_hash[:event].dup
-    TimeHelper.convert_times_for_db(update_params)
+    TimeHelper.normalize_time_attributes(update_params)
 
     if @event.update(update_params)
       redirect_to @event, notice: 'The event has been updated.'
     else
-      Rails.logger.error "UPDATE ERROR: There was a problem updating the event: #{@event.errors.full_messages}"
       flash.now[:error] = "There was a problem updating the event: #{@event.errors.full_messages}"
-      render_flash
+      render_flash(flash)
     end
   end
 
@@ -72,15 +70,18 @@ class EventsController < ApplicationController
 
     email = permitted_params[:user_email]
     user  = User.find_by(email:)
-    return redirect_to :back, notice: "No user with email '#{email}' exists" unless user
+    unless user
+      flash.now[:error] = "No user with email '#{email}' exists"
+      return render_flash(flash)
+    end
 
     @event.admins << user
 
     if @event.save
       redirect_to @event
     else
-      redirect_to :back,
-                  error: "There was a problem adding #{email} as an admin"
+      flash.now[:error] = "There was a problem adding #{email} as an admin"
+      render_flash(flash)
     end
   end
 
@@ -134,7 +135,7 @@ class EventsController < ApplicationController
   end
 
   def set_event
-    @event = Event.find(permitted_params[:id])
+    @event = Event.where(id: permitted_params[:id].to_i).first
   end
 
   def permitted_params

@@ -17,10 +17,10 @@ class EaldPaymentsController < ApplicationController
   end
 
   def new
-    email                 = params.fetch(:email, '')
-    full_name             = params.fetch(:name, '')
-    early_arrival_passes  = params.fetch(:early_arrival_passes, 1)
-    late_departure_passes = params.fetch(:late_departure_passes, 1)
+    email                 = permitted_params.fetch(:email, '')
+    full_name             = permitted_params.fetch(:name, '')
+    early_arrival_passes  = permitted_params.fetch(:early_arrival_passes, 1)
+    late_departure_passes = permitted_params.fetch(:late_departure_passes, 1)
     @eald_payment         = EaldPayment.new(event_id: @event.id,
                                             email:,
                                             name: full_name,
@@ -67,6 +67,23 @@ class EaldPaymentsController < ApplicationController
   private
 
   def set_event
-    @event = Event.find(params[:event_id])
+    @event = Event.where(id: permitted_params[:event_id].to_i).first
+  end
+
+  def permitted_params
+    params.permit(
+      :id,
+      :event_id,
+      :eald_payment,
+      :email,
+      :name,
+      :early_arrival_passes,
+      :late_departure_passes,
+      :_method,
+      :authenticity_token,
+      :commit
+    )
+          .to_hash
+          .with_indifferent_access
   end
 end

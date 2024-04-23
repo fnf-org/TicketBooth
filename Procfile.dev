@@ -3,3 +3,4 @@ web: env RUBY_DEBUG_OPEN=true bin/rails server -p 8080
 js: yarn watch:js
 css: yarn watch:css
 browser: sleep 6 && open http://localhost:8080/ && while true; do sleep 100; echo .; done
+.

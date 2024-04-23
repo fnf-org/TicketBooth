@@ -2,7 +2,7 @@
   - flash.each do |type, msg|
     .alert{ class: alert_class(type), role: "alert"}
       - main, rest = msg.split(/:/)
-      %h3
+      %h3.flash-header
         = main
       - if rest != main && rest.present?
         %hr

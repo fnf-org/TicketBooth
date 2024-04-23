@@ -1,20 +1,22 @@
-%h1 Events
+.card
+  .card-header.bg-success-subtle
+    %h1 Events
+  .card-body
+    %table.table
+      %thead
+        %tr
+          %th Event
+          %th Start Time
+          %th End Time
+      %tbody
+        - @events.each do |event|
+          %tr
+            %td
+              = link_to event do
+                = event.name
+            %td= TimeHelper.for_display(event.start_time.localtime)
+            %td= TimeHelper.for_display(event.end_time.localtime)
 
-%table.table
-  %thead
-    %tr
-      %th Event
-      %th Start Time
-      %th End Time
-  %tbody
-    - @events.each do |event|
-      %tr
-        %td
-          = link_to event do
-            = event.name
-        %td= event.start_time.localtime.to_formatted_s(:friendly)
-        %td= event.end_time.localtime.to_formatted_s(:friendly)
-
-= link_to new_event_path, class: 'btn btn-primary' do
-  New Event
-  %i.icon-plus-sign
+    = link_to new_event_path, class: 'btn btn-primary' do
+      New Event
+      %i.icon-plus-sign

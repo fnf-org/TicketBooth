@@ -2381,13 +2381,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootstrap-icons@npm:^1.11.3":
-  version: 1.11.3
-  resolution: "bootstrap-icons@npm:1.11.3"
-  checksum: 10c0/37eefd418c6bbbb304bdff0f2ed527f82c3c6f331d3e3a7c4aa8bbdbaf7118bb86725b024f85e7d738c613d48c7353cd81c09e58e9d8d34c5633960fdec8410b
-  languageName: node
-  linkType: hard
-
 "bootstrap@npm:^5.3.3":
   version: 5.3.3
   resolution: "bootstrap@npm:5.3.3"
@@ -5783,7 +5776,6 @@ __metadata:
     "@typescript-eslint/parser": "npm:^7.7.0"
     autoprefixer: "npm:^10.4.19"
     bootstrap: "npm:^5.3.3"
-    bootstrap-icons: "npm:^1.11.3"
     css-loader: "npm:^7.1.1"
     cypress: "npm:^13.7.3"
     esbuild: "npm:^0.20.2"
