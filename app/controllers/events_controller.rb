@@ -35,7 +35,7 @@ class EventsController < ApplicationController
 
   def create
     create_params = params_symbolized_hash[:event].dup
-    TimeHelper.convert_times_for_db(create_params)
+    TimeHelper.normalize_time_attributes(create_params)
 
     @event = Event.new(create_params)
 
@@ -50,7 +50,7 @@ class EventsController < ApplicationController
 
   def update
     update_params = params_symbolized_hash[:event].dup
-    TimeHelper.convert_times_for_db(update_params)
+    TimeHelper.normalize_time_attributes(update_params)
 
     if @event.update(update_params)
       redirect_to @event, notice: 'The event has been updated.'
@@ -72,15 +72,18 @@ class EventsController < ApplicationController
 
     email = permitted_params[:user_email]
     user  = User.find_by(email:)
-    return redirect_to :back, notice: "No user with email '#{email}' exists" unless user
+    unless user
+      flash.now[:error] = "No user with email '#{email}' exists"
+      return render_flash(flash)
+    end
 
     @event.admins << user
 
     if @event.save
       redirect_to @event
     else
-      redirect_to :back,
-                  error: "There was a problem adding #{email} as an admin"
+      flash.now[:error] = "There was a problem adding #{email} as an admin"
+      render_flash(flash)
     end
   end
 

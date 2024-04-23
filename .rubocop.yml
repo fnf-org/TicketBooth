@@ -1,16 +1,24 @@
 inherit_from: .rubocop_todo.yml
+
 AllCops:
-    NewCops: enable
+  NewCops: enable
 
 require:
- - rubocop-factory_bot
- - rubocop-rails
- - rubocop-rake
- - rubocop-rspec
- - rubocop-rspec_rails
+  - rubocop-factory_bot
+  - rubocop-rails
+  - rubocop-rake
+  - rubocop-rspec
+  - rubocop-rspec_rails
 
 Style/IfUnlessModifier:
   Enabled: false
 
 RSpecRails/InferredSpecType:
   Enabled: false
+
+Layout/HashAlignment:
+  Enabled: true
+  EnforcedColonStyle: table
+  EnforcedLastArgumentHashStyle: ignore_implicit
+  EnforcedHashRocketStyle: table
+

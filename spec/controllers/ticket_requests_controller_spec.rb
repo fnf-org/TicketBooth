@@ -42,7 +42,7 @@ describe TicketRequestsController, type: :controller do
   describe 'GET #show' do
     subject do
       get :show, params: { event_id: ticket_request.event.to_param,
-                           id: ticket_request.to_param }
+                           id:       ticket_request.to_param }
     end
 
     let(:ticket_request) { create(:ticket_request, user:) }
@@ -95,7 +95,7 @@ describe TicketRequestsController, type: :controller do
   describe 'GET #edit' do
     subject do
       get :edit, params: { event_id: ticket_request.event.to_param,
-                           id: ticket_request.to_param }
+                           id:       ticket_request.to_param }
     end
 
     let(:ticket_request) { create(:ticket_request, event:) }

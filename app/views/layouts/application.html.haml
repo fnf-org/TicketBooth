@@ -6,6 +6,9 @@
     %meta{:content => "yes", :name => "apple-mobile-web-app-capable"}/
     %meta{:content => "#{stripe_publishable_api_key}", :name => "stripe-key"}/
     %link{:href => "/icons/nav-bar-logo.png", :rel => "shortcut icon", :type => "image/png"}/
+    %link{:href => "https://fonts.googleapis.com", :rel => "preconnect"}/
+    %link{:crossorigin => "", :href => "https://fonts.gstatic.com", :rel => "preconnect"}/
+    %link{:href => "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap", :rel => "stylesheet"}/
 
     %title
       = PRODUCT_NAME
@@ -26,7 +29,7 @@
     = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
 
   %body
-    = render partial: "shared/navigation"
+    = render partial: "shared/nav_main"
     .container
       %turbo-frame#flash_container{"data-controller": "flash", "data-flash-target": "flash"}
         = render "shared/flash"

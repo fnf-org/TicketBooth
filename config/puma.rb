@@ -13,19 +13,12 @@ environment @env
 rackup "#{current_dir}/config.ru"
 pidfile "#{current_dir}/tmp/pids/puma-#{@env}.pid"
 
-port = ENV.fetch('PORT', 8080)
+puma_config = Rails.configuration.puma
+port = puma_config.port
 bind "tcp://0.0.0.0:#{port}"
 
-if @env == 'development'
-  threads 1, 1
-  workers 1
-else
-  cpu_cores = Etc.nprocessors
-
-  workers Integer(ENV['PUMA_THREADS'] || 3)
-  threads_count = Integer(ENV['PUMA_WORKERS'] || cpu_cores)
-  threads threads_count, threads_count
-end
+threads puma_config.min_threads, puma_config.max_threads
+workers puma_config.workers
 
 tag 'ticket-booth'
 preload_app!

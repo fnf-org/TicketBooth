@@ -6,11 +6,9 @@ require 'lograge'
 Rails.application.configure do
   config.lograge.enabled = true
 
-  config.lograge.keep_original_rails_log = true
+  config.lograge.keep_original_rails_log = Rails.env.test?
 
-  unless Rails.env.test?
-    config.lograge.logger = ActiveSupport::Logger.new($stdout)
-  end
+  config.lograge.logger = ActiveSupport::Logger.new(Rails.env.test? ? nil : $stdout)
 
   config.lograge.custom_payload do |controller|
     {

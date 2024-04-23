@@ -31,7 +31,9 @@
 require 'rails_helper'
 
 RSpec.describe Event do
-  subject(:event) { build(:event) }
+  subject(:event) { build(:event, **params) }
+
+  let(:params) { {} }
 
   it { is_expected.to be_valid }
 
@@ -39,6 +41,22 @@ RSpec.describe Event do
     it { is_expected.to normalize(:name) }
     it { is_expected.to normalize(:name).from('  Trim Spaces  ').to('Trim Spaces') }
     it { is_expected.to normalize(:name).from('Squish  Spaces').to('Squish Spaces') }
+  end
+
+  describe 'event title' do
+    let(:params) { { start_time: TimeHelper.from_flatpickr('10/1/2030, 12:00 PM') } }
+
+    describe '#starting' do
+      subject { event.starting }
+
+      it { is_expected.to eq 'Tuesday, October 1, 2030 @ 12:00 PM' }
+    end
+
+    describe '#long_name' do
+      subject { event.long_name }
+
+      it { is_expected.to eq "#{event.name} (Starting #{event.starting})" }
+    end
   end
 
   describe 'validations' do
@@ -196,7 +214,7 @@ RSpec.describe Event do
   describe '#cabins_available?' do
     subject { event.cabins_available? }
 
-    let(:event) { build(:event, cabin_price:, max_cabin_requests:) }
+    let(:event) { create(:event, cabin_price:, max_cabin_requests:) }
 
     let(:cabin_price) { nil }
     let(:max_cabin_requests) { nil }
@@ -244,8 +262,8 @@ RSpec.describe Event do
 
     let(:event) do
       build(:event, start_time:, end_time:,
-                    ticket_sales_start_time: ticket_sale_start_time,
-                    ticket_sales_end_time: ticket_sale_end_time)
+            ticket_sales_start_time: ticket_sale_start_time,
+            ticket_sales_end_time:   ticket_sale_end_time)
     end
 
     context 'when the event has ended' do

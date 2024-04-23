@@ -1,7 +1,7 @@
-= render partial: 'shared/event_nav', locals: { event: @event, active_tab: { guest_list: 'active' } }
+= render partial: 'shared/nav_event', locals: { event: @event, active_tab: { guest_list: 'active' } }
 
 .card
-  .card-header
+  .card-header.bg-secondary-subtle
     .btn-group
       = link_to download_guest_list_event_path(@event),
         class: 'btn hover-tooltip',

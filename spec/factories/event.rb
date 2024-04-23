@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+SEASONS = %w[Summer Fall Spring Winter].freeze
+
 FactoryBot.define do
   factory :event do
-    name { Faker::FunnyName.three_word_name }
+    name { "FnF #{SEASONS[Random.rand(4)]} Campout #{Random.rand(30).to_roman}" }
     start_time { 1.year.from_now }
     end_time { (1.year.from_now + 1.day) }
 

@@ -72,32 +72,40 @@ class Event < ApplicationRecord
   validate :end_time_after_start_time, :sales_end_time_after_start_time,
            :ensure_prices_set_if_maximum_specified
 
-  DEFAULT_EVENT_START_TIME = ->(delta = 0) { Date.current + 2.months + delta }
-  DEFAULT_ATTRIBUTES       = {
-    start_time: DEFAULT_EVENT_START_TIME[11.hours],
-    end_time: DEFAULT_EVENT_START_TIME[3.days + 14.hours],
-    ticket_requests_end_time: DEFAULT_EVENT_START_TIME[-14.days],
-    ticket_sales_start_time: DEFAULT_EVENT_START_TIME[-42.days],
-    ticket_sales_end_time: DEFAULT_EVENT_START_TIME[7.days],
+  START_DATE_WITH_OFFSET = ->(delta = 0) { Date.current + 2.months + delta }
+  DEFAULT_ATTRIBUTES     = {
+    start_time:                    START_DATE_WITH_OFFSET[11.hours],
+    end_time:                      START_DATE_WITH_OFFSET[3.days + 14.hours],
+    ticket_requests_end_time:      START_DATE_WITH_OFFSET[-14.days],
+    ticket_sales_start_time:       START_DATE_WITH_OFFSET[-42.days],
+    ticket_sales_end_time:         START_DATE_WITH_OFFSET[7.days],
 
-    adult_ticket_price: 250,
-    early_arrival_price: 0,
-    kid_ticket_price: 0,
-    late_departure_price: 30,
+    adult_ticket_price:            250,
+    early_arrival_price:           0,
+    kid_ticket_price:              0,
+    late_departure_price:          30,
 
     max_adult_tickets_per_request: 10,
-    max_kid_tickets_per_request: 4,
+    max_kid_tickets_per_request:   4,
 
-    tickets_require_approval: true,
-    allow_financial_assistance: true,
-    allow_donations: true,
+    tickets_require_approval:      true,
+    allow_financial_assistance:    true,
+    allow_donations:               true,
 
-    require_mailing_address: false,
+    require_mailing_address:       false,
 
-    max_cabins_per_request: nil,
-    max_cabin_requests: nil,
-    cabin_price: nil
+    max_cabins_per_request:        nil,
+    max_cabin_requests:            nil,
+    cabin_price:                   nil
   }.freeze
+
+  def long_name
+    "#{name} (Starting #{starting})"
+  end
+
+  def starting
+    TimeHelper.for_display(start_time)
+  end
 
   def admin?(user)
     user && (user.site_admin? || admins.exists?(id: user))

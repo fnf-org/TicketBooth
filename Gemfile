@@ -64,6 +64,7 @@ gem 'country_select'
 gem 'flatpickr'
 
 gem 'colorize'
+gem 'hashie'
 
 gem 'haml'
 gem 'haml-rails'

@@ -1,6 +1,5 @@
 .event-admins {
   margin-left: 0;
-  max-width: 400px;
 
   li {
     clear: right;
@@ -13,13 +12,26 @@
   margin-bottom: 10px;
 }
 
-.remove-admin {
-  float: right;
-}
-
 img.event-preview {
   max-width: 200px;
   max-height: 200px;
-  margin: 0 30px;
-  float: right !important;
+  margin-left: 20px;
+}
+
+.card.event-nav {
+  .card-body {
+    .btn-group {
+      .btn {
+        font-size: 12pt !important;
+      }
+    }
+  }
+}
+
+// Hide navbar text for small screens
+@media (max-width: 600px) {
+  img.event-preview {
+    max-width: 80px;
+    max-height: 80px;
+  }
 }

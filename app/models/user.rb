@@ -77,7 +77,7 @@ class User < ApplicationRecord
 
   validates :name, presence: true,
                    length: { maximum: MAX_NAME_LENGTH },
-                   format: { with: /\A\S+\s\S+(\s\S+)*\z/i,
+                   format: { with:    /\A\S+\s\S+(\s\S+)*\z/i,
                              message: 'must contain first and last name' }
 
   validates :email, presence: true,

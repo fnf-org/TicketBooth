@@ -51,18 +51,18 @@ class TicketRequest < ApplicationRecord
 
   TICKET_LIMITS = {
     (ROLE_UBER_COORDINATOR = 'uber_coordinator') => 10,
-    (ROLE_COORDINATOR = 'coordinator') => 10,
-    (ROLE_CONTRIBUTOR = 'contributor') => 10,
-    (ROLE_VOLUNTEER = 'volunteer') => 10,
-    (ROLE_OTHER = 'other') => 10
+    (ROLE_COORDINATOR = 'coordinator')           => 10,
+    (ROLE_CONTRIBUTOR = 'contributor')           => 10,
+    (ROLE_VOLUNTEER = 'volunteer')               => 10,
+    (ROLE_OTHER = 'other')                       => 10
   }.freeze
 
   ROLES = {
     ROLE_UBER_COORDINATOR => 'Skipper/Board Member',
-    ROLE_COORDINATOR => 'Lead Coordinator',
-    ROLE_CONTRIBUTOR => 'Planner',
-    ROLE_VOLUNTEER => 'Volunteer',
-    ROLE_OTHER => 'Other'
+    ROLE_COORDINATOR      => 'Lead Coordinator',
+    ROLE_CONTRIBUTOR      => 'Planner',
+    ROLE_VOLUNTEER        => 'Volunteer',
+    ROLE_OTHER            => 'Other'
   }.freeze
 
   belongs_to :user, inverse_of: :ticket_requests

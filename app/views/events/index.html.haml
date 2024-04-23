@@ -1,5 +1,5 @@
 .card
-  .card-header
+  .card-header.bg-success-subtle
     %h1 Events
   .card-body
     %table.table
@@ -14,8 +14,8 @@
             %td
               = link_to event do
                 = event.name
-            %td= event.start_time.localtime.to_formatted_s(:friendly)
-            %td= event.end_time.localtime.to_formatted_s(:friendly)
+            %td= TimeHelper.for_display(event.start_time.localtime)
+            %td= TimeHelper.for_display(event.end_time.localtime)
 
     = link_to new_event_path, class: 'btn btn-primary' do
       New Event

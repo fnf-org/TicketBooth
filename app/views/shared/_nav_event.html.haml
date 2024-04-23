@@ -1,8 +1,15 @@
 - active_tab ||= {}
 
-.card
-  .card-header
-    %h3= event.name
+-# TODO: when we allow uploading images for the events, we can show it.
+-# = image_tag image_path('logos/fnf-transparent.png'), class: 'float-end event-preview'
+.card.event-nav
+  .card-header.bg-success-subtle
+    .card-img-top
+    %h3.d-inline-block.align-baseline
+      = event.name
+      %h5.d-inline-block.px-xl-5.px-lg-3.p-md-0.p-sm-0.m-0
+        = event.starting
+
   .card-body
     .btn-group
       - if current_user.site_admin? || current_user.manages_event?(event)

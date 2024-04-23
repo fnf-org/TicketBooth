@@ -25,10 +25,10 @@ class TicketRequestsController < ApplicationController
 
       stats[status] = {
         requests: requests.count,
-        adults: requests.sum(&:adults),
-        kids: requests.sum(&:kids),
-        cabins: requests.sum(&:cabins),
-        raised: requests.sum(&:price)
+        adults:   requests.sum(&:adults),
+        kids:     requests.sum(&:kids),
+        cabins:   requests.sum(&:cabins),
+        raised:   requests.sum(&:price)
       }
     end
 
