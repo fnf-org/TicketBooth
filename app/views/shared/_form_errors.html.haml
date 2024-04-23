@@ -1,4 +1,4 @@
-- if resource.errors.any?
+- if resource&.errors&.any?
   .alert.alert-error
     %h4
       = pluralize(resource.errors.count, 'error')
@@ -6,3 +6,8 @@
     %ul
       - resource.errors.full_messages.each do |msg|
         %li= msg
+
+- if flash[:error]
+  .alert.alert-error
+    %h4
+      = flash[:error]

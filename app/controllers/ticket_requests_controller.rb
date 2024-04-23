@@ -82,6 +82,8 @@ class TicketRequestsController < ApplicationController
           @ticket_request.send(:"#{field}=", last_ticket_request.send(field))
         end
       end
+    else
+      @ticket_request = TicketRequest.new(event_id: @event.id)
     end
   end
 
@@ -98,7 +100,7 @@ class TicketRequestsController < ApplicationController
   def create
     unless @event.ticket_sales_open?
       flash.now[:error] = 'Sorry, but ticket sales have closed'
-      return render action: 'new'
+      return redirect_to new_event_ticket_request_path(@event)
     end
 
     tr_params = permitted_params[:ticket_request].to_h || {}

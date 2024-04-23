@@ -1,34 +1,37 @@
 
-.card
-  .card-header
-    %h1 #{@event.name}
-    - if @event.ticket_requests_open?
-      %h2 Request Tickets
-    - else
-      %h1 Ticket Requests are Not Open
+.row
+  .col-sm-12.col-md-12.col-lg-5.col-xl-4
+    .card
+      .card-header.bg-secondary-subtle
+        %h3 #{@event.name}
 
-  .card-body
-    - if @event.ticket_requests_open?
-      = image_tag('logos/fnf-transparent.png', class: 'pull-right', width: 100)
+      .card-body
+        - if @event.ticket_requests_open?
+          %em Event Starts:
+          %br
+          %strong
+            = TimeHelper.for_display(@event.start_time.localtime)
 
-      %p.lead
-        %i.icon-calendar
-        = @event.start_time.localtime.to_formatted_s(:month_day)
-        &ndash;
-        = succeed ',' do
-          = @event.end_time.localtime.to_formatted_s(:month_day)
-        = @event.end_time.year
+          %br
+          .vertical-20
+          %em Event Ends:
+          %br
+          %strong
+            = TimeHelper.for_display(@event.end_time.localtime)
 
-      %p
-        Please fill out the form below to request tickets.
-      %p
-        If your request is approved, you'll receive an email with further instructions.
-      %hr
+        - else
+          %h5 Ticket sales for #{@event.name} have closed
+          %p.lead
+            If you already purchased a ticket,
+            = link_to 'sign in', new_user_session_path
+            to your account to review the details
 
-      = render 'form'
-    - else
-      %h1 Ticket sales for #{@event.name} have closed
-      %p.lead
-        If you already purchased a ticket,
-        = link_to 'sign in', new_user_session_path
-        to your account to review the details
+      .card-footer
+        %p
+          Please fill out the form to request tickets.
+        %p
+          If your request is approved, you'll receive an email with further instructions.
+
+  .col-sm-12.col-md-12.col-lg-7.col-xl-8
+    = render 'form'
+
