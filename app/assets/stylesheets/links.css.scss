@@ -2,10 +2,27 @@ ul.shared-user-links {
   list-style-type: none;
   margin-top: 40px !important;
   padding-left: 0 !important;
-  p {
-    margin-left: 0;
+  li {
+    margin: 10px auto;
     a {
       margin-left: 0;
     }
   }
 }
+
+.horizontal-links {
+  ul.shared-user-links {
+    list-style-type: none;
+    margin-top: 40px !important;
+    padding-left: 0 !important;
+    li {
+      display: inline-block;
+      margin-left: 0;
+      a {
+        display: inline-block;
+        margin-left: 0;
+      }
+    }
+  }
+}
+

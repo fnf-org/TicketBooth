@@ -10,9 +10,17 @@ class ApplicationController < ActionController::Base
   # Allow additional parameters to be passed to Devise-managed controllers
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  after_action :process_redirect
+
   add_flash_types :info, :error, :warning
 
   protected
+
+  def process_redirect
+    if params[:redirect_url] && response.successful?
+      redirect_to params[:redirect_url]
+    end
+  end
 
   def require_site_admin
     redirect_to root_path unless current_user.site_admin?
@@ -29,7 +37,7 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    permitted_attributes = %i[email password password_confirmation first last]
+    permitted_attributes = %i[email password password_confirmation first last redirect_url]
     devise_parameter_sanitizer.permit(:sign_up) { |user| user.permit(*permitted_attributes) }
     devise_parameter_sanitizer.permit(:account_update) { |user| user.permit(*permitted_attributes) }
   end

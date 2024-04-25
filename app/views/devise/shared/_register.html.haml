@@ -1,0 +1,49 @@
+
+- http_method = existing ? :put : :post
+= form_for(resource, as: resource_name, url: user_registration_path, html: { method: http_method }) do |f|
+
+  = render "devise/shared/error_messages", resource: resource
+
+  .container-fluid
+    .row
+      .col-5
+        = f.label :first, 'First Name'
+        = f.text_field :first, maxlength: User::MAX_NAME_LENGTH, required: true
+
+      .col-7
+        = f.label :last, 'Last Name'
+        = f.text_field :last, maxlength: User::MAX_NAME_LENGTH, required: true
+
+    .row
+      .col-8
+        = f.label :email, 'Your Email Address'
+        = f.email_field :email, placeholder: resource.email || resource.unconfirmed_email || 'dj-awesome@gmail.com', maxlength: User::MAX_EMAIL_LENGTH, required: true, autofocus: true, autocomplete: "email", class: "email-field"
+
+    = render partial: 'devise/registrations/change_password', locals: { existing: existing, f: f }
+    %br
+    %hr
+    - if existing
+      .row
+        .col-md-6.col-sm-12
+          %h5.nowrap
+            We need your current password to confirm your changes
+          = f.label :current_password
+          = f.password_field :current_password, autocomplete: "current-password"
+
+      .row
+        .col-12
+          .actions
+            = f.submit "Update", class: 'btn btn-primary btn-large w-1'
+
+    - unless existing
+
+      .row
+        .col-12
+          .actions
+            = f.submit "Register", class: 'btn btn-primary btn-large'
+
+
+      .row
+        .col-12
+          = link_to "Go Back &larrhk;".html_safe, :back
+
