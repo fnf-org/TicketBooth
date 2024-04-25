@@ -47,10 +47,10 @@ jobs:
           # The tagging below follows:
           # - When a properly formatted tag is created, as in a release, put the semver version x.y.z in the tag
           # - If a build is triggered manually, then mark the branch and short sha in the tag
-          # - When the default branch is updated, create a release candiate tag
+          # - When the default branch is updated, create a release candidate tag
           tags: |
             type=semver,pattern={{version}}
-            type=sha,prefix={{branch || tag}}-{{sha}},event=workflow_dispatch
+            type=sha,prefix={{branch}}-{{sha}},event=workflow_dispatch
             type=raw,value={{date 'YYYYMMDD-HHmm' tz='America/Los_Angeles'}}-rc,event=branch,branch={{is_default_branch}}
 
       # build-push-action v5.3.0
