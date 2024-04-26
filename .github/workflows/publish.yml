@@ -1,4 +1,4 @@
-name: Publish Docker Image
+name: "Publish Docker Image"
 
 on:
   push:
@@ -52,6 +52,12 @@ jobs:
             type=semver,pattern={{version}}
             type=sha,prefix={{branch}}-{{sha}},event=workflow_dispatch
             type=raw,value={{date 'YYYYMMDD-HHmm' tz='America/Los_Angeles'}}-rc,event=branch,branch={{is_default_branch}}
+
+
+      - shell: bash
+        env:
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+        run: echo -n "${RAILS_MASTER_KEY}" > config/master.key
 
       # build-push-action v5.3.0
       - name: Build and push Docker image

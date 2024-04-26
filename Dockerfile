@@ -49,7 +49,7 @@ RUN npm install -g npm@10.5.2 && \
     rm -rf /tmp/node-build-master
 
 # Install application gems
-COPY Gemfile Gemfile.lock ./
+COPY .ruby-version Gemfile Gemfile.lock ./
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
@@ -87,6 +87,9 @@ USER 1000:1000
 EXPOSE 3000
 
 RUN chmod 755 /rails/bin/docker-entrypoint
+
+# Remove master key so that the Docker image does not have it
+RUN rm -f config/master.key
 
 ENV RAILS_ENV=production
 
