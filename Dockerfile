@@ -88,6 +88,9 @@ EXPOSE 3000
 
 RUN chmod 755 /rails/bin/docker-entrypoint
 
+# Remove master key so that the Docker image does not have it
+RUN rm -f config/master.key
+
 ENV RAILS_ENV=production
 
 # Entrypoint prepares the database.
