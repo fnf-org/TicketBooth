@@ -50,30 +50,41 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-          - name: TICKET_DB_HOST
-            value: {{ include "chart.postgresql.fullname" . }}
-          - name: TICKET_DB_PORT
-            value: "5432"
-          - name: TICKET_DB_NAME
-            value: {{ .Values.postgresql.auth.database }}
-          - name: TICKET_DB_USER
-            value: {{ .Values.postgresql.auth.username }}
-          - name: TICKET_DB_PASSWORD
-            value: {{ .Values.postgresql.auth.password }}
+            # These should really come from a autogenerate value
+            - name: TICKET_DB_HOST
+              value: 127.0.0.1
+            - name: TICKET_DB_PORT
+              value: "5432"
+            - name: TICKET_DB_NAME
+              value: {{ .Values.postgresql.database }}
           envFrom:
-          - secretRef:
+            - secretRef:
+            {{- if .Value.secret.name }}
+              name: {{ .Value.secret.name }}
+            {{- else }}
               name: {{ .Release.Name }}-secrets
-          - configMapRef:
+            {{- end }}
+            - configMapRef:
               name: {{ .Release.Name }}-config
           # Fix for: https://github.com/puma/puma/issues/2343
           lifecycle:
             preStop:
               exec:
                 command: ['/bin/sh', '-c', 'sleep 15']
-      initContainers:
-      - name: init-wait-db
-        image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of Postgres Server deployment"; while ! nc -z {{ .Release.Name }}-postgresql.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local 5432; do sleep 10; printf "-"; done; echo -e "  >> DB Server has started";']
+        - name: cloud-sql-proxy
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0
+          args:
+            - "--private-ip"
+            - "--structured-logs"
+            - "--port=5432"
+            - "--auto-iam-authn"
+            - {{ .Values.postgresql.instance }}
+          securityContext:
+            runAsNonRoot: true
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu:    "1"
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

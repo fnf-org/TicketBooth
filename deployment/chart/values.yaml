@@ -71,25 +71,43 @@ tolerations: []
 
 affinity: {}
 
-ticketsEnvironment: "production"
-ticketsSecretToken: "this-is-a-very-bogus-key"
-ticketsServeStaticFiles: "true"
-ticketsSMTPHost: ""
-ticketsSMTPPort: "" 
-ticketsSMTPDomain: ""
-ticketsSMTPUser: ""
-ticketsSMTPPassword: ""
-ticketsDBSeed: ""
-ticketsHost: ""
-ticketsEmailAddress: ""
-stripeSecretKey: ""
-stripePublicKey: ""
-pumaConcurrency: 2
-pumaThreads: 2
+config:
+  ticketsEnvironment: "production"
+  ticketsSMTPHost: ""
+  ticketsSMTPPort: "" 
+  ticketsSMTPDomain: ""
+  ticketsDBSeed: ""
+  ticketsHost: ""
+  ticketsEmailAddress: ""
+  stripePublicKey: ""
+  pumaConcurrency: 2
+  pumaThreads: 2
 
+secret:
+  # The secret should never be created with Helm because the values get stored
+  # someplace. Do this only with non-production resources.
+  create: false
+
+  # Any secrets should be contained within GCP Secrets and pulled in by ExternalSecrets
+  name: ""
+
+  external:
+    enabled: false
+    path: ""
+    storeRef:
+      name: ""
+      kind: ""
+
+  # Data to put into a created secret. Does not need to be base64 encoded
+  # data:
+  #  ticketsSecretToken: "this-is-a-very-bogus-key"
+  #  ticketsServeStaticFiles: "true"
+  #  ticketsSMTPUser: ""
+  #  ticketsSMTPPassword: ""
+  #  stripeSecretKey: ""
+  
 postgresql:
-  auth:
-    database: tickets
-    username: ticketsuser
-    password: ""
-    postgresPassword: ""
+  # The postgres DB will normally be connected to via IAM and CloudSQL Proxy and
+  # therefore all we need is the name of the CloudSQL instance and database name.
+  database: tickets
+  instance: null
