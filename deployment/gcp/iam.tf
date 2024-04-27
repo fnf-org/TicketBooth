@@ -31,6 +31,6 @@ resource "google_service_account_iam_binding" "ticket_booth_app" {
   role               = google_project_iam_custom_role.ticket_booth.name
 
   members = [
-    "serviceAccount:${var.project_id}.svc.id.goog[${var.app_namespace}/${var.app_service_account}]",
+    "principal://iam.googleapis.com/projects/${var.project_number}/locations/global/workloadIdentityPools/${var.project_id}.svc.id.goog/subject/ns/${var.app_namespace}/sa/${var.app_service_account}",
   ]
 }

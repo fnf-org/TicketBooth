@@ -20,6 +20,11 @@ variable "project_id" {
   type    = string
 }
 
+variable "project_number" {
+  default = "309199342732"
+  type    = string
+}
+
 variable "tf_service_account" {
   default = "sa-cluster@fnf-apps-341500.iam.gserviceaccount.com"
   type    = string
