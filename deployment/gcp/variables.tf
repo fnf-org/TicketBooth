@@ -1,5 +1,5 @@
 variable "app_namespace" {
-  default     = "default"
+  default     = "fnf-apps"
   description = "GKE namespace where the app is deployed"
   type        = string
 }
@@ -26,7 +26,7 @@ variable "project_number" {
 }
 
 variable "tf_service_account" {
-  default = "sa-cluster@fnf-apps-341500.iam.gserviceaccount.com"
+  default = "tf-manager@fnf-apps-341500.iam.gserviceaccount.com"
   type    = string
 }
 

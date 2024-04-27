@@ -14,6 +14,5 @@ terraform {
 provider "google" {
   project = var.project_id
   region  = var.location
-
-  impersonate_service_account = var.tf_service_account != "" ? var.tf_service_account : ""
+  # impersonate_service_account = var.tf_service_account != "" ? var.tf_service_account : ""
 }

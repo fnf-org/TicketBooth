@@ -11,11 +11,14 @@ resource "google_project_iam_custom_role" "ticket_booth" {
     "cloudsql.databases.update",
     "cloudsql.instances.connect",
     "cloudsql.instances.executeSql",
-    "iam.serviceAccounts.get",
-    "iam.serviceAccounts.getAccessToken",
-    "iam.serviceAccounts.getOpenIdToken",
-    "iam.serviceAccounts.list",
   ]
+}
+
+locals {
+  app_roles = toset([
+    "roles/cloudsql.editor",
+    "roles/cloudkms.cryptoKeyEncrypterDecrypter",
+  ])
 }
 
 resource "google_service_account" "ticket_booth_gke" {
@@ -28,9 +31,41 @@ resource "google_service_account" "ticket_booth_gke" {
 
 resource "google_service_account_iam_binding" "ticket_booth_app" {
   service_account_id = google_service_account.ticket_booth_gke.name
-  role               = google_project_iam_custom_role.ticket_booth.name
+  role               = "roles/iam.workloadIdentityUser"
 
   members = [
     "principal://iam.googleapis.com/projects/${var.project_number}/locations/global/workloadIdentityPools/${var.project_id}.svc.id.goog/subject/ns/${var.app_namespace}/sa/${var.app_service_account}",
+  ]
+
+  depends_on = [
+    null_resource.wait_for_service_account,
+  ]
+}
+
+resource "google_project_iam_binding" "ticket_booth_app_custom" {
+  project = var.project_id
+  role    = google_project_iam_custom_role.ticket_booth.name
+
+  members = [
+    google_service_account.ticket_booth_gke.member,
+  ]
+
+  depends_on = [
+    null_resource.wait_for_service_account,
+  ]
+}
+
+resource "google_project_iam_binding" "ticket_booth_app_builtins" {
+  for_each = local.app_roles
+
+  project = var.project_id
+  role    = each.value
+
+  members = [
+    google_service_account.ticket_booth_gke.member,
+  ]
+
+  depends_on = [
+    null_resource.wait_for_service_account,
   ]
 }

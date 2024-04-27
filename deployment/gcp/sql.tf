@@ -11,10 +11,12 @@ resource "google_sql_database_instance" "ticket_booth" {
   region           = var.location
 
   settings {
-    tier = "e2-small"
+    tier = "db-g1-small"
 
     # Only allow access from the GKE cluster
     ip_configuration {
+      ipv4_enabled                                  = false
+      private_network                               = data.google_compute_network.default_vpc.id
       enable_private_path_for_google_cloud_services = true
       #  authorized_networks {
       #    name = ""
@@ -22,12 +24,14 @@ resource "google_sql_database_instance" "ticket_booth" {
       #  }
     }
 
+    availability_type = "REGIONAL"
+
     database_flags {
       name  = "cloudsql.iam_authentication"
       value = "on"
     }
 
-    activation_policy           = "ON_DEMAND"
+    # activation_policy           = "ON_DEMAND"
     deletion_protection_enabled = true
 
     backup_configuration {
@@ -39,10 +43,13 @@ resource "google_sql_database_instance" "ticket_booth" {
       }
     }
   }
+
+  depends_on = [google_service_networking_connection.private_vpc_connection]
+
 }
 
 output "ticket_db_instance_name" {
-  value = google.sql_database_instance.ticket_booth.name
+  value = google_sql_database_instance.ticket_booth.name
 }
 
 resource "google_sql_database" "ticket_booth" {
