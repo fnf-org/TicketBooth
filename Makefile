@@ -59,7 +59,7 @@ staging: 	## Set RAILS_ENV=staging
 production: 	## Set RAILS_ENV=production
 		@echo 'export RAILS_ENV=production' > $(MAKE_ENV)
 
-boot: 		## Boots Rails sserver in the whatever RAILS_ENV is set to — eg: make production boot
+setup: 		## Boots Rails sserver in the whatever RAILS_ENV is set to — eg: make production boot
 		bash bin/boot-up
 
 docker-image:	## Builds a docker image named 'tickets'
@@ -71,23 +71,40 @@ shellcheck:	## Run shellcheck on the shell files
 dev-install:    ## Optional install of VIM configuration and other dev tools
 		$(CURRENT_DIR)/development/dev-install
 
-rebuild-dev-db: development ## Rebuild and re-seed the dev database
-		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Dropping dev database $(DEV_DB)...$(clear)\n"
-		@dropdb $(DEV_DB) || true
-		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Creating dev database...$(clear)\n"
-		@rails db:create
-		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Migrating dev database...$(clear)\n"
-		@rails db:migrate
-		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Seeding dev database...$(clear)\n"
-		rails db:seed
+# Rails Commands Macros
 
-assets:    	## Build JS & CSS assets
+db-drop:  	## Drop current databases
+		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Dropping dev database [$(DEV_DB)]$(clear)\n"
+		@dropdb $(DEV_DB) || true
+
+db-create:  	node_modules ## Create if necessary, migrate and seed the database
+		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Creating Database:    [$(DEV_DB)]$(clear)\n"
+		@bin/rails db:create
+		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Migrating Databases:  [$(DEV_DB)]$(clear)\n"
+		@bin/rails db:migrate
+		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Seeding dev database: [$(DEV_DB)]$(clear)\n"
+		@bin/rails db:seed
+
+rebuild-dev-db: db-drop development db-create ## Rebuild and re-seed the dev database
+
+node_modules: 	## Install all Node Modules
 		@yarn install
+
+assets:    	node_modules ## Build JS & CSS assets
 		@yarn run build
 		@yarn run build:css
 
-dev:            development assets ## Start the development environment
-		@bash -c "source $(MAKE_ENV); bundle exec foreman start -f Procfile.dev"
+gems: 		## Runs bundle install
+		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Running bundle install...$(clear)\n"
+		bundle install -j 4
+
+foreman: 	## Start Foreman using Procfile.dev
+		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Starting up Foreman in ENV=[$(MAKE_ENV)], db=[$(DEV_DB)]$(clear)\n"
+		@bash -c "source $(MAKE_ENV); foreman start -f Procfile.dev"
+
+dev:          	gems node_modules db-create foreman ## Start the development environment, but run yarn install and db-create
+
+
 
 
 ci: 		## Run all tests and linters as if on CI

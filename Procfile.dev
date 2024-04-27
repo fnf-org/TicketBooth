@@ -1,4 +1,6 @@
-web: env RUBY_DEBUG_OPEN=true bin/rails server
-js: yarn build --watch
+# vim: ft=yaml
+web: env RUBY_DEBUG_OPEN=true bin/rails server -p 8080
+js: yarn watch:js
 css: yarn watch:css
-browser: sleep 10 && open http://localhost:5000/ && while true; do sleep 100; echo .; done
+browser: sleep 6 && open http://localhost:8080/ && while true; do sleep 100; echo .; done
+.

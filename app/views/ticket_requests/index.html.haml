@@ -1,179 +1,177 @@
-%h1 #{@event.name} Ticket Requests
+= render partial: 'shared/nav_event', locals: { event: @event, active_tab: { ticket_requests: 'active' } }
 
-.btn-group
-  = link_to event_path(@event), class: 'btn' do
-    %i.icon-arrow-left
-    Event
-  = link_to download_event_ticket_requests_path(@event), class: 'btn btn-info hover-tooltip',
-            title: 'Download a CSV of the current data set' do
-    %i.icon-th-list
-    Download CSV
-
-%table.table
-  %thead
-    %tr
-      %th
-      %th Requests
-      %th Tickets
-      - if @event.kid_ticket_price
-        %th Kids
-      - if @event.cabin_price
-        %th Cabins
-      %th Earn
-  %tbody
-    %tr
-      %td
-        %span.lead Paid
-      %td
-        %span.lead= @stats[:completed][:requests]
-      %td
-        %span.lead= @stats[:completed][:adults]
-      - if @event.kid_ticket_price
-        %td
-          %span.lead= @stats[:completed][:kids]
-      - if @event.cabin_price
-        %td
-          %span.lead= @stats[:completed][:cabins]
-      %td
-        %span.lead
-          = number_to_currency(@stats[:completed][:raised], precision: 0)
-    %tr.warning
-      %td
-        Pending Approval
-      %td= @stats[:pending][:requests]
-      %td= @stats[:pending][:adults]
-      - if @event.kid_ticket_price
-        %td= @stats[:pending][:kids]
-      - if @event.cabin_price
-        %td= @stats[:pending][:cabins]
-      %td
-        %span.muted
-          = number_to_currency(@stats[:pending][:raised], precision: 0)
-    %tr.success
-      %td
-        Awaiting Payment
-      %td= @stats[:awaiting_payment][:requests]
-      %td= @stats[:awaiting_payment][:adults]
-      - if @event.kid_ticket_price
-        %td= @stats[:awaiting_payment][:kids]
-      - if @event.cabin_price
-        %td= @stats[:awaiting_payment][:cabins]
-      %td
-        %span.muted
-          = number_to_currency(@stats[:awaiting_payment][:raised], precision: 0)
-    %tr.muted
-      %td
-        Total
-      %td= @stats[:total][:requests]
-      %td= @stats[:total][:adults]
-      - if @event.kid_ticket_price
-        %td= @stats[:total][:kids]
-      - if @event.cabin_price
-        %td= @stats[:total][:cabins]
-      %td
-        = number_to_currency(@stats[:total][:raised], precision: 0)
-        %small (potential)
-
-%table.table
-  %thead
-    %tr
-      %th Name
-      %th Role
-      %th
-      %th Tickets
-      - if @event.kid_ticket_price
-        %th Kids
-      - if @event.cabin_price
-        %th Cabins
-      - if @event.eald?
-        %th EA/LD
-      %th Price
-      %th Date Requested
-      %th Status
-      %th
-  %tbody
-    - @ticket_requests.each do |ticket_request|
-      %tr{ class: class_for_table_row(ticket_request) }
-        %td
-          = link_to event_ticket_request_path(@event, ticket_request) do
-            = ticket_request.user.name
-        %td.muted
-          = TicketRequest::ROLES[ticket_request.role]
-          - if ticket_request.role_explanation.present?
-            %i.icon-comment.hover-tooltip{ title: ticket_request.role_explanation }
-        %td
-          - if ticket_request.admin_notes.present?
-            %i.icon-asterisk.hover-tooltip{ title: 'Ticket Coordinator Notes: ' + ticket_request.admin_notes }
-          - if ticket_request.car_camping
-            = image_tag('car.png',
-              width: 16,
-              class: 'hover-tooltip',
-              title: 'User has requested a car/RV camping spot because: ' + ticket_request.car_camping_explanation)
-          - if ticket_request.needs_assistance
-            = image_tag('bank.png', width: 16, class: 'hover-tooltip',
-                        title: 'User has requested financial assistance')
-          - if ticket_request.notes.present?
-            %i.icon-comment.hover-tooltip{ title: 'Additional requests or comments: ' + ticket_request.notes }
-        %td= ticket_request.adults
-        - if @event.kid_ticket_price
-          %td= ticket_request.kids
-        - if @event.cabin_price
-          %td= ticket_request.cabins
-        - if @event.eald?
+.card
+  .card-header
+    .btn-group
+      = link_to download_event_ticket_requests_path(@event), class: 'btn' do
+        %i.icon-th-list
+        Download CSV &darr;
+  .card-body
+    %table.table
+      %thead
+        %tr
+          %th
+          %th Requests
+          %th Tickets
+          - if @event.kid_ticket_price
+            %th Kids
+          - if @event.cabin_price
+            %th Cabins
+          %th Earn
+      %tbody
+        %tr
           %td
-            #{ticket_request.early_arrival_passes} / #{ticket_request.late_departure_passes}
-            - if eald_requested?(ticket_request)
-              - if eald_paid?(ticket_request)
-                %i.text-success.icon-ok-sign.hover-tooltip{ title: 'All requested EA/LD passes have been purchased' }
-              - else
-                %i.text-warning.icon-question-sign.hover-tooltip{ title: 'Not all requested EA/LD passes have been purchased' }
-        %td
-          %span{ class: ('label label-info' if ticket_request.special_price) }
-            = number_to_currency(ticket_request.price, precision: 0)
-        %td
-          = ticket_request.created_at.localtime.to_formatted_s(:month_day)
-        %td
-          %span{ class: text_class_for_status(ticket_request) }
-            = text_for_status ticket_request
-            - if ticket_request.payment && !ticket_request.payment.received?
-              %i.icon-comment.hover-tooltip{ title: ticket_request.payment.explanation }
-        %td
-          - if @event.tickets_require_approval && ticket_request.pending?
-            .btn-group.pull-right
-              = link_to approve_event_ticket_request_path(@event, ticket_request),
-                method: :post,
-                class: 'btn btn-primary' do
-                Approve
-                %i.icon-ok
-              = link_to decline_event_ticket_request_path(@event, ticket_request),
-                method: :post,
-                class: 'btn btn-danger',
-                data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s request?" } do
-                Decline
-                %i.icon-remove
-          - elsif !ticket_request.payment
-            .btn-group.pull-right
-              - if ticket_request.declined?
-                = link_to revert_to_pending_event_ticket_request_path(@event, ticket_request),
-                  method: :post,
-                  class: 'btn btn-link' do
-                  %span.hover-tooltip{ title: 'Reset status of request to Pending', data: { placement: 'left' } }
-                    Revert
-              - elsif !ticket_request.completed?
-                = link_to resend_approval_event_ticket_request_path(@event, ticket_request),
-                  method: :post,
-                  class: 'btn btn-link' do
-                  Resend Approval
-                = link_to decline_event_ticket_request_path(@event, ticket_request),
-                  method: :post,
-                  class: 'btn btn-link',
-                  data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s already approved request?" } do
-                  %span.text-error Decline
+            %span.lead Paid
+          %td
+            %span.lead= @stats[:completed][:requests]
+          %td
+            %span.lead= @stats[:completed][:adults]
+          - if @event.kid_ticket_price
+            %td
+              %span.lead= @stats[:completed][:kids]
+          - if @event.cabin_price
+            %td
+              %span.lead= @stats[:completed][:cabins]
+          %td
+            %span.lead
+              = number_to_currency(@stats[:completed][:raised], precision: 0)
+        %tr.warning
+          %td
+            Pending Approval
+          %td= @stats[:pending][:requests]
+          %td= @stats[:pending][:adults]
+          - if @event.kid_ticket_price
+            %td= @stats[:pending][:kids]
+          - if @event.cabin_price
+            %td= @stats[:pending][:cabins]
+          %td
+            %span.muted
+              = number_to_currency(@stats[:pending][:raised], precision: 0)
+        %tr.success
+          %td
+            Awaiting Payment
+          %td= @stats[:awaiting_payment][:requests]
+          %td= @stats[:awaiting_payment][:adults]
+          - if @event.kid_ticket_price
+            %td= @stats[:awaiting_payment][:kids]
+          - if @event.cabin_price
+            %td= @stats[:awaiting_payment][:cabins]
+          %td
+            %span.muted
+              = number_to_currency(@stats[:awaiting_payment][:raised], precision: 0)
+        %tr.muted
+          %td
+            Total
+          %td= @stats[:total][:requests]
+          %td= @stats[:total][:adults]
+          - if @event.kid_ticket_price
+            %td= @stats[:total][:kids]
+          - if @event.cabin_price
+            %td= @stats[:total][:cabins]
+          %td
+            = number_to_currency(@stats[:total][:raised], precision: 0)
+            %small (potential)
 
-          - elsif ticket_request.payment && !ticket_request.payment.received?
-            .btn-group.pull-right
-              = link_to mark_received_payments_path(ticket_request_id: ticket_request),
-                method: :post,
-                class: 'btn btn-primary' do
-                Mark Payment Received
-                %i.icon-ok
+    %table.table
+      %thead
+        %tr
+          %th Name
+          %th Role
+          %th
+          %th Tickets
+          - if @event.kid_ticket_price
+            %th Kids
+          - if @event.cabin_price
+            %th Cabins
+          - if @event.eald?
+            %th EA/LD
+          %th Price
+          %th Date Requested
+          %th Status
+          %th
+      %tbody
+        - @ticket_requests.each do |ticket_request|
+          %tr{ class: class_for_table_row(ticket_request) }
+            %td
+              = link_to event_ticket_request_path(@event, ticket_request) do
+                = ticket_request.user.name
+            %td.muted
+              = TicketRequest::ROLES[ticket_request.role]
+              - if ticket_request.role_explanation.present?
+                %i.icon-comment.hover-tooltip{ title: ticket_request.role_explanation }
+            %td
+              - if ticket_request.admin_notes.present?
+                %i.icon-asterisk.hover-tooltip{ title: 'Ticket Coordinator Notes: ' + ticket_request.admin_notes }
+              - if ticket_request.car_camping
+                = image_tag('car.png',
+                  width: 16,
+                  class: 'hover-tooltip',
+                  title: 'User has requested a car/RV camping spot because: ' + ticket_request.car_camping_explanation)
+              - if ticket_request.needs_assistance
+                = image_tag('bank.png', width: 16, class: 'hover-tooltip',
+                            title: 'User has requested financial assistance')
+              - if ticket_request.notes.present?
+                %i.icon-comment.hover-tooltip{ title: 'Additional requests or comments: ' + ticket_request.notes }
+            %td= ticket_request.adults
+            - if @event.kid_ticket_price
+              %td= ticket_request.kids
+            - if @event.cabin_price
+              %td= ticket_request.cabins
+            - if @event.eald?
+              %td
+                #{ticket_request.early_arrival_passes} / #{ticket_request.late_departure_passes}
+                - if eald_requested?(ticket_request)
+                  - if eald_paid?(ticket_request)
+                    %i.text-success.icon-ok-sign.hover-tooltip{ title: 'All requested EA/LD passes have been purchased' }
+                  - else
+                    %i.text-warning.icon-question-sign.hover-tooltip{ title: 'Not all requested EA/LD passes have been purchased' }
+            %td
+              %span{ class: ('label label-info' if ticket_request.special_price) }
+                = number_to_currency(ticket_request.price, precision: 0)
+            %td
+              = ticket_request.created_at.localtime.to_formatted_s(:month_day)
+            %td
+              %span{ class: text_class_for_status(ticket_request) }
+                = text_for_status ticket_request
+                - if ticket_request.payment && !ticket_request.payment.received?
+                  %i.icon-comment.hover-tooltip{ title: ticket_request.payment.explanation }
+            %td
+              - if @event.tickets_require_approval && ticket_request.pending?
+                .btn-group.pull-right
+                  = link_to approve_event_ticket_request_path(@event, ticket_request),
+                    method: :post,
+                    class: 'btn btn-primary' do
+                    Approve
+                    %i.icon-ok
+                  = link_to decline_event_ticket_request_path(@event, ticket_request),
+                    method: :post,
+                    class: 'btn btn-danger',
+                    data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s request?" } do
+                    Decline
+                    %i.icon-remove
+              - elsif !ticket_request.payment
+                .btn-group.pull-right
+                  - if ticket_request.declined?
+                    = link_to revert_to_pending_event_ticket_request_path(@event, ticket_request),
+                      method: :post,
+                      class: 'btn btn-link' do
+                      %span.hover-tooltip{ title: 'Reset status of request to Pending', data: { placement: 'left' } }
+                        Revert
+                  - elsif !ticket_request.completed?
+                    = link_to resend_approval_event_ticket_request_path(@event, ticket_request),
+                      method: :post,
+                      class: 'btn btn-link' do
+                      Resend Approval
+                    = link_to decline_event_ticket_request_path(@event, ticket_request),
+                      method: :post,
+                      class: 'btn btn-link',
+                      data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s already approved request?" } do
+                      %span.text-error Decline
+
+              - elsif ticket_request.payment && !ticket_request.payment.received?
+                .btn-group.pull-right
+                  = link_to mark_received_payments_path(ticket_request_id: ticket_request),
+                    method: :post,
+                    class: 'btn btn-primary' do
+                    Mark Payment Received
+                    %i.icon-ok

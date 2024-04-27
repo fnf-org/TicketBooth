@@ -1,0 +1,69 @@
+name: "Publish Docker Image"
+
+on:
+  push:
+    branches: [ 'release', 'releases/**']
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build'
+        required: true
+        default: 'main'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.branch || github.ref }}
+
+      # login-action v3.1.0
+      - name: Log in to the Container registry
+        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # metadata-action v5.5.1
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          # In order to support deploying multiple versions that don't stomp on
+          # each other some new tagging rules are created.
+          # The tagging below follows:
+          # - When a properly formatted tag is created, as in a release, put the semver version x.y.z in the tag
+          # - If a build is triggered manually, then mark the branch and short sha in the tag
+          # - When the default branch is updated, create a release candidate tag
+          tags: |
+            type=semver,pattern={{version}}
+            type=sha,prefix={{branch}}-{{sha}},event=workflow_dispatch
+            type=raw,value={{date 'YYYYMMDD-HHmm' tz='America/Los_Angeles'}}-rc,event=branch,branch={{is_default_branch}}
+
+
+      - shell: bash
+        env:
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+        run: echo -n "${RAILS_MASTER_KEY}" > config/master.key
+
+      # build-push-action v5.3.0
+      - name: Build and push Docker image
+        uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

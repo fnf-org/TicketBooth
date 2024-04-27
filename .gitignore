@@ -41,4 +41,6 @@
 /vendor/bundle
 Downloads
 newrelic_agent.log
-.terraform*
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

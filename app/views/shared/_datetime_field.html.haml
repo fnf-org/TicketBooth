@@ -1,4 +1,4 @@
-- formatted_time = TimeHelper.to_string_for_flatpickr(datetime&.to_datetime)
+- formatted_time = TimeHelper.to_flatpickr(datetime&.to_datetime)
 .flatpickr
   = form.text_field name, value: formatted_time, "data-input": nil, placeholder: "Select Date..", class: 'flatpickr-date-time'
   %a.input-button{"data-toggle" => "", :title => "toggle"}

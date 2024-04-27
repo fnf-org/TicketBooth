@@ -54,13 +54,12 @@ describe EventsController, type: :controller do
 
   describe 'POST #create' do
     let(:new_event) { build(:event) }
-
     let(:new_event_params) do
       time_hash = {}
       hash      = new_event.attributes
 
       hash.keys.grep(/_time/).each do |time_key|
-        time_hash[time_key.to_sym] = TimeHelper.to_string_for_flatpickr(hash[time_key].to_time) if hash[time_key]
+        time_hash[time_key.to_sym] = TimeHelper.to_flatpickr(hash[time_key].to_time) if hash[time_key].present?
       end
 
       hash.merge(time_hash)
@@ -77,7 +76,7 @@ describe EventsController, type: :controller do
       expect(new_event.start_time).not_to be_nil
     end
 
-    it 'has a start time thats a proper datetime' do
+    it 'has a start time that is a proper datetime' do
       expect(new_event.start_time.to_datetime).to be_a(DateTime)
     end
 
@@ -159,11 +158,11 @@ describe EventsController, type: :controller do
           end
 
           it 'has start_time' do
-            expect(new_event_params[:start_time]).to eql(TimeHelper.to_string_for_flatpickr(new_event.start_time.to_time))
+            expect(new_event_params[:start_time]).to eql(TimeHelper.to_flatpickr(new_event.start_time.to_time))
           end
 
           it 'has end_time' do
-            expect(new_event_params[:end_time]).to eql(TimeHelper.to_string_for_flatpickr(new_event.end_time.to_time))
+            expect(new_event_params[:end_time]).to eql(TimeHelper.to_flatpickr(new_event.end_time.to_time))
           end
 
           it 'is properly formatted' do

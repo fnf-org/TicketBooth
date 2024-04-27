@@ -12,6 +12,7 @@ export default class flatpickrController extends Controller {
         }
     );
 
+    // this isn't in use at the moment
     flatpickr(".flatpickr-date", {
           altInput: false,
           enableTime: false,

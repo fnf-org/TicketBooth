@@ -20,7 +20,7 @@ module FnF
     # rubocop: disable Rails/Output
     class Seeds
       unless defined?(SITE_ADMIN_PASSWORD)
-        SITE_ADMIN_PASSWORD = 'fubar'
+        SITE_ADMIN_PASSWORD = 'fubar!'
         SITE_ADMIN_EMAIL    = 'site-admin@fnf.org'
         DEFAULT_USER_COUNT  = 10
         DEFAULT_EVENT_COUNT = 2
@@ -127,7 +127,10 @@ module FnF
         (0..event_count).to_a.each do |index|
           start_time = (Time.zone.today + Random.rand(2..3).months).to_time
 
+          seasons = %w[Summer Fall Spring Winter].freeze
+
           event = events[index] || Event.create!(
+            name: "#{seasons[Random.rand(4)]} Campout ",
             adult_ticket_price: Faker::Commerce.price(range: 100...200),
             allow_donations: true,
             allow_financial_assistance: true,
@@ -141,7 +144,6 @@ module FnF
             max_cabin_requests: 2,
             max_cabins_per_request: 1,
             max_kid_tickets_per_request: 4,
-            name: "FnF Event: #{Faker::Company.name}",
             start_time:,
             venue: Faker::Address.street_address,
             ticket_sales_start_time: start_time - 1.month,

@@ -23,7 +23,7 @@ class EventsController < ApplicationController
   end
 
   def new
-    @event = Event.new
+    @event = Event.new(Event::DEFAULT_ATTRIBUTES)
   end
 
   def edit
@@ -35,29 +35,27 @@ class EventsController < ApplicationController
 
   def create
     create_params = params_symbolized_hash[:event].dup
-    convert_event_times_for_db(create_params)
+    TimeHelper.normalize_time_attributes(create_params)
 
     @event = Event.new(create_params)
 
     if @event.save
       redirect_to @event
     else
-      Rails.logger.error("Can't create event: #{@event.errors.full_messages}")
-      flash.now[:error] = "There was a problem creating the event: #{@event.errors.full_messages.join('. ')}"
-      render_flash
+      flash.now[:error] = "There was a problem creating the event: #{@event.errors.full_messages.sort.uniq.join('. ')}"
+      render_flash flash
     end
   end
 
   def update
     update_params = params_symbolized_hash[:event].dup
-    convert_event_times_for_db(update_params)
+    TimeHelper.normalize_time_attributes(update_params)
 
     if @event.update(update_params)
       redirect_to @event, notice: 'The event has been updated.'
     else
-      Rails.logger.error "UPDATE ERROR: There was a problem updating the event: #{@event.errors.full_messages}"
       flash.now[:error] = "There was a problem updating the event: #{@event.errors.full_messages}"
-      render_flash
+      render_flash(flash)
     end
   end
 
@@ -72,15 +70,18 @@ class EventsController < ApplicationController
 
     email = permitted_params[:user_email]
     user  = User.find_by(email:)
-    return redirect_to :back, notice: "No user with email '#{email}' exists" unless user
+    unless user
+      flash.now[:error] = "No user with email '#{email}' exists"
+      return render_flash(flash)
+    end
 
     @event.admins << user
 
     if @event.save
       redirect_to @event
     else
-      redirect_to :back,
-                  error: "There was a problem adding #{email} as an admin"
+      flash.now[:error] = "There was a problem adding #{email} as an admin"
+      render_flash(flash)
     end
   end
 
@@ -124,14 +125,6 @@ class EventsController < ApplicationController
     @params_symbolized_hash ||= permitted_params.to_h.tap(&:symbolize_keys!)
   end
 
-  def convert_event_times_for_db(event_hash)
-    converted_times = {}
-    event_hash.keys.grep(/_time$/).each do |key|
-      converted_times[key] = TimeHelper.to_datetime_from_picker(event_hash[key])
-    end
-    event_hash.merge!(converted_times)
-  end
-
   def completed_ticket_requests
     TicketRequest
       .includes(:payment, :user)
@@ -142,7 +135,7 @@ class EventsController < ApplicationController
   end
 
   def set_event
-    @event = Event.find(permitted_params[:id])
+    @event = Event.where(id: permitted_params[:id].to_i).first
   end
 
   def permitted_params

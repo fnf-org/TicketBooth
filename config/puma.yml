@@ -1,0 +1,18 @@
+# config/payment.yml
+production: &production
+  min_threads: 1
+  max_threads: <%= Integer(ENV.fetch('PUMA_THREADS', 3)) %>
+  workers: <%= Integer(ENV.fetch('PUMA_WORKERS',  Etc.nprocessors - 1)) %>
+  port: <%= Integer(ENV.fetch('PUMA_PORT', 3000)) %>
+
+staging:
+  <<: *production
+
+development: &development
+  min_threads: 1
+  max_threads: 1
+  workers: 1
+  port: 8080
+
+test:
+  <<: *development

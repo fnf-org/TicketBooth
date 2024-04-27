@@ -6,17 +6,29 @@
 :icons: font
 :license: MIT
 
+[cols="<h,<h", width="70%"]
+|===
+| Test & Lint Status | Build & Packaging Status
+|https://github.com/fnf-org/TicketBooth/actions/workflows/rspec.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/rspec.yml/badge.svg[TicketBooth CI: RSpec]]
+
+https://github.com/fnf-org/TicketBooth/actions/workflows/lint.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/lint.yml/badge.svg[TicketBooth CI: RuboCop]]
+
+| https://github.com/fnf-org/TicketBooth/actions/workflows/deploy.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/deploy.yml/badge.svg[Deploy to Google Cloud]]
+
+https://github.com/fnf-org/TicketBooth/actions/workflows/publish.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/publish.yml/badge.svg[Publish Docker Image]]
+
+|===
+
 ====
-image::https://github.com/fnf-org/TicketBooth/actions/workflows/rspec.yml/badge.svg[TicketBooth CI: RSpec,link=https://github.com/fnf-org/TicketBooth/actions/workflows/rspec.yml]
+NOTE: Please see the https://github.com/fnf-org/TicketBooth/blob/main/README.pdf[README.pdf] for the PDF version of this README.
 
 image::https://github.com/fnf-org/TicketBooth/actions/workflows/lint.yml/badge.svg[TicketBooth CI: RuboCop,link=https://github.com/fnf-org/TicketBooth/actions/workflows/lint.yml]
 
 image:https://github.com/fnf-org/TicketBooth/actions/workflows/build.yaml/badge.svg[Docker Image Build,link="https://github.com/fnf-org/TicketBooth/actions/workflows/build.yaml"]
 ====
 
-NOTE: This app is formerly known as **Helping Culture**, which in turn was originally conceived and inspired by Tracy Page. This project was originally written by https://github.com/sds[Shane de Silva]. It is currently maintained by the https://github.com/fnf-org[FnF] org, and within it specifically https://github.com/kigster[Konstantin Gredeskoul] for any application issues, and https://github.com/mike-matera[Mike Matera] for any issues related to deployment to the Google Public Cloud. Please use labels to tag any reported issues.
-
-NOTE: Please see the xref:README.pdf[following link] for a PDF version of this README.
+NOTE: Please see the xref:#acknowledgements[Acknowledgements] at the end of this page.
+====
 
 == Welcome to the *Ticket Booth*!
 
@@ -30,23 +42,36 @@ The following walks through a local setup on OS-X M1.
 
 If you installed https://brew.sh[Homebrew] on your laptop, you should be able to boot the app.
 
-You can run the following setup script to attempt a complete set up of the development environment, as well as the installation of the Rubies, Gems and Database:
+==== Optional VIM and PostgreSQL Local Configuration
+
+We provided a pretty comprehensive VIM configuration with auto-complete, as well as the `psql` configuration with a prompt and additional useful macros.
+
+To install this, run
+
+[source,bash]
+bin/install-dev-tooling
+
+After that, your `vim` sessions will have auto-complete enabled, and your `psql -U postgres` sessions will have rich prompt.
+
+==== Running App Dependencies Installer
+
+You can run the following setup script, but only on OS-X, to attempt a complete set up of the development environment, as well as the installation of the Rubies, Gems and Database:
 
 [source,bash]
 ----
 bin/boot-up
 ----
 
-This should automatically open the browser at the `http://localhost:3000` URL, if all the steps succeed.
+This should install all of the Brew dependencies, start PostgreSQL, memcached, and install Ruby, Node, Yarn, Gems and Node packages.
 
-The `bin/boot-up` script will start the Rails server, or show an error that needs to be fixed.
-
-After you stop it with `Ctrl-C`, you can restart the server using the following shortcut:
+==== Starting the Rails Server
 
 [source,bash]
 make dev
 
-This actually starts Foreman via `bundle exec foreman -f Procfile.dev` — this is required to start CSS and JS just-in-time compilcation in addition to the Rails server. 
+This actually starts Foreman via `bundle exec foreman -f Procfile.dev` — this is required to start CSS and JS just-in-time compilcation in addition to the Rails server.
+
+The server will run on port 8080, and in development will hot swap any locally modified files, including CSS and JS.
 
 CAUTION: Running `rails s` is no longer sufficient to start the application.
 
@@ -98,9 +123,28 @@ After you setup the shell initialization file, restart your terminal or reload t
 Once you are back in the project's folder, run:
 
 [source,bash]
+----
+eval "$(direnv hook ${SHELL/*\/})"
 direnv allow .
+----
+
+NOTE: the first line above should be copied to your shell RC (aka "dotfiles").
 
 This will load the environment variables from the `.envrc` file.
+
+==== Manual 3: NodeJS & Votal Setup
+
+Run the following to get Volta Node Manager working:
+
+[source,bash]
+----
+curl https://get.volta.sh | bash
+volta install node@lts
+volta install yarn
+volta pin node yarn
+----
+
+Now your Node & Yarn should be installed.
 
 ==== Manual 3: Ruby Setup
 
@@ -113,37 +157,38 @@ brew bundle 2>/dev/null
 brew install rbenv ruby-build direnv volta
 
 eval "$(rbenv init -)"
-eval "$(direnv hook ${SHELL/*\/})"
 
 rbenv install -s $(cat .ruby-version)
 rbenv local $(cat .ruby-version)
-volta install node@lts
 
 bundle install -j 12
-rails db:create
-rails db:migrate db:seed
+rails db:prepare
 rails db:test:prepare
 
-# Run Specs at the end:
+# Run Specs at the end
 bundle exec rspec
+
+# Run rubocop
+bundle exec rubocop
+
+# Run ShellCheck
+bin/shchk
 ----
 
 ==== Manual 4: Starting the Server
 
-To start the server post-setup, run:
+To start the server post-setup, run the following (NOTE: you must start the server via Foreman, since it also starts `yarn` tasks that monitor and dynamically recompile CSS and JS assets)
 
 [source,bash]
 ----
-bin/rails s
-# or just
-rails s
+bundle exec foreman -f Procfile.dev
 ----
 
 You can also use the `Makefile`:
 
 [source,bash]
 ----
-make development boot
+make dev
 ----
 
 Here is an example:
@@ -228,4 +273,16 @@ $ bundle exec rake doc
 ----
 
 
+== Acknowledgements
 
+This app is formerly known as **Helping Culture**, which in turn was originally conceived and inspired by Tracy Page.
+
+This project was originally written by https://github.com/sds[Shane de Silva].
+
+It is currently maintained by the https://github.com/fnf-org[FnF] org, and within it specifically
+
+ * https://github.com/kigster[Konstantin Gredeskoul] for any application issues,
+ * https://github.com/mike-matera[Mike Matera] for any issues related to deployment to the Google Public Cloud.
+ * https://github.com/beingmattlevy[Matt Levy] for development, coordination and project management.
+
+Please use labels to tag any reported issues.

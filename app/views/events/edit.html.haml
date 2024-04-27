@@ -1,5 +1,7 @@
-%h1 Edit Event
+= render partial: 'shared/nav_event', locals: { event: @event, active_tab: { event_edit: 'active' } }
 
-= render 'form'
+.card
+  .card-body
+    = render 'form'
 
-= link_to 'Back', :back
+    = link_to 'Back', :back

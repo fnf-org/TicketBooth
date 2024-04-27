@@ -31,7 +31,9 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
+    permitted_attributes = %i[email password password_confirmation first last]
+    devise_parameter_sanitizer.permit(:sign_up) { |user| user.permit(*permitted_attributes) }
+    devise_parameter_sanitizer.permit(:account_update) { |user| user.permit(*permitted_attributes) }
   end
 
   def authenticate_user_from_token!
@@ -44,7 +46,25 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def render_flash
-    render turbo_stream: turbo_stream.update('flash', partial: 'shared/flash')
+  def alert_log_level(alert_type)
+    case alert_type
+    when 'notice' then :info
+    when 'error', 'alert' then :error
+    when 'warning' then :warn
+    else :debug
+    end
+  end
+
+  def render_flash(flash)
+    flash.each do |type, msg|
+      log_level = alert_log_level(type) || :error
+      Rails.logger.send(log_level, msg)
+    end
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: [turbo_stream.replace(:flash, partial: 'shared/flash', locals: { flash: })]
+      end
+    end
   end
 end

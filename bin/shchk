@@ -9,7 +9,7 @@ command -v shellcheck >/dev/null || {
   fi
 }
 
-shellcheck -a --color -x bin/boot-up bin/start
+shellcheck -s bash -a --color -x bin/boot-up bin/start development/*.sh
 
 code=$?
 

@@ -1,0 +1,40 @@
+%nav.navbar.navbar-expand-lg.border-bottom.border-2.border-primary-subtle.border-body.navbar-light.bg-primary-subtle
+  %a.navbar-brand{ href: root_path }
+    = image_tag "/icons/nav-bar-logo.png", size: "80x80"
+  %button.navbar-toggler{"aria-controls" => "navbarSupportedContent", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-bs-target" => "#navbarSupportedContent", "data-bs-toggle" => "collapse", :type => "button"}
+    %span.navbar-toggler-icon
+
+  #navbarSupportedContent.collapse.navbar-collapse
+    %ul.navbar-nav.me-auto.mb-2.mb-lg-0
+      - if user_signed_in?
+        - if current_user.site_admin?
+          %li.nav-item
+            %a.nav-link{ href: events_path }
+              All Events
+        - elsif current_user.event_admin?
+          %li.nav-item
+            %a.nav-link{ href: events_path }
+              Events You Manage
+        - else
+          %li.nav-item
+            %a.nav-link{ href: events_path }
+              Home
+
+        %li.nav-item
+          %a.nav-link{ href: edit_user_registration_path }
+            Your Profile
+
+        %li.nav-item
+          = link_to destroy_user_session_path, data: { "turbo-method": :delete }, class: 'nav-link' do
+            Logout
+      - else
+        %li.nav-item
+          %a.nav-link{ href: new_user_session_path }
+            Login
+
+        - if User.has_devise_module?(:registerable) && controller_name != 'registrations'
+          %li.nav-item
+            %a.nav-link{ href: new_user_registration_path }
+              Register
+
+
