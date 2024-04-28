@@ -2,19 +2,23 @@
 // Run that command whenever you add a new controller or create them with
 // ./bin/rails generate stimulus controllerName
 
-import { application } from "./application"
+import { application } from './application'
 
-import FlatpickrController from "./flatpickr_controller"
-application.register("flatpickr", FlatpickrController)
+import FlashController from './flash_controller'
 
-import FlashController from "./flash_controller"
-application.register("flash", FlashController)
+import FlatpickrController from './flatpickr_controller'
 
-import PaymentsController from "./payments_controller"
-application.register("payments", PaymentsController)
+import PaymentsController from './payments_controller'
 
-import PopoversController from "./popovers_controller"
-application.register("popovers", PopoversController)
+import PopoversController from './popovers_controller'
 
-import TicketRequestsController from "./ticket_requests_controller"
-application.register("ticket-requests", TicketRequestsController)
+import StripeController from './stripe_controller'
+
+import TicketsRequestController from './tickets_request_controller'
+
+application.register('flash', FlashController)
+application.register('flatpickr', FlatpickrController)
+application.register('payments', PaymentsController)
+application.register('popovers', PopoversController)
+application.register('stripe', StripeController)
+application.register('tickets-request', TicketsRequestController)

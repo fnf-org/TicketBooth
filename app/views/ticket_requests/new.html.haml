@@ -1,9 +1,11 @@
+= content_for(:title, "#{@event.name} Ticket Request" )
+
 .container-fluid
   .row
     .col-sm-12.col-md-12.col-lg-5.col-xl-5
       .card
         .card-header.bg-success-subtle
-          %h3 #{@event.name}
+          %h3= @event.name
 
         .card-body
           - if @event.ticket_requests_open?

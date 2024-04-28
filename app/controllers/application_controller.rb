@@ -68,6 +68,9 @@ class ApplicationController < ActionController::Base
     end
 
     respond_to do |format|
+      format.html do
+        render partial: 'shared/flash', locals: { flash: }
+      end
       format.turbo_stream do
         render turbo_stream: [turbo_stream.replace(:flash, partial: 'shared/flash', locals: { flash: })]
       end

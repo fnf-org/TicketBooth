@@ -99,8 +99,8 @@ class TicketRequestsController < ApplicationController
   # rubocop: disable Metrics/AbcSize
   def create
     unless @event.ticket_sales_open?
-      flash.now[:error] = 'Sorry, but ticket sales have closed'
-      return redirect_to new_event_ticket_request_path(@event)
+      flash.now[:error] = @event.errors.messages.values.join('. ')
+      return render_flash(flash)
     end
 
     tr_params = permitted_params[:ticket_request].to_h || {}
@@ -124,7 +124,7 @@ class TicketRequestsController < ApplicationController
 
     if tr_params.empty?
       flash.now[:error] = 'Please fill out the form below to request tickets.'
-      redirect_to new_event_ticket_request_path(@event)
+      return render_flash(flash)
     end
 
     tr_params[:user_id] = ticket_request_user.id
