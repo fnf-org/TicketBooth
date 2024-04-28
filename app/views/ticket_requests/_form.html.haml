@@ -27,7 +27,8 @@
     #ticket-request-form
       - if !(signed_in? && @user)
       - else
-        = form_for @ticket_request, url: { controller: :ticket_requests, action: form_action_name }, data: { "turbo-frame": "ticket-request-form", "turbo-method": "post"} do |f|
+        = form_for @ticket_request,
+          url: { controller: :ticket_requests, action: form_action_name }, data: { "turbo": false } do |f|
           = f.hidden_field :event_id, value: @event.id
 
           %h5 How are you contributing to the campout this year?
@@ -77,10 +78,10 @@
                 %p.muted.role-explanation.hidden{ class: TicketRequest::ROLE_OTHER }
                   Art Grantee or DJ
 
-                = f.text_area :role_explanation, class: 'input-xlarge hidden',
+                = f.text_area :role_explanation,
                   placeholder: 'Briefly describe your role (required)',
-                  rows: 2, maxlength: 400, required: false
-            .row
+                  rows: 4, width: 400, maxlength: 400, required: false, style: 'min-width: 100% !important; font-size: 11pt;'
+            .row0
               .col-12
                 = f.label :previous_contribution, 'What was your role last year?'
                 = f.text_area :previous_contribution, style: 'min-width: 100%',

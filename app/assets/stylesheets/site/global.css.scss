@@ -41,21 +41,6 @@ legend {
   clear: right;
 }
 
-.container-fluid, .container {
-  a {
-    color: #ff7800 !important;
-    text-decoration: none !important;
-    padding: 6px 15px !important;
-    margin-left: -15px;
-
-    &:focus,
-    &:hover {
-      color: #000 !important;
-      background-color: #ff7800 !important;
-    }
-  }
-}
-
 .muted {
   font-size: 12pt;
   color: #888;
@@ -70,23 +55,6 @@ legend {
 
 label.strong {
   font-weight: 800;
-}
-
-.btn, a.btn {
-  color: #fff !important;
-  text-decoration: none !important;
-  padding: 6px 15px !important;
-  margin-right: 10px;
-  margin-left: 0;
-  //min-width: 12em;
-  //border-radius: 10px !important;
-  font-weight: 400;
-
-  &:focus,
-  &:hover {
-    color: #000 !important;
-    background-color: #ff7800 !important;
-  }
 }
 
 #flash_container {

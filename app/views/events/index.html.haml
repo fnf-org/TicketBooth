@@ -11,12 +11,13 @@
       %tbody
         - @events.each do |event|
           %tr
-            %td
-              = link_to event do
+            %td.p-3
+              = link_to event, class: "button-link text-nowrap" do
                 = event.name
             %td= TimeHelper.for_display(event.start_time.localtime)
             %td= TimeHelper.for_display(event.end_time.localtime)
 
-    = link_to new_event_path, class: 'btn btn-primary' do
-      New Event
+  .card-footer.bg-secondary-subtle
+    = link_to new_event_path, class: 'btn btn-warning btn-lg' do
+      Create a New Event
       %i.icon-plus-sign

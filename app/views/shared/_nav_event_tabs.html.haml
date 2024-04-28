@@ -1,0 +1,39 @@
+- active_tab ||= {}
+
+-# TODO: when we allow uploading images for the events, we can show it.
+-# = image_tag image_path('logos/fnf-transparent.png'), class: 'float-end event-preview'
+.card.event-nav.border-1.pb-0.border-bottom-0
+  .card-header.bg-success-subtle
+    .card-img-top
+    %h3.d-inline-block.align-baseline
+      = event.name
+      %h5.d-inline-block.px-xl-5.px-lg-3.p-md-0.p-sm-0.m-0
+        = event.starting
+
+  .card-body.p-0.pt-3.pb-0.border-bottom-0.border-2
+    %ul.nav.nav-tabs.p-4.pb-0.mb-3.event-tabs
+      - if current_user.site_admin? || current_user.manages_event?(event)
+        - if active_tab[:event_show] == "active"
+          %li.nav-item
+            = link_to event_path(event), class: "nav-link #{active_tab[:event_show]}" do
+              = event.name
+        - else
+          = link_to event_path(event), class: "nav-link #{active_tab[:event_show]}" do
+            = event.name
+
+      %li.nav-item
+        = link_to edit_event_path(event), class: "nav-link #{active_tab[:event_edit]}" do
+          Edit Event
+
+      %li.nav-item
+        = link_to event_ticket_requests_path(event), class: "nav-link #{active_tab[:ticket_requests]}" do
+          Ticket Requests
+
+      %li.nav-item
+        = link_to event_eald_payments_path(event), class: "nav-link #{active_tab[:eald_passes]}" do
+          EA/LD Passes
+
+      %li.nav-item
+        = link_to guest_list_event_path(event), class: "nav-link #{active_tab[:guest_list]}" do
+          Guest List
+
