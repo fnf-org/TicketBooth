@@ -50,6 +50,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+          # These should really come from a autogenerate value
           - name: TICKET_DB_HOST
             value: {{ include "chart.postgresql.fullname" . }}
           - name: TICKET_DB_PORT
@@ -62,7 +63,7 @@ spec:
             value: {{ .Values.postgresql.auth.password }}
           envFrom:
           - secretRef:
-              name: {{ .Release.Name }}-secrets
+              name: {{ default {{ .Release.Name }}"-secrets" .Value.secrets.name }}
           - configMapRef:
               name: {{ .Release.Name }}-config
           # Fix for: https://github.com/puma/puma/issues/2343
