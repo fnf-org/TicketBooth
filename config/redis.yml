@@ -1,0 +1,18 @@
+development: &development
+  host: localhost
+  port: 6379
+  pool: 5
+  password: 
+  database: 1
+
+test:
+  <<: *development  
+  database: 2
+
+production:
+  <<: *development
+  host: <%= ENV.fetch('TICKETING_REDIS_HOST', '127.0.0.1') %>
+  port: <%= ENV.fetch('TICKETING_REDIS_PORT', '5432') %>
+  password: <%= ENV.fetch('TICKETING_REDIS_PASS', '') %>
+  database: <%= ENV.fetch('TICKETING_REDIS_DB', '0') %>
+  pool: 10
