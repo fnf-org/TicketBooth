@@ -9,17 +9,17 @@
       .btn-group
         - if signed_in?
           - if current_user.site_admin?
-            = button_to "All Events", events_path,  method: :get, class: 'btn btn-primary btn-lg m-1'
+            = button_to "All Events", events_path, method: :get, class: 'btn btn-primary btn-lg m-1'
           - elsif current_user.event_admin?
             = button_to "Events Your Manage", events_path, method: :get, class: 'btn btn-primary btn-lg m-1'
           - else
-            = button_to "Home", root_path, class: 'btn btn-primary btn-lg'
+            = button_to "Home", root_path, class: 'btn btn-primary btn-lg m-1'
           = button_to "Your Profile", edit_user_registration_path,  method: :get, class: 'btn btn-primary btn-lg m-1'
           = button_to "Log Out", destroy_user_session_path, method: :delete, class: 'btn btn-primary btn-lg m-1'
         - else
-          - unless (controller_name == 'sessions' && action_name == 'new' && request.path == '/users/sign_in')
+          - unless controller_name == 'sessions' && action_name == 'new' && request.path == '/users/sign_in'
             = button_to "Log In", new_user_session_path, method: :get, class: 'btn btn-primary btn-lg m-1'
-          - unless (controller_name == 'registrations' && action_name == 'new' && request.path == '/users/sign_up')
+          - unless controller_name == 'registrations' && action_name == 'new' && request.path == '/users/sign_up'
             = button_to "Register", new_user_registration_path, method: :get, class: 'btn btn-primary btn-lg m-1'
 
 

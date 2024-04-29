@@ -129,11 +129,11 @@ class Event < ApplicationRecord
 
   def ticket_sales_open?
     if ticket_sales_start_time && Time.current.before?(ticket_sales_start_time)
-      errors.add(:ticket_sales_start_time, 'Tickets are not yet on sale.')
+      errors.add(:ticket_sales_start_time, 'Tickets are not yet on sale for this event.')
     elsif ticket_sales_end_time && Time.current.after?(ticket_sales_end_time)
-      errors.add(:ticket_sales_end_time, 'Tickets are no longer on sale.')
+      errors.add(:ticket_sales_end_time, 'Tickets are no longer on sale for this event.')
     elsif Time.current.after?(end_time)
-      errors.add(:end_time, 'Event has ended, no ticket requests are accepted for past events.')
+      errors.add(:end_time, 'This event has ended, so no ticket requests are accepted anymore.')
     else
       return true
     end

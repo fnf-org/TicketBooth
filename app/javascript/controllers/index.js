@@ -8,17 +8,11 @@ import FlashController from './flash_controller'
 
 import FlatpickrController from './flatpickr_controller'
 
-import PaymentsController from './payments_controller'
-
 import PopoversController from './popovers_controller'
-
-import StripeController from './stripe_controller'
 
 import TicketsRequestController from './tickets_request_controller'
 
 application.register('flash', FlashController)
 application.register('flatpickr', FlatpickrController)
-application.register('payments', PaymentsController)
 application.register('popovers', PopoversController)
-application.register('stripe', StripeController)
 application.register('tickets-request', TicketsRequestController)

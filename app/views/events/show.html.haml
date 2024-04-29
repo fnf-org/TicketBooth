@@ -11,6 +11,15 @@
           %dd= TimeHelper.for_display(@event.start_time.localtime)
           %dt End Time
           %dd= TimeHelper.for_display(@event.end_time.localtime)
+
+          - if @event.ticket_sales_start_time
+            %dt Tickets On Sale At
+            %dd= TimeHelper.for_display(@event.ticket_sales_start_time)
+
+          - if @event.ticket_sales_end_time
+            %dt Tickets Sales Stop At
+            %dd= TimeHelper.for_display(@event.ticket_sales_end_time)
+
           %dt Adult Ticket Price
           %dd
             = number_to_currency(@event.adult_ticket_price)

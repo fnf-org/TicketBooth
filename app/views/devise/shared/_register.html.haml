@@ -1,6 +1,7 @@
 
 - http_method = existing ? :put : :post
-= form_for(resource, as: resource_name, url: user_registration_path, html: { method: http_method }) do |f|
+= form_for(resource, as: resource_name, url: user_registration_path, html: { method: http_method }, data: { turbo: false } ) do |f|
+  = hidden_field_tag :authenticity_token, form_authenticity_token
 
   = render "devise/shared/error_messages", resource: resource
 
@@ -19,6 +20,9 @@
         = f.label :email, 'Your Email Address'
         = f.email_field :email, placeholder: resource.email || resource.unconfirmed_email || 'dj-awesome@gmail.com', maxlength: User::MAX_EMAIL_LENGTH, required: true, autofocus: true, autocomplete: "email", class: "email-field"
 
+        - if defined?(redirect_to)
+          = hidden_field_tag :redirect_to, redirect_to
+
     = render partial: 'devise/registrations/change_password', locals: { existing: existing, f: f }
     %br
     %hr
@@ -29,6 +33,7 @@
             We need your current password to confirm your changes
           = f.label :current_password
           = f.password_field :current_password, autocomplete: "current-password"
+
 
       .row
         .col-12

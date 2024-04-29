@@ -66,6 +66,11 @@ class TicketRequestsController < ApplicationController
   end
 
   def new
+    unless @event.ticket_sales_open?
+      flash.now[:error] = @event.errors.messages.values.join('. ')
+      return redirect_to root_path, error: flash.now[:error]
+    end
+
     if signed_in?
       existing_request = TicketRequest.where(user_id: current_user, event_id: @event).order(:created_at).first
 

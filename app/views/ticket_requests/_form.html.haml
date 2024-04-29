@@ -3,7 +3,6 @@
 
 %div{"data-controller": "tickets-request"}
 
-
   .card
     .card-header.bg-secondary-subtle
       - unless is_update && !@event.admin?(current_user)
@@ -20,12 +19,12 @@
         = "#{@user.name} <#{@user.email}>"
       - else
         = turbo_frame_tag :turbo_login do
-          = render partial: "devise/shared/login", layout: false, locals: { resource: devise_mapping.singular, resource_name: devise_mapping.name }
+          = render partial: "devise/shared/login", layout: false, locals: { resource: devise_mapping.singular, resource_name: devise_mapping.name, redirect_to: new_event_ticket_request_url(@event) }
         .vertical-20
         %hr
         .vertical-20
         = turbo_frame_tag :turbo_register do
-          = render partial: "devise/shared/register", layout: false, locals: { resource: User.new, resource_name: devise_mapping.name, existing: false }
+          = render partial: "devise/shared/register", layout: false, locals: { resource: User.new, resource_name: devise_mapping.name, existing: false, redirect_to: new_event_ticket_request_url(@event) }
 
       #ticket-request-form
         - if !(signed_in? && @user)
@@ -83,7 +82,7 @@
 
                   = f.text_area :role_explanation,
                     placeholder: 'Briefly describe your role (required)',
-                    rows: 4, width: 400, maxlength: 400, required: false, style: 'min-width: 100% !important; font-size: 11pt;'
+                    rows: 4, width: 400, maxlength: 400, required: true, style: 'min-width: 100% !important; font-size: 11pt;'
               .row0
                 .col-12
                   = f.label :previous_contribution, 'What was your role last year?'
