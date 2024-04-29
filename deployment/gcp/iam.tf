@@ -22,11 +22,8 @@ locals {
 }
 
 resource "google_service_account" "ticket_booth_gke" {
-  account_id   = var.project_id
-  description  = "Ticket Booth GKE Service Account"
-  display_name = "ticket-booth-gke"
-
-  create_ignore_already_exists = true
+  account_id   = "ticket-booth-app-${var.environment}"
+  display_name = "Ticket Booth GKE Service Account"
 }
 
 resource "google_service_account_iam_binding" "ticket_booth_app" {

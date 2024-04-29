@@ -1,13 +1,6 @@
-locals {
-  db_admins = [
-    "evilmonkey@gmail.com",
-    "matt@fnf.org",
-  ]
-}
-
 resource "google_sql_database_instance" "ticket_booth" {
-  name             = "fnf-apps-db-instance"
-  database_version = "POSTGRES_15"
+  name             = "ticketing-db-instance-${var.environment}"
+  database_version = var.postgres_major_version
   region           = var.location
 
   settings {
@@ -18,10 +11,6 @@ resource "google_sql_database_instance" "ticket_booth" {
       ipv4_enabled                                  = false
       private_network                               = data.google_compute_network.default_vpc.id
       enable_private_path_for_google_cloud_services = true
-      #  authorized_networks {
-      #    name = ""
-      #    value = ""
-      #  }
     }
 
     availability_type = "REGIONAL"
@@ -31,7 +20,6 @@ resource "google_sql_database_instance" "ticket_booth" {
       value = "on"
     }
 
-    # activation_policy           = "ON_DEMAND"
     deletion_protection_enabled = true
 
     backup_configuration {
@@ -45,23 +33,11 @@ resource "google_sql_database_instance" "ticket_booth" {
   }
 
   depends_on = [google_service_networking_connection.private_vpc_connection]
-
-}
-
-output "ticket_db_instance_name" {
-  value = google_sql_database_instance.ticket_booth.name
 }
 
 resource "google_sql_database" "ticket_booth" {
-  name     = "tickets"
+  name     = "ticketing_app_${var.environment}"
   instance = google_sql_database_instance.ticket_booth.name
-}
-
-resource "google_sql_user" "fnf_apps_admin_users" {
-  for_each = toset(local.db_admins)
-  name     = each.value
-  instance = google_sql_database_instance.ticket_booth.name
-  type     = "CLOUD_IAM_USER"
 }
 
 resource "google_sql_user" "fnf_apps_gke_sa" {
@@ -70,6 +46,7 @@ resource "google_sql_user" "fnf_apps_gke_sa" {
   type     = "CLOUD_IAM_SERVICE_ACCOUNT"
 }
 
+# Last ditch recovery user. Only needed if IAM authentication is broken
 resource "google_sql_user" "breakglass" {
   name     = "fnf-breakglass"
   instance = google_sql_database_instance.ticket_booth.name
@@ -80,4 +57,8 @@ resource "random_password" "ticket_booth_db" {
   length           = 20
   special          = true
   override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+output "ticket_db_instance_name" {
+  value = google_sql_database_instance.ticket_booth.name
 }
