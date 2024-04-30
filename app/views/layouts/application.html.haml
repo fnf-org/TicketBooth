@@ -11,10 +11,10 @@
     %link{:href => "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap", :rel => "stylesheet"}/
 
     %title
-      = PRODUCT_NAME
       - if content_for?(:title)
-        &mdash;
         = yield(:title)
+      - else
+        = PRODUCT_NAME
 
     = csrf_meta_tags
     = csp_meta_tag
@@ -24,6 +24,7 @@
 
     // Stripe
     %script{:src => "https://js.stripe.com/v3/"}
+    = turbo_include_tags
 
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
     = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
@@ -40,10 +41,13 @@
           = yield
         .col-sm-0.col-md-0.col-lg-0
 
-    #footer.mb-0.pb-1
-      .container
-        .card
-          .card-header
-            %small
-              Crafted with ♡ in San Francisco
+    #footer.m-0.pt-5.mt-5
+      .card.p-0.mt-5
+        .card-footer.bg-primary-subtle.text-center
+          %small
+            Crafted with ♡ in San Francisco
+            %br
+            &copy; CFAEA 2010 —
+            = Date.current.strftime('%Y')
+            All rights reserved.
 

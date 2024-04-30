@@ -1,10 +1,16 @@
 # frozen_string_literal: true
 
+# rubocop: disable Metrics/BlockLength
 Rails.application.routes.draw do
   root 'home#index'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   get 'oops', controller: :home, action: :oops
+
+  devise_scope :user do
+    # Redirests signing out users back to sign-in
+    get 'users', to: 'devise/sessions#new'
+  end
 
   devise_for :users
 
@@ -73,4 +79,7 @@ Rails.application.routes.draw do
     end
   end
   resources :site_admins, only: %i[index new create destroy]
+
+  get '/tickets/request/:event_id', to: 'ticket_requests#new', as: :tickets_request
 end
+# rubocop: enable Metrics/BlockLength

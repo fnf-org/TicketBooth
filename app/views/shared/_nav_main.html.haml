@@ -5,36 +5,21 @@
     %span.navbar-toggler-icon
 
   #navbarSupportedContent.collapse.navbar-collapse
-    %ul.navbar-nav.me-auto.mb-2.mb-lg-0
-      - if user_signed_in?
-        - if current_user.site_admin?
-          %li.nav-item
-            %a.nav-link{ href: events_path }
-              All Events
-        - elsif current_user.event_admin?
-          %li.nav-item
-            %a.nav-link{ href: events_path }
-              Events You Manage
+    .navbar-nav
+      .btn-group
+        - if signed_in?
+          - if current_user.site_admin?
+            = button_to "All Events", events_path, method: :get, class: 'btn btn-primary btn-lg m-1'
+          - elsif current_user.event_admin?
+            = button_to "Events Your Manage", events_path, method: :get, class: 'btn btn-primary btn-lg m-1'
+          - else
+            = button_to "Home", root_path, class: 'btn btn-primary btn-lg m-1'
+          = button_to "Your Profile", edit_user_registration_path,  method: :get, class: 'btn btn-primary btn-lg m-1'
+          = button_to "Log Out", destroy_user_session_path, method: :delete, class: 'btn btn-primary btn-lg m-1'
         - else
-          %li.nav-item
-            %a.nav-link{ href: events_path }
-              Home
-
-        %li.nav-item
-          %a.nav-link{ href: edit_user_registration_path }
-            Your Profile
-
-        %li.nav-item
-          = link_to destroy_user_session_path, data: { "turbo-method": :delete }, class: 'nav-link' do
-            Logout
-      - else
-        %li.nav-item
-          %a.nav-link{ href: new_user_session_path }
-            Login
-
-        - if User.has_devise_module?(:registerable) && controller_name != 'registrations'
-          %li.nav-item
-            %a.nav-link{ href: new_user_registration_path }
-              Register
+          - unless controller_name == 'sessions' && action_name == 'new' && request.path == '/users/sign_in'
+            = button_to "Log In", new_user_session_path, method: :get, class: 'btn btn-primary btn-lg m-1'
+          - unless controller_name == 'registrations' && action_name == 'new' && request.path == '/users/sign_up'
+            = button_to "Register", new_user_registration_path, method: :get, class: 'btn btn-primary btn-lg m-1'
 
 

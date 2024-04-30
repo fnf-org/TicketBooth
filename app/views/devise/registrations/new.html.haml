@@ -1,3 +1,5 @@
-%h2 Register a New Account
-
-= render partial: 'form', locals: { existing: resource&.id.nil? ? false : true, resource: resource, resource_name: resource_name}
+.card
+  .card-header.bg-success-subtle
+    %h2 Register a New Account
+  .card-body
+    = render partial: 'form', locals: { existing: resource&.id.nil? ? false : true, resource: resource, resource_name: resource_name}

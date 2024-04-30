@@ -5,14 +5,14 @@
     "experimentalDecorators": true,
     "lib": ["es2019", "dom"],
     "jsx": "react",
-    "module": "es6",
+    "module": "ES6",
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
       "*": ["node_modules/*", "app/packs/*"]
     },
     "sourceMap": true,
-    "target": "es2019",
+    "target": "ES2020",
     "noEmit": true
   },
   "exclude": ["**/*.spec.ts", "node_modules", "vendor", "public"],

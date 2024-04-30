@@ -14,7 +14,7 @@ h1 { font-size: 50pt; }
 h2 { font-size: 47pt; }
 h3 { font-size: 44pt; margin: 25px auto; color: #f91; text-shadow: 1px 1px 2px #000; }
 h4 { font-size: 32pt; margin: 15px auto; }
-h5 { font-size: 27pt; margin: 25px auto; }
+h5 { font-size: 23pt; margin: 25px auto; }
 
 h3.flash-header {
   font-size: 50pt;
@@ -41,25 +41,9 @@ legend {
   clear: right;
 }
 
-.container-fluid, .container {
-  a {
-    color: #ff7800 !important;
-    text-decoration: none !important;
-    padding: 6px 15px !important;
-    margin-left: -15px;
-
-    &:focus,
-    &:hover {
-      color: #000 !important;
-      background-color: #ff7800 !important;
-    }
-  }
-}
-
 .muted {
-  font-size: 10pt;
+  font-size: 12pt;
   color: #888;
-  margin-left: 22px;
 }
 
 .caution {
@@ -73,25 +57,9 @@ label.strong {
   font-weight: 800;
 }
 
-a.btn {
-  color: #ff7800 !important;
-  text-decoration: none !important;
-  padding: 6px 15px !important;
-  margin-right: 10px;
-  margin-left: 0;
-  border: 1px solid #8f4603;
-  border-radius: 10px !important;
-  background-color: #462301;
-
-  &:focus,
-  &:hover {
-    color: #000 !important;
-    background-color: #ff7800 !important;
-  }
-}
-
 #flash_container {
   position: fixed;
+  z-index: 1000;
 
   width: 60%;
   top: 50pt;

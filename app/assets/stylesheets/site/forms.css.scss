@@ -38,6 +38,11 @@ form {
     padding-left: 10px;
   }
 
+  input[type=email]#user_email {
+    width: 100% !important;
+    max-width: 30em !important;
+  }
+
   input[name="event[name]"] {
     width: 500px !important;
   }

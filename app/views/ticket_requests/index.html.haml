@@ -1,94 +1,98 @@
 = render partial: 'shared/nav_event', locals: { event: @event, active_tab: { ticket_requests: 'active' } }
 
 .card
-  .card-header
-    .btn-group
-      = link_to download_event_ticket_requests_path(@event), class: 'btn' do
+  .card-header.bg-body-secondary
+    .btn-group.mx-4
+      = link_to download_event_ticket_requests_path(@event), class: 'btn btn-warning btn-lg' do
         %i.icon-th-list
-        Download CSV &darr;
+        Download CSV ▼
   .card-body
-    %table.table
-      %thead
+    .vertical-20
+    %table.table.border-1
+      %thead.border-1.border-dark-subtle
         %tr
-          %th
-          %th Requests
-          %th Tickets
+          %th.text-nowrap.bg-dark-subtle{align: "left"} Ticket Status
+          %th.bg-dark-subtle{align: "center"} Requests
+          %th.bg-dark-subtle{align: "center"}
+            Tickets
           - if @event.kid_ticket_price
-            %th Kids
+            %th.bg-dark-subtle{align: "center"} Kids
           - if @event.cabin_price
-            %th Cabins
-          %th Earn
+            %th.bg-dark-subtle{align: "center"} Cabins
+          %th.bg-dark-subtle{align: "center"} Earn
       %tbody
         %tr
           %td
-            %span.lead Paid
-          %td
+            %span.lead.text-nowrap Paid
+          %td{align: "center"}
             %span.lead= @stats[:completed][:requests]
-          %td
+          %td{align: "center"}
             %span.lead= @stats[:completed][:adults]
           - if @event.kid_ticket_price
-            %td
+            %td{align: "center"}
               %span.lead= @stats[:completed][:kids]
           - if @event.cabin_price
-            %td
+            %td{align: "center"}
               %span.lead= @stats[:completed][:cabins]
-          %td
+          %td{align: "center"}
             %span.lead
               = number_to_currency(@stats[:completed][:raised], precision: 0)
         %tr.warning
-          %td
+          %td.text-nowrap
             Pending Approval
-          %td= @stats[:pending][:requests]
-          %td= @stats[:pending][:adults]
+          %td{align: "center"}= @stats[:pending][:requests]
+          %td{align: "center"}= @stats[:pending][:adults]
           - if @event.kid_ticket_price
-            %td= @stats[:pending][:kids]
+            %td{align: "center"}= @stats[:pending][:kids]
           - if @event.cabin_price
-            %td= @stats[:pending][:cabins]
-          %td
+            %td{align: "center"}= @stats[:pending][:cabins]
+          %td{align: "center"}
             %span.muted
               = number_to_currency(@stats[:pending][:raised], precision: 0)
         %tr.success
-          %td
+          %td.text-nowrap
             Awaiting Payment
-          %td= @stats[:awaiting_payment][:requests]
-          %td= @stats[:awaiting_payment][:adults]
+          %td{align: "center"}= @stats[:awaiting_payment][:requests]
+          %td{align: "center"}= @stats[:awaiting_payment][:adults]
           - if @event.kid_ticket_price
-            %td= @stats[:awaiting_payment][:kids]
+            %td{align: "center"}= @stats[:awaiting_payment][:kids]
           - if @event.cabin_price
-            %td= @stats[:awaiting_payment][:cabins]
-          %td
+            %td{align: "center"}= @stats[:awaiting_payment][:cabins]
+          %td{align: "center"}
             %span.muted
               = number_to_currency(@stats[:awaiting_payment][:raised], precision: 0)
-        %tr.muted
-          %td
+        %tr.muted.border-1.border-dark-subtle
+          %td.bg-dark-subtle
             Total
-          %td= @stats[:total][:requests]
-          %td= @stats[:total][:adults]
+          %td.bg-dark-subtle{align: "center"}= @stats[:total][:requests]
+          %td.bg-dark-subtle{align: "center"}= @stats[:total][:adults]
           - if @event.kid_ticket_price
-            %td= @stats[:total][:kids]
+            %td.bg-dark-subtle{align: "center"}= @stats[:total][:kids]
           - if @event.cabin_price
-            %td= @stats[:total][:cabins]
-          %td
-            = number_to_currency(@stats[:total][:raised], precision: 0)
-            %small (potential)
+            %td.bg-dark-subtle{align: "center"}= @stats[:total][:cabins]
+          %td.bg-dark-subtle{align: "center"}= number_to_currency(@stats[:total][:raised], precision: 0)
+
+    .vertical-20
+    %hr
+    .vertical-20
 
     %table.table
-      %thead
+      %thead.border-1.border-dark-subtle
         %tr
-          %th Name
-          %th Role
-          %th
-          %th Tickets
+          %th.bg-dark-subtle Name
+          %th.bg-dark-subtle Role
+          %th.bg-dark-subtle
+          %th.bg-dark-subtle Tickets
           - if @event.kid_ticket_price
-            %th Kids
+            %th.bg-dark-subtle Kids
           - if @event.cabin_price
-            %th Cabins
+            %th.bg-dark-subtle Cabins
           - if @event.eald?
-            %th EA/LD
-          %th Price
-          %th Date Requested
-          %th Status
-          %th
+            %th.bg-dark-subtle EA/LD
+          %th.bg-dark-subtle Price
+          %th.bg-dark-subtle Date Requested
+          %th.bg-dark-subtle Status
+          %th.bg-dark-subtle
       %tbody
         - @ticket_requests.each do |ticket_request|
           %tr{ class: class_for_table_row(ticket_request) }

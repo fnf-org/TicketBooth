@@ -1,6 +1,7 @@
 .card
   .card-header
-    %h2 #{@event.name} — Ticket Request
+    %h2
+      = content_for(:title, "#{@event.name} — Ticket Request")
 
   .card-body
     %p.lead

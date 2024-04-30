@@ -2,7 +2,7 @@
 
 # General controller configuration and helpers.
 class ApplicationController < ActionController::Base
-  protect_from_forgery
+  protect_from_forgery with: :exception
 
   # Allow user to log in via authentication token
   before_action :authenticate_user_from_token!
@@ -10,9 +10,27 @@ class ApplicationController < ActionController::Base
   # Allow additional parameters to be passed to Devise-managed controllers
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  # By default, enable friendly forwarding if user is logged in
+  before_action :set_redirect_path, unless: :user_signed_in?
+
   add_flash_types :info, :error, :warning
 
   protected
+
+  def set_redirect_path
+    @redirect_path = request.path
+  end
+
+  # Override a Devise method
+  def after_sign_in_path_for(resource)
+    if params[:redirect_to].present?
+      store_location_for(resource, params[:redirect_to])
+    elsif request.referer == Routing.routes.new_user_session_url
+      super
+    else
+      stored_location_for(resource) || request.referer || root_path
+    end
+  end
 
   def require_site_admin
     redirect_to root_path unless current_user.site_admin?
@@ -29,7 +47,7 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    permitted_attributes = %i[email password password_confirmation first last]
+    permitted_attributes = %i[email password password_confirmation first last redirect_to]
     devise_parameter_sanitizer.permit(:sign_up) { |user| user.permit(*permitted_attributes) }
     devise_parameter_sanitizer.permit(:account_update) { |user| user.permit(*permitted_attributes) }
   end
@@ -60,6 +78,9 @@ class ApplicationController < ActionController::Base
     end
 
     respond_to do |format|
+      format.html do
+        render partial: 'shared/flash', locals: { flash: }
+      end
       format.turbo_stream do
         render turbo_stream: [turbo_stream.replace(:flash, partial: 'shared/flash', locals: { flash: })]
       end
