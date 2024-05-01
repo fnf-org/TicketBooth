@@ -20,9 +20,7 @@ resource "google_secret_manager_secret_version" "ticket_booth_db" {
 
   lifecycle {
     # Don't want this resource overwriting the latest value if that changes
-    ignore_changes = [
-      google_secret_manager_secret_version.ticket_booth_db.version,
-    ]
+    ignore_changes = all
   }
 }
 
@@ -35,21 +33,23 @@ resource "google_secret_manager_secret" "ticket_booth_app" {
 }
 
 # Make sure the secrets have policies allowing ExternalSecrets to fetch them.
-resource "google_secret_manager_secret_iam_policy_binding" "ticket_booth_db" {
+resource "google_secret_manager_secret_iam_binding" "ticket_booth_db" {
   project   = var.project_id
   secret_id = google_secret_manager_secret.ticket_booth_db.id
   role      = "roles/secretmanager.secretAccessor"
-  memebers = [
-    var.secret_manager_service_account,
+
+  members = [
+    "serviceAccount:${var.secret_manager_service_account}",
   ]
 }
 
-resource "google_secret_manager_secret_iam_policy_binding" "ticket_booth_app" {
+resource "google_secret_manager_secret_iam_binding" "ticket_booth_app" {
   project   = var.project_id
   secret_id = google_secret_manager_secret.ticket_booth_app.id
   role      = "roles/secretmanager.secretAccessor"
-  memebers = [
-    var.secret_manager_service_account,
+
+  members = [
+    "serviceAccount:${var.secret_manager_service_account}",
   ]
 }
 
