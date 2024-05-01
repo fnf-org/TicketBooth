@@ -186,6 +186,8 @@ You can also use the `Makefile`:
 [source,bash]
 ----
 make dev
+# or use the script 
+bin/dev
 ----
 
 Here is an example:
