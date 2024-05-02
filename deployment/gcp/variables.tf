@@ -11,7 +11,7 @@ variable "app_service_account" {
 }
 
 variable "environment" {
-  default     = "production"
+  default     = "prod"
   description = "App deployment environment"
   type        = string
 }
