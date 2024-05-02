@@ -22,7 +22,7 @@ variable "location" {
 }
 
 variable "postgres_major_version" {
-  default     = "POSTGRES_16"
+  default     = "POSTGRES_15"
   description = "CloudSQL Postgres version identifier"
   type        = string
 }
