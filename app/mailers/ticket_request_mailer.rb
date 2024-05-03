@@ -77,9 +77,7 @@ class TicketRequestMailer < ApplicationMailer
 
   class << self
     def mail_config
-      TicketBooth::Application.configure do |config|
-        return config.action_mailer
-      end
+      TicketBooth::Application.config.action_mailer
     end
 
     def ticket_request(event)

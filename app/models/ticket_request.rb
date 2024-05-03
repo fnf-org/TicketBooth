@@ -49,6 +49,14 @@ class TicketRequest < ApplicationRecord
     STATUS_REFUNDED = 'R'
   ].freeze
 
+  STATUS_NAMES = {
+    'P' => 'Pending',
+    'A' => 'Waiting for Payment',
+    'D' => 'Declined',
+    'C' => 'Completed',
+    'R' => 'Refunded'
+  }.freeze
+
   TICKET_LIMITS = {
     (ROLE_UBER_COORDINATOR = 'uber_coordinator') => 12,
     (ROLE_COORDINATOR = 'coordinator')           => 10,
@@ -137,6 +145,10 @@ class TicketRequest < ApplicationRecord
 
   def can_view?(user)
     self.user == user || event.admin?(user)
+  end
+
+  def status_name
+    STATUS_NAMES[status]
   end
 
   def completed?

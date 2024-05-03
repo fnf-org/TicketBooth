@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'colorize'
+
 # General controller configuration and helpers.
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
@@ -11,25 +13,29 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   # By default, enable friendly forwarding if user is logged in
-  before_action :set_redirect_path, unless: :user_signed_in?
+  before_action :redirect_path, unless: :user_signed_in?
 
   add_flash_types :info, :error, :warning
 
   protected
 
-  def set_redirect_path
-    @redirect_path = request.path
-  end
-
   # Override a Devise method
   def after_sign_in_path_for(resource)
-    if params[:redirect_to].present?
-      store_location_for(resource, params[:redirect_to])
+    if redirect_to_param.present?
+      store_location_for(resource, redirect_to_param)
     elsif request.referer == Routing.routes.new_user_session_url
       super
     else
       stored_location_for(resource) || request.referer || root_path
     end
+  end
+
+  def redirect_path
+    @redirect_path = redirect_to_param || request.path
+  end
+
+  def redirect_to_param
+    @redirect_to_param ||= params.permit(:redirect_to)[:redirect_to]
   end
 
   def require_site_admin
@@ -71,9 +77,19 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def alert_log_color(alert_type)
+    case alert_type
+    when 'notice' then :blue
+    when 'error', 'alert' then :red
+    when 'warning' then :yellow
+    end
+  end
+
   def render_flash(flash)
     flash.each do |type, msg|
       log_level = alert_log_level(type) || :error
+      color = alert_log_color(type)
+      msg = msg.colorize(color).colorize(:bold) if color
       Rails.logger.send(log_level, msg)
     end
 

@@ -103,6 +103,8 @@ group :development do
   gem 'asciidoctor'
   gem 'capistrano'
   # gem 'rack-mini-profiler'
+  gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'web-console'
 end
 

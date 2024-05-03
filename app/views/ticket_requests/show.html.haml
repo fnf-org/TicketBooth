@@ -1,11 +1,17 @@
 .card
-  .card-header
+  .card-header.bg-success-subtle
+    = content_for(:title, "#{@event.name} — Ticket Request")
+    %h3= @event.name
     %h2
-      = content_for(:title, "#{@event.name} — Ticket Request")
 
   .card-body
     %p.lead
+      %h4
+        Status:
+        = @ticket_request.status_name
+
     - if @ticket_request.user == current_user
+
       - if @ticket_request.pending?
         %p.lead
           Thanks for requesting a ticket!
