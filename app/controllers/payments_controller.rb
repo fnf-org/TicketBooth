@@ -93,7 +93,7 @@ class PaymentsController < ApplicationController
     params.permit(
       :id,
       :ticket_request_id,
-      payment: %I[
+      payment: %i[
         ticket_request_id
         ticket_request_attributes
         status
