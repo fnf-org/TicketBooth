@@ -13,15 +13,46 @@ serviceAccount:
     # secret
     iam.gke.io/gcp-service-account: ticket-app-sa@fnf-apps-project.iam.gserviceaccount.com
 
+resources:
+  requests:
+    cpu: 3.5
+    memory: 2.5G
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 99
+
+config:
+  ticketsSMTPHost: "smtp.sendgrid.net"
+  ticketsSMTPPort: "587"
+  ticketsSMTPDomain: "fnf.org"
+  ticketsEmailAddress: "tickets@fnf.org"
+  ticketsHost: "tickets.app.fnf.org"
+  ticketsServerStaticFiles: "true"
+  stripePublicKey: "pk_live_G5iMxvnogqzx4GnPmgwUIkW1"
+
 secret:
-  name: ticket-booth-app-secrets
+  name: ticket-booth-app
   external:
     enabled: true
-    path: ticket-booth-app-secret
+    path: ticket-booth-app
     storeRef:
-      name: fnf-apps-secrets
+      name: fnf-apps
       kind: ClusterSecretStore
 
+ingress:
+  hosts:
+    - host: tickets.app.fnf.org
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: fnf-apps
+      hosts:
+        - tickets.app.fnf.org
+
 postgresql:
-  # Get this value from the Terraform output
-  instance: fnf-apps-db-instance
+  instance: ticket-db-instance-prod

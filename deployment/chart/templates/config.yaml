@@ -3,7 +3,9 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-config
 data:
-  {{ .Values.config | nindent 2 }}
+{{- range $k, $v := .Values.config }}
+  {{ $k }}: {{ $v | quote }}
+{{- end }}
 {{- if .Values.secret.create }}
 ---
 apiVersion: v1

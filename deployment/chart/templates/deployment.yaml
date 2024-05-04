@@ -43,7 +43,7 @@ spec:
                 - all
           volumeMounts:
             - name: gcp-creds
-              path: /tmp/gcloud
+              mountPath: /tmp/gcloud
         - name: cloud-sql-proxy
           image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0
           args:
@@ -61,7 +61,7 @@ spec:
               cpu:    "1"
           volumeMounts:
             - name: gcp-creds
-              path: /tmp/gcloud
+              mountPath: /tmp/gcloud
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -94,13 +94,13 @@ spec:
               value: {{ .Values.postgresql.database }}
           envFrom:
             - secretRef:
-            {{- if .Value.secret.name }}
-              name: {{ .Value.secret.name }}
-            {{- else }}
-              name: {{ .Release.Name }}-secrets
-            {{- end }}
+              {{- if .Values.secret.name }}
+                name: {{ .Values.secret.name }}
+              {{- else }}
+                name: {{ .Release.Name }}-secrets
+              {{- end }}
             - configMapRef:
-              name: {{ .Release.Name }}-config
+                name: {{ .Release.Name }}-config
           # Fix for: https://github.com/puma/puma/issues/2343
           lifecycle:
             preStop:
