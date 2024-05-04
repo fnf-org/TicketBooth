@@ -39,6 +39,8 @@ class Event < ApplicationRecord
 
   MAX_NAME_LENGTH = 100
 
+  GUEST_LIST_FINAL_WITHIN = 2.days
+
   attr_accessible :name, :start_time, :end_time, :adult_ticket_price,
                   :early_arrival_price, :late_departure_price,
                   :kid_ticket_price, :cabin_price, :max_adult_tickets_per_request,
@@ -114,6 +116,10 @@ class Event < ApplicationRecord
     user && (user.site_admin? || admins.exists?(id: user))
   end
 
+  def admin_contacts
+    admins.map(&:name_and_email)
+  end
+
   def make_admin(user)
     return false if admin?(user)
 
@@ -128,11 +134,16 @@ class Event < ApplicationRecord
   end
 
   def ticket_sales_open?
-    return false if ticket_sales_start_time && Time.zone.now < ticket_sales_start_time
-    return Time.zone.now < ticket_sales_end_time if ticket_sales_end_time
-    return false if Time.zone.now >= end_time
-
-    true
+    if ticket_sales_start_time && Time.current.before?(ticket_sales_start_time)
+      errors.add(:ticket_sales_start_time, 'Tickets are not yet on sale for this event.')
+    elsif ticket_sales_end_time && Time.current.after?(ticket_sales_end_time)
+      errors.add(:ticket_sales_end_time, 'Tickets are no longer on sale for this event.')
+    elsif Time.current.after?(end_time)
+      errors.add(:end_time, 'This event has ended, so no ticket requests are accepted anymore.')
+    else
+      return true
+    end
+    false
   end
 
   def ticket_requests_open?

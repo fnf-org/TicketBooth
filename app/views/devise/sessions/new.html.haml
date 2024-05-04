@@ -1,22 +1,5 @@
-%h2 Log in
 
-= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
-
-  .field
-    %p= f.label :email
-    %p= f.email_field :email, autofocus: true, autocomplete: "email"
-
-  .field
-    %p= f.label :password
-    %p= f.password_field :password, autocomplete: "current-password"
-
-  - if devise_mapping.rememberable?
-    .field
-      %p= f.check_box :remember_me
-      %p= f.label :remember_me
-
-  .actions
-    = f.submit "Log in", class: 'btn btn-primary btn-large'
+= render partial: "devise/shared/login", locals: { resource: resource, resource_name: resource_name, redirect_to: controller.send(:redirect_to_param) }
 
 %hr
 

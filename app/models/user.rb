@@ -96,6 +96,10 @@ class User < ApplicationRecord
     site_admin.present?
   end
 
+  def name_and_email
+    "#{name} <#{email}>"
+  end
+
   def event_admin?
     event_admins.present? && !event_admins.empty?
   end

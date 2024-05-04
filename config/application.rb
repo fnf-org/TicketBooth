@@ -66,5 +66,8 @@ module TicketBooth
 
     # Puma Configuration
     config.puma = Hashie::Mash.new(config_for(:puma))
+
+    # default host for the routes
+    routes.default_url_options[:host] = config.puma.host
   end
 end

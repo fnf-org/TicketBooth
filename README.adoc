@@ -186,6 +186,8 @@ You can also use the `Makefile`:
 [source,bash]
 ----
 make dev
+# or use the script 
+bin/dev
 ----
 
 Here is an example:
@@ -278,8 +280,8 @@ This project was originally written by https://github.com/sds[Shane de Silva].
 
 It is currently maintained by the https://github.com/fnf-org[FnF] org, and within it specifically
 
- * https://github.com/kigster[Konstantin Gredeskoul] for any application issues,
- * https://github.com/mike-matera[Mike Matera] for any issues related to deployment to the Google Public Cloud.
+ * https://github.com/kigster[Konstantin Gredeskoul] for any Rails, Ruby, or application issues,
+ * https://github.com/ev1lm0nk3y[Ryan Shatford] and https://github.com/mike-matera[Mike Matera] for any issues related to deployment to the Google Public Cloud.
  * https://github.com/beingmattlevy[Matt Levy] for development, coordination and project management.
 
 Please use labels to tag any reported issues.

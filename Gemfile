@@ -73,7 +73,7 @@ gem 'annotate'
 gem 'attribute_normalizer'
 gem 'carrierwave'
 gem 'dalli'
-gem 'devise', git: 'https://github.com/heartcombo/devise.git'
+gem 'devise'
 gem 'mini_magick'
 gem 'mini_racer'
 gem 'protected_attributes_continued'
@@ -103,6 +103,8 @@ group :development do
   gem 'asciidoctor'
   gem 'capistrano'
   # gem 'rack-mini-profiler'
+  gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'web-console'
 end
 

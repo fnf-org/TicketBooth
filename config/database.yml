@@ -1,4 +1,4 @@
-development:
+development: &development
   adapter: postgresql
   encoding: utf8
   host: localhost
@@ -9,21 +9,14 @@ development:
   database: ticketing_app_development
 
 test:
-  adapter: postgresql
-  encoding: utf8
-  host: localhost
-  port: 5432
-  pool: 5
-  username: postgres
-  password: postgres
+  <<: *development  
   database: ticketing_app_test
 
 production:
-  adapter: postgresql
-  encoding: utf8
-  host: localhost
-  port: 5432
-  username: postgres
-  password: postgres
-  database: ticketing_app_production
-  pool: 15
+  <<: *development
+  host: <%= ENV.fetch('TICKETING_DB_HOST', '127.0.0.1') %>
+  port: <%= ENV.fetch('TICKETING_DB_PORT', '5432') %>
+  username: <%= ENV.fetch('TICKETING_DB_USER', 'postgres') %>
+  password: <%= ENV.fetch('TICKETING_DB_PASS', '') %>
+  database: <%= ENV.fetch('TICKETING_DB_NAME', 'ticketing_app_production') %>
+  pool: 10

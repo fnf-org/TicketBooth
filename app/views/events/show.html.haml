@@ -1,16 +1,25 @@
-= render partial: 'shared/nav_event', locals: { event: @event, active_tab: { event_show: 'active' } }
+= render partial: 'shared/nav_event_tabs', locals: { active_tab: { event_show: 'active'}, event: @event }
 
+.vertical-20
 .row
   .col-sm-12.col-md-12.col-lg-6
-    .card
-      .card-header.bg-secondary-subtle
-        %h4 Event Summary
+    .card.p-2.border-1
       .card-body
+        %h4 Event Summary
         %dl.dl-horizontal
           %dt Start Time
           %dd= TimeHelper.for_display(@event.start_time.localtime)
           %dt End Time
           %dd= TimeHelper.for_display(@event.end_time.localtime)
+
+          - if @event.ticket_sales_start_time
+            %dt Tickets On Sale At
+            %dd= TimeHelper.for_display(@event.ticket_sales_start_time)
+
+          - if @event.ticket_sales_end_time
+            %dt Tickets Sales Stop At
+            %dd= TimeHelper.for_display(@event.ticket_sales_end_time)
+
           %dt Adult Ticket Price
           %dd
             = number_to_currency(@event.adult_ticket_price)
@@ -38,51 +47,50 @@
             - if @event.max_cabins_per_request
               %span.muted
                 (max #{@event.max_cabins_per_request} cabins per request)
-  .col-sm-12.col-md-12.col-lg-6
-    .card
-      .card-header.bg-secondary-subtle
-        %h4 Event Admins
-      .card-body
-        .container-fluid
-          %p
-            The following individuals have administrative privileges for this event.
-          %ul.event-admins
-            - @event.admins.each do |admin|
-              %li.text-nowrap
-                %strong
-                  = admin.name
-                %br
-                - if current_user.site_admin? || admin != current_user
-                  = link_to remove_admin_event_path(@event, user_id: admin),
-                    data: {"turbo-frame": "_top", "turbo-method": "post", "turbo-confirm": "Are you sure?" },
-                    class: 'btn float-end' do
-                    %i.bi-x-square-fill
-                    Demote
 
-                = mail_to admin.email
-
-          .vertical-20
-          = form_tag add_admin_event_path(@event), method: :post do
-            = label_tag :user_email do
-              User Email
-              %span.muted.caution NOTE: Must already be registered
-            .btn-group-md
-              = text_field_tag :user_email, nil, class: 'd-inline',
-                placeholder: 'email@example.com', maxlength: User::MAX_EMAIL_LENGTH
-              = submit_tag "Add Admin", data: {"turbo-frame": "_top", "turbo-method": "post"}, class: "btn btn-primary btn-large"
-
-.vertical-20
-.row
-  .col-sm-12.col-md-12.col-lg-12.col-xl-12
-    .card
+    .card.mt-4
       .card-header
+        %h4 Ticket Request Link
         %span.help-inline
           Share this link so people can create ticket requests.
         %span.muted
           (Right click and copy the link to your clipboard)
         %br
       .card-body
-        %code
-          = link_to new_event_ticket_request_path(@event), new_event_ticket_request_path(@event)
+        = link_to tickets_request_path(@event), tickets_request_path(@event), class: "button-link", target: "_top"
 
 
+  .col-sm-6.col-md-6.col-lg-6.col-xl-6
+    .card.p-2.border-1
+      .card-body
+        %h4 Event Admins
+        %p
+          The following individuals have administrative privileges for this event.
+        %ul.event-admins
+          - @event.admins.each do |admin|
+            %li.text-nowrap
+              %strong
+                = admin.name
+              %br
+              - if current_user.site_admin? || admin != current_user
+                = link_to remove_admin_event_path(@event, user_id: admin),
+                  data: {"turbo-frame": "_top", "turbo-method": "post", "turbo-confirm": "Are you sure?" },
+                  class: 'btn float-end' do
+                  Demote
+                  &nbsp;
+                  %i.bi-x-square-fill
+
+              = mail_to admin.email
+
+        .vertical-20
+        %h5 Add a new Admin
+        = form_tag add_admin_event_path(@event), method: :post do
+          = label_tag :user_email do
+            %strong
+              User Email
+            %span.muted.bg-info-subtle.p-2.rounded-3 NOTE: Must already be registered
+          = submit_tag "Add Admin ✚ ", data: {"turbo-frame": "_top", "turbo-method": "post"}, class: "btn btn-primary btn-large float-end"
+          .vertical-20
+          .btn-group-md
+            = text_field_tag :user_email, nil, class: 'd-inline',
+              placeholder: 'email@example.com', maxlength: User::MAX_EMAIL_LENGTH

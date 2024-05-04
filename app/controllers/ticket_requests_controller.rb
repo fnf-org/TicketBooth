@@ -66,6 +66,11 @@ class TicketRequestsController < ApplicationController
   end
 
   def new
+    unless @event.ticket_sales_open?
+      flash.now[:error] = @event.errors.messages.values.join('. ')
+      return redirect_to root_path, error: flash.now[:error]
+    end
+
     if signed_in?
       existing_request = TicketRequest.where(user_id: current_user, event_id: @event).order(:created_at).first
 
@@ -99,8 +104,8 @@ class TicketRequestsController < ApplicationController
   # rubocop: disable Metrics/AbcSize
   def create
     unless @event.ticket_sales_open?
-      flash.now[:error] = 'Sorry, but ticket sales have closed'
-      return redirect_to new_event_ticket_request_path(@event)
+      flash.now[:error] = @event.errors.messages.values.join('. ')
+      return render_flash(flash)
     end
 
     tr_params = permitted_params[:ticket_request].to_h || {}
@@ -124,7 +129,7 @@ class TicketRequestsController < ApplicationController
 
     if tr_params.empty?
       flash.now[:error] = 'Please fill out the form below to request tickets.'
-      redirect_to new_event_ticket_request_path(@event)
+      return render_flash(flash)
     end
 
     tr_params[:user_id] = ticket_request_user.id
@@ -148,8 +153,10 @@ class TicketRequestsController < ApplicationController
         redirect_to new_payment_url(ticket_request_id: @ticket_request)
       end
     rescue StandardError => e
-      Rails.logger.error("Error saving request: #{e.message}\n\n#{@ticket_request.errors.full_messages.join(', ')}")
-      flash.now[:error] = "Error saving request: #{e.message}<br ><ul>#{@ticket_request.errors.full_messages.join("\n<li>")}"
+      Rails.logger.error("Error Processing Ticket Send Request: #{e.message}\n\n#{@ticket_request.errors.full_messages.join(', ')}")
+      @ticket_request.destroy if @ticket_request.persisted?
+      flash.now[:error] =
+        "Error Processing Ticket Request — #{e.message}. Please contact the Event Admins and let them know — #{@event.admin_contacts.join(', ')}."
       render_flash(flash)
     end
   end
@@ -157,9 +164,18 @@ class TicketRequestsController < ApplicationController
 
   def update
     # Allow ticket request to edit guests and nothing else
-    permitted_params[:ticket_request].slice!(:guests) unless @event.admin?(current_user)
+    ticket_request_params = permitted_params[:ticket_request]
 
-    if @ticket_request.update(permitted_params[:ticket_request])
+    guests = (Array(ticket_request_params[:guest_list]) || []).flatten
+    ticket_request_params.delete(:guest_list)
+
+    Rails.logger.info("guests: #{guests.inspect}")
+    Rails.logger.info("params: #{permitted_params.inspect}")
+
+    ticket_request_params[:guests] = guests
+    Rails.logger.info("ticket_request_params: #{ticket_request_params.inspect}")
+
+    if @ticket_request.update(ticket_request_params)
       redirect_to event_ticket_request_path(@event, @ticket_request)
     else
       render action: 'edit'
@@ -172,12 +188,12 @@ class TicketRequestsController < ApplicationController
         user:   current_user,
         target: @ticket_request
       ).fire!
-      flash[:notice] = "#{@ticket_request.user.name}'s request was approved"
+      flash.now[:notice] = "#{@ticket_request.user.name}'s request was approved"
     else
-      flash[:error] = "Unable to approve #{@ticket_request.user.name}'s request"
+      flash.now[:error] = "Unable to approve #{@ticket_request.user.name}'s request"
     end
 
-    redirect_to event_ticket_requests_path(@event)
+    render_flash(flash) && redirect_to(event_ticket_requests_path(@event))
   end
 
   def decline
@@ -191,13 +207,18 @@ class TicketRequestsController < ApplicationController
       flash[:error] = "Unable to decline #{@ticket_request.user.name}'s request"
     end
 
-    redirect_to event_ticket_requests_path(@event)
+    render_flash(flash) && redirect_to(event_ticket_requests_path(@event))
   end
 
   def resend_approval
-    TicketRequestMailer.request_approved(@ticket_request).deliver_now if @ticket_request.awaiting_payment?
+    unless @ticket_request.awaiting_payment?
+      flash.now[:error] = 'Ticket request does not qualify for a payment yet.'
+      return render_flash(flash)
+    end
 
-    redirect_to event_ticket_requests_path(@event)
+    TicketRequestMailer.request_approved(@ticket_request).deliver_now
+    flash.now[:notice] = 'Approval requests has been resent.'
+    render_flash(flash)
   end
 
   def revert_to_pending
@@ -219,7 +240,13 @@ class TicketRequestsController < ApplicationController
   private
 
   def set_event
-    @event = Event.where(id: permitted_params[:event_id].to_i).first
+    event_id = permitted_params[:event_id].to_i
+    Rails.logger.debug { "#set_event() => event_id = #{event_id}, params[:event_id] => #{permitted_params[:event_id]}" }
+    @event = Event.where(id: event_id).first
+    if @event.nil?
+      flash.now[:error] = "Event with id #{event_id} was not found."
+      raise ArgumentError, flash.now[:error]
+    end
   end
 
   def set_ticket_request
@@ -236,33 +263,33 @@ class TicketRequestsController < ApplicationController
       :password,
       :authenticity_token,
       :commit,
-      ticket_request: %i[
-        user_id
-        adults
-        kids
-        cabins
-        needs_assistance
-        notes
-        special_price
-        event_id
-        user
-        donation
-        role
-        role_explanation
-        car_camping
-        car_camping_explanation
-        previous_contribution
-        address_line1
-        address_line2
-        city
-        state
-        zip_code
-        country_code
-        admin_notes
-        agrees_to_terms
-        early_arrival_passes
-        late_departure_passes
-        guests
+      ticket_request: [
+        :user_id,
+        :adults,
+        :kids,
+        :cabins,
+        :needs_assistance,
+        :notes,
+        :special_price,
+        :event_id,
+        :user,
+        :donation,
+        :role,
+        :role_explanation,
+        :car_camping,
+        :car_camping_explanation,
+        :previous_contribution,
+        :address_line1,
+        :address_line2,
+        :city,
+        :state,
+        :zip_code,
+        :country_code,
+        :admin_notes,
+        :agrees_to_terms,
+        :early_arrival_passes,
+        :late_departure_passes,
+        { guest_list: [] }
       ]
     )
           .to_hash

@@ -49,12 +49,20 @@ class TicketRequest < ApplicationRecord
     STATUS_REFUNDED = 'R'
   ].freeze
 
+  STATUS_NAMES = {
+    'P' => 'Pending',
+    'A' => 'Waiting for Payment',
+    'D' => 'Declined',
+    'C' => 'Completed',
+    'R' => 'Refunded'
+  }.freeze
+
   TICKET_LIMITS = {
-    (ROLE_UBER_COORDINATOR = 'uber_coordinator') => 10,
+    (ROLE_UBER_COORDINATOR = 'uber_coordinator') => 12,
     (ROLE_COORDINATOR = 'coordinator')           => 10,
-    (ROLE_CONTRIBUTOR = 'contributor')           => 10,
-    (ROLE_VOLUNTEER = 'volunteer')               => 10,
-    (ROLE_OTHER = 'other')                       => 10
+    (ROLE_CONTRIBUTOR = 'contributor')           => 6,
+    (ROLE_VOLUNTEER = 'volunteer')               => 4,
+    (ROLE_OTHER = 'other')                       => 4
   }.freeze
 
   ROLES = {
@@ -62,7 +70,7 @@ class TicketRequest < ApplicationRecord
     ROLE_COORDINATOR      => 'Lead Coordinator',
     ROLE_CONTRIBUTOR      => 'Planner',
     ROLE_VOLUNTEER        => 'Volunteer',
-    ROLE_OTHER            => 'Other'
+    ROLE_OTHER            => 'Other (Art Grantee, a DJ, etc)'
   }.freeze
 
   belongs_to :user, inverse_of: :ticket_requests
@@ -137,6 +145,10 @@ class TicketRequest < ApplicationRecord
 
   def can_view?(user)
     self.user == user || event.admin?(user)
+  end
+
+  def status_name
+    STATUS_NAMES[status]
   end
 
   def completed?
