@@ -237,7 +237,8 @@
                 = f.submit submit_btn_text, class: 'btn btn-primary btn-large', disabled: !is_update,
                            id: 'submit-request',
                            data: { disable_with: 'Submitting...' }
-                = link_to event_ticket_request_path(@event, @ticket_request), class: 'btn' do
-                  %i.icon-arrow-left
-                  Back
+                - if @ticket_request && @ticket_request.id
+                  = link_to event_ticket_request_path(event_id: @event.id, id: @ticket_request&.id), class: 'btn' do
+                    %i.icon-arrow-left
+                    Back
 
