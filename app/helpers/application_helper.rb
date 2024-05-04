@@ -16,10 +16,6 @@ module ApplicationHelper
     end
   end
 
-  def stripe_publishable_api_key
-    TicketBooth::Application.config.x.stripe.public_key
-  end
-
   def alert_class(alert_type)
     case alert_type
     when 'notice' then 'alert-info'

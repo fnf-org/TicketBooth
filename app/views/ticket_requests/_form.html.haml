@@ -120,9 +120,9 @@
                     %span.help-inline.inline-price
                     %p.help-inline-block.muted
                       Please include the ages of the children (including infants) you are
-                      bringing with you in the notes below.
+                      bringing with you in the notes at the bottom of this form.
 
-                  - if @event.cabin_price
+                  -# - if false @event.cabin_price
 
                     = f.label :cabins do
                       How many cabins did you want?
@@ -169,6 +169,9 @@
                   = f.label :notes do
                     Who did you hear about this event from?
                     Any special requests or things you want to mention?
+                    %br
+                    .text-success
+                      Bringing children? Please list their names and ages here.
 
                   = f.text_area :notes,
                     rows: 4, columns: 100, maxlength: 500, style: 'width: 100%'
@@ -179,8 +182,8 @@
                         Additional Notes
                       %p.text-error
                         Visible by event admins only.
-                      = f.text_area :admin_notes, rows: 5, maxlength: 512
-
+                      = f.text_area :admin_notes, rows: 5, columns: 800, maxlength: 512, style: 'width: 100%'
+                    %br
                 %hr
 
                 - unless is_update
@@ -191,41 +194,50 @@
                   = f.label :agrees_to_terms, class: 'checkbox' do
                     = f.check_box :agrees_to_terms
                     I’ve read
-                    = link_to 'The FnF Way', 'http://cfaea.net/the-fnf-way/', target: '_blank'
+                    = link_to 'The FnF Way', 'http://cfaea.net/the-fnf-way/', target: '_blank', onclick: "popupWindow('http://cfaea.net/the-fnf-way/', 'The FnF Way', window, 700, 900); return false;"
                     and
-                    = link_to 'Code of Conduct', 'https://fnf.page.link/coc', target: '_blank'
+                    = link_to 'Code of Conduct', 'https://fnf.page.link/coc', target: '_blank', onclick: "popupWindow('https://fnf.page.link/coc', 'Code of Conduct', window, 800, 900); return false;"
                     and agree to follow the principles outlined therein
                   %br
 
               - if is_update
+                %p
                 .control-group
                 %h4 Guests
                 %p
-                  Include yourself as a guest. Use First Name and Last Name.
+                  Include yourself as a guest.
+                %p
+                  %strong
+                    Use First Name and Last Name and Email within angle brackets.
+                %p
                   DJ names or monikers should be accompanied with their real name.
+                %p
                   If we cannot identify the name, we will ask you to change it.
-                %b Examples of good names
+                %p.text-success
+                  %b Examples of good names
                 %ol
-                  %li Tim Bergling
-                  %li Tim Bergling (Avicii)
-                %b Examples of bad names
-                %ol
-                  %li Tim
-                  %li Bergling
-                  %li T. B.
-                %br
-                - list_finalized = (@event.start_time - Time.now) < 2.days
+                  %li Carl Cox (self) &lt;carl@carlcox.com&gt;
+                  %li John Digweed &lt;digweed@bedrock-records.com&gt;
+
+                - list_finalized = (@event.start_time - Time.current) < ::Event::GUEST_LIST_FINAL_WITHIN
                 - if list_finalized
-                  Guest list has been finalized. If you need to update your guests, please email
-                  = mail_to 'tickets@fnf.org'
+                  %span.text-error
+                    Guest list has already been finalized. If you need to update your guests, please email
+                    = mail_to 'tickets@fnf.org'
                   %br
-                - @ticket_request.guest_count.times do |guest_id|
-                  = f.text_field :guests, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests)[guest_id]
-                  %br
+                - else
+                  - @ticket_request.guest_count.times do |guest_id|
+                    = f.label "Guest #{guest_id + 1}"
+                    - default_value = guest_id == 0 ? @ticket_request.user.name_and_email : ''
+                    = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests)[guest_id] || default_value, style: 'width: 80%'
+                    %br
 
               .actions
                 - submit_btn_text = is_update ? 'Update Request' : 'Submit Request'
                 = f.submit submit_btn_text, class: 'btn btn-primary btn-large', disabled: !is_update,
                            id: 'submit-request',
                            data: { disable_with: 'Submitting...' }
+                = link_to event_ticket_request_path(@event, @ticket_request), class: 'btn' do
+                  %i.icon-arrow-left
+                  Back
 

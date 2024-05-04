@@ -1,11 +1,17 @@
 .card
-  .card-header
+  .card-header.bg-success-subtle
+    = content_for(:title, "#{@event.name} — Ticket Request")
+    %h3= @event.name
     %h2
-      = content_for(:title, "#{@event.name} — Ticket Request")
 
   .card-body
     %p.lead
+      %h4
+        Status:
+        = @ticket_request.status_name
+
     - if @ticket_request.user == current_user
+
       - if @ticket_request.pending?
         %p.lead
           Thanks for requesting a ticket!
@@ -34,12 +40,12 @@
         = text_for_status @ticket_request
       - if @event.admin?(current_user) && @ticket_request.pending?
         .btn-group
-          = link_to approve_event_ticket_request_path(@event, @ticket_request),
+          = button_to approve_event_ticket_request_path(@event, @ticket_request),
             method: :post,
             class: 'btn btn-primary btn-mini' do
             Approve
             %i.icon-ok
-          = link_to decline_event_ticket_request_path(@event, @ticket_request),
+          = button_to decline_event_ticket_request_path(@event, @ticket_request),
             method: :post,
             class: 'btn btn-danger btn-mini',
             data: { confirm: "Are you sure you want to decline #{@ticket_request.user.name}'s request?" } do
@@ -66,7 +72,7 @@
           Not yet received
           - if @event.ticket_sales_open?
             = link_to @ticket_request.all_guests_specified? ? 'Purchase your ticket now' : 'All guests must be filled out before purchasing ticket',
-              new_payment_path(ticket_request_id: @ticket_request),
+              new_payment_path(ticket_request_id: @ticket_request.id),
               class: 'btn btn-small btn-primary'
           - else
             %span.text-warning

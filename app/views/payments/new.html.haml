@@ -1,33 +1,37 @@
 - content_for(:meta) do
-  %meta{ name: 'stripe-key', content: STRIPE_PUBLIC_KEY }
+  %meta{ name: 'stripe-key', content: Rails.application.credentials.send(Rails.env.to_sym).stripe.publishable_api_key }
 
 - content_for(:head) do
-  = javascript_include_tag 'https://js.stripe.com/v1/'
+  = javascript_include_tag 'https://js.stripe.com/v3/'
 
-%p.lead
-  Hi #{@user.first_name},
+.content-fluid
+  .row
+    .col-4
+      .card
+        .card-header.bg-secondary-subtle
+          %h3
+            Hi, #{@user.first_name}
 
--# HACK: Temporarily hide this for Mo's event
-- if @event.tickets_require_approval
-  %p.lead.text-success
-    Your request for
-    %b
-      = @ticket_request.adults
-      = 'ticket'.pluralize(@ticket_request.adults)
-    has been approved!
-  %p
-    Now all that's left is to pay for your tickets.
-    If you are paying via credit card, fill out the form below.
-    %br
-    = link_to 'I am not paying via credit card',
-      other_payments_path(ticket_request_id: @ticket_request.id)
+        .card-body
+          - if @event.tickets_require_approval
+            %p.lead.text-success
+              Your request for
+              %b
+                = @ticket_request.adults
+                = 'ticket'.pluralize(@ticket_request.total_tickets)
+              has been approved!
+            %p
+              Now all that's left is to pay for your tickets.
+              If you are paying via credit card, fill out the form below.
+              %br
+              = link_to 'I am not paying via credit card',
+                other_payments_path(ticket_request_id: @ticket_request.id)
 
-- else
-  %p.lead.text-success
-    You're almost done! All that's left is to purchase your
-    = succeed '.' do
-      = 'ticket'.pluralize(@ticket_request.total_tickets)
+          - else
+            %p.lead.text-success
+              You're almost done! All that's left is to purchase your
+              = succeed '.' do
+                = 'ticket'.pluralize(@ticket_request.total_tickets)
 
-%hr
-
-= render 'form'
+    .col-8
+      = render 'form'

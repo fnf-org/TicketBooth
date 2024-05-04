@@ -39,6 +39,8 @@ class Event < ApplicationRecord
 
   MAX_NAME_LENGTH = 100
 
+  GUEST_LIST_FINAL_WITHIN = 2.days
+
   attr_accessible :name, :start_time, :end_time, :adult_ticket_price,
                   :early_arrival_price, :late_departure_price,
                   :kid_ticket_price, :cabin_price, :max_adult_tickets_per_request,
@@ -112,6 +114,10 @@ class Event < ApplicationRecord
 
   def admin?(user)
     user && (user.site_admin? || admins.exists?(id: user))
+  end
+
+  def admin_contacts
+    admins.map(&:name_and_email)
   end
 
   def make_admin(user)
