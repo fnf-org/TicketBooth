@@ -20,6 +20,7 @@ resource "google_sql_database_instance" "ticket_booth" {
       value = "on"
     }
 
+    # This is the default
     # deletion_protection_enabled = true
 
     backup_configuration {
