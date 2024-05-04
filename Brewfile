@@ -4,10 +4,6 @@
 
 tap 'homebrew/bundle'
 tap 'homebrew/services'
-tap 'heroku/brew'
-
-# heroku CLI
-brew 'heroku'
 
 # Build Environment/C/C++
 brew 'autoconf'
