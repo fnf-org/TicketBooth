@@ -188,12 +188,12 @@ class TicketRequestsController < ApplicationController
         user:   current_user,
         target: @ticket_request
       ).fire!
-      flash[:notice] = "#{@ticket_request.user.name}'s request was approved"
+      flash.now[:notice] = "#{@ticket_request.user.name}'s request was approved"
     else
-      flash[:error] = "Unable to approve #{@ticket_request.user.name}'s request"
+      flash.now[:error] = "Unable to approve #{@ticket_request.user.name}'s request"
     end
 
-    redirect_to event_ticket_requests_path(@event)
+    render_flash(flash) && redirect_to(event_ticket_requests_path(@event))
   end
 
   def decline
@@ -207,13 +207,18 @@ class TicketRequestsController < ApplicationController
       flash[:error] = "Unable to decline #{@ticket_request.user.name}'s request"
     end
 
-    redirect_to event_ticket_requests_path(@event)
+    render_flash(flash) && redirect_to(event_ticket_requests_path(@event))
   end
 
   def resend_approval
-    TicketRequestMailer.request_approved(@ticket_request).deliver_now if @ticket_request.awaiting_payment?
+    unless @ticket_request.awaiting_payment?
+      flash.now[:error] = 'Ticket request does not qualify for a payment yet.'
+      return render_flash(flash)
+    end
 
-    redirect_to event_ticket_requests_path(@event)
+    TicketRequestMailer.request_approved(@ticket_request).deliver_now
+    flash.now[:notice] = 'Approval requests has been resent.'
+    render_flash(flash)
   end
 
   def revert_to_pending

@@ -4,7 +4,7 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %meta{:content => "width=device-width,initial-scale=1", :name => "viewport"}/
     %meta{:content => "yes", :name => "apple-mobile-web-app-capable"}/
-    %meta{:content => "#{stripe_publishable_api_key}", :name => "stripe-key"}/
+    %meta{:content => "#{controller.send(:stripe_publishable_api_key)}", :name => "stripe-key"}/
     %link{:href => "/icons/nav-bar-logo.png", :rel => "shortcut icon", :type => "image/png"}/
     %link{:href => "https://fonts.googleapis.com", :rel => "preconnect"}/
     %link{:crossorigin => "", :href => "https://fonts.gstatic.com", :rel => "preconnect"}/

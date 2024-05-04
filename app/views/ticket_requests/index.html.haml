@@ -112,15 +112,13 @@
                   class: 'hover-tooltip',
                   title: 'User has requested a car/RV camping spot because: ' + ticket_request.car_camping_explanation)
               - if ticket_request.needs_assistance
-                = image_tag('bank.png', width: 16, class: 'hover-tooltip',
-                            title: 'User has requested financial assistance')
+                = image_tag('bank.png', width: 16, class: 'hover-tooltip', title: 'User has requested financial assistance')
               - if ticket_request.notes.present?
                 %i.icon-comment.hover-tooltip{ title: 'Additional requests or comments: ' + ticket_request.notes }
+
             %td= ticket_request.adults
             - if @event.kid_ticket_price
               %td= ticket_request.kids
-            - if @event.cabin_price
-              %td= ticket_request.cabins
             - if @event.eald?
               %td
                 #{ticket_request.early_arrival_passes} / #{ticket_request.late_departure_passes}
@@ -142,12 +140,12 @@
             %td
               - if @event.tickets_require_approval && ticket_request.pending?
                 .btn-group.pull-right
-                  = link_to approve_event_ticket_request_path(@event, ticket_request),
+                  = button_to approve_event_ticket_request_path(@event, ticket_request),
                     method: :post,
                     class: 'btn btn-primary' do
                     Approve
                     %i.icon-ok
-                  = link_to decline_event_ticket_request_path(@event, ticket_request),
+                  = button_to decline_event_ticket_request_path(@event, ticket_request),
                     method: :post,
                     class: 'btn btn-danger',
                     data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s request?" } do
@@ -156,17 +154,17 @@
               - elsif !ticket_request.payment
                 .btn-group.pull-right
                   - if ticket_request.declined?
-                    = link_to revert_to_pending_event_ticket_request_path(@event, ticket_request),
+                    = button_to revert_to_pending_event_ticket_request_path(@event, ticket_request),
                       method: :post,
                       class: 'btn btn-link' do
                       %span.hover-tooltip{ title: 'Reset status of request to Pending', data: { placement: 'left' } }
                         Revert
                   - elsif !ticket_request.completed?
-                    = link_to resend_approval_event_ticket_request_path(@event, ticket_request),
+                    = button_to resend_approval_event_ticket_request_path(@event, ticket_request),
                       method: :post,
                       class: 'btn btn-link' do
                       Resend Approval
-                    = link_to decline_event_ticket_request_path(@event, ticket_request),
+                    = button_to decline_event_ticket_request_path(@event, ticket_request),
                       method: :post,
                       class: 'btn btn-link',
                       data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s already approved request?" } do
@@ -174,7 +172,7 @@
 
               - elsif ticket_request.payment && !ticket_request.payment.received?
                 .btn-group.pull-right
-                  = link_to mark_received_payments_path(ticket_request_id: ticket_request),
+                  = button_to mark_received_payments_path(ticket_request_id: ticket_request),
                     method: :post,
                     class: 'btn btn-primary' do
                     Mark Payment Received

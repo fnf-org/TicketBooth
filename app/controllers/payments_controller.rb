@@ -4,7 +4,7 @@ class PaymentsController < ApplicationController
   before_action :authenticate_user!
 
   def show
-    @payment = Payment.find(params[:id])
+    @payment = Payment.find(permit_params[:id])
     @charge = Stripe::Charge.retrieve(@payment.stripe_charge_id) if @payment.stripe_charge_id
     @ticket_request = @payment.ticket_request
     @event = @ticket_request.event
@@ -12,9 +12,8 @@ class PaymentsController < ApplicationController
   end
 
   def new
-    @ticket_request = TicketRequest.find(params[:ticket_request_id])
+    @ticket_request = TicketRequest.find(permit_params[:ticket_request_id])
     return redirect_to root_path unless @ticket_request.can_view?(current_user)
-    return redirect_to payment_path(@ticket_request.payment) if @ticket_request.payment
 
     @event = @ticket_request.event
 
@@ -33,7 +32,7 @@ class PaymentsController < ApplicationController
   end
 
   def create
-    @payment = Payment.new(params[:payment])
+    @payment = Payment.new(permit_params[:payment])
     return redirect_to root_path unless @payment.can_view?(current_user)
 
     if @payment.save_and_charge!
@@ -49,7 +48,7 @@ class PaymentsController < ApplicationController
   end
 
   def other
-    @ticket_request = TicketRequest.find(params[:ticket_request_id])
+    @ticket_request = TicketRequest.find(permit_params[:ticket_request_id])
     return redirect_to root_path unless @ticket_request.can_view?(current_user)
     return redirect_to payment_path(@ticket_request.payment) if @ticket_request.payment
 
@@ -57,11 +56,11 @@ class PaymentsController < ApplicationController
   end
 
   def sent
-    @ticket_request = TicketRequest.find(params[:ticket_request_id])
+    @ticket_request = TicketRequest.find(permit_params[:ticket_request_id])
     return redirect_to root_path unless @ticket_request.can_view?(current_user)
 
     @payment = Payment.new(ticket_request_id: @ticket_request.id,
-                           explanation: params[:explanation],
+                           explanation: permit_params[:explanation],
                            status: Payment::STATUS_IN_PROGRESS)
     if @payment.save
       flash[:notice] = "We've recorded that your payment is en route"
@@ -73,7 +72,7 @@ class PaymentsController < ApplicationController
   end
 
   def mark_received
-    @ticket_request = TicketRequest.find(params[:ticket_request_id])
+    @ticket_request = TicketRequest.find(permit_params[:ticket_request_id])
     return redirect_to root_path unless @ticket_request.can_view?(current_user)
 
     @payment = Payment.where(ticket_request_id: @ticket_request.id,
@@ -86,5 +85,23 @@ class PaymentsController < ApplicationController
       PaymentMailer.payment_received(@payment).deliver_now
       redirect_to :back
     end
+  end
+
+  private
+
+  def permit_params
+    params.permit(
+      :id,
+      :ticket_request_id,
+      payment: %I[
+        ticket_request_id
+        ticket_request_attributes
+        status
+        stripe_card_token
+        explanation
+      ]
+    )
+          .to_hash
+          .with_indifferent_access
   end
 end

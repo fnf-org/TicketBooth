@@ -19,6 +19,14 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def stripe_publishable_api_key
+    @stripe_publishable_api_key ||= ::Rails.application.credentials[Rails.env.to_sym].stripe.publishable_api_key
+  end
+
+  def stripe_secret_api_key
+    @stripe_secret_api_key ||= ::Rails.application.credentials[Rails.env.to_sym].stripe.secret_api_key
+  end
+
   # Override a Devise method
   def after_sign_in_path_for(resource)
     if redirect_to_param.present?

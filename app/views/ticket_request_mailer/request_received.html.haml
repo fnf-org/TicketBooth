@@ -2,13 +2,8 @@
   Hi #{@ticket_request.user.first_name},
 
 %p
-  We have received your ticket request for #{@event.name}.
-
--# TODO: This is temporary until tickets stop selling
--#- if @ticket_request.role == 'volunteer'
--#  %p
--#    At this point, all available tickets have been requested. However,
--#    we'll hold on to your request just in case.
+  We have received your ticket request for #{@event.name} for
+  #{@ticket_request.total_tickets} total tickets (including kids).
 
 %p
   If your request is approved, we will send you confirmation of the approved
@@ -20,12 +15,10 @@
   patience.
 
 %p
-  With love,
+  With love ❤️,
   %br
   Your FnF Ticket Team
 
 %p
-  P.S. You can see the status of your request at any time by
-  visiting
-  = succeed '.' do
-    = link_to 'this page', @ticket_request_url
+  P.S. You can view sthe status of your request at any time by visiting
+  = link_to 'this page', @ticket_request_url

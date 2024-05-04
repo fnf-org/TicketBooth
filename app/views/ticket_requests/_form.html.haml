@@ -219,7 +219,7 @@
                   %li Carl Cox (self) &lt;carl@carlcox.com&gt;
                   %li John Digweed &lt;digweed@bedrock-records.com&gt;
 
-                - list_finalized = (@event.start_time - Time.current) < Event::GUEST_LIST_FINAL_WITHIN
+                - list_finalized = (@event.start_time - Time.current) < ::Event::GUEST_LIST_FINAL_WITHIN
                 - if list_finalized
                   %span.text-error
                     Guest list has already been finalized. If you need to update your guests, please email
@@ -237,4 +237,7 @@
                 = f.submit submit_btn_text, class: 'btn btn-primary btn-large', disabled: !is_update,
                            id: 'submit-request',
                            data: { disable_with: 'Submitting...' }
+                = link_to event_ticket_request_path(@event, @ticket_request), class: 'btn' do
+                  %i.icon-arrow-left
+                  Back
 

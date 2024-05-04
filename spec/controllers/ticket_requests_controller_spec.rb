@@ -79,7 +79,7 @@ describe TicketRequestsController, type: :controller do
   describe 'GET #new' do
     let(:event) { create(:event) }
 
-    before { get :new, params: { event_id: event } }
+    subject { get :new, params: { event_id: event.id } }
 
     context 'when viewer not signed in' do
       it { succeeds }
