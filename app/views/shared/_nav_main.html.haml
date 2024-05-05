@@ -11,7 +11,7 @@
           - if current_user.site_admin?
             = button_to "All Events", events_path, method: :get, class: 'btn btn-primary btn-lg m-1'
           - elsif current_user.event_admin?
-            = button_to "Events Your Manage", events_path, method: :get, class: 'btn btn-primary btn-lg m-1'
+            = button_to "Manage Events", events_path, method: :get, class: 'btn btn-primary btn-lg m-1'
           - else
             = button_to "Home", root_path, class: 'btn btn-primary btn-lg m-1'
           = button_to "Your Profile", edit_user_registration_path,  method: :get, class: 'btn btn-primary btn-lg m-1'
