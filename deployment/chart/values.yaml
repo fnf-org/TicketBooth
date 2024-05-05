@@ -88,11 +88,15 @@ secret:
   # someplace. Do this only with non-production resources.
   create: false
 
-  # Any secrets should be contained within GCP Se
+  # Any secrets should be contained within GCP Secrets and pulled in by ExternalSecrets
+  name: ""
 
-  # The name of the secret to use.
-  # Default: {{ .Release.Name }}-secrets
-  #name: ""
+  external:
+    enabled: false
+    path: ""
+    storeRef:
+      name: ""
+      kind: ""
 
   # Data to put into a created secret. Does not need to be base64 encoded
   # data:
@@ -101,12 +105,9 @@ secret:
   #  ticketsSMTPUser: ""
   #  ticketsSMTPPassword: ""
   #  stripeSecretKey: ""
-    
-
   
 postgresql:
-  auth:
-    database: tickets
-    username: ticketsuser
-    password: ""
-    postgresPassword: ""
+  # The postgres DB will normally be connected to via IAM and CloudSQL Proxy and
+  # therefore all we need is the name of the CloudSQL instance and database name.
+  database: tickets
+  instance: null
