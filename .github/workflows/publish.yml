@@ -41,7 +41,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
           # In order to support deploying multiple versions that don't stomp on
           # each other some new tagging rules are created.
           # The tagging below follows:
