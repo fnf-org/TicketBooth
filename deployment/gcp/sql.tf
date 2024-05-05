@@ -1,5 +1,5 @@
 resource "google_sql_database_instance" "ticket_booth" {
-  name             = "ticketing-db-instance-${var.environment}"
+  name             = "ticket-db-instance-${var.environment}"
   database_version = var.postgres_major_version
   region           = var.location
 
@@ -20,7 +20,8 @@ resource "google_sql_database_instance" "ticket_booth" {
       value = "on"
     }
 
-    deletion_protection_enabled = true
+    # This is the default
+    # deletion_protection_enabled = true
 
     backup_configuration {
       enabled                        = true
