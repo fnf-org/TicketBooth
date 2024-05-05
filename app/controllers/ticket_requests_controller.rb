@@ -76,7 +76,7 @@ class TicketRequestsController < ApplicationController
     if signed_in?
       @user = current_user
 
-      existing_request = TicketRequest.where(user_id: current_user.id, event_id: @event).order(:created_at).first
+      existing_request = TicketRequest.where(user_id: @user.id, event_id: @event).order(:created_at).first
       if existing_request
         redirect_to event_ticket_request_path(event_id: @event.id, id: existing_request.id)
       end
