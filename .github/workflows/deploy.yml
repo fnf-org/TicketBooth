@@ -64,6 +64,6 @@ jobs:
           value-files: >-
             [
               "deployment/env/base.yaml",
-              "deployment/${{ environment }}.yaml"
+              "deployment/${{ vars.ENVIRONMENT }}.yaml"
             ]
           atomic: ${{ github.event_name == 'workflow_dispatch' && false || true }}
