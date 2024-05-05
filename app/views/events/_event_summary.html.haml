@@ -1,0 +1,36 @@
+%h4 Event Summary
+%dl.dl-horizontal
+  %dt Start Time
+  %dd= TimeHelper.for_display(@event.start_time.localtime)
+  %dt End Time
+  %dd= TimeHelper.for_display(@event.end_time.localtime)
+
+  - if @event.ticket_sales_start_time
+    %dt Tickets On Sale At
+    %dd= TimeHelper.for_display(@event.ticket_sales_start_time)
+
+  - if @event.ticket_sales_end_time
+    %dt Tickets Sales Stop At
+    %dd= TimeHelper.for_display(@event.ticket_sales_end_time)
+
+  %dt Adult Ticket Price
+  %dd
+    = number_to_currency(@event.adult_ticket_price)
+    - if @event.max_adult_tickets_per_request
+      %span.muted
+        (max #{@event.max_adult_tickets_per_request} tickets per request)
+  %dt Kid Ticket Price
+  %dd
+    - if @event.price_rules.any?
+      %ul
+        - @event.price_rules.order(:created_at).each do |price_rule|
+          %li= price_rule.rule_text
+        %li
+          Otherwise:
+          = number_to_currency(@event.kid_ticket_price)
+          \/ kid
+    - else
+      = number_to_currency(@event.kid_ticket_price)
+    - if @event.max_kid_tickets_per_request
+      %span.muted
+        (max #{@event.max_kid_tickets_per_request} kid tickets per request)

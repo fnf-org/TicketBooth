@@ -37,9 +37,9 @@ module ApplicationHelper
     devise_mapping.to
   end
 
-  def log_in_options
-    redirect_path = instance_variable_get(:@redirect_path)
-
-    redirect_path ? { redirect_to: redirect_path } : {}
-  end
+  # def log_in_options
+  #   redirect_path = instance_variable_get(:@redirect_path)
+  #
+  #   redirect_path ? { redirect_to: redirect_path } : {}
+  # end
 end

@@ -9,17 +9,7 @@
 
         .card-body
           - if @event.ticket_requests_open?
-            %em Event Starts:
-            %br
-            %strong
-              = TimeHelper.for_display(@event.start_time.localtime)
-
-            %br
-            .vertical-20
-            %em Event Ends:
-            %br
-            %strong
-              = TimeHelper.for_display(@event.end_time.localtime)
+            = render partial: "events/event_summary"
 
           - else
             %h5 Ticket sales for #{@event.name} have closed
@@ -34,6 +24,7 @@
           %p
             If your request is approved, you'll receive an email with further instructions.
 
-    .col-sm-12.col-md-12.col-lg-7.col-xl-7
-      = render 'form'
+    - if @event.ticket_requests_open?
+      .col-sm-12.col-md-12.col-lg-7.col-xl-7
+        = render 'form'
 

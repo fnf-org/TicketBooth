@@ -15,10 +15,10 @@ class HomeController < ApplicationController
       elsif (ticket_request = TicketRequest.where(user: current_user)
                                            .where(event: most_recent_event).last)
 
-        redirect_to event_ticket_request_path(event_id: most_recent_event.id, id: ticket_request.id)
+        redirect_to event_ticket_request_path(event_id: most_recent_event.to_param, id: ticket_request.id)
 
       else
-        redirect_to new_event_ticket_request_path(event_id: most_recent_event.id)
+        redirect_to new_event_ticket_request_path(event_id: most_recent_event.to_param)
       end
     else
       render

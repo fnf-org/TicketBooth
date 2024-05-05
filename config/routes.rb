@@ -7,10 +7,10 @@ Rails.application.routes.draw do
 
   get 'oops', controller: :home, action: :oops
 
-  devise_scope :user do
-    # Redirests signing out users back to sign-in
-    get 'users', to: 'devise/sessions#new'
-  end
+  # devise_scope :user do
+  #   # Redirects signing out users back to sign-in
+  #   get 'users', to: 'devise/sessions#new'
+  # end
 
   devise_for :users
 
