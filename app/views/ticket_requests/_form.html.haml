@@ -82,7 +82,7 @@
 
                   = f.text_area :role_explanation,
                     placeholder: 'Briefly describe your role (required)',
-                    rows: 4, width: 400, maxlength: 400, required: true, style: 'min-width: 100% !important; font-size: 11pt;'
+                    rows: 4, width: 400, maxlength: 400, required: false, style: 'min-width: 100% !important; font-size: 11pt;'
               .row0
                 .col-12
                   = f.label :previous_contribution, 'What was your role last year?'
@@ -109,7 +109,7 @@
                   - if @event.kid_ticket_price
 
                     = f.label :kids do
-                      Number of children you are bringing with you (not transferable to adults; babes in arms are free)
+                      Number of children (13 or under) you are bringing with you (not transferable to adults; babes in arms are free)
                       = help_mark help_text_for(:kids)
 
                     = f.number_field :kids, class: 'input-mini', min: 0,
