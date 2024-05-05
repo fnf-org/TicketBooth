@@ -18,8 +18,8 @@ on:
         description: 'The docker tag for a container already in GCP'
 
 env:
-  GCP_REGION: us-central1
-  GKE_CLUSTER_NAME: fnf-apps
+  GCP_REGION: us-west1
+  GKE_CLUSTER_NAME: fnf-apps-cluster-west1
 
 jobs:
   deploy:
