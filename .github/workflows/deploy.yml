@@ -35,7 +35,7 @@ jobs:
         name: TicketBooth checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == "workflow_dispatch" && 'main' || github.ref }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && 'main' || github.ref }}
           fetch-depth: 1
 
       - id: gcpAuth
@@ -60,10 +60,10 @@ jobs:
           chart: deployment/chart
           token: ${{ github.token }}
           values: |
-            image.tag: ${{ github.event_name == "workflow_dispatch" && inputs.containerTag || github.ref_name }}
+            image.tag: ${{ github.event_name == 'workflow_dispatch' && inputs.containerTag || github.ref_name }}
           value-files: >-
             [
               "deployment/env/base.yaml",
               "deployment/${{ environment }}.yaml"
             ]
-          atomic: ${{ github.event_name == "workflow_dispatch" && false || true }}
+          atomic: ${{ github.event_name == 'workflow_dispatch' && false || true }}
