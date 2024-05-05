@@ -139,18 +139,24 @@ class Event < ApplicationRecord
     elsif ticket_sales_end_time && Time.current.after?(ticket_sales_end_time)
       errors.add(:ticket_sales_end_time, 'Tickets are no longer on sale for this event.')
     elsif Time.current.after?(end_time)
-      errors.add(:end_time, 'This event has ended, so no ticket requests are accepted anymore.')
+      errors.add(:end_time, 'This event has ended, so no ticket sales sare accepted anymore.')
     else
       return true
     end
+    Rails.logger.error("ticket_sales_open? -> false, reason: #{errors.full_messages.join('; ')}".colorize(:red))
     false
   end
 
   def ticket_requests_open?
-    return false if Time.zone.now >= end_time
-    return true unless ticket_requests_end_time
-
-    ticket_requests_end_time > Time.zone.now
+    if ticket_requests_end_time && Time.current.after?(ticket_requests_end_time)
+      errors.add(:ticket_requests_end_time, 'Ticket requests are no longer accepted.')
+    elsif Time.current.after?(end_time)
+      errors.add(:end_time, 'This event has ended, so no ticket requests are accepted anymore.')
+    else
+      return true
+    end
+    Rails.logger.error("ticket_requests_open? -> false, reason: #{errors.full_messages.join('; ')}".colorize(:red))
+    false
   end
 
   def eald?

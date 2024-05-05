@@ -66,29 +66,20 @@ class TicketRequestsController < ApplicationController
   end
 
   def new
-    unless @event.ticket_sales_open?
-      flash.now[:error] = @event.errors.messages.values.join('. ')
-      return redirect_to root_path, error: flash.now[:error]
+    @ticket_request = TicketRequest.new(event_id: @event.id)
+
+    unless @event.ticket_requests_open?
+      flash.now[:error] = @event.errors.full_messages.join('. ')
+      return render action: 'new'
     end
 
     if signed_in?
-      existing_request = TicketRequest.where(user_id: current_user, event_id: @event).order(:created_at).first
+      @user = current_user
 
-      return redirect_to event_ticket_request_path(@event, existing_request) if existing_request
-    end
-
-    @user           = current_user if signed_in?
-    @ticket_request = TicketRequest.new
-
-    if @user
-      last_ticket_request = TicketRequest.where(user_id: @user&.id).order(:created_at).last
-      if last_ticket_request
-        %w[address_line1 address_line2 city state zip_code country_code].each do |field|
-          @ticket_request.send(:"#{field}=", last_ticket_request.send(field))
-        end
+      existing_request = TicketRequest.where(user_id: current_user.id, event_id: @event).order(:created_at).first
+      if existing_request
+        redirect_to event_ticket_request_path(event_id: @event.id, id: existing_request.id)
       end
-    else
-      @ticket_request = TicketRequest.new(event_id: @event.id)
     end
   end
 
@@ -160,6 +151,7 @@ class TicketRequestsController < ApplicationController
       render_flash(flash)
     end
   end
+
   # rubocop: enable Metrics/AbcSize
 
   def update

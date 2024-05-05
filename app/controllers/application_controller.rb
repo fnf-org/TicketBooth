@@ -31,7 +31,8 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     if redirect_to_param.present?
       store_location_for(resource, redirect_to_param)
-    elsif request.referer == Routing.routes.new_user_session_url
+    elsif [Routing.routes.new_user_registration_url,
+           Routing.routes.new_user_session_url].include?(request.referer)
       super
     else
       stored_location_for(resource) || request.referer || root_path
@@ -39,7 +40,7 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_path
-    @redirect_path = redirect_to_param || request.path
+    @redirect_path = redirect_to_param
   end
 
   def redirect_to_param
