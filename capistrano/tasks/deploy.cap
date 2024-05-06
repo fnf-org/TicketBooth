@@ -52,10 +52,9 @@ namespace :deploy do
   task :permissions do
     on roles(:app) do
       within release_path do
-        execute :chmod, '-R o+xr public'
-        execute :chmod, '-R g+xr public'
+        execute :bash, "-c 'sudo chmod -R o-r,o+x,g+xr  .'"
         # nginx runs as UID kig, GID kig, so...
-        execute :chgrp, '-R kig .'
+        execute :bash, "-c 'sudo chgrp -R kig .'"
       end
     end
   end
