@@ -23,13 +23,13 @@ Rails.application.configure do
   # config.require_master_key = true
 
   # Disable serving static files from `public/`, relying on NGINX/Apache to do so instead.
-  # config.public_file_server.enabled = false
+  config.public_file_server.enabled = false
 
   # Compress CSS using a preprocessor.
   config.assets.css_compressor = :sass
 
   # Do not fall back to assets pipeline if a precompiled asset is missed.
-  config.assets.compile = true
+  config.assets.compile = false
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http:/assets.example.com"
@@ -54,15 +54,15 @@ Rails.application.configure do
   config.force_ssl = true
 
   # Log to STDOUT by default
-  config.logger = ActiveSupport::Logger.new($stdout)
-                                       .tap  { |logger| logger.formatter = Logger::Formatter.new }
-                                       .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
+  # config.logger = ActiveSupport::Logger.new($stdout)
+  #                                      .tap  { |logger| logger.formatter = Logger::Formatter.new }
+  #                                      .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
 
   # See everything in the log (default is :info)
   config.log_level = :info
 
   # Prepend all log lines with the following tags
-  config.log_tags = [->(_req) { DateTime.now }, :request_id]
+  # config.log_tags = [->(_req) { DateTime.now }, :request_id]
 
   # "info" includes generic and useful information about system operation, but avoids logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII). If you
@@ -70,7 +70,7 @@ Rails.application.configure do
   config.log_level = ENV.fetch('RAILS_LOG_LEVEL', 'info')
 
   # Use a different cache store in production.
-  config.cache_store = :mem_cache_store
+  config.cache_store = :memory_store
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter = :resque
@@ -107,12 +107,14 @@ Rails.application.configure do
 
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
+
+  # noinspection RubyResolve
   config.action_mailer.smtp_settings = {
-    address:              ENV.fetch('SMTP_ADDRESS', nil),
-    port:                 ENV.fetch('SMTP_PORT', nil),
-    domain:               ENV.fetch('SMTP_DOMAIN', nil),
-    user_name:            ENV.fetch('SMTP_USERNAME', nil),
-    password:             ENV.fetch('SMTP_PASSWORD', nil),
+    address:              'smtp.sendgrid.net',
+    user_name:            'apikey',
+    port:                 587,
+    domain:               Rails.application.credentials.development.sendgrid.domain,
+    password:             Rails.application.credentials.development.sendgrid.api_key,
     authentication:       :plain,
     enable_starttls_auto: true
   }

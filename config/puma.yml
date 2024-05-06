@@ -1,11 +1,10 @@
 # config/payment.yml
 production: &production
-  min_threads: 1
+  min_threads: <%= Integer(ENV.fetch('PUMA_THREADS', 3)) %>
   max_threads: <%= Integer(ENV.fetch('PUMA_THREADS', 3)) %>
-  workers: <%= Integer(ENV.fetch('PUMA_WORKERS',  Etc.nprocessors - 1)) %>
+  workers: <%= Integer(ENV.fetch('PUMA_WORKERS',  [Etc.nprocessors - 1, 4].min)) %>
   port: <%= Integer(ENV.fetch('PUMA_PORT', 3001)) %>
-  host: "https://tickets.fnf.events"
-
+  host: "<%= ENV.fetch('TICKETS_HOST', 'https://tickets.fnf.events') %>"
 
 staging:
   <<: *production
