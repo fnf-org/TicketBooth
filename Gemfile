@@ -70,6 +70,7 @@ gem 'haml'
 gem 'haml-rails'
 
 gem 'annotate'
+gem 'awesome_print'
 gem 'attribute_normalizer'
 gem 'carrierwave'
 gem 'dalli'
@@ -84,7 +85,6 @@ gem 'ventable', '>= 1.3'
 gem 'yard'
 
 group :development, :test do
-  gem 'awesome_print'
   gem 'brakeman', require: false
   gem 'codecov'
   gem 'debug', platforms: %i[mri windows]

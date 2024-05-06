@@ -8,16 +8,7 @@ set :repo_url, 'git@github.com:fnf-org/TicketBooth.git'
 set :bundle_flags, '--jobs=8 --deployment'
 set :bundle_without, 'development test'
 set :bundle_env_variables, { nokogiri_use_system_libraries: 1 }
-#
-# Default branch is :master
-local_branch = `git rev-parse --abbrev-ref HEAD`
-
-if local_branch == 'main'
-  set :branch, 'main'
-else
-  ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
-end
-
+set :branch, 'main'
 set :remote_user, 'fnf'
 set :user_home, '/home/fnf'
 set :deploy_to, "#{fetch(:user_home)}/apps/tickets"
