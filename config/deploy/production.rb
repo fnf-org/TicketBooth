@@ -2,7 +2,7 @@
 
 set :ruby_version, '3.2.3'
 set :node_version, '18'
-set :yarn_version, `grep '"yarn"' package.json | awk '{print $2}' | sed 's/"//g'`
+set :yarn_version, '4.2.1'
 
 set :target_os, 'linux'
 set :rails_env, 'production'
