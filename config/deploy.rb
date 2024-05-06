@@ -31,8 +31,12 @@ set :ssh_options, {
   auth_methods:  %w[publickey]
 }
 
+set :assets_manifests, -> {
+  [release_path.join("public", fetch(:assets_prefix), '.manifest.json')]
+}
+
 set :linked_files, %w[config/master.key]
-set :linked_dirs, %w[bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system]
+set :linked_dirs, %w[log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system]
 set :default_env, {}
 
 # Default value for keep_releases is 5

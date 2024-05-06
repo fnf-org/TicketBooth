@@ -4,20 +4,16 @@
 #
 # Table name: eald_payments
 #
-#  id                    :bigint           not null, primary key
+#  id                    :integer          not null, primary key
 #  amount_charged_cents  :integer          not null
 #  early_arrival_passes  :integer          default(0), not null
 #  email                 :string(255)      not null
 #  late_departure_passes :integer          default(0), not null
 #  name                  :string(255)      not null
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
-#  event_id              :bigint
+#  created_at            :datetime
+#  updated_at            :datetime
+#  event_id              :integer
 #  stripe_charge_id      :string           not null
-#
-# Indexes
-#
-#  index_eald_payments_on_event_id  (event_id)
 #
 class EaldPayment < ApplicationRecord
   include PaymentsHelper

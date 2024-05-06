@@ -47,7 +47,7 @@ namespace :ruby do
     desc 'Bundle install'
     task :bundle do
       on roles(:app) do
-        within deploy_to.to_s do
+        within release_path do
           execute :bash, '-c "echo Current Directory is $(pwd)"'
           execute :bash, "-c 'bundle exec bootsnap precompile --gemfile'"
         end

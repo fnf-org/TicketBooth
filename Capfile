@@ -14,5 +14,5 @@ require 'capistrano/rails/assets'
 require 'capistrano/scm/git'
 install_plugin Capistrano::SCM::Git
 
-# Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
-Dir.glob('lib/capistrano/tasks/**.cap').each { |r| import r }
+# Loads custom tasks from capistrano/tasks if you have any defined.
+Dir.glob('capistrano/tasks/**.cap').each { |r| import r }

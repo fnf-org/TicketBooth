@@ -12,13 +12,19 @@ class SplitUsersNameIntoFirstAndLast < ActiveRecord::Migration[7.1]
       name_components = user.name.gsub(/^(Dr\.?|Esq\.?)\s?/, '').split(/\s+/)
       user.first = name_components.shift
       user.last = name_components.join(' ')
-      execute "update users set first = '#{user.first}', last = '#{user.last}' where id = #{user.id}"
+      execute "update users set first = '#{escape(user.first)}', last = '#{escape(user.last)})' where id = #{user.id}"
     end
   end
 
   def down
     remove_column(:users, :first)
     remove_column(:users, :last)
+  end
+
+  def escape(string)
+    return string unless string.include?("'")
+
+    string.gsub("'", "''")
   end
   # rubocop: enable Rails/BulkChangeTable
 end

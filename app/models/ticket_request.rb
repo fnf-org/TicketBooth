@@ -7,7 +7,7 @@
 #
 # Table name: ticket_requests
 #
-#  id                      :bigint           not null, primary key
+#  id                      :integer          not null, primary key
 #  address_line1           :string(200)
 #  address_line2           :string(200)
 #  admin_notes             :string(512)
@@ -26,14 +26,14 @@
 #  needs_assistance        :boolean          default(FALSE), not null
 #  notes                   :string(500)
 #  previous_contribution   :string(250)
-#  role                    :string           default("volunteer"), not null
+#  role                    :string(255)      default("volunteer"), not null
 #  role_explanation        :string(200)
 #  special_price           :decimal(8, 2)
 #  state                   :string(50)
 #  status                  :string(1)        not null
 #  zip_code                :string(32)
-#  created_at              :datetime         not null
-#  updated_at              :datetime         not null
+#  created_at              :datetime
+#  updated_at              :datetime
 #  event_id                :integer          not null
 #  user_id                 :integer          not null
 #
