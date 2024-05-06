@@ -35,12 +35,12 @@ class ApplicationController < ActionController::Base
            Routing.routes.new_user_session_url].include?(request.referer)
       super
     else
-      stored_location_for(resource) || request.referer || root_path
+      stored_location_for(resource) || root_path
     end
   end
 
   def redirect_path
-    @redirect_path = redirect_to_param
+    @redirect_path = redirect_to_param || root_path
   end
 
   def redirect_to_param
