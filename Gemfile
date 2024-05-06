@@ -16,12 +16,6 @@ gem 'pg'
 gem 'puma', '>= 6'
 gem 'puma-status'
 
-gem 'bcrypt_pbkdf'
-gem 'capistrano'
-gem 'capistrano-rails'
-gem 'capistrano-rbenv'
-gem 'ed25519'
-
 # replace sprockets with propshaft
 gem 'propshaft'
 
@@ -87,6 +81,7 @@ gem 'psych'
 gem 'rake'
 gem 'stripe'
 gem 'ventable', '>= 1.3'
+gem 'yard'
 
 group :development, :test do
   gem 'awesome_print'
@@ -102,14 +97,18 @@ group :development, :test do
   gem 'rubocop-rake'
   gem 'rubocop-rspec'
   gem 'stripe-ruby-mock', '~> 2.5.0', require: 'stripe_mock'
-  gem 'yard'
 end
 
 group :development do
   gem 'asciidoctor'
   # gem 'rack-mini-profiler'
+  gem 'bcrypt_pbkdf'
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'capistrano'
+  gem 'capistrano-rails'
+  gem 'capistrano-rbenv'
+  gem 'ed25519'
   gem 'web-console'
 end
 
