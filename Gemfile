@@ -70,8 +70,8 @@ gem 'haml'
 gem 'haml-rails'
 
 gem 'annotate'
-gem 'awesome_print'
 gem 'attribute_normalizer'
+gem 'awesome_print'
 gem 'carrierwave'
 gem 'dalli'
 gem 'devise'
@@ -102,14 +102,19 @@ end
 group :development do
   gem 'asciidoctor'
   # gem 'rack-mini-profiler'
-  gem 'bcrypt_pbkdf'
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'web-console'
+end
+
+group :development, :deploy do
+  gem 'bcrypt_pbkdf'
   gem 'capistrano'
+  gem 'capistrano-faster-assets'
   gem 'capistrano-rails'
+  gem 'capistrano-rake', require: false
   gem 'capistrano-rbenv'
   gem 'ed25519'
-  gem 'web-console'
 end
 
 group :test do

@@ -9,14 +9,14 @@ development: &development
   database: ticketing_app_development
 
 test:
-  <<: *development  
+  <<: *development
   database: ticketing_app_test
 
 production:
   <<: *development
   host: <%= ENV.fetch('TICKETING_DB_HOST', '127.0.0.1') %>
   port: <%= ENV.fetch('TICKETING_DB_PORT', '5432') %>
-  username: <%= ENV.fetch('TICKETING_DB_USER', 'postgres') %>
+  username: <%= ENV.fetch('TICKETING_DB_USER', 'fnf') %>
   password: <%= ENV.fetch('TICKETING_DB_PASS', '') %>
   database: <%= ENV.fetch('TICKETING_DB_NAME', 'ticketing_app_production') %>
   pool: 10

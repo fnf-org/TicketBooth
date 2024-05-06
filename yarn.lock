@@ -1814,15 +1814,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stimulus-components/rails-nested-form@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@stimulus-components/rails-nested-form@npm:5.0.0"
-  peerDependencies:
-    "@hotwired/stimulus": ^3.0.0
-  checksum: 10c0/4c2aed94c92b9b6d129c9a3a64bb9eb9a8a2676a29fe9f964f18392a38fcc9a446511799771b7e85a3705a434ba2dc37dc8ed490af1d9e129973f326c7fff826
-  languageName: node
-  linkType: hard
-
 "@stripe/stripe-js@npm:^3.3.0":
   version: 3.3.0
   resolution: "@stripe/stripe-js@npm:3.3.0"
@@ -1875,6 +1866,13 @@ __metadata:
   dependencies:
     "@babel/types": "npm:^7.20.7"
   checksum: 10c0/033abcb2f4c084ad33e30c3efaad82161240f351e3c71b6154ed289946b33b363696c0fbd42502b68e4582a87413c418321f40eb1ea863e34fe525641345e05b
+  languageName: node
+  linkType: hard
+
+"@types/hotwired__turbo@npm:^8":
+  version: 8.0.1
+  resolution: "@types/hotwired__turbo@npm:8.0.1"
+  checksum: 10c0/39d95c6e5293b31e63166aa6eef9e03cdd9378d840e6942a91e4ec95659af4b57ea50e5e08ebe359ca39cb2253d18d1946b2c5e069c042912eec791a5232cfe8
   languageName: node
   linkType: hard
 
@@ -6702,12 +6700,13 @@ __metadata:
     "@eslint/eslintrc": "npm:^3.0.2"
     "@eslint/js": "npm:^9.1.1"
     "@hotwired/stimulus": "npm:^3.2.2"
+    "@hotwired/turbo": "npm:^8.0.4"
     "@hotwired/turbo-rails": "npm:^8.0.4"
     "@popperjs/core": "npm:^2.11.8"
-    "@stimulus-components/rails-nested-form": "npm:^5.0.0"
     "@stripe/stripe-js": "npm:^3.3.0"
     "@types/babel__core": "npm:^7"
     "@types/babel__preset-env": "npm:^7"
+    "@types/hotwired__turbo": "npm:^8"
     "@types/jquery": "npm:^3"
     "@typescript-eslint/eslint-plugin": "npm:^6.4.0"
     "@typescript-eslint/parser": "npm:^7.7.0"

@@ -31,7 +31,7 @@ set :ssh_options, {
   auth_methods:  %w[publickey]
 }
 
-set :linked_files, %w[]
+set :linked_files, %w[config/master.key]
 set :linked_dirs, %w[bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system]
 set :default_env, {}
 
@@ -45,6 +45,9 @@ namespace :deploy do
   namespace(:assets) { after :precompile, 'deploy:permissions' }
 
   before :publishing, 'ruby:bundler:bundle'
+  before 'deploy:assets:precompile', 'node:install'
+  before 'deploy:assets:precompile', 'node:yarn:install'
+
   before :publishing, 'puma:stop'
   after :publishing, 'puma:start'
 end

@@ -42,17 +42,6 @@ namespace :deploy do
     end
   end
 
-  # Removes Secrets file
-  task :secrets do
-    on roles(:app) do
-      within release_path do
-        execute :rm, '-f config/secrets.yml'
-      end
-    end
-  end
-
-  before 'symlink:linked_files', 'secrets'
-
   Rake::Task['deploy:symlink:linked_dirs'].clear_actions
 
   # Faster symlink, by executing once a giant BASH command.
