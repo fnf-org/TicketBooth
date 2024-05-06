@@ -81,13 +81,13 @@
                     Art Grantee or DJ
 
                   = f.text_area :role_explanation,
-                    placeholder: 'Briefly describe your role (required)',
+                    placeholder: 'Briefly describe your role',
                     rows: 4, width: 400, maxlength: 400, required: false, style: 'min-width: 100% !important; font-size: 11pt;'
               .row0
                 .col-12
                   = f.label :previous_contribution, 'What was your role last year?'
                   = f.text_area :previous_contribution, style: 'min-width: 100%',
-                      rows: 2, maxlength: 250
+                      rows: 2, maxlength: 250, required: false
 
                   - if signed_in? && @event.admin?(current_user) && form_action_name == :update
                     .well
@@ -194,7 +194,7 @@
                   = f.label :agrees_to_terms, class: 'checkbox' do
                     = f.check_box :agrees_to_terms
                     I’ve read
-                    = link_to 'The FnF Way', 'http://cfaea.net/the-fnf-way/', target: '_blank', onclick: "popupWindow('http://cfaea.net/the-fnf-way/', 'The FnF Way', window, 700, 900); return false;"
+                    = link_to 'The FnF Way', 'https://fnf.events/the-fnf-way/', target: '_blank', onclick: "popupWindow('https://fnf.events/the-fnf-way/', 'The FnF Way', window, 700, 900); return false;"
                     and
                     = link_to 'Code of Conduct', 'https://fnf.page.link/coc', target: '_blank', onclick: "popupWindow('https://fnf.page.link/coc', 'Code of Conduct', window, 800, 900); return false;"
                     and agree to follow the principles outlined therein
