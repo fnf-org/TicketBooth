@@ -51,8 +51,11 @@ namespace :deploy do
   # Ensures all asset folders and files are world-readable.
   task :permissions do
     on roles(:app) do
-      within "#{release_path}/public" do
-        execute :chmod, '-R o+xr assets'
+      within release_path do
+        execute :chmod, '-R o+xr public'
+        execute :chmod, '-R g+xr public'
+        # nginx runs as UID kig, GID kig, so...
+        execute :chgrp, '-R kig .'
       end
     end
   end

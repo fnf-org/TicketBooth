@@ -6,10 +6,6 @@ namespace :puma do
     on roles(:app) do
       execute <<~BASH
         cd #{release_path}
-        source ~/.bashrc
-        [[ -f ~/.bashrc.tickets ]] && source ~/.bashrc.tickets
-        export APP=#{fetch(:application)}
-        export RAILS_ENV=#{fetch(:rails_env)}
         sudo systemctl start puma.tickets.service
       BASH
       sleep 0.4
