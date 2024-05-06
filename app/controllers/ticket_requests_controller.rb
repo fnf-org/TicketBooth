@@ -185,7 +185,8 @@ class TicketRequestsController < ApplicationController
       flash.now[:error] = "Unable to approve #{@ticket_request.user.name}'s request"
     end
 
-    render_flash(flash) && redirect_to(event_ticket_requests_path(@event))
+    # render_flash(flash) && redirect_to(event_ticket_requests_path(@event))
+    redirect_to(event_ticket_requests_path(@event))
   end
 
   def decline
@@ -199,7 +200,8 @@ class TicketRequestsController < ApplicationController
       flash[:error] = "Unable to decline #{@ticket_request.user.name}'s request"
     end
 
-    render_flash(flash) && redirect_to(event_ticket_requests_path(@event))
+    # render_flash(flash) && redirect_to(event_ticket_requests_path(@event))
+    redirect_to(event_ticket_requests_path(@event))
   end
 
   def resend_approval
