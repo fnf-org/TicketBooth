@@ -6700,7 +6700,6 @@ __metadata:
     "@eslint/eslintrc": "npm:^3.0.2"
     "@eslint/js": "npm:^9.1.1"
     "@hotwired/stimulus": "npm:^3.2.2"
-    "@hotwired/turbo": "npm:^8.0.4"
     "@hotwired/turbo-rails": "npm:^8.0.4"
     "@popperjs/core": "npm:^2.11.8"
     "@stripe/stripe-js": "npm:^3.3.0"
