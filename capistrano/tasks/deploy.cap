@@ -28,6 +28,14 @@
 #     deploy:log_revision
 
 namespace :deploy do
+  task :migrate do
+    on roles(:db) do
+      within deploy_to.to_s do
+        execute "RAILS_ENV=#{fetch(:rails_env)} bundle exec rake db:migrate"
+      end
+    end
+  end
+
   task :setup do
     invoke "#{fetch(:target_os)}:init"
     invoke 'ruby:bundler:install'

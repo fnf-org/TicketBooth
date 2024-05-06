@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 # vim: ft=bash
-# 
+#
 # https://blog.phusion.nl/2017/10/13/why-ruby-app-servers-break-on-macos-high-sierra-and-what-can-be-done-about-it/
+
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+
+if [[ -f ~/.bashrc.tickets ]]; then
+  # shellcheck source=/Users/kig/.bashrc.tickets
+  source ~/.bashrc.tickets
+fi
 
 if [[ $(uname -s) == Linux ]]; then
   export RAILS_ENV="${RAILS_ENV:-"production"}"
@@ -10,4 +16,6 @@ else
   export RAILS_ENV="${RAILS_ENV:-"development"}"
 fi
 
-bundle exec puma -e "${RAILS_ENV}" -C $(pwd)/config/puma.rb -v "$@"
+export current_dir="$(pwd -P)"
+
+bundle exec puma -e "${RAILS_ENV}" -C "${current_dir}/config/puma.rb" -v "$@"
