@@ -9,7 +9,7 @@ namespace :puma do
         source ~/.bashrc
         export APP=#{fetch(:application)}
         export RAILS_ENV=#{fetch(:rails_env)}
-        #{release_path}/bin/puma-start
+        sudo systemctl start puma.tickets.service
       BASH
       sleep 0.4
       execute 'ps -ef | grep puma'
@@ -19,8 +19,7 @@ namespace :puma do
   desc 'Stop Puma Workers'
   task :stop do
     on roles(:worker) do
-      execute 'set +e; pkill [p]uma; sleep 3; pkill -9 [p]uma; sleep 1; true'
-      execute 'ps -ef | grep puma'
+      execute 'sudo systemctl stop puma.tickets.service'
     end
   end
 

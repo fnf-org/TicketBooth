@@ -3,8 +3,9 @@ production: &production
   min_threads: 1
   max_threads: <%= Integer(ENV.fetch('PUMA_THREADS', 3)) %>
   workers: <%= Integer(ENV.fetch('PUMA_WORKERS',  Etc.nprocessors - 1)) %>
-  port: <%= Integer(ENV.fetch('PUMA_PORT', 8080)) %>
-  host: https://tickets.apps.fnf.org
+  port: <%= Integer(ENV.fetch('PUMA_PORT', 3001)) %>
+  host: "https://tickets.fnf.events"
+
 
 staging:
   <<: *production

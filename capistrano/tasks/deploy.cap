@@ -26,7 +26,6 @@
 #     deploy:cleanup
 #   deploy:finished
 #     deploy:log_revision
-
 namespace :deploy do
   task :migrate do
     on roles(:app) do
@@ -39,12 +38,10 @@ namespace :deploy do
   task :compile_assets do
     on roles(:app) do
       within release_path do
-        execute :bash, "-c '[[ -f ~/.bashrc.tickets ]] && source ~/.bashrc.tickets; RAILS_ENV=#{fetch(:rails_env)} bundle exec rake db:migrate'"
+        execute :bash, "-c '[[ -f ~/.bashrc.tickets ]] && source ~/.bashrc.tickets; direnv allow . 2>/dev/null ; RAILS_ENV=#{fetch(:rails_env)} bundle exec rake assets:precompile'"
       end
     end
   end
-
-
 
   task :setup do
     invoke "#{fetch(:target_os)}:init"
