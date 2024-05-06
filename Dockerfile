@@ -36,6 +36,23 @@ WORKDIR /rails
 
 # ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2 \
 ENV NODE_VERSION=20.12.1 \
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     YARN_VERSION=latest \
     PATH=/usr/local/node/bin:$PATH
 

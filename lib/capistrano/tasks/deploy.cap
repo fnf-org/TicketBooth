@@ -1,0 +1,81 @@
+# frozen_string_literal: true
+
+# Standard Settings:
+
+# deploy
+#   deploy:starting
+#     [before]
+#       deploy:ensure_stage
+#       deploy:set_shared_assets
+#     deploy:check
+#   deploy:started
+#   deploy:updating
+#     git:create_release
+#     deploy:symlink:shared
+#   deploy:updated
+#     [before]
+#       deploy:bundle
+#     [after]
+#       deploy:migrate
+#       deploy:compile_assets
+#       deploy:normalize_assets
+#   deploy:publishing
+#     deploy:symlink:release
+#   deploy:published
+#   deploy:finishing
+#     deploy:cleanup
+#   deploy:finished
+#     deploy:log_revision
+
+namespace :deploy do
+  task :setup do
+    invoke "#{fetch(:target_os)}:init"
+    invoke 'ruby:bundler:install'
+  end
+
+  # Ensures all asset folders and files are world-readable.
+  task :permissions do
+    on roles(:app) do
+      within "#{release_path}/public" do
+        execute :chmod, '-R o+xr assets'
+      end
+    end
+  end
+
+  # Removes Secrets file
+  task :secrets do
+    on roles(:app) do
+      within release_path do
+        execute :rm, '-f config/secrets.yml'
+      end
+    end
+  end
+
+  before 'symlink:linked_files', 'secrets'
+
+  Rake::Task['deploy:symlink:linked_dirs'].clear_actions
+
+  # Faster symlink, by executing once a giant BASH command.
+  namespace :symlink do
+    desc 'Symlink linked directories'
+    task :linked_dirs do
+      next unless any? :linked_dirs
+
+      on release_roles :all do
+        execute :mkdir, '-p', linked_dir_parents(release_path)
+
+        cmd = fetch(:linked_dirs).map do |dir|
+          target = release_path.join(dir)
+          source = shared_path.join(dir)
+          next if test("[ -L #{target} ]")
+
+          out = []
+          out << "rm -rf #{target}" if test("[ -d #{target} ]")
+          out << "ln -s #{source} #{target}"
+          out
+        end.flatten.compact.join('; ')
+        execute cmd
+      end
+    end
+  end
+end

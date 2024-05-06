@@ -16,6 +16,13 @@ gem 'pg'
 gem 'puma', '>= 6'
 gem 'puma-status'
 
+gem 'capistrano'
+gem 'capistrano-rails'
+gem 'capistrano-rbenv'
+gem 'ed25519'
+gem 'bcrypt_pbkdf'
+
+
 # replace sprockets with propshaft
 gem 'propshaft'
 
@@ -101,7 +108,6 @@ end
 
 group :development do
   gem 'asciidoctor'
-  gem 'capistrano'
   # gem 'rack-mini-profiler'
   gem 'better_errors'
   gem 'binding_of_caller'

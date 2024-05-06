@@ -1,0 +1,29 @@
+# frozen_string_literal: true
+
+namespace :puma do
+  desc 'Start Puma Workers'
+  task :start do
+    on roles(:app) do
+      execute <<~BASH
+        cd #{release_path}
+        source ~/.bashrc
+        export APP=#{fetch(:application)}
+        export RAILS_ENV=#{fetch(:rails_env)}
+        #{release_path}/exe/puma-start
+      BASH
+      sleep 0.4
+      execute 'ps -ef | grep puma'
+    end
+  end
+
+  desc 'Stop Puma Workers'
+  task :stop do
+    on roles(:worker) do
+      execute 'set +e; pkill [p]uma; sleep 3; pkill -9 [p]uma; sleep 1; true'
+      execute 'ps -ef | grep puma'
+    end
+  end
+
+  desc 'Restart Puma'
+  task restart: %i[stop start]
+end
