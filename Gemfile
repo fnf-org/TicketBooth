@@ -16,12 +16,11 @@ gem 'pg'
 gem 'puma', '>= 6'
 gem 'puma-status'
 
+gem 'bcrypt_pbkdf'
 gem 'capistrano'
 gem 'capistrano-rails'
 gem 'capistrano-rbenv'
 gem 'ed25519'
-gem 'bcrypt_pbkdf'
-
 
 # replace sprockets with propshaft
 gem 'propshaft'
