@@ -1,0 +1,45 @@
+# frozen_string_literal: true
+
+set :rbenv, '/usr/bin/rbenv'
+set :default_env, { PATH:      "#{fetch(:ruby_bin_dir)}:/usr/local/bin:$PATH",
+                    MAKE_OPTS: '-j8' }
+set :packages, %w[
+  build-essential
+  gcc
+  git
+  git-core
+  htop
+  libbz2-dev
+  libffi-dev
+  libmagickwand-dev
+  libmemcached-dev
+  libpq-dev
+  libreadline-dev
+  libssl-dev
+  make
+  postgresql-client
+  wget
+  curl
+  zlib1g-dev
+  libcurl4-openssl-dev
+  libxml2-dev
+  libxslt1-dev
+  libyaml-dev
+  nodejs
+]
+
+namespace :linux do
+  task init: [:packages]
+
+  desc 'Install Linux package dependencies'
+  task :packages do
+    on roles(:app) do |role_host|
+      host = SSHKit::Host.new("#{fetch(:remote_user)}@#{role_host}")
+      on host do
+        execute 'sudo apt-get upgrade -y -qqq'
+        execute 'sudo apt-get update -qqq'
+        execute "sudo apt-get install -y -qqq  #{fetch(:packages).join(' ')}"
+      end
+    end
+  end
+end

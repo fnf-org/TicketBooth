@@ -1,0 +1,71 @@
+# frozen_string_literal: true
+
+require 'colorize'
+
+namespace :ruby do
+  desc 'Installs rbenv and ruby-build in the home directory'
+  task :rbenv do
+    home = fetch(:user_home)
+    on roles(:app) do
+      within fetch(:user_home).to_s do
+        execute :bash, <<-BASH.gsub(/\n\s{2,}/, ' ')
+        -c '
+           [[ -d #{home}/.rbenv ]] || git clone https://github.com/rbenv/rbenv.git #{home}/.rbenv >/dev/null ;
+           [[ -d #{home}/.rbenv/plugins/ruby-build ]] || git clone https://github.com/rbenv/ruby-build.git #{home}/.rbenv/plugins/ruby-build >/dev/null ;
+           [[ -d #{home}/.rbenv/plugins/rbenv-gem-rehash ]] || git clone https://github.com/rbenv/rbenv-gem-rehash.git #{home}/.rbenv/plugins/rbenv-gem-rehash/ > /dev/null
+        '
+        BASH
+        execute :bash, "-c '[[ -d #{deploy_to} ]] || mkdir -p #{deploy_to}'"
+      end
+    end
+  end
+
+  desc 'Install ruby using rbenv'
+  task :install do
+    on roles(:app) do
+      within deploy_to.to_s do
+        execute fetch(:rbenv), :install, '-s', fetch(:ruby_version)
+        execute fetch(:rbenv), :global, fetch(:ruby_version)
+      end
+    end
+  end
+
+  before :install, :rbenv
+
+  namespace :bundler do
+    desc 'Install bundler'
+    task :install do
+      on roles(:app) do
+        within deploy_to.to_s do
+          execute :bash, <<-BASH.gsub(/\s{2,}/, ' ')
+            -c 'source ~/.bashrc; [[ -n "$(gem list | grep bundler)" ]] || gem install bundler --no-ri --no-rdoc '
+          BASH
+        end
+      end
+    end
+
+    desc 'Bundle install'
+    task :bundle do
+      on roles(:app) do
+        within deploy_to.to_s do
+          execute :bash, '-c "echo Current Directory is $(pwd)"'
+          execute :bash, "-c 'bundle exec bootsnap precompile --gemfile'"
+        end
+      end
+    end
+
+    before :install, 'ruby:install'
+
+    task :native_config do
+      on roles(:app) do
+        within release_path do
+          fetch(:native_gems).each do |gem|
+            next unless fetch(:gem_config)[gem]
+
+            execute :bash, "-c 'source ~/.bashrc; bundle config --local build.#{gem} #{fetch(:gem_config)[gem]}'"
+          end
+        end
+      end
+    end
+  end
+end

@@ -1,8 +1,18 @@
 # frozen_string_literal: true
 
-# Ensure we run within a Bundler context with the correct version of Capistrano
-exec('bundle', 'exec', $PROGRAM_NAME, *ARGV) unless defined?(Bundler)
+# Load DSL and Setup Up Stages
+require 'airbrussh/capistrano'
+require 'capistrano/setup'
 
-load 'deploy'
-load 'deploy/assets'
-load 'config/deploy' # remove this line to skip loading any of the default tasks
+# Includes default deployment tasks
+require 'capistrano/deploy'
+require 'capistrano/console'
+
+require 'capistrano/bundler'
+require 'capistrano/rails/assets'
+
+require 'capistrano/scm/git'
+install_plugin Capistrano::SCM::Git
+
+# Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
+Dir.glob('lib/capistrano/tasks/**.cap').each { |r| import r }

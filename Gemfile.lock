@@ -91,6 +91,7 @@ GEM
     awesome_print (1.9.2)
     base64 (0.2.0)
     bcrypt (3.1.20)
+    bcrypt_pbkdf (1.1.0)
     better_errors (2.10.1)
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
@@ -109,6 +110,14 @@ GEM
       i18n
       rake (>= 10.0.0)
       sshkit (>= 1.9.0)
+    capistrano-bundler (2.1.0)
+      capistrano (~> 3.1)
+    capistrano-rails (1.6.3)
+      capistrano (~> 3.1)
+      capistrano-bundler (>= 1.1, < 3)
+    capistrano-rbenv (2.2.0)
+      capistrano (~> 3.1)
+      sshkit (~> 1.3)
     carrierwave (3.0.7)
       activemodel (>= 6.0.0)
       activesupport (>= 6.0.0)
@@ -145,6 +154,7 @@ GEM
     diff-lcs (1.5.1)
     docile (1.4.0)
     drb (2.2.1)
+    ed25519 (1.3.0)
     erubi (1.12.0)
     factory_bot (6.4.6)
       activesupport (>= 5.0.0)
@@ -397,7 +407,7 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
-    sshkit (1.22.1)
+    sshkit (1.22.2)
       base64
       mutex_m
       net-scp (>= 1.1.2)
@@ -458,11 +468,14 @@ DEPENDENCIES
   attribute_normalizer
   awesome_print
   bcrypt (~> 3.1.7)
+  bcrypt_pbkdf
   better_errors
   binding_of_caller
   bootsnap
   brakeman
   capistrano
+  capistrano-rails
+  capistrano-rbenv
   carrierwave
   codecov
   colorize
@@ -471,6 +484,7 @@ DEPENDENCIES
   dalli
   debug
   devise
+  ed25519
   factory_bot_rails
   faker
   flatpickr
