@@ -49,6 +49,8 @@ namespace :deploy do
   namespace(:assets) { after :precompile, 'deploy:permissions' }
 
   before :publishing, 'ruby:bundler:bundle'
+
+  before 'deploy:assets:precompile', 'deploy:migrate'
   before 'deploy:assets:precompile', 'node:install'
   before 'deploy:assets:precompile', 'node:yarn:install'
 
