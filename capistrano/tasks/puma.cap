@@ -9,7 +9,7 @@ namespace :puma do
         source ~/.bashrc
         export APP=#{fetch(:application)}
         export RAILS_ENV=#{fetch(:rails_env)}
-        #{release_path}/exe/puma-start
+        #{release_path}/bin/puma-start
       BASH
       sleep 0.4
       execute 'ps -ef | grep puma'

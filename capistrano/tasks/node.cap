@@ -10,7 +10,7 @@ namespace :node do
         sudo bash nodesource_setup.sh
         sudo apt-get install nodejs -yqq
         sudo corepack enable
-        echo y | yarn set version #{fetch(:yarn_version)}
+        echo y | sudo yarn set version #{fetch(:yarn_version)}
       BASH
     end
   end
