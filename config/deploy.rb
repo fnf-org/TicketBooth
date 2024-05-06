@@ -31,8 +31,8 @@ set :ssh_options, {
   auth_methods:  %w[publickey]
 }
 
-set :assets_manifests, -> {
-  [release_path.join("public", fetch(:assets_prefix), '.manifest.json')]
+set :assets_manifests, lambda {
+  [release_path.join('public', fetch(:assets_prefix), '.manifest.json')]
 }
 
 set :linked_files, %w[config/master.key]
