@@ -30,18 +30,22 @@ run "brew services start postgresql@16"
 run "brew services start memcached"
 
 h1 "Installing Dependencies"
-[[ -d "$(rbenv root)"/plugins/ruby-build ]] || "git clone https://github.com/rbenv/ruby-build.git \"$(rbenv root)\"/plugins/ruby-build"
+[[ -d "$(rbenv root)/plugins/ruby-build" ]] || {
+  run "mkdir -p $(rbenv root)/plugins"
+  run "git clone https://github.com/rbenv/ruby-build.git $(rbenv root)/plugins/ruby-build" 
+}
 run "git -C \"$(rbenv root)\"/plugins/ruby-build pull"
 run "rbenv install -s \"$(cat .ruby-version)\""
 run "rbenv local $(cat .ruby-version)"
 
 eval "$(rbenv init -)"
 
+export yarn_version=$(cat .yarn-version | tr -d '\n')
 run "curl https://get.volta.sh | bash"
 run "volta install node@lts"
-run "volta install yarn@4.2.1"
+run "volta install yarn@${yarn_version}"
 run "volta pin node"
-run "volta pin yarn"
+run "volta pin yarn@${yarn_version}"
 
 command -V direnv >/dev/null && {
   h1 "Setting up direnv..."
