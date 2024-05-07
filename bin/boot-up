@@ -30,13 +30,16 @@ run "brew services start postgresql@16"
 run "brew services start memcached"
 
 h1 "Installing Dependencies"
-rbenv install -s "$(cat .ruby-version)"
+[[ -d "$(rbenv root)"/plugins/ruby-build ]] || "git clone https://github.com/rbenv/ruby-build.git \"$(rbenv root)\"/plugins/ruby-build"
+run "git -C \"$(rbenv root)\"/plugins/ruby-build pull"
+run "rbenv install -s \"$(cat .ruby-version)\""
+run "rbenv local $(cat .ruby-version)"
 
 eval "$(rbenv init -)"
 
 run "curl https://get.volta.sh | bash"
 run "volta install node@lts"
-run "volta install yarn@4.1.1"
+run "volta install yarn@4.2.1"
 run "volta pin node"
 run "volta pin yarn"
 
@@ -48,17 +51,20 @@ command -V direnv >/dev/null && {
 
 run "yarn install"
 run "yarn run build"
-
-run "rbenv install -s $(cat .ruby-version)"
-run "rbenv local $(cat .ruby-version)"
-
 run "mkdir -p .bundle"
-run "cp development/config/config.Darwin.arm64 .bundle/config"
+
+arch=$(arch)
+
+run "cp development/config/config.Darwin.$(arch) .bundle/config"
 run "bundle install -j 12"
 
+h2 "Ensuring you have the right PG user..."
+
+run "createuser -U ${USER} -s postgres 2>/dev/null || true"
+
 h1 "Running Migrations..."
-run "bin/rails db:migrate"
-run "bin/rails db:seed"
+run "bin/rails db:create"
+run "bin/rails db:prepare"
 run "bundle exec rake db:test:prepare"
 
 success "Your server should be ready to roll. Run ${txtgrn}make dev${clr} to start it."

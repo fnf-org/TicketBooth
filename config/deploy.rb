@@ -54,6 +54,5 @@ namespace :deploy do
   before 'deploy:assets:precompile', 'node:install'
   before 'deploy:assets:precompile', 'node:yarn:install'
 
-  before :publishing, 'puma:stop'
-  after :publishing, 'puma:start'
+  after :publishing, 'puma:restart'
 end
