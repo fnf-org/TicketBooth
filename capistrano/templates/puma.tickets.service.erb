@@ -1,0 +1,46 @@
+[Unit]
+Description=puma.<%= @app_name %>
+After=network.target
+
+[Service]
+Type=simple
+User=<%= @app_user %>
+WorkingDirectory=<%= @home %><%= @app_home %>/current
+ExecStart=<%= @home %>/.rbenv/shims/bundle exec puma --pidfile <%= @home %><%= @app_home %>/shared/tmp/pids/puma.pid -C <%= @home %><%= @app_home %>/current/config/puma.rb -v --redirect-stdout <%= @log_dir %>/<%= @app_name %>.stdout.log --redirect-stderr <%= @log_dir %>/<%= @app_name %>.stderr.log --redirect--append --dir <%= @home %><%= @app_home %>/current --state <%= @home %><%= @app_home %>/shared/tmp/pids/puma.state
+ExecStop=<%= @home %>/.rbenv/shims/bundle exec pumactl -S <%= @home %><%= @app_name %>/shared/tmp/pids/puma.state stop
+ExecReload=/bin/kill -s USR1 $MAINPID
+PIDFile=<%= @home %><%= @app_home %>/shared/tmp/pids/puma.pid
+TimeoutSec=15
+Environment=PATH=<%= @home %>/.rbenv/shims:/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin:/snap/bin:<%= @home %>/apps/tckets/current/bin
+Environment=RAILS_ENV=production
+Environment=RAILS_MASTER_KEY=<%= @rails_master_key %>
+Environment=RAILS_APP_HOME=<%= @home %><%= @app_home %>/current
+Environment=RAILS_APP_CONFIG_HOME=<%= @home %><%= @app_home %>/current/config
+Environment=RAILS_APP_MASTER_KEY_FILE=<%= @home %><%= @app_home %>/current/config/master.key
+Environment=TICKETING_DB_PASS="<%= @app_db_password %>
+Environment=TICKETING_HOST=<%= @app_name %>.fnf.events
+Environment=RUBYOPT=W0
+Environment=PUMA_PORT=<%= @app_puma_port %>
+Environment=PUMA_WORKERS=<%= @app_puma_workers || 4 %>
+Environment=PUMA_THREADS=<%= @app_puma_threads || 3 %>
+Environment=MALLOC_ARENA_MAX=2
+Environment=RUBY_GC_HEAP_FREE_SLOTS=300_000q
+Environment=RUBY_GC_HEAP_GROWTH_FACTOR=1.03
+Environment=RUBY_GC_HEAP_GROWTH_MAX_SLOTS=100_000
+Environment=RUBY_GC_HEAP_INIT_SLOTS=500_000
+Environment=RUBY_GC_HEAP_OLDOBJECT_LIMIT_FACTOR=2.4
+Environment=RUBY_GC_MALLOC_LIMIT=50_000_000
+Environment=RUBY_GC_MALLOC_LIMIT_GROWTH_FACTOR=1.32
+Environment=RUBY_GC_MALLOC_LIMIT_MAX=90_000_000
+Environment=RUBY_GC_OLDMALLOC_LIMIT=10_000_000
+Environment=RUBY_GC_OLDMALLOC_LIMIT_GROWTH_FACTOR=1.2
+Environment=RUBY_GC_OLDMALLOC_LIMIT_MAX=47207045
+SyslogIdentifier=puma.<%= @app_name %>
+CPUQuota=80%
+MemoryHigh=3G
+RestartSec=500ms
+Restart=always
+Slice=<%= @app_name %>
+
+[Install]
+WantedBy=multi-user.target
