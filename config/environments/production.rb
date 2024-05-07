@@ -118,4 +118,10 @@ Rails.application.configure do
     authentication:       :plain,
     enable_starttls_auto: true
   }
+
+  config.stripe = {
+    secret_api_key:       Rails.application.credentials.production.dig(:stripe, :secret_api_key),
+    publishable_api_key:  Rails.application.credentials.production.dig(:stripe, :publishable_api_key)
+  }
+
 end
