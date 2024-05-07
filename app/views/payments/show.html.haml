@@ -17,10 +17,12 @@
 
   %p
     %b Card # Ending In:
-    = @charge.card.last4
+    # XXX this needs update
+    = @payment_intent.card.last4
 
   %p
     %b Card Expiration Date:
+      # XXX this needs update
     #{@charge.card.exp_month} / #{@charge.card.exp_year}
 - else
   %p.lead
