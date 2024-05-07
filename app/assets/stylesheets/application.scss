@@ -12,40 +12,33 @@
  *= require_self
  */
 
+
 @import 'bootstrap/scss/bootstrap';
 //@import './vendor/bootstrap-icons.scss';
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css");
 
 // Required
+@import "bootstrap/scss/reboot";
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/mixins";
-
-$theme-colors: map-remove($theme-colors, "info", "light", "dark");
-
-// Optional
+@import "bootstrap/scss/variables-dark";
 @import "bootstrap/scss/root";
-@import "bootstrap/scss/reboot";
 @import "bootstrap/scss/type";
 
-// Icons
+$theme-colors: map-remove($theme-colors, "info", "light", "dark");
 
 @import 'flatpickr/dist/flatpickr';
 @import 'flatpickr/dist/themes/material_orange';
 
-//@import '../../../node_modules/flatpickr/dist/flatpickr.min';
-//@import '../../../node_modules/flatpickr/dist/themes/material_orange';
-
-
 @import './site/fonts.css.scss';
+@import './site/global.css.scss';
 @import './site/home.css.scss';
 @import './site/jobs.css.scss';
 @import './site/payments.css.scss';
 @import './site/shifts.css.scss';
 @import './site/time_slots.css.scss';
 @import './site/links.css.scss';
-@import './site/global.css.scss';
 @import './site/forms.css.scss';
 @import './site/events.css.scss';
 @import './site/nav.css.scss';
-

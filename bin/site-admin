@@ -1,9 +1,9 @@
-#!/usr/bin/env ruby -W0
+#!/usr/bin/env ruby
 # vim: ft=ruby
 # frozen_string_literal: true
 
 require 'uri'
-require 'colored2'
+require 'colorize'
 
 user_email = ARGV[1]
 action = ARGV[0]
