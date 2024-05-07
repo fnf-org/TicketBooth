@@ -3,20 +3,20 @@
 namespace :puma do
   desc 'Start Puma Workers'
   task :start do
-    on roles(:app) do
-      execute <<~BASH
-        cd #{release_path}
-        sudo systemctl start puma.tickets.service
-      BASH
-      sleep 0.4
-      execute 'ps -ef | grep puma'
+    on roles(:app) do |host|
+      info "Starting Puma on #{host} (#{host.roles.to_a.join(', ')}):\t#{capture(:uptime)}".colorize(:green)
+      execute 'sudo systemctl start puma.tickets.service'
+      execute "ps -fu #{fetch(:user)} | grep puma"
     end
   end
 
   desc 'Stop Puma Workers'
   task :stop do
-    on roles(:worker) do
+    on roles(:app) do |host|
+      info "Stopping Puma on #{host} (#{host.roles.to_a.join(', ')}):\t#{capture(:uptime)}".colorize(:yellow)
       execute 'sudo systemctl stop puma.tickets.service'
+      sleep 1
+      execute "ps -fu #{fetch(:user)} | grep puma"
     end
   end
 

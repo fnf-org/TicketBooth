@@ -50,9 +50,13 @@ namespace :deploy do
 
   before :publishing, 'ruby:bundler:bundle'
 
-  before 'deploy:assets:precompile', 'deploy:migrate'
-  before 'deploy:assets:precompile', 'node:install'
-  before 'deploy:assets:precompile', 'node:yarn:install'
+  namespace(:assets) do
+    before :precompile, 'deploy:migrate'
+    before :precompile, 'node:install'
+    before :precompile, 'node:yarn:install'
+  end
 
-  after :publishing, 'puma:restart'
+  namespace(:puma) { before :start, :stop }
+
+  after :publishing, 'puma:start'
 end

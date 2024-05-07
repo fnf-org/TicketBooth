@@ -20,9 +20,9 @@
     = csp_meta_tag
     = yield :heads
 
-    %link{:href => "/assets/.manifest.json", :rel => "manifest"}/
+    %link{:href => "manifest.json", :rel => "manifest"}/
 
-    - if controller.send(:has_stripe?)
+    - if controller.send(:stripe_js_needed?)
       %script{:src => "https://js.stripe.com/v3/"}
 
     = turbo_include_tags

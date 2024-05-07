@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def has_stripe?
+  def stripe_js_needed?
     false
   end
 
