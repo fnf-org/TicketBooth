@@ -5,7 +5,8 @@ class PaymentsController < ApplicationController
 
   def show
     @payment = Payment.find(permit_params[:id])
-    @charge = Stripe::Charge.retrieve(@payment.stripe_charge_id) if @payment.stripe_charge_id
+    @payment_intent = @payment.payment_intent if @payment.stripe_charge_id
+
     @ticket_request = @payment.ticket_request
     @event = @ticket_request.event
     redirect_to root_path unless @payment.can_view?(current_user)
@@ -36,7 +37,8 @@ class PaymentsController < ApplicationController
     return redirect_to root_path unless @payment.can_view?(current_user)
 
     if @payment.save_and_charge!
-      PaymentReceivedMailer.payment_received(@payment).deliver_now
+
+      PaymentMailer.payment_received(@payment).deliver_now
       @payment.ticket_request.mark_complete
       redirect_to @payment, notice: 'Payment was successfully received.'
     else

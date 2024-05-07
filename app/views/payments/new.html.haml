@@ -1,5 +1,5 @@
 - content_for(:meta) do
-  %meta{ name: 'stripe-key', content: Rails.application.credentials.send(Rails.env.to_sym).stripe.publishable_api_key }
+  %meta{ name: 'stripe-key', content: @stripe_publishable_api_key }
 
 - content_for(:head) do
   = javascript_include_tag 'https://js.stripe.com/v3/'

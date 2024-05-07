@@ -9,7 +9,7 @@
 #  status            :string(1)        default("P"), not null
 #  created_at        :datetime
 #  updated_at        :datetime
-#  stripe_charge_id  :string(255)
+#  stripe_charge_id  :string(255)      # PaymentIntent ID
 #  ticket_request_id :integer          not null
 #
 class Payment < ApplicationRecord
@@ -35,19 +35,27 @@ class Payment < ApplicationRecord
   validates :status, presence: true, inclusion: { in: STATUSES }
 
   def save_and_charge!
-    if valid?
+    unless valid?
+      errors.add(:base, 'Invalid Ticket Request')
+      return false
+    end
+
+    begin
       cost = calculate_cost
       @payment_intent = create_payment_intent(cost)
 
       self.stripe_charge_id = @payment_intent.id
       self.status = STATUS_RECEIVED
       save
-    end
 
-  rescue Stripe::StripeError => e
-    errors.add :base, e.message
-    false
+      @payment_intent.client_secret
+
+    rescue Stripe::StripeError => e
+      errors.add :base, e.message
+      false
+    end
   end
+
 
   # Ticket Cost
   def calculate_cost
@@ -61,24 +69,30 @@ class Payment < ApplicationRecord
   # Stripe Payment Intent
   # https://docs.stripe.com/api/payment_intents/object
   def create_payment_intent(amount_to_charge)
-    Stripe::PaymentIntent.create(
+    Stripe::PaymentIntent.create({
       amount: amount_to_charge,
       currency: 'usd',
-      automatic_payment_methods: { enabled: true },
+      automatic_payment_methods: {enabled: true},
       description: "#{ticket_request.event.name} Ticket",
-
-      # for auditing purposes
       metadata: {
         ticket_request_id: ticket_request.id,
         ticket_request_user_id: ticket_request.user_id,
         event_id: ticket_request.event.id,
         event_name: ticket_request.event.name
       }
-    )
+    })
+  end
+
+  def payment_intent
+    @payment_intent ||= get_payment_intent
+  end
+
+  def payment_intent_client_secret
+    @payment_intent_client_secret ||= payment_intent.client_secret
   end
 
   def get_payment_intent
-    Stripe::PaymentIntent.retrieve(self.stripe_charge_id)
+    Stripe::PaymentIntent.retrieve(self.stripe_charge_id) if self.stripe_charge_id
   end
 
   # Manually mark that a payment was received.
