@@ -5,7 +5,7 @@
     %meta{:content => "width=device-width,initial-scale=1", :name => "viewport"}/
     %meta{:content => "yes", :name => "apple-mobile-web-app-capable"}/
     %meta{:content => "#{controller.send(:stripe_publishable_api_key)}", :name => "stripe-key"}/
-    %link{:href => "#{image_tag("logos/nav-bar-logo.png")}", :rel => "shortcut icon", :type => "image/png"}/
+    %link{:href => "/icons/android-chrome-192x192.png", :rel => "shortcut icon", :type => "image/png"}/
     %link{:href => "https://fonts.googleapis.com", :rel => "preconnect"}/
     %link{:crossorigin => "", :href => "https://fonts.gstatic.com", :rel => "preconnect"}/
     %link{:href => "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap", :rel => "stylesheet"}/
@@ -20,7 +20,7 @@
     = csp_meta_tag
     = yield :heads
 
-    %link{:href => "/assets/.smanifest.json", :rel => "manifest"}/
+    %link{:href => "/assets/.manifest.json", :rel => "manifest"}/
 
     - if controller.send(:stripe_js_needed?)
       %script{:src => "https://js.stripe.com/v3/"}

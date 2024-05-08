@@ -19,7 +19,11 @@ namespace :node do
     task :install do
       on roles(:app) do
         within deploy_to.to_s do
+          # https://stackoverflow.com/questions/60012394/how-to-turn-off-yarn2-pnp
+          execute :yarn, 'config set nodeLinker node-modules'
+          execute :bash, '-c "rm -f ~/.pnp.cjs"'
           execute :yarn, 'install'
+          execute :bash, '-c "rm -f ~/.pnp.cjs"'
         end
       end
     end

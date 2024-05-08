@@ -105,11 +105,15 @@ foreman: 	## Start Foreman using Procfile.dev
 dev:          	gems node_modules db-create foreman ## Start the development environment, but run yarn install and db-create
 
 
-
-
 ci: 		## Run all tests and linters as if on CI
 		bin/rails db:migrate
 		bin/rails db:test:prepare
 		bundle exec rspec
 		bundle exec rubocop
 		bin/shchk
+
+prod:           node_modules gems ## Build production assets and start in prod mode
+		RAILS_ENV=production bundle exec rake assets:precompile
+		RAILS_ENV=production bundle exec rails s
+
+
