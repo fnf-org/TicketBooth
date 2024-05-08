@@ -20,7 +20,7 @@
     = csp_meta_tag
     = yield :heads
 
-    %link{:href => "/assets/.manifest.json", :rel => "manifest"}/
+    %link{:href => "/manifest.json", :rel => "manifest"}/
 
     - if controller.send(:stripe_js_needed?)
       %script{:src => "https://js.stripe.com/v3/"}
@@ -28,7 +28,7 @@
     = turbo_include_tags
 
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
-    = javascript_include_tag "application", "data-turbo-track": "reload" # , type: "module"
+    = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
 
   %body
     = render partial: "shared/nav_main"
