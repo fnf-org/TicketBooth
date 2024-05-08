@@ -2,5 +2,6 @@
 
 .card.p-2.border-top-0
   .card-body
-    = render 'form'
-    = link_to 'Back', :back
+    %div{"data-controller": "flatpickr"}
+      = render 'form'
+      = link_to 'Back', :back
