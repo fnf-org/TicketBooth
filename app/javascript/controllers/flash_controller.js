@@ -4,7 +4,7 @@
 import { Controller } from '@hotwired/stimulus'
 
 // Connects to data-controller="flash"
-export default class flashController extends Controller {
+export default class FlashController extends Controller {
   static targets = ['flash']
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   connect = () => {

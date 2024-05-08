@@ -2,7 +2,7 @@ import {Controller} from "@hotwired/stimulus";
 import flatpickr from "flatpickr";
 
 // Connects to data-controller="flatpickr"
-export default class flatpickrController extends Controller {
+export default class FlatpickrController extends Controller {
   connect() {
     flatpickr(".flatpickr-date-time", {
           enableTime: true,

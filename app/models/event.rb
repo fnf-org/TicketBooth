@@ -166,7 +166,7 @@ class Event < ApplicationRecord
   def to_param
     return nil unless persisted?
 
-    [id, slug].join('--') # 1--summer-campout-xii
+    [id, slug].join('-') # 1-summer-campout-xii
   end
 
   private

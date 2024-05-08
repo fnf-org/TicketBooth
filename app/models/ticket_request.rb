@@ -79,8 +79,7 @@ class TicketRequest < ApplicationRecord
   has_one :payment, inverse_of: :ticket_request
 
   # Serialize guest emails as an array in a text field.
-  # TODO: This should probably be switched to a separate table or at least a JSONB format column.
-  serialize :guests, coder: JSON, type: Array
+  serialize :guests, coder: Psych, type: Array
 
   attr_accessible :user_id, :adults, :kids, :cabins, :needs_assistance,
                   :notes, :status, :special_price, :event_id,

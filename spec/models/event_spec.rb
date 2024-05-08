@@ -41,7 +41,7 @@ RSpec.describe Event do
     context 'given an event that exists in the database' do
       subject(:event) { create(:event, name: 'Summer Campout XII') }
 
-      its(:to_param) { is_expected.to eq "#{event.id}--summer-campout-xii" }
+      its(:to_param) { is_expected.to eq "#{event.id}-summer-campout-xii" }
     end
   end
 

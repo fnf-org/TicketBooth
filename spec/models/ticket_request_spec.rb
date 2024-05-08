@@ -293,7 +293,7 @@ describe TicketRequest do
     let(:event) do
       build(:event,
             adult_ticket_price: adult_price,
-            kid_ticket_price: kid_price,
+            kid_ticket_price:   kid_price,
             cabin_price:)
     end
     let(:ticket_request) do
@@ -370,5 +370,39 @@ describe TicketRequest do
     subject(:ticket_request) { create(:ticket_request, adults: 3, kids: 2) }
 
     its(:total_tickets) { is_expected.to be(5) }
+  end
+
+  describe '#guests' do
+    subject(:ticket_request) { create(:ticket_request, guests:) }
+
+    let(:guests) do
+      [
+        'Carl Cox <carl@cox.com>',
+        'John Digweed <digweed@bedrock-records.com'
+      ]
+    end
+
+    its(:guests) { is_expected.to be_a(Array) }
+
+    describe 'adding a guest' do
+      before do
+        ticket_request.guests << 'DJ Ass <asswipe@trainwreck-records.com>'
+        ticket_request.save!
+      end
+
+      its('guests.size') { is_expected.to be(3) }
+
+      describe 'raw field' do
+        let(:raw_guests) { described_class.connection.execute("select guests from ticket_requests where id = '#{ticket_request.id}'")[0]['guests'] }
+
+        it 'stores guests as a string' do
+          expect(raw_guests).to be_a(String)
+        end
+
+        it 'stores guests as a string that parses as YAML' do
+          expect(YAML.load(raw_guests)).to be_a(Array)
+        end
+      end
+    end
   end
 end
