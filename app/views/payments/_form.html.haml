@@ -1,76 +1,77 @@
-.card
-  .card-header.bg-secondary-subtle
-    %h4 Please Enter Your Credit Card Details
-
-  .card-body
-    = form_for(@payment) do |f|
-      = render 'shared/form_errors', resource: @payment
-
-      = f.hidden_field :ticket_request_id, value: @ticket_request.id
-      = f.hidden_field :stripe_card_token, id: 'stripe_card_token' # Value set by JS
-
-      .field
-        = label_tag :card_number, 'Credit Card Number'
-        = text_field_tag :card_number, nil, name: nil, maxlength: 16, class: 'input-large'
-        %span.help-inline
-          - %w[visa mastercard american_express discover jcb].each do |company|
-            = image_tag "credit-cards/#{company}_32.png"
-
-
-      .field
-        = label_tag :card_month, 'Expiration Date'
-        = select_month nil, { add_month_numbers: true },
-          { name: nil, id: 'card_month', class: 'input-medium' }
-        = select_year nil, { start_year: Date.today.year, end_year: Date.today.year + 15 },
-          { name: nil, id: 'card_year', class: 'input-small' }
-
-      .field
-        = label_tag :card_code, 'CVV'
-        = text_field_tag :card_code, nil, name: nil, class: 'input-mini', maxlength: 6,
-          placeholder: '', style: 'width: 60px'
-
-      - if @event.allow_donations
-        = f.fields_for :ticket_request, @ticket_request do |ff|
-          .field
-            = label_tag :donation do
-              Community Fund Donation
-              = help_mark help_text_for(:community_fund_donation)
-            - [0, 10, 25, 50, 100].each do |amount|
-              .donation-option
-                = ff.radio_button :donation, amount, checked: amount == 0
-                = ff.label :donation, "$#{amount}", value: amount, class: 'radio inline'
-
-      %hr
-
-      %p
-        Clicking "Pay Now" will charge
-        %strong.text-success#total_price{ data: { price: @ticket_request.price } }
-          = number_to_currency(@payment.ticket_request.price)
-        - extra = extra_amount_to_charge(@payment.ticket_request.price)
-        - if extra > 0
-          +
-          %strong.text-success#total_fee
-            = number_to_currency(extra)
-          processing fee
-          to the card entered above.
-          = help_mark 'This fee covers the the fees charged by our credit card processor, Stripe.'
-
-      %p.small
-        By purchasing tickets to an FnF event, you acknowledge that you have read
-        = link_to 'The FnF Way', 'https://fnf.events/the-fnf-way/', target: '_blank', onclick: "popupWindow('https://fnf.events/the-fnf-way/', 'The FnF Way', window, 700, 900); return false;"
-        and
-        = link_to 'Code of Conduct', 'https://fnf.page.link/coc', target: '_blank', onclick: "popupWindow('https://fnf.page.link/coc', 'Code of Conduct', window, 800, 900); return false;"
-        and are responsible for sharing these documents with your guests. You
-        further understand that you are responsible for the conduct of your guests
-        while they attend an FnF event. By making clear the values that inform our
-        events and setting the expectation of conduct at our events, we hope to
-        continue to embrace radical self-expression while continuing to invite new
-        and diverse people into our community.
-
-      .actions
-        = f.submit 'Pay Now', class: 'btn btn-primary btn-large'
-
-        %span.text-error#stripe-error
-          %noscript
-            JavaScript is not enabled and is required for this form. Enable it in
-            your web browser settings and refresh the page to continue.
+-# .card
+-#   .card-header.bg-secondary-subtle
+-#     %h4 Please Enter Your Payment Details
+-#
+-#   .card-body
+-#
+-#     = form_for(@payment) do |f|
+-#       = render 'shared/form_errors', resource: @payment
+-#
+-#       = f.hidden_field :ticket_request_id, value: @ticket_request.id
+-#       = f.hidden_field :stripe_card_token, id: 'stripe_card_token' # Value set by JS
+-#
+-#       .field
+-#         = label_tag :card_number, 'Credit Card Number'
+-#         = text_field_tag :card_number, nil, name: nil, maxlength: 16, class: 'input-large'
+-#         %span.help-inline
+-#           - %w[visa mastercard american_express discover jcb].each do |company|
+-#             = image_tag "credit-cards/#{company}_32.png"
+-#
+-#
+-#       .field
+-#         = label_tag :card_month, 'Expiration Date'
+-#         = select_month nil, { add_month_numbers: true },
+-#           { name: nil, id: 'card_month', class: 'input-medium' }
+-#         = select_year nil, { start_year: Date.today.year, end_year: Date.today.year + 15 },
+-#           { name: nil, id: 'card_year', class: 'input-small' }
+-#
+-#       .field
+-#         = label_tag :card_code, 'CVV'
+-#         = text_field_tag :card_code, nil, name: nil, class: 'input-mini', maxlength: 6,
+-#           placeholder: '', style: 'width: 60px'
+-#
+-#       - if @event.allow_donations
+-#         = f.fields_for :ticket_request, @ticket_request do |ff|
+-#           .field
+-#             = label_tag :donation do
+-#               Community Fund Donation
+-#               = help_mark help_text_for(:community_fund_donation)
+-#             - [0, 10, 25, 50, 100].each do |amount|
+-#               .donation-option
+-#                 = ff.radio_button :donation, amount, checked: amount == 0
+-#                 = ff.label :donation, "$#{amount}", value: amount, class: 'radio inline'
+-#
+-#       %hr
+-#
+-#       %p
+-#         Clicking "Pay Now" will charge
+-#         %strong.text-success#total_price{ data: { price: @ticket_request.price } }
+-#           = number_to_currency(@payment.ticket_request.price)
+-#         - extra = extra_amount_to_charge(@payment.ticket_request.price)
+-#         - if extra > 0
+-#           +
+-#           %strong.text-success#total_fee
+-#             = number_to_currency(extra)
+-#           processing fee
+-#           to the card entered above.
+-#           = help_mark 'This fee covers the the fees charged by our credit card processor, Stripe.'
+-#
+-#       %p.small
+-#         By purchasing tickets to an FnF event, you acknowledge that you have read
+-#         = link_to 'The FnF Way', 'https://fnf.events/the-fnf-way/', target: '_blank', onclick: "popupWindow('https://fnf.events/the-fnf-way/', 'The FnF Way', window, 700, 900); return false;"
+-#         and
+-#         = link_to 'Code of Conduct', 'https://fnf.page.link/coc', target: '_blank', onclick: "popupWindow('https://fnf.page.link/coc', 'Code of Conduct', window, 800, 900); return false;"
+-#         and are responsible for sharing these documents with your guests. You
+-#         further understand that you are responsible for the conduct of your guests
+-#         while they attend an FnF event. By making clear the values that inform our
+-#         events and setting the expectation of conduct at our events, we hope to
+-#         continue to embrace radical self-expression while continuing to invite new
+-#         and diverse people into our community.
+-#
+-#       .actions
+-#         = f.submit 'Pay Now', class: 'btn btn-primary btn-large'
+-#
+-#         %span.text-error#stripe-error
+-#           %noscript
+-#             JavaScript is not enabled and is required for this form. Enable it in
+-#             your web browser settings and refresh the page to continue.

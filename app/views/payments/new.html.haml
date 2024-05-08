@@ -1,8 +1,9 @@
 - content_for(:meta) do
-  %meta{ name: 'stripe-key', content: @stripe_publishable_api_key }
+  %meta{ name: 'stripe-key', content: stripe_publishable_api_key }
 
 - content_for(:head) do
   = javascript_include_tag 'https://js.stripe.com/v3/'
+  = javascript_include_tag 'checkout.js'
 
 .content-fluid
   .row
@@ -34,4 +35,24 @@
                 = 'ticket'.pluralize(@ticket_request.total_tickets)
 
     .col-8
-      = render 'form'
+      / https://docs.stripe.com/payments/quickstart?platform=web&client=html
+      %form#payment-form
+        #payment-element
+          / Stripe.js injects the Payment Element
+      %button#submit
+        #spinner.spinner.hidden
+        %span#button-text Pay now
+      #payment-message.hidden
+
+        %p.small
+        By purchasing tickets to an FnF event, you acknowledge that you have read
+        = link_to 'The FnF Way', 'https://fnf.events/the-fnf-way/', target: '_blank', onclick: "popupWindow('https://fnf.events/the-fnf-way/', 'The FnF Way', window, 700, 900); return false;"
+        and
+        = link_to 'Code of Conduct', 'https://fnf.page.link/coc', target: '_blank', onclick: "popupWindow('https://fnf.page.link/coc', 'Code of Conduct', window, 800, 900); return false;"
+        and are responsible for sharing these documents with your guests. You
+        further understand that you are responsible for the conduct of your guests
+        while they attend an FnF event. By making clear the values that inform our
+        events and setting the expectation of conduct at our events, we hope to
+        continue to embrace radical self-expression while continuing to invite new
+        and diverse people into our community.
+
