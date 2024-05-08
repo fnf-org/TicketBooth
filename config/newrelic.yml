@@ -51,7 +51,8 @@ common: &default_settings
 # If your application has other named environments, configure them here.
 development:
   <<: *default_settings
-  app_name: ' (Development)'
+  app_name: 'TicketBooth on EC2 (Development)'
+  monitor_mode: false
 
 test:
   <<: *default_settings
@@ -60,7 +61,7 @@ test:
 
 staging:
   <<: *default_settings
-  app_name: ' (Staging)'
+  app_name: 'TicketBooth on EC2 (Staging)'
 
 production:
   <<: *default_settings
