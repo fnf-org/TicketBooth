@@ -51,7 +51,7 @@ describe Payment do
   end
 
   describe '#create' do
-    subject { payment.save_and_charge! }
+    subject { payment.save_with_payment_intent! }
 
     describe 'valid payment intent' do
       let(:payment) { build(:payment) }

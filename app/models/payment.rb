@@ -34,7 +34,7 @@ class Payment < ApplicationRecord
             uniqueness: { message: 'ticket request has already been paid' }
   validates :status, presence: true, inclusion: { in: STATUSES }
 
-  def save_and_charge!
+  def save_with_payment_intent!
     unless valid?
       errors.add(:base, 'Invalid Ticket Request')
       return false
@@ -42,13 +42,13 @@ class Payment < ApplicationRecord
 
     begin
       cost = calculate_cost
+
       @payment_intent = create_payment_intent(cost)
 
       self.stripe_charge_id = @payment_intent.id
       self.status = STATUS_RECEIVED
-      save
 
-      @payment_intent.client_secret
+      save
 
     rescue Stripe::StripeError => e
       errors.add :base, e.message
