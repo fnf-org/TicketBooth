@@ -19,6 +19,10 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def stripe_js_needed?
+    false
+  end
+
   def stripe_publishable_api_key
     @stripe_publishable_api_key ||= ::Rails.application.credentials[Rails.env.to_sym].stripe.publishable_api_key
   end
