@@ -46,17 +46,17 @@ before 'bundler:install', 'ruby:bundler:native_config'
 
 namespace :deploy do
   before :starting, 'deploy:setup'
-  namespace(:assets) { after :precompile, 'deploy:permissions' }
-
-  before :publishing, 'ruby:bundler:bundle'
 
   namespace(:assets) do
     before :precompile, 'deploy:migrate'
     before :precompile, 'node:install'
     before :precompile, 'node:yarn:install'
+
+    after :precompile, 'deploy:permissions'
   end
 
-  namespace(:puma) { before :start, :stop }
-
+  before :publishing, 'ruby:bundler:bundle'
   after :publishing, 'puma:start'
 end
+
+namespace(:puma) { before :start, :stop }

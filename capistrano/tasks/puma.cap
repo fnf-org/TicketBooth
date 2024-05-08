@@ -6,7 +6,8 @@ namespace :puma do
     on roles(:app) do |host|
       info "Starting Puma on #{host} (#{host.roles.to_a.join(', ')}):\t#{capture(:uptime)}".colorize(:green)
       execute 'sudo systemctl start puma.tickets.service'
-      execute "ps -fu #{fetch(:user)} | grep puma"
+      sleep 2
+      execute "ps -fu #{fetch(:remote_user)} | grep [p]uma || true"
     end
   end
 
@@ -14,12 +15,11 @@ namespace :puma do
   task :stop do
     on roles(:app) do |host|
       info "Stopping Puma on #{host} (#{host.roles.to_a.join(', ')}):\t#{capture(:uptime)}".colorize(:yellow)
+      execute "ps -fu #{fetch(:remote_user)} | grep [p]uma || true"
       execute 'sudo systemctl stop puma.tickets.service'
-      sleep 1
-      execute "ps -fu #{fetch(:user)} | grep puma"
     end
   end
 
   desc 'Restart Puma'
-  task restart: %i[stop start]
+  task restart: %w[puma:stop puma:start]
 end
