@@ -55,20 +55,27 @@ describe Payment do
   end
 
   describe '#cost' do
-    subject { payment.calculate_cost }
+    let(:event) { build(:event, adult_ticket_price: 100) }
+    let(:ticket_request) do
+      build(:ticket_request, event: event, adults: 1, kids: 0)
+    end
 
-    describe 'cost' do
-      let(:event) { build(:event, adult_ticket_price: 100) }
-      let(:ticket_request) do
-        build(:ticket_request, event: event, adults: 1, kids: 0)
-      end
-      let(:payment) { build(:payment, ticket_request:) }
+    let(:payment) { build(:payment, ticket_request:) }
+
+    describe 'calculate_cost' do
+      subject { payment.calculate_cost }
 
       it { is_expected.to eql(10000) }
     end
+
+    describe 'dollar_cost' do
+      subject { payment.dollar_cost }
+
+      it { is_expected.to eql(100) }
+    end
   end
 
-  describe '#create' do
+  describe 'payment intent' do
     subject { payment.save_with_payment_intent }
     let(:payment) { build(:payment) }
 
@@ -81,7 +88,7 @@ describe Payment do
     end
 
     describe 'has payment intent id set' do
-      it { payment.payment_intent.present? }
+      it { payment.payment_intent.present? && payment.payment_intent.id.present? }
     end
   end
 
@@ -94,7 +101,7 @@ describe Payment do
       it { is_expected.to be_a(Stripe::PaymentIntent) }
     end
 
-    describe "failure" do
+    describe "stripe failure" do
       it "raises Stripe error when amount < 50 cents" do
         expect{ payment.create_payment_intent(1) }.to raise_error(Stripe::InvalidRequestError)
       end

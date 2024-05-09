@@ -23,17 +23,13 @@ class Payment < ApplicationRecord
 
   belongs_to :ticket_request
 
-  # XXX [mfl] I think we can kill stripe_card_token
-  attr_accessible :ticket_request_id, :ticket_request_attributes, :status,
-                  :stripe_payment_id, :explanation
+  attr_accessible :ticket_request_id, :ticket_request_attributes,
+                  :status, :stripe_payment_id, :explanation
 
   accepts_nested_attributes_for :ticket_request,
                                 reject_if: :modifying_forbidden_attributes?
 
-  attr_accessor :stripe_card_token
-
-  validates :ticket_request,
-            uniqueness: { message: 'ticket request has already been paid' }
+  validates :ticket_request, uniqueness: { message: 'ticket request has already been paid' }
   validates :status, presence: true, inclusion: { in: STATUSES }
 
   # Create new Payment
@@ -41,14 +37,16 @@ class Payment < ApplicationRecord
   # Set status Payment
   def save_with_payment_intent
     # only save 1 payment intent
-    if @payment_intent.exists?
-      errors.add :base, "Payment already exists"
+    if !valid? || @payment_intent.present?
+      errors.add :base, "Invalid Payment or Stripe Payment already exists"
       return false
     end
 
+    # calculate cost from Ticket Request
     cost = calculate_cost
 
     begin
+      # Create new Stripe PaymentIntent
       @payment_intent = create_payment_intent(cost)
       self.stripe_payment_id = @payment_intent.id
 
@@ -57,17 +55,22 @@ class Payment < ApplicationRecord
       false
     end
 
+    # payment is in progress, not completed
     self.status = STATUS_IN_PROGRESS
 
     save
     self
   end
 
-  # Calculate ticket cost from ticket request
+  # Calculate ticket cost from ticket request in cents
   def calculate_cost
     cost = ticket_request.cost
     amount_to_charge = cost + extra_amount_to_charge(cost)
     (amount_to_charge * 100).to_i
+  end
+
+  def dollar_cost
+    (calculate_cost / 100).to_i
   end
 
   # Stripe Payment Intent
@@ -106,10 +109,6 @@ class Payment < ApplicationRecord
   end
 
   delegate :can_view?, to: :ticket_request
-
-  def due_date
-    (created_at + 2.weeks).to_date
-  end
 
   def in_progress?
     status == STATUS_IN_PROGRESS
