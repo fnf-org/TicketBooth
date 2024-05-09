@@ -35,17 +35,14 @@ class PaymentsController < ApplicationController
   def create
     @payment = Payment.new(permit_params[:payment])
     return redirect_to root_path unless @payment.can_view?(current_user)
+    @payment.save_with_payment_intent
+  end
 
-    if @payment.save_with_payment_intent!
-      PaymentMailer.payment_received(@payment).deliver_now
-      @payment.ticket_request.mark_complete
-      redirect_to @payment, notice: 'Payment was successfully received.'
-    else
-      @ticket_request = @payment.ticket_request
-      @event = @ticket_request.event
-      @user = @ticket_request.user
-      render action: 'new'
-    end
+  def confirm
+    @payment = Payment.find(permit_params[:id])
+    PaymentMailer.payment_received(@payment).deliver_now
+    @payment.ticket_request.mark_complete
+    redirect_to @payment, notice: 'Payment was successfully received.'
   end
 
   def other

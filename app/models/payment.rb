@@ -39,22 +39,28 @@ class Payment < ApplicationRecord
   # Create new Payment
   # Create Stripe PaymentIntent
   # Set status Payment
-  def save_with_payment_intent!
-      cost = calculate_cost
+  def save_with_payment_intent
+    # only save 1 payment intent
+    if @payment_intent.exists?
+      errors.add :base, "Payment already exists"
+      return false
+    end
 
-      begin
-        @payment_intent = create_payment_intent(cost)
-        self.stripe_payment_id = @payment_intent.id
+    cost = calculate_cost
 
-      rescue Stripe::StripeError => e
-        errors.add :base, e.message
-        false
-      end
+    begin
+      @payment_intent = create_payment_intent(cost)
+      self.stripe_payment_id = @payment_intent.id
 
-      self.status = STATUS_IN_PROGRESS
+    rescue Stripe::StripeError => e
+      errors.add :base, e.message
+      false
+    end
 
-      save!
-      self
+    self.status = STATUS_IN_PROGRESS
+
+    save
+    self
   end
 
   # Calculate ticket cost from ticket request
