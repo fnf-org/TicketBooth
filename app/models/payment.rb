@@ -17,6 +17,7 @@ class Payment < ApplicationRecord
   include PaymentsHelper
 
   STATUSES = [
+    STATUS_NEW = 'N',
     STATUS_IN_PROGRESS = 'P',
     STATUS_RECEIVED = 'R'
   ].freeze
