@@ -5,7 +5,7 @@ class PaymentsController < ApplicationController
 
   def show
     @payment = Payment.find(permit_params[:id])
-    @payment_intent = @payment.payment_intent if @payment.stripe_charge_id
+    @payment_intent = @payment.payment_intent if @payment.stripe_payment_id
 
     @ticket_request = @payment.ticket_request
     @event = @ticket_request.event
@@ -36,7 +36,7 @@ class PaymentsController < ApplicationController
     @payment = Payment.new(permit_params[:payment])
     return redirect_to root_path unless @payment.can_view?(current_user)
 
-    if @payment.create_with_payment_intent!
+    if @payment.save_with_payment_intent!
       PaymentMailer.payment_received(@payment).deliver_now
       @payment.ticket_request.mark_complete
       redirect_to @payment, notice: 'Payment was successfully received.'

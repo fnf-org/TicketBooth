@@ -39,7 +39,7 @@ class Payment < ApplicationRecord
   # Create new Payment
   # Create Stripe PaymentIntent
   # Set status Payment
-  def create_with_payment_intent!
+  def save_with_payment_intent!
       cost = calculate_cost
 
       begin
