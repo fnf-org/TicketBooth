@@ -35,6 +35,8 @@
 #  created_at              :datetime
 #  updated_at              :datetime
 #  event_id                :integer          not null
+#  user_id                 :integer          not null
+#
   #  user_id                 :integer          not null
 #
   #  user_id                 :integer          not null

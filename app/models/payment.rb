@@ -9,8 +9,8 @@
 #  status            :string(1)        default("P"), not null
 #  created_at        :datetime
 #  updated_at        :datetime
-#  stripe_charge_id  :string(255)      # deprecated as of 2024
-#  stripe_payment_id :string(255)
+#  stripe_charge_id  :string(255)
+#  stripe_payment_id :string
 #  ticket_request_id :integer          not null
 #
 class Payment < ApplicationRecord
