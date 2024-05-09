@@ -4,24 +4,22 @@ import {loadStripe, Stripe} from "@stripe/stripe-js"
 // Connects to data-controller="payments"
 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 export default class CheckoutController extends Controller {
-    // var stripe;
-    // var stripeKey;
-    // var controller;
-
-    connect() {
-        window.alert('checkout connected');
-        this.stripeKey = this.element.getAttribute('data-stripe-publishable-key');
-        this.stripe = loadStripe({publishableKey: this.stripeKey});
-        this.controller = this;
+    static params = {
+        stripPublishableKey: String,
+        ticketRequestId: String
     }
 
-    // setupForm(): void {
-    //     const controller = this;
-    //
-    // }
-
-    initializeForm() {
-        let roleExplanationField = $('textarea[name="payment[role_explanation]"]')
-        roleExplanationField.toggleClass('hidden', true);
+    loadStripe() {
+        window.alert('checkout connect');
+        this.stripe = loadStripe(this.stripPublishableKey);
     }
+
+    createPayement() {
+        window.alert('checkout init payment');
+        fetch("/payments", {method: 'POST', params: {ticket_request_id: this.ticketRequestId}})
+            .then(response => response.text())
+
+    }
+
+
 }

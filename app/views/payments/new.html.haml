@@ -1,9 +1,6 @@
-- content_for(:meta) do
-  %meta{ name: 'stripe-key', content: stripe_publishable_api_key }
-
 - content_for(:head) do
-  = javascript_include_tag 'https://js.stripe.com/v3/'
-  = javascript_include_tag 'checkout.js'
+  %script{:src => "https://js.stripe.com/v3/"}/
+  %link{:href => "checkout.css", :rel => "stylesheet"}/
 
 .content-fluid
   .row
@@ -35,16 +32,19 @@
                 = 'ticket'.pluralize(@ticket_request.total_tickets)
 
     .col-8
-      / https://docs.stripe.com/payments/quickstart?platform=web&client=html
-      %form#payment-form
+      %form#checkout-form{"data-controller" => "checkout",
+                          "data-content-loader-stripe-publishable-key-value" => "#{@stripe_publishable_api_key}",
+                          "data-content-loader-ticket-request-id-value" => "#{@ticket_request.id}"}
         #payment-element
           / Stripe.js injects the Payment Element
-      %button#submit
-        #spinner.spinner.hidden
-        %span#button-text Pay now
-      #payment-message.hidden
+        #payment-message.hidden
 
-        %p.small
+        %button.submit.btn.btn-success.mt-3s
+          #spinner.spinner.hidden
+          %span.button-text
+            Pay now
+
+      %p.small
         By purchasing tickets to an FnF event, you acknowledge that you have read
         = link_to 'The FnF Way', 'https://fnf.events/the-fnf-way/', target: '_blank', onclick: "popupWindow('https://fnf.events/the-fnf-way/', 'The FnF Way', window, 700, 900); return false;"
         and
