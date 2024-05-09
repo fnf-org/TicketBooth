@@ -42,6 +42,7 @@ class PaymentsController < ApplicationController
   def create
     new
     create_with_payment_intent
+    @payment
   end
   # create new payment and stripe payment intent using existing payment
 
@@ -50,7 +51,6 @@ class PaymentsController < ApplicationController
     return redirect_to root_path unless @payment.present? && @payment.can_view?(current_user)
 
     @payment.save_with_payment_intent
-    # XXX what do we return here? JSON?
   end
 
   def confirm

@@ -22,8 +22,7 @@
 
     %link{:href => "/manifest.json", :rel => "manifest"}/
 
-    - if controller.send(:stripe_js_needed?)
-      %script{:src => "https://js.stripe.com/v3/"}
+    %script{:src => "https://js.stripe.com/v3/"}
 
     = turbo_include_tags
 
@@ -46,7 +45,7 @@
       .card.p-0.mt-5
         .card-footer.bg-primary-subtle.text-center
           %small
-            Crafted with ♡ in San Francisco
+            Crafted with ♡ in San Francisco and The Flip Side
             %br
             &copy; CFAEA 2010 —
             = Date.current.strftime('%Y')
