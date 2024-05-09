@@ -3,13 +3,18 @@
 class PaymentsController < ApplicationController
   before_action :authenticate_user!
 
+  # XXX Correct place here?
+  def stripe_js_needed?
+    true
+  end
+
   def show
     @payment = Payment.find(permit_params[:id])
-    @payment_intent = @payment.payment_intent if @payment.stripe_payment_id
+    redirect_to root_path unless @payment.present? && @payment.can_view?(current_user)
 
+    @payment_intent = @payment.payment_intent if @payment.stripe_payment_id
     @ticket_request = @payment.ticket_request
     @event = @ticket_request.event
-    redirect_to root_path unless @payment.can_view?(current_user)
   end
 
   def new
@@ -32,16 +37,27 @@ class PaymentsController < ApplicationController
     @payment = Payment.new.tap { |p| p.ticket_request = @ticket_request }
   end
 
+  # Creates new Payment
+  # Create Payment Intent and save PaymentIntentId in Payment
   def create
-    @payment = Payment.new(permit_params[:payment])
-    return redirect_to root_path unless @payment.can_view?(current_user)
+    new
+    create_with_payment_intent
+  end
+  # create new payment and stripe payment intent using existing payment
+
+  def create_with_payment_intent
+    @payment ||= Payment.find(permit_params[:id])
+    return redirect_to root_path unless @payment.present? && @payment.can_view?(current_user)
+
     @payment.save_with_payment_intent
+    # XXX what do we return here? JSON?
   end
 
   def confirm
     @payment = Payment.find(permit_params[:id])
     PaymentMailer.payment_received(@payment).deliver_now
     @payment.ticket_request.mark_complete
+    # XXX switch to checkout page
     redirect_to @payment, notice: 'Payment was successfully received.'
   end
 
@@ -95,7 +111,7 @@ class PaymentsController < ApplicationController
         ticket_request_id
         ticket_request_attributes
         status
-        stripe_card_token
+        stripe_payment_id
         explanation
       ]
     )
