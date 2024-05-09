@@ -9,7 +9,8 @@
 #  status            :string(1)        default("P"), not null
 #  created_at        :datetime
 #  updated_at        :datetime
-#  stripe_charge_id  :string(255)      # PaymentIntent ID
+#  stripe_charge_id  :string(255)      # deprecated as of 2024
+#  stripe_payment_id :string(255)
 #  ticket_request_id :integer          not null
 #
 class Payment < ApplicationRecord
@@ -22,8 +23,9 @@ class Payment < ApplicationRecord
 
   belongs_to :ticket_request
 
+  # XXX [mfl] I think we can kill stripe_card_token
   attr_accessible :ticket_request_id, :ticket_request_attributes, :status,
-                  :stripe_card_token, :explanation
+                  :stripe_payment_id, :explanation
 
   accepts_nested_attributes_for :ticket_request,
                                 reject_if: :modifying_forbidden_attributes?
@@ -34,46 +36,42 @@ class Payment < ApplicationRecord
             uniqueness: { message: 'ticket request has already been paid' }
   validates :status, presence: true, inclusion: { in: STATUSES }
 
-  def save_with_payment_intent!
-    unless valid?
-      errors.add(:base, 'Invalid Ticket Request')
-      return false
-    end
-
-    begin
+  # Create new Payment
+  # Create Stripe PaymentIntent
+  # Set status Payment
+  def create_with_payment_intent!
       cost = calculate_cost
 
-      @payment_intent = create_payment_intent(cost)
+      begin
+        @payment_intent = create_payment_intent(cost)
+        self.stripe_payment_id = @payment_intent.id
 
-      self.stripe_charge_id = @payment_intent.id
-      self.status = STATUS_RECEIVED
+      rescue Stripe::StripeError => e
+        errors.add :base, e.message
+        false
+      end
 
-      save
+      self.status = STATUS_IN_PROGRESS
 
-    rescue Stripe::StripeError => e
-      errors.add :base, e.message
-      false
-    end
+      save!
+      self
   end
 
-
-  # Ticket Cost
+  # Calculate ticket cost from ticket request
   def calculate_cost
     cost = ticket_request.cost
-
-    # XXX disabled for now
     amount_to_charge = cost + extra_amount_to_charge(cost)
     (amount_to_charge * 100).to_i
   end
 
   # Stripe Payment Intent
   # https://docs.stripe.com/api/payment_intents/object
-  def create_payment_intent(amount_to_charge)
+  def create_payment_intent(amount)
     Stripe::PaymentIntent.create({
-      amount: amount_to_charge,
+      amount: amount,
       currency: 'usd',
       automatic_payment_methods: {enabled: true},
-      description: "#{ticket_request.event.name} Ticket",
+      description: "#{ticket_request.event.name} Tickets",
       metadata: {
         ticket_request_id: ticket_request.id,
         ticket_request_user_id: ticket_request.user_id,
@@ -92,7 +90,7 @@ class Payment < ApplicationRecord
   end
 
   def get_payment_intent
-    Stripe::PaymentIntent.retrieve(self.stripe_charge_id) if self.stripe_charge_id
+    Stripe::PaymentIntent.retrieve(self.stripe_payment_id) if self.stripe_payment_id
   end
 
   # Manually mark that a payment was received.
@@ -116,7 +114,7 @@ class Payment < ApplicationRecord
   end
 
   def via_credit_card?
-    stripe_charge_id
+    stripe_payment_id
   end
 
   private

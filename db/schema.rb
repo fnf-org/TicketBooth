@@ -73,6 +73,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_11_182346) do
   create_table "payments", force: :cascade do |t|
     t.integer "ticket_request_id", null: false
     t.string "stripe_charge_id", limit: 255
+    t.string "stripe_charge_id", limit: 255
     t.string "status", limit: 1, default: "P", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

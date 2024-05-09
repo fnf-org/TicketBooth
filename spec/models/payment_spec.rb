@@ -34,6 +34,24 @@ describe Payment do
         it { is_expected.to be_valid }
       end
     end
+
+    describe '#status' do
+      context 'when in progress' do
+        let(:payment) { build(:payment, status: Payment::STATUS_IN_PROGRESS) }
+        it { is_expected.to be_valid }
+      end
+
+      context 'when unknown status' do
+        let(:payment) { build(:payment, status: 'nope') }
+        it { is_expected.not_to be_valid }
+      end
+
+      context 'when not present' do
+        let(:payment) { build(:payment, status: nil) }
+        it { is_expected.not_to be_valid }
+      end
+    end
+
   end
 
   describe '#cost' do
@@ -51,14 +69,44 @@ describe Payment do
   end
 
   describe '#create' do
-    subject { payment.save_with_payment_intent! }
+    subject { payment.create_with_payment_intent! }
+    let(:payment) { build(:payment) }
 
     describe 'valid payment intent' do
-      let(:payment) { build(:payment) }
-
       it { is_expected.to be_truthy }
-
     end
 
+    describe 'status in progress' do
+      it { payment.status.eql? Payment::STATUS_IN_PROGRESS }
+    end
+
+    describe 'has payment intent id set' do
+      it { payment.payment_intent.present? }
+    end
+  end
+
+  describe '#create_payment_intent' do
+    let(:amount) { 1000 }
+    let(:payment) { build(:payment) }
+    subject { payment.create_payment_intent(amount) }
+
+    describe "create payment intent" do
+      it { is_expected.to be_a(Stripe::PaymentIntent) }
+    end
+
+    describe "failure" do
+      it "raises Stripe error when amount < 50 cents" do
+        expect{ payment.create_payment_intent(1) }.to raise_error(Stripe::InvalidRequestError)
+      end
+    end
+  end
+
+  describe '#get_payment_intent' do
+    let(:amount) { 1000 }
+    let(:payment) { build(:payment) }
+    subject { payment.create_payment_intent(amount) }
+    let(:payment_intent) { payment.get_payment_intent }
+
+    it { is_expected.to be_a(Stripe::PaymentIntent) }
   end
 end

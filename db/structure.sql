@@ -189,7 +189,8 @@ CREATE TABLE public.payments (
     status character varying(1) DEFAULT 'P'::character varying NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    explanation character varying(255)
+    explanation character varying(255),
+    stripe_payment_id character varying
 );
 
 
@@ -696,6 +697,7 @@ CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING b
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240509025037'),
 ('20240423054549'),
 ('20240423054149'),
 ('20240418004856'),
