@@ -112,8 +112,7 @@ Rails.application.configure do
   config.web_console.permissions = '172.16.100.0/24'
 
   config.stripe = {
-    secret_api_key:       Rails.application.credentials.development.dig(:stripe, :secret_api_key),
-    publishable_api_key:  Rails.application.credentials.development.dig(:stripe, :publishable_api_key)
+    secret_api_key:      Rails.application.credentials.development.dig(:stripe, :secret_api_key),
+    publishable_api_key: Rails.application.credentials.development.dig(:stripe, :publishable_api_key)
   }
-
 end

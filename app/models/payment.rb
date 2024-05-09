@@ -39,7 +39,7 @@ class Payment < ApplicationRecord
   def save_with_payment_intent
     # only save 1 payment intent
     if !valid? || @payment_intent.present?
-      errors.add :base, "Invalid Payment or Stripe Payment already exists"
+      errors.add :base, 'Invalid Payment or Stripe Payment already exists'
       return false
     end
 
@@ -50,7 +50,6 @@ class Payment < ApplicationRecord
       # Create new Stripe PaymentIntent
       @payment_intent = create_payment_intent(cost)
       self.stripe_payment_id = @payment_intent.id
-
     rescue Stripe::StripeError => e
       errors.add :base, e.message
       false
@@ -78,17 +77,17 @@ class Payment < ApplicationRecord
   # https://docs.stripe.com/api/payment_intents/object
   def create_payment_intent(amount)
     Stripe::PaymentIntent.create({
-      amount: amount,
-      currency: 'usd',
-      automatic_payment_methods: {enabled: true},
-      description: "#{ticket_request.event.name} Tickets",
-      metadata: {
-        ticket_request_id: ticket_request.id,
-        ticket_request_user_id: ticket_request.user_id,
-        event_id: ticket_request.event.id,
-        event_name: ticket_request.event.name
-      }
-    })
+                                   amount:,
+                                   currency:                  'usd',
+                                   automatic_payment_methods: { enabled: true },
+                                   description:               "#{ticket_request.event.name} Tickets",
+                                   metadata:                  {
+                                     ticket_request_id:      ticket_request.id,
+                                     ticket_request_user_id: ticket_request.user_id,
+                                     event_id:               ticket_request.event.id,
+                                     event_name:             ticket_request.event.name
+                                   }
+                                 })
   end
 
   def payment_intent
@@ -100,7 +99,7 @@ class Payment < ApplicationRecord
   end
 
   def get_payment_intent
-    Stripe::PaymentIntent.retrieve(self.stripe_payment_id) if self.stripe_payment_id
+    Stripe::PaymentIntent.retrieve(stripe_payment_id) if stripe_payment_id
   end
 
   # Manually mark that a payment was received.

@@ -12,7 +12,7 @@ describe PaymentsController, type: :controller do
   before { sign_in user if user }
 
   describe 'GET #show' do
-    subject { get(:show, params: {id: payment.id}) }
+    subject { get(:show, params: { id: payment.id }) }
 
     context 'when payment exists' do
       it { succeeds }

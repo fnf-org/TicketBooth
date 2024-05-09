@@ -84,8 +84,7 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   config.stripe = {
-    secret_api_key:       Rails.application.credentials.test.dig(:stripe, :secret_api_key),
-    publishable_api_key:  Rails.application.credentials.test.dig(:stripe, :publishable_api_key)
+    secret_api_key:      Rails.application.credentials.test.dig(:stripe, :secret_api_key),
+    publishable_api_key: Rails.application.credentials.test.dig(:stripe, :publishable_api_key)
   }
-
 end
