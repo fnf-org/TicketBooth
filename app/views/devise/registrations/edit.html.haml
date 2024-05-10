@@ -1,6 +1,9 @@
-.card
-  .card-header.bg-success-subtle
-    %h2
-      Edit Your Account
-  .card-body
-    = render partial: 'form', locals: { existing: resource&.id.nil? ? false : true, resource: resource, resource_name: resource_name}
+.row
+  .col-12
+    .vertical-20
+  .card
+    .card-header.bg-dark-subtle
+      %h2
+        Edit Your Account
+    .card-body.bg-body-secondary
+      = render partial: 'form', locals: { existing: resource&.id.nil? ? false : true, resource: resource, resource_name: resource_name}

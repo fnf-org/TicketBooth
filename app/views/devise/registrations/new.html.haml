@@ -1,5 +1,5 @@
 .card
-  .card-header.bg-success-subtle
+  .card-header.bg-dark-subtle
     %h2 Register a New Account
   .card-body
     = render partial: 'form', locals: { existing: resource&.id.nil? ? false : true, resource: resource, resource_name: resource_name}

@@ -42,6 +42,7 @@ require 'securerandom'
 class User < ApplicationRecord
   # @see https://dev.to/kevinluo201/introduction-to-devise-modules-and-enable-all-of-them-4p25
   DEVISE_MODULES = %i[
+    confirmable
     database_authenticatable
     registerable
     lockable

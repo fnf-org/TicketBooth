@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# vim: ft=bash
+
+dir=app/assets/stylesheets/site
+file=${dir}/_index.css.scss
+temp=$(mktemp -t index-css)
+
+/bin/ls -1 "${dir}"/[a-z]* | xargs basename | awk '{printf "%s \"%s\";\n", "@import", $1}' > "${temp}"
+
+if [[ ! -f "${file}" || -n $(diff "${file}" "${temp}") ]]; then
+  cp -v "${temp}" "${file}"
+  echo -e "\e[1;32m${dir}/_index.css.scss has been updated with $(wc -l ${dir}/_index.css.scss | awk '{print $1}') imports.\e[0;0m"
+fi
+

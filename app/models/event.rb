@@ -60,19 +60,19 @@ class Event < ApplicationRecord
   validates :start_time, presence: true
   validates :end_time, presence: true
   validates :adult_ticket_price, presence: true,
-                                 numericality: { greater_than_or_equal_to: 0 }
+            numericality:                  { greater_than_or_equal_to: 0 }
   validates :kid_ticket_price, allow_nil: true,
-                               numericality: { greater_than_or_equal_to: 0 }
+            numericality:                 { greater_than_or_equal_to: 0 }
   validates :cabin_price, allow_nil: true,
-                          numericality: { greater_than_or_equal_to: 0 }
+            numericality:            { greater_than_or_equal_to: 0 }
   validates :max_adult_tickets_per_request, allow_nil: true,
-                                            numericality: { only_integer: true, greater_than: 0 }
+            numericality:                              { only_integer: true, greater_than: 0 }
   validates :max_kid_tickets_per_request, allow_nil: true,
-                                          numericality: { only_integer: true, greater_than: 0 }
+            numericality:                            { only_integer: true, greater_than: 0 }
   validates :max_cabins_per_request, allow_nil: true,
-                                     numericality: { only_integer: true, greater_than: 0 }
+            numericality:                       { only_integer: true, greater_than: 0 }
   validates :max_cabin_requests, allow_nil: true,
-                                 numericality: { only_integer: true, greater_than: 0 }
+            numericality:                   { only_integer: true, greater_than: 0 }
 
   validate :end_time_after_start_time, :sales_end_time_after_start_time,
            :ensure_prices_set_if_maximum_specified
@@ -85,12 +85,12 @@ class Event < ApplicationRecord
     ticket_sales_start_time:       START_DATE_WITH_OFFSET[-42.days],
     ticket_sales_end_time:         START_DATE_WITH_OFFSET[7.days],
 
-    adult_ticket_price:            250,
+    adult_ticket_price:            220,
     early_arrival_price:           0,
     kid_ticket_price:              0,
     late_departure_price:          30,
 
-    max_adult_tickets_per_request: 10,
+    max_adult_tickets_per_request: 6,
     max_kid_tickets_per_request:   4,
 
     tickets_require_approval:      true,
@@ -133,12 +133,40 @@ class Event < ApplicationRecord
     ticket_requests.not_declined.sum(:cabins) < max_cabin_requests
   end
 
+  StatusWidget = Struct.new(:name, :css_class)
+
+  def status
+    if past_event?
+      StatusWidget.new('Past Event', 'secondary')
+    elsif ticket_sales_open?
+      StatusWidget.new('Tickets on Sale', 'primary')
+    elsif ticket_requests_open?
+      StatusWidget.new('Collecting Ticket Requests', 'success')
+    elsif future_event?
+      StatusWidget.new('Pending Future Event', 'info')
+    else
+      StatusWidget.new('Misconfigured', 'warning')
+    end
+  end
+
+  def revenue
+    ticket_requests.completed.map(&:payment)
+  end
+
+  def past_event?
+    Time.current.after?(end_time)
+  end
+
+  def future_event?
+    Time.current.before?(start_time)
+  end
+
   def ticket_sales_open?
     if ticket_sales_start_time && Time.current.before?(ticket_sales_start_time)
       errors.add(:ticket_sales_start_time, 'Tickets are not yet on sale for this event.')
     elsif ticket_sales_end_time && Time.current.after?(ticket_sales_end_time)
       errors.add(:ticket_sales_end_time, 'Tickets are no longer on sale for this event.')
-    elsif Time.current.after?(end_time)
+    elsif past_event?
       errors.add(:end_time, 'This event has ended and ticket sales are closed.')
     else
       return true
