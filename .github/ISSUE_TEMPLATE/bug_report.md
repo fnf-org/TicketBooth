@@ -34,5 +34,12 @@ If applicable, add screenshots to help explain your problem.
  - Browser [e.g. stock browser, safari]
  - Version [e.g. 22]
 
-**Additional context**
+**Additional context**  
 Add any other context about the problem here.
+
+**Version info**  
+_Add any relevant version info_  
+App Version: `1.0.1`  
+Rails: `7.1.3.2`  
+Ruby: `3.2.3`  
+Mode: `production`  
