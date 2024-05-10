@@ -85,12 +85,12 @@ class Event < ApplicationRecord
     ticket_sales_start_time:       START_DATE_WITH_OFFSET[-42.days],
     ticket_sales_end_time:         START_DATE_WITH_OFFSET[7.days],
 
-    adult_ticket_price:            250,
+    adult_ticket_price:            220,
     early_arrival_price:           0,
     kid_ticket_price:              0,
     late_departure_price:          30,
 
-    max_adult_tickets_per_request: 10,
+    max_adult_tickets_per_request: 6,
     max_kid_tickets_per_request:   4,
 
     tickets_require_approval:      true,

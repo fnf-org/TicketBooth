@@ -57,6 +57,7 @@ Rails.application.routes.draw do
       end
 
       member do
+        delete :destroy
         post :approve
         post :decline
         post :refund
@@ -78,6 +79,7 @@ Rails.application.routes.draw do
       get :reset
     end
   end
+
   resources :site_admins, only: %i[index new create destroy]
 
   get '/tickets/request/:event_id', to: 'ticket_requests#new', as: :tickets_request

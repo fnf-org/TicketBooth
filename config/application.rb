@@ -34,6 +34,9 @@ Bundler.require(*Rails.groups)
 
 module TicketBooth
   class Application < Rails::Application
+    # Application Version
+    VERSION = File.read('.version').freeze
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
 

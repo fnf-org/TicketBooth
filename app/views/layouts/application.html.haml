@@ -32,10 +32,11 @@
 
   %body
     = render partial: "shared/nav_main"
-    .container
-      %turbo-frame#flash_container{"data-controller": "flash", "data-flash-target": "flash"}
-        = render "shared/flash"
 
+    %turbo-frame#flash_container{"data-controller": "flash", "data-flash-target": "flash"}
+      = render "shared/flash"
+
+    .container-fluid.m-auto.p-4
       .row
         .col-sm-0.col-md-.col-lg-0
         .col-sm-12.col-md-12.col-lg-12
@@ -46,9 +47,15 @@
       .card.p-0.mt-5
         .card-footer.bg-primary-subtle.text-center
           %small
-            Crafted with ♡ in San Francisco
-            %br
-            &copy; CFAEA 2010 —
-            = Date.current.strftime('%Y')
+            Crafted with ♡ in San Francisco &mdash; &copy; CFAEA 2010-#{Date.current.strftime('%Y')}
             All rights reserved.
+            %br
+            App Version #{TicketBooth::Application::VERSION},
+            Rails
+            = Rails.version
+            , Ruby
+            = RUBY_VERSION
+            , In
+            = Rails.env
+            mode
 

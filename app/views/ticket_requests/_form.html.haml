@@ -4,7 +4,7 @@
 %div{"data-controller": "tickets-request"}
 
   .card
-    .card-header.bg-secondary-subtle
+    .card-header.bg-dark-subtle
       - unless is_update && !@event.admin?(current_user)
         - if @user
           %h4 Ticket Request for #{@user.name}

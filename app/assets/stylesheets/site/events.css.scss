@@ -1,5 +1,11 @@
 ul.event-tabs {
   margin-bottom: 0px !important;
+  font-size: 20pt;
+  margin-top: -10px;
+
+  a.nav-link.active {
+    background-color: $primary-bg-subtle;
+  }
 }
 
 .event-admins {
@@ -22,8 +28,24 @@ img.event-preview {
   margin-left: 20px;
 }
 
+.row > .card {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+}
+
+.card-header {
+  background-color: $secondary-bg-subtle !important;
+}
+
+.card-body {
+  background-color: $primary-bg-subtle !important;
+}
+
 .card.event-nav {
   .card-body {
+    background-color: transparent !important;
     .btn-group {
       .btn {
         font-size: 12pt !important;

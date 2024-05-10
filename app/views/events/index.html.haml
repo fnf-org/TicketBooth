@@ -1,5 +1,5 @@
 .card
-  .card-header.bg-success-subtle
+  .card-header.bg-dark-subtle
     %h1 Events
   .card-body
     %table.table
@@ -14,10 +14,10 @@
             %td.p-3
               = link_to event, class: "button-link text-nowrap" do
                 = event.name
-            %td= TimeHelper.for_display(event.start_time.localtime)
-            %td= TimeHelper.for_display(event.end_time.localtime)
+            %td.fs-7.text-nowrap= TimeHelper.for_display(event.start_time.localtime)
+            %td.fs-7.text-nowrap= TimeHelper.for_display(event.end_time.localtime)
 
-  .card-footer.bg-secondary-subtle
+  .card-footer.bg-dark-subtle
     = link_to new_event_path, class: 'btn btn-warning btn-lg' do
       Create a New Event
       %i.icon-plus-sign

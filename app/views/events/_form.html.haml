@@ -1,4 +1,4 @@
-= form_for @event, html: { multipart: true }, data: { turbo: false, controller: 'flatpickr', target: '_blank' } do |f|
+= form_for @event, html: { multipart: true }, data: { turbo: true, controller: 'flatpickr', target: '_blank' } do |f|
   = render 'shared/form_errors', resource: @event
 
   .container-fluid
