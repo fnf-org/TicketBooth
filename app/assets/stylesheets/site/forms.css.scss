@@ -2,6 +2,14 @@
 @import "fonts.css.scss";
 @import "bootstrap/scss/functions";
 
+.btn  {
+  border-radius: 5px;
+  font-weight: 400;
+  padding: 6px 15px;
+  text-decoration: none;
+  margin: 10px;
+}
+
 form {
   label {
     margin-top: 25px;

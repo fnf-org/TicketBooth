@@ -62,11 +62,11 @@ class TicketRequest < ApplicationRecord
   }.freeze
 
   TICKET_LIMITS = {
-    (ROLE_UBER_COORDINATOR = 'uber_coordinator') => 12,
-    (ROLE_COORDINATOR = 'coordinator')           => 10,
+    (ROLE_UBER_COORDINATOR = 'uber_coordinator') => 6,
+    (ROLE_COORDINATOR = 'coordinator')           => 6,
     (ROLE_CONTRIBUTOR = 'contributor')           => 6,
-    (ROLE_VOLUNTEER = 'volunteer')               => 4,
-    (ROLE_OTHER = 'other')                       => 4
+    (ROLE_VOLUNTEER = 'volunteer')               => 6,
+    (ROLE_OTHER = 'other')                       => 6
   }.freeze
 
   ROLES = {

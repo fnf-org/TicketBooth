@@ -12,7 +12,7 @@
 
 common: &default_settings
   # Required license key associated with your New Relic account.
-  license_key: 'ca9571c67c14e5e21ec3c909297f1285FFFFNRAL'
+  license_key: "<%= Rails.application.credentials[Rails.env].newrelic.license_key %>"
 
   # Your application name. Renaming here affects where data displays in New
   # Relic.  For more details, see https://docs.newrelic.com/docs/apm/new-relic-apm/maintenance/renaming-applications
@@ -55,8 +55,7 @@ development:
   monitor_mode: false
 
 test:
-  <<: *default_settings
-  # It doesn't make sense to report to New Relic from automated test runs.
+  app_name: 'TicketBooth on EC2 (Test)'
   monitor_mode: false
 
 staging:

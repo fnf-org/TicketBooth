@@ -1,23 +1,41 @@
 .card
-  .card-header.bg-success-subtle
+  .card-header.bg-dark-subtle
     %h1 Events
   .card-body
-    %table.table
+    %table.table.button-links
       %thead
         %tr
-          %th Event
-          %th Start Time
-          %th End Time
+          %th.bg-body-secondary Event
+          %th.bg-body-secondary Status
+          %th.bg-body-secondary.text-end Ticket Requests
+          %th.bg-body-secondary.text-end Total Guests
+          %th.bg-body-secondary.text-end Collected Revenue
+          %th.bg-body-secondary.text-end Awaiting Payment
+          %th.bg-body-secondary Start Time / End Time
       %tbody
         - @events.each do |event|
-          %tr
-            %td.p-3
-              = link_to event, class: "button-link text-nowrap" do
-                = event.name
-            %td= TimeHelper.for_display(event.start_time.localtime)
-            %td= TimeHelper.for_display(event.end_time.localtime)
+          - status_widget = event.status
 
-  .card-footer.bg-secondary-subtle
+          %tr
+            %td.p-3.align-content-center
+              = link_to event, class: "text-nowrap btn btn-#{status_widget.css_class}" do
+                = event.name
+            %td.p-3
+              = status_widget.name
+            %td.p-3.text-end
+              = event.ticket_requests.count
+            %td.p-3.text-end
+              = event.ticket_requests.sum(&:guest_count)
+            %td.p-3.text-end
+              = number_to_currency(event.ticket_requests.completed.sum(&:cost))
+            %td.p-3.text-end
+              = number_to_currency(event.ticket_requests.awaiting_payment.sum(&:cost))
+            %td.fs-7.text-nowrap
+              = TimeHelper.for_display(event.start_time.localtime)
+              %br
+              = TimeHelper.for_display(event.end_time.localtime)
+
+  .card-footer.bg-dark-subtle
     = link_to new_event_path, class: 'btn btn-warning btn-lg' do
       Create a New Event
       %i.icon-plus-sign

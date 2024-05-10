@@ -1,25 +1,42 @@
-%nav.navbar.navbar-expand-lg.border-bottom.border-2.border-primary-subtle.border-body.navbar-light.bg-primary-subtle
-  %a.navbar-brand{ href: root_path }
-    = image_tag "logos/nav-bar-logo.png", size: "80x80"
-  %button.navbar-toggler{"aria-controls" => "navbarSupportedContent", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-bs-target" => "#navbarSupportedContent", "data-bs-toggle" => "collapse", :type => "button"}
-    %span.navbar-toggler-icon
-
-  #navbarSupportedContent.collapse.navbar-collapse
-    .navbar-nav
-      .btn-group
+- button_class="btn btn-primary btn-lg m-1 text-nowrap"
+%nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+  .container-fluid
+    %a.navbar-brand{ href: root_path, id: "brand-logo" }
+      = image_tag "logos/nav-bar-logo.png", size: "80x80"
+    %button.navbar-toggler{"aria-controls" => "navbarSupportedContent", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-bs-target" => "#navbarSupportedContent", "data-bs-toggle" => "collapse", :type => "button"}
+      %span.navbar-toggler-icon
+    #navbarSupportedContent.collapse.navbar-collapse
+      %ul.navbar-nav.me-auto.mb-2.mb-lg-0
+        %li.nav-item
         - if signed_in?
           - if current_user.site_admin?
-            = button_to "All Events", events_path, method: :get, class: 'btn btn-primary btn-lg m-1', data: { turbo: false }
+            = button_to "All Events", events_path, method: :get, class: "#{button_class}", data: { turbo: false }
           - elsif current_user.event_admin?
-            = button_to "Manage Events", events_path, method: :get, class: 'btn btn-primary btn-lg m-1', data: { turbo: false }
+            = button_to "Manage Events", events_path, method: :get, class: "#{button_class}", data: { turbo: false }
           - else
             = button_to "Home", root_path, class: 'btn btn-primary btn-lg m-1'
-          = button_to "Your Profile", edit_user_registration_path,  method: :get, class: 'btn btn-primary btn-lg m-1', data: { turbo: false }
-          = button_to "Log Out", destroy_user_session_path, method: :delete, class: 'btn btn-primary btn-lg m-1', data: { turbo: false }
         - else
           - unless controller_name == 'sessions' && action_name == 'new' && request.path == '/users/sign_in'
-            = button_to "Log In", new_user_session_path, method: :get, class: 'btn btn-primary btn-lg m-1', data: { turbo: false }
+            = button_to "Log In", new_user_session_path, method: :get, class: "#{button_class}", data: { turbo: false }
           - unless controller_name == 'registrations' && action_name == 'new' && request.path == '/users/sign_up'
-            = button_to "Register", new_user_registration_path, method: :get, class: 'btn btn-primary btn-lg m-1', data: { turbo: false }
-
+            = button_to "Register", new_user_registration_path, method: :get, class: "#{button_class}", data: { turbo: false }
+        - if signed_in?
+          %li.nav-item
+      %ul.navbar-nav
+        %li.nav-item.dropdown
+          - if signed_in?
+            %a#navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "data-bs-toggle" => "dropdown", :href => "#", :role => "button"} Account
+            %ul.dropdown-menu.dropdown-menu-end{"aria-labelledby" => "navbarDropdown"}
+              %li
+                = button_to "Edit Profile", edit_user_registration_path, method: :get, data: { turbo: false }, class: "dropdown-item fs-6"
+              %li
+                = button_to "Log Out", destroy_user_session_path, method: :delete, data: { turbo: false }, class: "dropdown-item fs-6"
+              %li
+                %hr.dropdown-divider
+              %li
+                %a.dropdown-item.fs-6{:href => "https://cabins.app.fnf.org/", target: "_blank"} Cabins Reservations
+              %li
+                %a.dropdown-item.fs-6{:href => "https://signup.app.fnf.org", target: "_blank"} Volunteer Signups
+              %li
+                %a.dropdown-item.fs-6{:href => "https://fnf.events/", target: "_blank"} Friends & Family Site
 

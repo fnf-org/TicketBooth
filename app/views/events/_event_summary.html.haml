@@ -18,7 +18,7 @@
     = number_to_currency(@event.adult_ticket_price)
     - if @event.max_adult_tickets_per_request
       %span.muted
-        (max #{@event.max_adult_tickets_per_request} tickets per request)
+        (Maximum #{@event.max_adult_tickets_per_request} adult tickets per request)
   %dt Kid Ticket Price
   %dd
     - if @event.price_rules.any?
@@ -33,4 +33,4 @@
       = number_to_currency(@event.kid_ticket_price)
     - if @event.max_kid_tickets_per_request
       %span.muted
-        (max #{@event.max_kid_tickets_per_request} kid tickets per request)
+        (Maximum #{@event.max_kid_tickets_per_request} kid tickets per request)

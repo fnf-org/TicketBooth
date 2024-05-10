@@ -4,7 +4,7 @@
 %div{"data-controller": "tickets-request"}
 
   .card
-    .card-header.bg-secondary-subtle
+    .card-header.bg-dark-subtle
       - unless is_update && !@event.admin?(current_user)
         - if @user
           %h4 Ticket Request for #{@user.name}
@@ -33,10 +33,48 @@
             url: { controller: :ticket_requests, action: form_action_name }, data: { "turbo-target": "_top", turbo: true } do |f|
             = f.hidden_field :event_id, value: @event.id
 
+            - if is_update
+              .col-12
+                %a{name: "guests"}/
+                %p
+                .control-group
+                %h4 Guests
+                %p
+                  Please list everyone in your party including the kids. We do not (currently) send automated emails to any of the guests you specify.
+                %p
+                  For adults — please list their full name, and an email address as shown in the below example.
+                %p
+                  DJs should write their DJ Name, as well as the regular name and email address.
+                %p
+                  For kids, start with the word "Kid:" and follow up with the name and age, and any optional additional comments.
+
+                %p.text-success
+                  %b Examples of good names
+                %ol
+                  %li DJ Carl Cox (as himself) &lt;carl@carlcox.com&gt;
+                  %li John Digweed &lt;digweed@bedrock-records.com&gt;
+                  %li Kid: Taylor Swift (11yo kid, requires no supervision)
+                  %li Kid: Jonah Hill (12yo kid with bad manners)
+                  %li Kid: Channing Tatum (5-month old baby, still breast-fed)
+
+                - list_finalized = (@event.start_time - Time.current) < ::Event::GUEST_LIST_FINAL_WITHIN
+                - if list_finalized
+                  %span.text-error
+                    Guest list has already been finalized. If you need to update your guests, please email
+                    = mail_to 'tickets@fnf.org'
+                  %br
+                - else
+                  - @ticket_request.guest_count.times do |guest_id|
+                    = f.label "Guest #{guest_id + 1}"
+                    - default_value = guest_id == 0 ? @ticket_request.user.name_and_email : ''
+                    = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests)[guest_id] || default_value, style: 'width: 80%'
+                    %br
+
+
             %h5 How are you contributing to the campout this year?
             .content-fluid
               .row
-                .col-6
+                .col-lg-6.col-xl-6.col-md-12.col-sm-12
                   .input-group-large
                     %fieldset
                       %p
@@ -62,7 +100,7 @@
                               data: { 'max-tickets' => TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_OTHER] }
                             = TicketRequest::ROLES[TicketRequest::ROLE_OTHER]
 
-                .col-6.align-content-md-center
+                .col-lg-6.col-xl-6.col-md-12.col-sm-12.align-content-md-center
                   %p.muted.role-explanation{ class: TicketRequest::ROLE_VOLUNTEER }
                     You are working one or more shifts at the event
 
@@ -83,8 +121,9 @@
                   = f.text_area :role_explanation,
                     placeholder: 'Briefly describe your role',
                     rows: 4, width: 400, maxlength: 400, required: false, style: 'min-width: 100% !important; font-size: 11pt;'
-              .row0
-                .col-12
+
+              .row
+                .col-lg-6.col-xl-6.col-md-12.col-sm-12
                   = f.label :previous_contribution, 'What was your role last year?'
                   = f.text_area :previous_contribution, style: 'min-width: 100%',
                       rows: 2, maxlength: 250, required: false
@@ -97,19 +136,17 @@
                         Editable by event admins only. Leave blank to use default price.
                       = f.number_field :special_price, class: 'input-small', min: 0
 
-              .row
-                .col-12
-                  = f.label :adults, 'Number of tickets' + " @ $#{@event.adult_ticket_price.to_i} each"
+                  = f.label :adults, 'Number of adult tickets' + " @ $#{@event.adult_ticket_price.to_i} each"
                   = f.number_field :adults, class: 'input-mini', min: 1, required: true,
                     max: (TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_VOLUNTEER] unless form_action_name == :update),
                     data: { default_price: @event.adult_ticket_price.to_i }
 
-                  %span.help-inline.inline-price
+                  %strong.help-inline.inline-price
 
                   - if @event.kid_ticket_price
 
                     = f.label :kids do
-                      Number of children (13 or under) you are bringing with you (not transferable to adults; babes in arms are free)
+                      Number of children (12 and under) you are bringing with you (not transferable to adults; babes in arms are free)
                       = help_mark help_text_for(:kids)
 
                     = f.number_field :kids, class: 'input-mini', min: 0,
@@ -119,8 +156,13 @@
 
                     %span.help-inline.inline-price
                     %p.help-inline-block.muted
-                      Please include the ages of the children (including infants) you are
-                      bringing with you in the notes at the bottom of this form.
+
+
+                    - unless is_update
+                      .card.bg-warning-subtle.mb-3{:style => "max-width: 18rem;"}
+                        .card-body.bg-success.text-light
+                          %h5.card-title Please Note:
+                          %p.card-text Once you submit this ticket request form, you will be required to additionally enter each guest (including yourself and the kids).
 
                   -# - if false @event.cabin_price
 
@@ -136,6 +178,7 @@
                     %span.help-inline.inline-price
                       - unless @event.cabins_available?
                         Sorry, we are sold out of cabins at this point in time.
+              .col-lg-6.col-xl-6.col-md-12.col-sm-12
                 .control-group
 
                 - if @event.allow_financial_assistance
@@ -184,7 +227,6 @@
                         Visible by event admins only.
                       = f.text_area :admin_notes, rows: 5, columns: 800, maxlength: 512, style: 'width: 100%'
                     %br
-                %hr
 
                 - unless is_update
                   %p
@@ -200,45 +242,14 @@
                     and agree to follow the principles outlined therein
                   %br
 
-              - if is_update
-                %p
-                .control-group
-                %h4 Guests
-                %p
-                  Include yourself as a guest.
-                %p
-                  %strong
-                    Use First Name and Last Name and Email within angle brackets.
-                %p
-                  DJ names or monikers should be accompanied with their real name.
-                %p
-                  If we cannot identify the name, we will ask you to change it.
-                %p.text-success
-                  %b Examples of good names
-                %ol
-                  %li Carl Cox (self) &lt;carl@carlcox.com&gt;
-                  %li John Digweed &lt;digweed@bedrock-records.com&gt;
 
-                - list_finalized = (@event.start_time - Time.current) < ::Event::GUEST_LIST_FINAL_WITHIN
-                - if list_finalized
-                  %span.text-error
-                    Guest list has already been finalized. If you need to update your guests, please email
-                    = mail_to 'tickets@fnf.org'
-                  %br
-                - else
-                  - @ticket_request.guest_count.times do |guest_id|
-                    = f.label "Guest #{guest_id + 1}"
-                    - default_value = guest_id == 0 ? @ticket_request.user.name_and_email : ''
-                    = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests)[guest_id] || default_value, style: 'width: 80%'
-                    %br
+                .actions
+                  - submit_btn_text = is_update ? 'Update Request' : 'Submit Request'
+                  = f.submit submit_btn_text, class: 'btn btn-primary btn-large', disabled: !is_update,
+                             id: 'submit-request',
+                             data: { disable_with: 'Submitting...' }
+                  - if @ticket_request && @ticket_request.id
+                    = link_to event_ticket_request_path(event_id: @event.id, id: @ticket_request&.id), method: :get, class: 'btn btn-large btn-danger' do
+                      Back
 
-              .actions
-                - submit_btn_text = is_update ? 'Update Request' : 'Submit Request'
-                = f.submit submit_btn_text, class: 'btn btn-primary btn-large', disabled: !is_update,
-                           id: 'submit-request',
-                           data: { disable_with: 'Submitting...' }
-                - if @ticket_request && @ticket_request.id
-                  = link_to event_ticket_request_path(event_id: @event.id, id: @ticket_request&.id), class: 'btn' do
-                    %i.icon-arrow-left
-                    Back
 

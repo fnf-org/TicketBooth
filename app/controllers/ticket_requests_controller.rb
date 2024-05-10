@@ -139,7 +139,7 @@ class TicketRequestsController < ApplicationController
       ).fire!
 
       if @event.tickets_require_approval || @ticket_request.free?
-        redirect_to event_ticket_request_path(@event, @ticket_request)
+        redirect_to edit_event_ticket_request_path(@event, @ticket_request), notice: 'Please add everyone in your party.'
       else
         redirect_to new_payment_url(ticket_request_id: @ticket_request)
       end
@@ -158,20 +158,40 @@ class TicketRequestsController < ApplicationController
     # Allow ticket request to edit guests and nothing else
     ticket_request_params = permitted_params[:ticket_request]
 
-    guests = (Array(ticket_request_params[:guest_list]) || []).flatten
+    guests = (Array(ticket_request_params[:guest_list]) || [])
+             .flatten.map(&:presence)
+             .compact
+
     ticket_request_params.delete(:guest_list)
+    ticket_request_params[:guests] = guests
 
     Rails.logger.info("guests: #{guests.inspect}")
     Rails.logger.info("params: #{permitted_params.inspect}")
 
-    ticket_request_params[:guests] = guests
     Rails.logger.info("ticket_request_params: #{ticket_request_params.inspect}")
+
+    if guests.size != @ticket_request.total_tickets
+      flash.now[:error] = 'Please enter each guest and kid in your party. For the kids include their ages, instead of the emails.'
+      return render_flash(flash)
+    end
 
     if @ticket_request.update(ticket_request_params)
       redirect_to event_ticket_request_path(@event, @ticket_request)
     else
       render action: 'edit'
     end
+  end
+
+  def destroy
+    unless @event.admin?(current_user) || current_user == @ticket_request.user
+      flash.now[:error] = 'You do not have sufficient priviliges to delete this request.'
+      return render_flash(flash)
+    end
+
+    ticket_request_id = @ticket_request.id
+    @ticket_request.destroy if @ticket_request&.persisted?
+
+    redirect_to new_event_ticket_request_path(@event), notice: "Ticket Request ID #{ticket_request_id} was deleted."
   end
 
   def approve

@@ -1,0 +1,40 @@
+@import "bootstrap/scss/variables";
+
+#flash_container {
+  background-color: $success-bg-subtle;
+  position: fixed;
+  z-index: 1000;
+  padding: 0;
+  top: 30px;
+  left: 20%;
+  right: 20%;
+  box-shadow: 0px 10px 10px 0 rgba(45, 45, 45, 0.4);
+  border-radius: 20px;
+
+  #flash {
+    position: relative;
+    z-index: 2000;
+    h3.flash-header {
+      font-size: 25pt !important;
+      margin: 25px auto;
+      text-shadow: 0 0 0;
+      font-family: Oswald, "Bebas Neue", sans-serif;
+    }
+
+    .alert {
+      padding: 15px;
+      width: 100%;
+      margin: 0;
+
+      h3 {
+        font-size: 16pt;
+      }
+    }
+
+    .alert-danger {
+      h3 {
+        color: #f55 !important;
+      }
+    }
+  }
+}

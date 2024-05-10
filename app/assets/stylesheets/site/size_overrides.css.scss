@@ -1,0 +1,16 @@
+
+// Hide navbar text for small screens
+@media (max-width: 600px) {
+  small.nowrap {
+    white-space: normal;
+  }
+}
+
+// Hide navbar text for small screens
+@media (max-width: 800px) {
+  #brand-logo img {
+    display: none !important;
+  }
+
+}
+

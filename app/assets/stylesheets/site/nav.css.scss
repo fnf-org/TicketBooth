@@ -1,7 +1,13 @@
 
 nav.navbar {
+  z-index: 100 !important;
   width: 100%;
   padding-left: 20px;
+
+  .navbar-toggler {
+    margin-right: 20px;
+    margin-top: 20px;
+  }
 
   a.nav-brand {
     display: inline-block;
@@ -31,7 +37,7 @@ nav.navbar {
         margin-right: 10px !important;
         margin-left: 10px !important;
         background-color: rgba(69, 150, 254, 0.65) !important;
-        font-size: 16pt;
+        //font-size: 16pt;
 
         &:focus,
         &:hover {
@@ -42,17 +48,19 @@ nav.navbar {
   }
 }
 
-.container-fluid, .container {
-  .btn, a.btn, a.button-link {
-    background-color: #ff7800 !important;
-    border-radius: 10px;
-    border: 1px solid #aa3800;
+.button-links {
+  a.button-link {
+    display: inline-block;
+    background-color: #225fe4 !important;
+    border-radius: 5px;
+    border: 1px solid #032761;
     color: #fff;
     font-weight: 400;
     margin-left: 0;
     margin-right: 3px;
     padding: 6px 15px;
     text-decoration: none;
+    min-width: 200px !important;
 
     &:focus,
     &:hover {
@@ -60,19 +68,47 @@ nav.navbar {
       background-color: #ff7800;
     }
   }
+}
 
-  a.button-link {
-    border-width: 0 !important;
-    margin-top: 15px !important;
-  }
+.btn-round {
+  border-radius: 10px !important;
+  padding: 6px 15px !important;
+  vertical-align: baseline !important;
+  font-size: 20pt;
+}
 
-  .event-nav {
-    a.active {
-      background-color: #fff;
-      color: #ff7800;
+.container-fluid, .container {
+  .navbar {
+    .btn, a.btn, a.button-link {
+      background-color: #6a9549 !important;
+      border-radius: 10px;
+      border: 1px solid #aa3800;
+      color: #fff;
+      font-weight: 400;
+      margin-left: 0;
+      margin-right: 3px;
+      padding: 6px 15px;
+      text-decoration: none;
+
+      &:focus,
+      &:hover {
+        color: #000;
+        background-color: #ff7800;
+      }
+    }
+
+    a.button-link {
+      border-width: 0 !important;
+      margin-top: 15px !important;
+    }
+
+    .event-nav {
+      a.active {
+        background-color: #fff;
+        color: #ff7800;
+      }
     }
   }
-
 
   a, a.btn {
     &:focus,
