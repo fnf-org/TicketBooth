@@ -85,12 +85,18 @@ describe Payment do
       it { is_expected.to be_truthy }
     end
 
-    describe 'status in progress' do
-      it { payment.status.eql? Payment::STATUS_IN_PROGRESS }
+    describe 'status' do
+      subject { payment.save_with_payment_intent.status }
+
+      it { is_expected.to eq(Payment::STATUS_IN_PROGRESS) }
     end
 
-    describe 'has payment intent id set' do
-      it { payment.payment_intent.present? && payment.payment_intent.id.present? }
+    describe 'payment intent' do
+      subject { payment.save_with_payment_intent.payment_intent.id }
+
+      it { is_expected.to be_truthy }
+
+      it { is_expected.to be_a(String) }
     end
   end
 
