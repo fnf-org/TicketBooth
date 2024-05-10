@@ -8,7 +8,6 @@ describe PaymentsController, type: :controller do
   let(:user) { create(:user) }
   let(:ticket_request) { create(:ticket_request, user:) }
   let(:payment) { create(:payment, ticket_request:) }
-  # let(:viewer) {user}
   before { sign_in user if user }
 
   describe 'GET #show' do
@@ -26,3 +25,4 @@ describe PaymentsController, type: :controller do
     end
   end
 end
+# rubocop:enable

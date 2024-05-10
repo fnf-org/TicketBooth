@@ -66,13 +66,13 @@ describe Payment do
     describe 'calculate_cost' do
       subject { payment.calculate_cost }
 
-      it { is_expected.to eql(10_000) }
+      it { is_expected.to be(10_000) }
     end
 
     describe 'dollar_cost' do
       subject { payment.dollar_cost }
 
-      it { is_expected.to eql(100) }
+      it { is_expected.to be(100) }
     end
   end
 
@@ -111,11 +111,11 @@ describe Payment do
     end
   end
 
-  describe '#get_payment_intent' do
+  describe '#retrieve_payment_intent' do
     subject { payment.create_payment_intent(amount) }
 
     let(:amount) { 1000 }
-    let(:payment_intent) { payment.get_payment_intent }
+    let(:payment_intent) { payment.retrieve_payment_intent }
     let(:payment) { build(:payment) }
 
     it { is_expected.to be_a(Stripe::PaymentIntent) }

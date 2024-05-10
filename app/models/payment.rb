@@ -91,14 +91,14 @@ class Payment < ApplicationRecord
   end
 
   def payment_intent
-    @payment_intent ||= get_payment_intent
+    @payment_intent ||= retrieve_payment_intent
   end
 
   def payment_intent_client_secret
     @payment_intent_client_secret ||= payment_intent.client_secret
   end
 
-  def get_payment_intent
+  def retrieve_payment_intent
     Stripe::PaymentIntent.retrieve(stripe_payment_id) if stripe_payment_id
   end
 
