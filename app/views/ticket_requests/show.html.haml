@@ -1,8 +1,7 @@
 .card
   .card-header.bg-dark-subtle
     = content_for(:title, "#{@event.name} — Ticket Request")
-    %h3= @event.name
-    %h2
+    %h4= @event.name
 
   .card-body
     %p.lead
@@ -171,19 +170,18 @@
           target: '_blank'
         must be purchased separately!
 
-    .btn-group
-      - if @event.admin?(current_user)
-        = link_to event_ticket_requests_path(@event), class: 'btn btn-primary' do
-          %i.icon-arrow-left
-          All Requests
+    .card-footer.bg-body-secondary.border-2
+      .btn-group.btn-group-sm
+        - if @event.admin?(current_user)
+          = link_to event_ticket_requests_path(@event), class: 'btn btn-primary btn-round' do
+            All Requests
 
-      - if @event.admin?(current_user) || @ticket_request.guest_count > 0
-        = link_to edit_event_ticket_request_path(@event, @ticket_request), class: 'btn btn-success' do
-          = @event.admin?(current_user) ? 'Edit' : 'Edit guests'
-          %i.icon-edit
+        - if @event.admin?(current_user) || @ticket_request.guest_count > 0
+          = link_to edit_event_ticket_request_path(@event, @ticket_request), class: 'btn btn-primary btn-round' do
+            = @event.admin?(current_user) ? 'Edit Ticket Request' : 'Edit Guests'
 
-      - if @event.admin?(current_user) || @ticket_request.user == current_user
-        = button_to "Delete this Ticket Request ✘ ", event_ticket_request_path(@event, @ticket_request), class: 'btn btn-warning',  method: :delete, data: { "turbo-confirm": "Are you sure?" }
+        - if @event.admin?(current_user) || @ticket_request.user == current_user
+          = button_to "Delete this Ticket Request ✘ ", event_ticket_request_path(@event, @ticket_request), class: 'btn btn-warning', method: :delete, data: { "turbo-confirm": "Are you sure?" }
 
 
 

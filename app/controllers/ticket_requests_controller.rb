@@ -158,14 +158,22 @@ class TicketRequestsController < ApplicationController
     # Allow ticket request to edit guests and nothing else
     ticket_request_params = permitted_params[:ticket_request]
 
-    guests = (Array(ticket_request_params[:guest_list]) || []).flatten
+    guests = (Array(ticket_request_params[:guest_list]) || [])
+             .flatten.map(&:presence)
+             .compact
+
     ticket_request_params.delete(:guest_list)
+    ticket_request_params[:guests] = guests
 
     Rails.logger.info("guests: #{guests.inspect}")
     Rails.logger.info("params: #{permitted_params.inspect}")
 
-    ticket_request_params[:guests] = guests
     Rails.logger.info("ticket_request_params: #{ticket_request_params.inspect}")
+
+    if guests.size != @ticket_request.total_tickets
+      flash.now[:error] = 'Please enter each guest and kid in your party. For the kids include their ages, instead of the emails.'
+      return render_flash(flash)
+    end
 
     if @ticket_request.update(ticket_request_params)
       redirect_to event_ticket_request_path(@event, @ticket_request)

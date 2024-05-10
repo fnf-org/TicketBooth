@@ -1,6 +1,5 @@
 = render partial: 'shared/nav_event_tabs', locals: { active_tab: { event_show: 'active'}, event: @event }
 
-.vertical-20
 .row
   .col-sm-12.col-md-12.col-lg-6
     .card.border-1
@@ -14,8 +13,8 @@
         %span.muted
           (Right click and copy the link to your clipboard)
         %br
-      .card-body
-        = link_to tickets_request_path(@event), tickets_request_path(@event), class: "button-link", target: "_top"
+      .card-body.button-links
+        = link_to tickets_request_url(@event), tickets_request_url(@event), class: "button-link ticket-request-link", target: "_top"
 
 
   .col-sm-6.col-md-6.col-lg-6.col-xl-6

@@ -1,6 +1,6 @@
 = render partial: 'shared/nav_event_tabs', locals: { event: @event, active_tab: { event_edit: 'active' } }
 
-.card.p-2.border-top-0
+.card.border-top-0
   .card-body
     %div{"data-controller": "flatpickr"}
       = render 'form'

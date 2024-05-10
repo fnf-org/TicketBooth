@@ -48,6 +48,35 @@ nav.navbar {
   }
 }
 
+.button-links {
+  a.button-link {
+    display: inline-block;
+    background-color: #225fe4 !important;
+    border-radius: 5px;
+    border: 1px solid #032761;
+    color: #fff;
+    font-weight: 400;
+    margin-left: 0;
+    margin-right: 3px;
+    padding: 6px 15px;
+    text-decoration: none;
+    min-width: 200px !important;
+
+    &:focus,
+    &:hover {
+      color: #000;
+      background-color: #ff7800;
+    }
+  }
+}
+
+.btn-round {
+  border-radius: 10px !important;
+  padding: 6px 15px !important;
+  vertical-align: baseline !important;
+  font-size: 20pt;
+}
+
 .container-fluid, .container {
   .navbar {
     .btn, a.btn, a.button-link {

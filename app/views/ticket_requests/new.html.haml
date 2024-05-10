@@ -5,9 +5,9 @@
     .col-sm-12.col-md-12.col-lg-5.col-xl-5
       .card
         .card-header.bg-dark-subtle
-          %h3= @event.name
+          %h4= @event.name
 
-        .card-body
+        .card-body.bg-body-secondary
           - if @event.ticket_requests_open?
             = render partial: "events/event_summary"
 
