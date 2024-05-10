@@ -37,8 +37,8 @@ If applicable, add screenshots to help explain your problem.
 **Additional context**  
 Add any other context about the problem here.
 
+<!--- Add any relevant version info that can help with triaging_ -->
 **Version info**  
-_Add any relevant version info_  
 App Version: `1.0.1`  
 Rails: `7.1.3.2`  
 Ruby: `3.2.3`  
