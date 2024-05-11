@@ -58,15 +58,16 @@ class PaymentsController < ApplicationController
       @payment = Payment.find(permit_params[:id])
     elsif permit_params[:stripe_payment_id]
       @payment = Payment.where(stripe_payment_id: permit_params[:stripe_payment_id]).first
-    else
-      return redirect_to root_path unless @payment.present? && @payment.can_view?(current_user)
     end
 
-    PaymentMailer.payment_received(@payment).deliver_now
-    @payment.ticket_request.mark_complete
+    return redirect_to root_path unless @payment.present? && @payment.can_view?(current_user)
 
-    # XXX switch to checkout page
-    redirect_to @payment, notice: 'Payment was successfully received.'
+    @payment.mark_received
+    @payment.ticket_request.mark_complete
+    PaymentMailer.payment_received(@payment).deliver_now
+
+    # XXX switch to checkout page ??
+    # redirect_to @payment, notice: 'Payment was successfully received.'
   end
 
   def other

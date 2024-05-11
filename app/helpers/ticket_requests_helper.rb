@@ -26,10 +26,10 @@ module TicketRequestsHelper
     when 'P'
       'Pending Approval'
     when 'A'
-      if ticket_request.payment.present? && !ticket_request.payment.received?
-        'Awaiting Payment via Alternate Method'
-      else
+      if ticket_request.payment.present? && ticket_request.payment.in_progress?
         'Awaiting Payment'
+      else
+        'Awaiting Payment via Alternate Method'
       end
     when 'D'
       'Declined'

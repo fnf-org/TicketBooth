@@ -6,16 +6,12 @@
 #
 #  id                :integer          not null, primary key
 #  explanation       :string(255)
-#  status            :string(1)        default("P"), not null
+#  status            :string(1)        default("N"), not null
 #  created_at        :datetime
 #  updated_at        :datetime
 #  stripe_charge_id  :string(255)
 #  stripe_payment_id :string
 #  ticket_request_id :integer          not null
-#
-# Indexes
-#
-#  index_payments_on_stripe_payment_id  (stripe_payment_id)
 #
 class Payment < ApplicationRecord
   include PaymentsHelper
@@ -25,6 +21,12 @@ class Payment < ApplicationRecord
     STATUS_IN_PROGRESS = 'P',
     STATUS_RECEIVED = 'R'
   ].freeze
+
+  STATUS_NAMES = {
+    'N' => 'New',
+    'P' => 'In Progress',
+    'R' => 'Received'
+  }.freeze
 
   belongs_to :ticket_request
 
@@ -106,10 +108,13 @@ class Payment < ApplicationRecord
     Stripe::PaymentIntent.retrieve(stripe_payment_id) if stripe_payment_id
   end
 
+  def status_name
+    STATUS_NAMES[status]
+  end
+
   # Manually mark that a payment was received.
   def mark_received
-    self.status = STATUS_RECEIVED
-    save!
+    update status: STATUS_RECEIVED
   end
 
   delegate :can_view?, to: :ticket_request

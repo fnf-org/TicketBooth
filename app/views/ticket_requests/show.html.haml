@@ -6,11 +6,10 @@
   .card-body
     %p.lead
       %h4
-        Status:
+        Ticket Status:
         = @ticket_request.status_name
 
     - if @ticket_request.user == current_user
-
       - if @ticket_request.pending?
         %p.lead
           Thanks for requesting a ticket!
@@ -18,7 +17,12 @@
           You'll receive an email at
           %b= @ticket_request.user.email
           if your request is approved.
-      - elsif @payment
+      - elsif @payment.in_progress?
+        %p.lead
+          We are waiting on your payment for
+          = succeed '!' do
+            = 'ticket'.pluralize(@ticket_request.total_tickets)
+      - elsif @payment.received?
         %p.lead
           Thanks for paying for your
           = succeed '!' do
@@ -54,10 +58,10 @@
     - if @ticket_request.approved? || @ticket_request.completed?
       %p
         %b Payment:
-        - if @payment
+        - if @payment.present? && @payment.received?
           - if @ticket_request.refunded?
             %span.text-warning Refunded
-          - elsif @ticket_request.paid_via_credit?
+          - else
             = link_to 'Received', payment_path(@payment)
             - if @event.admin?(current_user)
               = link_to 'Refund', refund_event_ticket_request_path(@event, @ticket_request),
