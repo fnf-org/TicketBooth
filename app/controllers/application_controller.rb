@@ -24,11 +24,11 @@ class ApplicationController < ActionController::Base
   end
 
   def stripe_publishable_api_key
-    @stripe_publishable_api_key ||= ::Rails.configuration.stripe[:publishable_api_key]
+    @stripe_publishable_api_key ||= Rails.configuration.stripe[:publishable_api_key]
   end
 
   def stripe_secret_api_key
-    @stripe_secret_api_key ||= ::Rails.configuration.stripe[:secret_api_key]
+    @stripe_secret_api_key ||= Rails.configuration.stripe[:secret_api_key]
   end
 
   # Override a Devise method

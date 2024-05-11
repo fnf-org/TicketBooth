@@ -37,10 +37,6 @@
 #  event_id                :integer          not null
 #  user_id                 :integer          not null
 #
-#  user_id                 :integer          not null
-#
-#  user_id                 :integer          not null
-#
 class TicketRequest < ApplicationRecord
   include ActiveModel::Validations
   include ActiveModel::Validations::Callbacks
