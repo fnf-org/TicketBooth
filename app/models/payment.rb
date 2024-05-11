@@ -95,7 +95,7 @@ class Payment < ApplicationRecord
   end
 
   def payment_intent_client_secret
-    @payment_intent_client_secret ||= payment_intent.client_secret
+    @payment_intent_client_secret ||= (payment_intent.client_secret if payment_intent)
   end
 
   def retrieve_payment_intent
