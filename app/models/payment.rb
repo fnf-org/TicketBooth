@@ -13,6 +13,10 @@
 #  stripe_payment_id :string
 #  ticket_request_id :integer          not null
 #
+# Indexes
+#
+#  index_payments_on_stripe_payment_id  (stripe_payment_id)
+#
 class Payment < ApplicationRecord
   include PaymentsHelper
 
@@ -95,7 +99,7 @@ class Payment < ApplicationRecord
   end
 
   def payment_intent_client_secret
-    @payment_intent_client_secret ||= (payment_intent.client_secret if payment_intent)
+    @payment_intent_client_secret ||= payment_intent&.client_secret
   end
 
   def retrieve_payment_intent

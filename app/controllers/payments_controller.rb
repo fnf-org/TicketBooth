@@ -57,7 +57,7 @@ class PaymentsController < ApplicationController
     if permit_params[:id]
       @payment = Payment.find(permit_params[:id])
     elsif permit_params[:stripe_payment_id]
-      @payment = Payment.find_by_stripe_payment_id(permit_params[:stripe_payment_id])
+      @payment = Payment.where(stripe_payment_id: permit_params[:stripe_payment_id]).first
     else
       return redirect_to root_path unless @payment.present? && @payment.can_view?(current_user)
     end

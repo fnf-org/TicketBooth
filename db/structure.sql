@@ -649,6 +649,13 @@ CREATE INDEX index_event_admins_on_user_id ON public.event_admins USING btree (u
 
 
 --
+-- Name: index_payments_on_stripe_payment_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_payments_on_stripe_payment_id ON public.payments USING btree (stripe_payment_id);
+
+
+--
 -- Name: index_price_rules_on_event_id; Type: INDEX; Schema: public; Owner: -
 --
 
