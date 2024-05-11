@@ -26,4 +26,10 @@ export default class FlashController extends Controller {
       }, 500)
     }, 5000)
   }
+
+  showError = (error) => {
+    $("#flash").html(error);
+    $('#flash_container').show();
+    this.hideFlash();
+  }
 }
