@@ -33,14 +33,14 @@
     .col-8
       %form#payment-form{"data-controller" => "checkout",
                          "data-checkout-ticket-request-id-value" => "#{@ticket_request.id}"}
-      #payment-element
-        / Stripe.js injects the Payment Element
-      #payment-message.hidden
+        #payment-element
+          / Stripe.js injects the Payment Element
+        #payment-message.hidden
 
-      %button.submit.btn.btn-success.mt-3s
-        #spinner.spinner.hidden
-        %span.button-text
-          Pay now
+        %button.submit
+          #spinner.spinner.hidden
+          %span.button-text
+            Play now
 
       %p.small
         By purchasing tickets to an FnF event, you acknowledge that you have read

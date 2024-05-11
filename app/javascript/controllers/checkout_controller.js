@@ -9,6 +9,7 @@ export default class CheckoutController extends Controller {
 
     connect() {
         // window.alert('ticketRequestId: ' + this.ticketRequestIdValue);
+        this.element.dataset['action'] = 'submit->disable#handleSubmit'
 
         let elements;
         let ticketRequestId;
@@ -18,9 +19,11 @@ export default class CheckoutController extends Controller {
         initialize();
         checkStatus();
 
-        document
-            .querySelector("#payment-form")
-            .addEventListener("submit", handleSubmit(event));
+        // XXX Not sure how to break up the connect into separate areas so calling this here is easy?
+        this.element.addEventListener("submit", handleSubmit);
+
+        // document
+        //     .querySelector("#payment-form")
 
         // window.alert('checkout_controller init payment');
 
@@ -49,8 +52,7 @@ export default class CheckoutController extends Controller {
             paymentElement.mount("#payment-element");
         }
 
-        async function handleSubmit(e) {
-            e.preventDefault();
+        async function handleSubmit() {
             setLoading(true);
 
             console.log("handleSubmit: Stripe confirmPayment");
