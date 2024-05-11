@@ -27,14 +27,6 @@ Rails.application.routes.draw do
   #
   # get('eald', controller: :eald_payments, action: :new, event_id:)
 
-  resources :payments, only: %i[new create show] do
-    collection do
-      get :other
-      post :sent
-      post :mark_received
-    end
-  end
-
   resources :emails, only: :index
 
   resources :events do
@@ -63,6 +55,15 @@ Rails.application.routes.draw do
         post :refund
         post :resend_approval
         post :revert_to_pending
+      end
+
+      resources :payments, only: %i[new create show] do
+        collection do
+          get :other
+          post :sent
+          post :mark_received
+          post :confirm
+        end
       end
     end
 
