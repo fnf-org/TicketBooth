@@ -17,12 +17,12 @@
           You'll receive an email at
           %b= @ticket_request.user.email
           if your request is approved.
-      - elsif @payment.in_progress?
+      - elsif @payment&.in_progress?
         %p.lead
           We are waiting on your payment for
           = succeed '!' do
             = 'ticket'.pluralize(@ticket_request.total_tickets)
-      - elsif @payment.received?
+      - elsif @payment&.received?
         %p.lead
           Thanks for paying for your
           = succeed '!' do
@@ -58,7 +58,7 @@
     - if @ticket_request.approved? || @ticket_request.completed?
       %p
         %b Payment:
-        - if @payment.present? && @payment.received?
+        - if @payment&.received?
           - if @ticket_request.refunded?
             %span.text-warning Refunded
           - else
@@ -74,8 +74,8 @@
         - else
           Not yet received
           - if @event.ticket_sales_open?
-            = link_to @ticket_request.all_guests_specified? ? 'Purchase your ticket now' : 'All guests must be filled out before purchasing ticket',
-              new_payment_path(ticket_request_id: @ticket_request.id),
+            = link_to 'Purchase your ticket now',
+              new_event_ticket_request_payment_path(@event, @ticket_request),
               class: 'btn btn-small btn-primary'
           - else
             %span.text-warning
@@ -83,7 +83,6 @@
               = succeed '.' do
                 = 'ticket'.pluralize(@ticket_request.total_tickets)
 
-    %p
       %b Email:
       = mail_to @ticket_request.user.email
 

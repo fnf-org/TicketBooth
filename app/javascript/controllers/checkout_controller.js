@@ -1,47 +1,68 @@
-import { Controller } from "@hotwired/stimulus"
+import {Controller} from "@hotwired/stimulus"
+import FlashController from "./flash_controller";
+// Load * from "@stripe/stripe-js"
 
-// Connects to data-controller="payments"
+// Connects to data-controller="checkout"
 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 export default class CheckoutController extends Controller {
     static values = {
-        ticketRequestId: String
+        siteUrl: String,
+        authenticityToken: String,
+        stripeApiKey: String,
+        eventId: Number,
+        ticketRequestId: Number
     }
 
     connect() {
-        // window.alert('ticketRequestId: ' + this.ticketRequestIdValue);
-        this.element.dataset['action'] = 'submit->disable#handleSubmit'
+        this.initializePayment();
+    }
+
+    initializePayment = () => {
+        console.log('initializePayment: ticketRequestId=' + this.ticketRequestIdValue);
 
         let elements;
-        let ticketRequestId;
         let stripePaymentId;
-        ticketRequestId = this.ticketRequestIdValue;
+
+        const siteUrl = this.siteUrlValue;
+        const authenticityToken = this.authenticityTokenValue;
+        const stripe = Stripe(this.stripeApiKeyValue);
+        const ticketRequestId = this.ticketRequestIdValue;
+        const eventId = this.eventIdValue;
+        const createPaymentUrl = `/events/${eventId}$/ticket_requests/${ticketRequestId}/payments`;
 
         initialize();
         checkStatus();
 
-        // XXX Not sure how to break up the connect into separate areas so calling this here is easy?
-        this.element.addEventListener("submit", handleSubmit);
+        document
+            .querySelector("#payment-form")
+            .addEventListener("submit", handleSubmit);
 
-        // document
-        //     .querySelector("#payment-form")
-
-        // window.alert('checkout_controller init payment');
+        console.log('checkout_controller init payment');
 
         // Fetches a payment intent and captures the client secret
         async function initialize() {
-            const response = await fetch('/payments', {
-                method: 'POST',
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({ticket_request_id: ticketRequestId}),
-            });
+            console.log("Stripe clientSecret:", stripe.clientSecret);
+            console.log("Token:", authenticityToken);
 
+            // call payment create for event, ticket request, and payment
+            // will set payment to In Process
+            const response = await fetch(createPaymentUrl, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        'X-CSRF-Token': authenticityToken
+                    },
+                })
+            ;
             const {clientSecret, stripePaymentId} = await response.json();
+
             console.log("Stripe clientSecret:", clientSecret);
-            console.log("stripePaymentId:", stripePaymentId);
+            console.log("Stripe paymentId:", stripePaymentId);
 
             const appearance = {
                 theme: 'stripe',
             };
+
             elements = stripe.elements({appearance, clientSecret});
 
             const paymentElementOptions = {
@@ -56,16 +77,19 @@ export default class CheckoutController extends Controller {
             setLoading(true);
 
             console.log("handleSubmit: Stripe confirmPayment");
-
-            const { error } = await stripe.confirmPayment({
+            const {error} = await stripe.confirmPayment({
                 elements,
                 confirmParams: {
-                    // XXX need to generate URL to go to payments/confirm to finalize
-                    return_url: `http://localhost:8080/payments/confirm?stripe_payment_id=${stripePaymentId}`,
+                    return_url: `${siteUrl}${createPaymentUrl}/confirm?stripe_payment_id=${stripePaymentId}`,
                 },
             });
 
             // This point will only be reached if there is an immediate error when
+            // confirming the payment. Otherwise, your customer will be redirected to
+            // your `return_url`. For some payment methods like iDEAL, your customer will
+            // be redirected to an intermediate site first to authorize the payment, then
+            // redirected to the `return_url`.
+            console.log(`handleSubmit: ERROR from Stripe confirmPayment: ${error.message}`);
             if (error.type === "card_error" || error.type === "validation_error") {
                 showMessage(error.message);
             } else {
@@ -119,13 +143,13 @@ export default class CheckoutController extends Controller {
         function setLoading(isLoading) {
             if (isLoading) {
                 // Disable the button and show a spinner
-                document.querySelector("#submit").disabled = true;
+                document.querySelector(".submit").disabled = true;
                 document.querySelector("#spinner").classList.remove("hidden");
-                document.querySelector("#button-text").classList.add("hidden");
+                document.querySelector(".button-text").classList.add("hidden");
             } else {
-                document.querySelector("#submit").disabled = false;
+                document.querySelector(".submit").disabled = false;
                 document.querySelector("#spinner").classList.add("hidden");
-                document.querySelector("#button-text").classList.remove("hidden");
+                document.querySelector(".button-text").classList.remove("hidden");
             }
         }
     }

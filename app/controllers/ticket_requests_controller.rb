@@ -62,6 +62,12 @@ class TicketRequestsController < ApplicationController
   def show
     return redirect_to root_path unless @ticket_request.can_view?(current_user)
 
+    # if ticket_request is approved, but guests are not filled out
+    # we could redirect to the ticket request edit path
+    if @ticket_request.approved? && !@ticket_request.all_guests_specified?
+      return redirect_to "#{edit_event_ticket_request_path(@event, @ticket_request)}#guests",
+                         alert: 'Please fill out your guest names and guest emails before purchasing a ticket.'
+    end
     @payment = @ticket_request.payment
   end
 
@@ -253,19 +259,8 @@ class TicketRequestsController < ApplicationController
 
   private
 
-  def set_event
-    event_id = permitted_params[:event_id].to_i
-    Rails.logger.debug { "#set_event() => event_id = #{event_id}, params[:event_id] => #{permitted_params[:event_id]}" }
-    @event = Event.where(id: event_id).first
-    if @event.nil?
-      flash.now[:error] = "Event with id #{event_id} was not found."
-      raise ArgumentError, flash.now[:error]
-    end
-  end
-
-  def set_ticket_request
-    @ticket_request = TicketRequest.find(permitted_params[:id])
-    redirect_to @event unless @ticket_request.event == @event
+  def ticket_request_id
+    permitted_params[:id]
   end
 
   def permitted_params

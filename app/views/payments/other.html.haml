@@ -1,24 +1,36 @@
-%p.lead
-  Hi #{@user.first_name},
-%p
-  If
-  = link_to 'paying via credit card',
-    new_payment_path(ticket_request_id: @ticket_request.id)
-  is not an option, we can accept check or other forms of payment.
+.card
+  .card-header
+    %h3 Pay for "#{@event.name}" using alternative methods
 
-= form_tag sent_payments_path(ticket_request_id: @ticket_request.id) do
-  %p
-    Briefly describe below how you intend to pay for your ticket.
-    Confirm that your email address in our system is correct so we can contact you.
+  .card-body
+    %p.lead
+      Hi #{@user.first_name},
+    %p
+      If
+      = link_to 'paying via credit card',
+        new_event_ticket_request_payment_path(@event, @ticket_request)
+      is not an option, we can accept check or other forms of payment.
 
-  = text_area_tag(:explanation, nil, class: 'input-xlarge', rows: 4, required: true)
+    = form_tag sent_event_ticket_request_payments_path(@event, @ticket_request) do
+      %p
+        Briefly describe below how you intend to pay for your ticket.
+        Confirm that your email address in our system is correct so we can contact you.
 
-  .actions
-    = submit_tag('Submit request', class: 'btn btn-primary')
+      %p
+        Your current email address is
+        %strong
+          = @user.email
 
-%p.lead
-  After submitting your request, we will contact you to arrange payment details.
+      %p
+        I intend to pay the total of #{number_to_currency(@ticket_request.cost)} via the following method:
+      = text_area_tag(:explanation, nil, class: 'input-xlarge w-75', rows: 4, required: true)
 
-%p
-  When in doubt, contact us at
-  = mail_to 'tickets@fnf.org'
+      .actions
+        = submit_tag('Submit request', class: 'btn btn-primary')
+
+    %strong
+      After submitting your request, we will contact you to arrange payment details.
+
+    %p
+      When in doubt, contact us at
+      = mail_to 'tickets@fnf.org'

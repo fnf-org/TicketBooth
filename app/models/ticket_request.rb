@@ -146,6 +146,10 @@ class TicketRequest < ApplicationRecord
     self.user == user || event.admin?(user)
   end
 
+  def owner?(user)
+    self.user == user
+  end
+
   def status_name
     STATUS_NAMES[status]
   end

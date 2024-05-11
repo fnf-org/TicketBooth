@@ -5,7 +5,7 @@
 # Table name: payments
 #
 #  id                :integer          not null, primary key
-#  explanation       :string(255)
+#  explanation       :string(255)˘
 #  status            :string(1)        default("N"), not null
 #  created_at        :datetime
 #  updated_at        :datetime
@@ -13,9 +13,13 @@
 #  stripe_payment_id :string
 #  ticket_request_id :integer          not null
 #
+
+# @description Payment record from Stripe
+# @deprecated stripe_charge_id
 class Payment < ApplicationRecord
   include PaymentsHelper
 
+  # TOOD: Change to Enum
   STATUSES = [
     STATUS_NEW = 'N',
     STATUS_IN_PROGRESS = 'P',
@@ -39,12 +43,14 @@ class Payment < ApplicationRecord
   validates :ticket_request, uniqueness: { message: 'ticket request has already been paid' }
   validates :status, presence: true, inclusion: { in: STATUSES }
 
+  attr_accessor :payment_intent
+
   # Create new Payment
   # Create Stripe PaymentIntent
   # Set status Payment
   def save_with_payment_intent
     # only save 1 payment intent
-    if !valid? || @payment_intent.present?
+    if !valid? || payment_intent.present?
       errors.add :base, 'Invalid Payment or Stripe Payment already exists'
       return false
     end
@@ -54,8 +60,8 @@ class Payment < ApplicationRecord
 
     begin
       # Create new Stripe PaymentIntent
-      @payment_intent = create_payment_intent(cost)
-      self.stripe_payment_id = @payment_intent.id
+      self.payment_intent = create_payment_intent(cost)
+      self.stripe_payment_id = payment_intent.id
     rescue Stripe::StripeError => e
       errors.add :base, e.message
       false
@@ -65,7 +71,6 @@ class Payment < ApplicationRecord
     self.status = STATUS_IN_PROGRESS
 
     save
-    self
   end
 
   # Calculate ticket cost from ticket request in cents
@@ -96,16 +101,15 @@ class Payment < ApplicationRecord
                                  })
   end
 
-  def payment_intent
-    @payment_intent ||= retrieve_payment_intent
-  end
-
   def payment_intent_client_secret
-    @payment_intent_client_secret ||= payment_intent&.client_secret
+    payment_intent&.client_secret
   end
 
   def retrieve_payment_intent
-    Stripe::PaymentIntent.retrieve(stripe_payment_id) if stripe_payment_id
+    if stripe_payment_id && payment_intent.nil?
+      self.payment_intent = Stripe::PaymentIntent.retrieve(stripe_payment_id)
+      self.payment_intent_client_secret = payment_intent&.client_secret
+    end
   end
 
   def status_name
