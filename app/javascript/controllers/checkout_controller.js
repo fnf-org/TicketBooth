@@ -4,53 +4,62 @@ import { Controller } from "@hotwired/stimulus"
 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 export default class CheckoutController extends Controller {
     static values = {
-        stripePublishableKey: String,
         ticketRequestId: String
     }
 
     connect() {
-        window.alert('checkout_controller connect');
-        window.alert('Stripe connected');
+        // window.alert('ticketRequestId: ' + this.ticketRequestIdValue);
 
         let elements;
+        let ticketRequestId;
+        let stripePaymentId;
+        ticketRequestId = this.ticketRequestIdValue;
 
         initialize();
         checkStatus();
 
         document
             .querySelector("#payment-form")
-            .addEventListener("submit", handleSubmit);
+            .addEventListener("submit", handleSubmit(event));
 
-        window.alert('checkout_controller init payment');
+        // window.alert('checkout_controller init payment');
 
         // Fetches a payment intent and captures the client secret
         async function initialize() {
-            fetch("/payments", {method: 'POST', params: {ticket_request_id: this.ticketRequestIdValue}})
+            const response = await fetch('/payments', {
+                method: 'POST',
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ticket_request_id: ticketRequestId}),
+            });
+
+            const {clientSecret, stripePaymentId} = await response.json();
+            console.log("Stripe clientSecret:", clientSecret);
+            console.log("stripePaymentId:", stripePaymentId);
+
+            const appearance = {
+                theme: 'stripe',
+            };
+            elements = stripe.elements({appearance, clientSecret});
+
+            const paymentElementOptions = {
+                layout: "tabs",
+            };
+
+            const paymentElement = elements.create("payment", paymentElementOptions);
+            paymentElement.mount("#payment-element");
         }
-
-        const {clientSecret} = response.json();
-
-        const appearance = {
-            theme: 'stripe',
-        };
-        elements = stripe.elements({appearance, clientSecret});
-
-        const paymentElementOptions = {
-            layout: "tabs",
-        };
-
-        const paymentElement = elements.create("payment", paymentElementOptions);
-        paymentElement.mount("#payment-element");
 
         async function handleSubmit(e) {
             e.preventDefault();
             setLoading(true);
 
-            const {error} = await stripe.confirmPayment({
+            console.log("handleSubmit: Stripe confirmPayment");
+
+            const { error } = await stripe.confirmPayment({
                 elements,
                 confirmParams: {
-                    // XXX go to payments controller confirm to finalize
-                    return_url: "payments/confirm",
+                    // XXX need to generate URL to go to payments/confirm to finalize
+                    return_url: `http://localhost:8080/payments/confirm?stripe_payment_id=${stripePaymentId}`,
                 },
             });
 

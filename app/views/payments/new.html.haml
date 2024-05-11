@@ -1,5 +1,5 @@
 - content_for(:head) do
-  %link{:href => "checkout.css", :rel => "stylesheet"}/
+  %link{:href => "checkout.css", :rel => "stylesheet"}
 
 .content-fluid
   .row
@@ -31,17 +31,16 @@
                 = 'ticket'.pluralize(@ticket_request.total_tickets)
 
     .col-8
-      %form#checkout-form{"data-controller" => "checkout",
-                          "data-content-loader-stripe-publishable-key-value" => "#{@stripe_publishable_api_key}",
-                          "data-content-loader-ticket-request-id-value" => "#{@ticket_request.id}"}
-        #payment-element
-          / Stripe.js injects the Payment Element
-        #payment-message.hidden
+      %form#payment-form{"data-controller" => "checkout",
+                         "data-checkout-ticket-request-id-value" => "#{@ticket_request.id}"}
+      #payment-element
+        / Stripe.js injects the Payment Element
+      #payment-message.hidden
 
-        %button.submit.btn.btn-success.mt-3s
-          #spinner.spinner.hidden
-          %span.button-text
-            Pay now
+      %button.submit.btn.btn-success.mt-3s
+        #spinner.spinner.hidden
+        %span.button-text
+          Pay now
 
       %p.small
         By purchasing tickets to an FnF event, you acknowledge that you have read

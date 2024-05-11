@@ -3,11 +3,6 @@
 class PaymentsController < ApplicationController
   before_action :authenticate_user!
 
-  # XXX Correct place here?
-  def stripe_js_needed?
-    true
-  end
-
   def show
     @payment = Payment.find(permit_params[:id])
     redirect_to root_path unless @payment.present? && @payment.can_view?(current_user)
@@ -18,6 +13,8 @@ class PaymentsController < ApplicationController
   end
 
   def new
+    Rails.logger.info("New Payment ticket request id: #{permit_params[:ticket_request_id]}")
+
     @ticket_request = TicketRequest.find(permit_params[:ticket_request_id])
     return redirect_to root_path unless @ticket_request.can_view?(current_user)
 
@@ -33,6 +30,8 @@ class PaymentsController < ApplicationController
                          alert: "Sorry, ticket sales for #{@event.name} have closed."
     end
 
+    @stripe_publishable_api_key ||= stripe_publishable_api_key
+
     @user = @ticket_request.user
     @payment = Payment.new.tap { |p| p.ticket_request = @ticket_request }
   end
@@ -40,6 +39,7 @@ class PaymentsController < ApplicationController
   # Creates new Payment
   # Create Payment Intent and save PaymentIntentId in Payment
   def create
+    Rails.logger.info("Payment Create ticket request id: #{permit_params[:ticket_request_id]}")
     new
     create_with_payment_intent
     @payment
@@ -54,9 +54,17 @@ class PaymentsController < ApplicationController
   end
 
   def confirm
-    @payment = Payment.find(permit_params[:id])
+    if permit_params[:id]
+      @payment = Payment.find(permit_params[:id])
+    elsif permit_params[:stripe_payment_id]
+      @payment = Payment.find_by_stripe_payment_id(permit_params[:stripe_payment_id])
+    else
+      return redirect_to root_path unless @payment.present? && @payment.can_view?(current_user)
+    end
+
     PaymentMailer.payment_received(@payment).deliver_now
     @payment.ticket_request.mark_complete
+
     # XXX switch to checkout page
     redirect_to @payment, notice: 'Payment was successfully received.'
   end
