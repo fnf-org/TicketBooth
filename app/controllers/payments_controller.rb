@@ -35,7 +35,7 @@ class PaymentsController < ApplicationController
       respond_to do |format|
         format.json do
           render json: {
-            clientSecret: @payment.payment_intent_client_secret,
+            clientSecret:    @payment.payment_intent_client_secret,
             stripePaymentId: @payment.stripe_payment_id
           }
         end
@@ -54,7 +54,6 @@ class PaymentsController < ApplicationController
   # create new payment and stripe payment intent using existing payment
 
   def confirm
-
     @payment.mark_received
     @payment.ticket_request.mark_complete
 

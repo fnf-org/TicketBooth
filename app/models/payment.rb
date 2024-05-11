@@ -106,10 +106,10 @@ class Payment < ApplicationRecord
   end
 
   def retrieve_payment_intent
-    if stripe_payment_id && payment_intent.nil?
-      self.payment_intent = Stripe::PaymentIntent.retrieve(stripe_payment_id)
-      self.payment_intent_client_secret = payment_intent&.client_secret
-    end
+    return unless stripe_payment_id && payment_intent.nil?
+
+    self.payment_intent = Stripe::PaymentIntent.retrieve(stripe_payment_id)
+    self.payment_intent_client_secret = payment_intent&.client_secret
   end
 
   def status_name
