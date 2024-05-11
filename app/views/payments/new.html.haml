@@ -30,13 +30,13 @@
               = succeed '.' do
                 = 'ticket'.pluralize(@ticket_request.total_tickets)
 
-    .col-8Ú
+    .col-8
       %div#stripe-form{"data-controller" => "checkout",
-           "data-checkout-authenticity-token-value" => "#{controller.send(:form_authenticity_token)}",
-           "data-checkout-event-id-value" => "#{@event.id}",
-           "data-checkout-site-url-value" => "#{controller.send(:site_url)}",
-           "data-checkout-ticket-request-id-value" => "#{@ticket_request.id}",
-           "data-checkout-stripe-api-key-value" => "#{@stripe_publishable_api_key}"}
+                       "data-checkout-authenticity-token-value" => "#{controller.send(:form_authenticity_token)}",
+                       "data-checkout-event-id-value" => "#{@event.id}",
+                       "data-checkout-site-url-value" => "#{controller.send(:site_url)}",
+                       "data-checkout-ticket-request-id-value" => "#{@ticket_request.id}",
+                       "data-checkout-stripe-api-key-value" => "#{@stripe_publishable_api_key}"}
         %form#payment-form
           #payment-element
             / Stripe.js injects the Payment Element
@@ -46,7 +46,6 @@
             #spinner.spinner.hidden
             %span.button-text
               Play now
-
       %p.small
         By purchasing tickets to an FnF event, you acknowledge that you have read
         = link_to 'The FnF Way', 'https://fnf.events/the-fnf-way/', target: '_blank', onclick: "popupWindow('https://fnf.events/the-fnf-way/', 'The FnF Way', window, 700, 900); return false;"

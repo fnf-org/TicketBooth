@@ -73,14 +73,17 @@ export default class CheckoutController extends Controller {
             paymentElement.mount("#payment-element");
         }
 
-        async function handleSubmit() {
+        async function handleSubmit(e) {
+            e.preventDefault();
             setLoading(true);
 
-            console.log("handleSubmit: Stripe confirmPayment");
+            const confirmUrl = `${siteUrl}${createPaymentUrl}/confirm?stripe_payment_id=${stripePaymentId}`;
+            console.log(`handleSubmit: Stripe confirmPayment, url: ${confirmUrl}`);
+
             const {error} = await stripe.confirmPayment({
                 elements,
                 confirmParams: {
-                    return_url: `${siteUrl}${createPaymentUrl}/confirm?stripe_payment_id=${stripePaymentId}`,
+                    return_url: confirmUrl,
                 },
             });
 
@@ -109,6 +112,7 @@ export default class CheckoutController extends Controller {
             }
 
             const {paymentIntent} = await stripe.retrievePaymentIntent(clientSecret);
+            console.log(`checkStatus: paymentIntent.status: ${paymentIntent.status}`);
 
             switch (paymentIntent.status) {
                 case "succeeded":
