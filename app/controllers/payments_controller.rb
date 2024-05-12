@@ -51,7 +51,6 @@ class PaymentsController < ApplicationController
     PaymentMailer.payment_received(@payment).deliver_now
   end
 
-
   def other
     @user = @ticket_request.user
   end
@@ -146,7 +145,7 @@ class PaymentsController < ApplicationController
     end
 
     # has to have a stripe payment id and payment must not already be received
-    unless @payment.has_stripe_payment?
+    unless @payment.stripe_payment?
       Rails.logger.error("Invalid payment confirmation id: #{@payment.id} missing stripe_payment_id")
       return redirect_to root_path, alert: 'This payment request can not be confirmed.'
     end

@@ -92,10 +92,10 @@ describe Payment do
     end
 
     describe 'payment intent' do
-      subject { payment.save_with_payment_intent.payment_intent }
+      subject { payment.save_with_payment_intent.payment_intent.id }
+
       it { is_expected.to be_truthy }
 
-      subject { payment.save_with_payment_intent.payment_intent.id }
       it { is_expected.to be_a(String) }
     end
   end

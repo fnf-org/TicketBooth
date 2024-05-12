@@ -34,7 +34,6 @@ describe PaymentsController, type: :controller do
 
       it { is_expected.to have_http_status(:redirect) }
     end
-
   end
 
   describe 'GET #show' do
@@ -53,17 +52,16 @@ describe PaymentsController, type: :controller do
 
     describe '#validate payments' do
       context 'when ticket sales closes' do
-        let(:event) { create(:event, max_adult_tickets_per_request: 1, ticket_sales_end_time: Time.now - 1.week) }
+        let(:event) { create(:event, max_adult_tickets_per_request: 1, ticket_sales_end_time: 1.week.ago) }
 
         it { is_expected.to have_http_status(:redirect) }
       end
 
       context 'when event has ended' do
-        let(:event) { create(:event, max_adult_tickets_per_request: 1, start_time: Time.now - 2.week, end_time: Time.now - 1.week) }
+        let(:event) { create(:event, max_adult_tickets_per_request: 1, start_time: 2.weeks.ago, end_time: 1.week.ago) }
 
         it { is_expected.to have_http_status(:redirect) }
       end
     end
   end
-
 end

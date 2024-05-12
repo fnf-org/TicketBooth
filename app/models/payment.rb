@@ -131,7 +131,7 @@ class Payment < ApplicationRecord
     status == STATUS_RECEIVED
   end
 
-  def has_stripe_payment?
+  def stripe_payment?
     stripe_payment_id.present?
   end
 
