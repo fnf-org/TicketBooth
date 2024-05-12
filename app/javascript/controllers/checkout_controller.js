@@ -87,12 +87,12 @@ export default class CheckoutController extends Controller {
             // your `return_url`. For some payment methods like iDEAL, your customer will
             // be redirected to an intermediate site first to authorize the payment, then
             // redirected to the `return_url`.
-            console.log(`handleSubmit: ERROR from Stripe confirmPayment: ${error.message}`);
-            if (error.type === "card_error" || error.type === "validation_error") {
+            if (error.type === "card_error" || error.type === "validation_error" || error.type === "invalid_request_error") {
                 showMessage(error.message);
             } else {
                 showMessage("An unexpected error occurred.");
             }
+            console.log(`handleSubmit: ERROR from Stripe confirmPayment: ${error.type} ${error.code} ${error.message}`);
 
             setLoading(false);
         }
