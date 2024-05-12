@@ -12,12 +12,10 @@ class PaymentsController < ApplicationController
     # Rails.logger.debug("Show Payment: payment #{@payment.id}")
 
     unless @payment&.can_view?(current_user)
-      Rails.logger.error("Show Payment current user can't view this: #{current_user.inspect}")
       return redirect_to root_path, alert: 'This payment request is inaccessible to the logged in user'
     end
 
     unless @payment.ticket_request == @ticket_request
-      Rails.logger.error('Show Payment payment does not belong')
       return redirect_to root_path, alert: 'This payment request does not belong to this ticket_request'
     end
 
