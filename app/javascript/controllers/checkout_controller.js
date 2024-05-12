@@ -14,21 +14,22 @@ export default class CheckoutController extends Controller {
     }
 
     connect() {
-        this.initializePayment();
-    }
-
-    initializePayment = () => {
         console.log('initializePayment: ticketRequestId=' + this.ticketRequestIdValue);
-
         let elements;
-        let stripePaymentId;
+
+        // Stripe client instance
+        const stripe = Stripe(this.stripeApiKeyValue);
 
         const siteUrl = this.siteUrlValue;
         const authenticityToken = this.authenticityTokenValue;
-        const stripe = Stripe(this.stripeApiKeyValue);
         const ticketRequestId = this.ticketRequestIdValue;
         const eventId = this.eventIdValue;
-        const createPaymentUrl = `/events/${eventId}$/ticket_requests/${ticketRequestId}/payments`;
+        const createPaymentUrl = `/events/${eventId}/ticket_requests/${ticketRequestId}/payments`;
+
+        console.log('initializePayment: siteUrl=' + siteUrl);
+        console.log('initializePayment: ticketRequestId=' + ticketRequestId);
+        console.log('initializePayment: eventId=' + eventId);
+        console.log('initializePayment: createPaymentUrl=' + createPaymentUrl);
 
         initialize();
         checkStatus();
@@ -37,13 +38,8 @@ export default class CheckoutController extends Controller {
             .querySelector("#payment-form")
             .addEventListener("submit", handleSubmit);
 
-        console.log('checkout_controller init payment');
-
         // Fetches a payment intent and captures the client secret
         async function initialize() {
-            console.log("Stripe clientSecret:", stripe.clientSecret);
-            console.log("Token:", authenticityToken);
-
             // call payment create for event, ticket request, and payment
             // will set payment to In Process
             const response = await fetch(createPaymentUrl, {
@@ -54,10 +50,9 @@ export default class CheckoutController extends Controller {
                     },
                 })
             ;
-            const {clientSecret, stripePaymentId} = await response.json();
+            let {clientSecret} = await response.json();
 
-            console.log("Stripe clientSecret:", clientSecret);
-            console.log("Stripe paymentId:", stripePaymentId);
+            console.log("initialize Stripe clientSecret:", clientSecret);
 
             const appearance = {
                 theme: 'stripe',
@@ -77,7 +72,7 @@ export default class CheckoutController extends Controller {
             e.preventDefault();
             setLoading(true);
 
-            const confirmUrl = `${siteUrl}${createPaymentUrl}/confirm?stripe_payment_id=${stripePaymentId}`;
+            const confirmUrl = `${siteUrl}${createPaymentUrl}/confirm`;
             console.log(`handleSubmit: Stripe confirmPayment, url: ${confirmUrl}`);
 
             const {error} = await stripe.confirmPayment({

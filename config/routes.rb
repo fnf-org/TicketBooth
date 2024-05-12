@@ -59,10 +59,9 @@ Rails.application.routes.draw do
 
       resources :payments, only: %i[new create show] do
         collection do
+          get :confirm
           get :other
           post :sent
-          post :mark_received
-          post :confirm
         end
       end
     end

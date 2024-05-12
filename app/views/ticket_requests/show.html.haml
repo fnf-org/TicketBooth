@@ -62,7 +62,7 @@
           - if @ticket_request.refunded?
             %span.text-warning Refunded
           - else
-            = link_to 'Received', payment_path(@payment)
+            = link_to 'Received', event_ticket_request_payment_path(@payment, @ticket_request)
             - if @event.admin?(current_user)
               = link_to 'Refund', refund_event_ticket_request_path(@event, @ticket_request),
                 method: :post,

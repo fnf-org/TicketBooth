@@ -9,11 +9,15 @@ class PaymentsController < ApplicationController
   before_action :validate_payment
 
   def show
+    # Rails.logger.debug("Show Payment: payment #{@payment.id}")
+
     unless @payment&.can_view?(current_user)
+      Rails.logger.error("Show Payment current user can't view this: #{current_user.inspect}")
       return redirect_to root_path, alert: 'This payment request is inaccessible to the logged in user'
     end
 
     unless @payment.ticket_request == @ticket_request
+      Rails.logger.error('Show Payment payment does not belong')
       return redirect_to root_path, alert: 'This payment request does not belong to this ticket_request'
     end
 
@@ -35,8 +39,7 @@ class PaymentsController < ApplicationController
       respond_to do |format|
         format.json do
           render json: {
-            clientSecret:    @payment.payment_intent_client_secret,
-            stripePaymentId: @payment.stripe_payment_id
+            clientSecret: @payment.payment_intent_client_secret
           }
         end
       end
@@ -54,11 +57,21 @@ class PaymentsController < ApplicationController
   # create new payment and stripe payment intent using existing payment
 
   def confirm
-    Rails.logger.debug("Payments: confirming payment_id [#{@payment.id}]")
+    Rails.logger.debug { "Payments: confirming payment_id [#{@payment.id}]" }
+
+    if @payment.received?
+      Rails.logger.warn("Payment Confirmation already received: #{@payment.id} status: #{@payment.status}")
+      return redirect_to root_path, alert: 'This payment request has already been confirmed.'
+    end
+
+    # has to have a stripe payment id and payment must not already be received
+    if @payment.stripe_payment_id.blank?
+      Rails.logger.error("Invalid payment confirmation id: #{@payment.id} missing stripe_payment_id")
+      return redirect_to root_path, alert: 'This payment request can not be confirmed.'
+    end
 
     @payment.mark_received
     @payment.ticket_request.mark_complete
-
     PaymentMailer.payment_received(@payment).deliver_now
   end
 
@@ -88,9 +101,14 @@ class PaymentsController < ApplicationController
   end
 
   def set_payment
-    if permitted_params[:stripe_payment_id]
-      @payment = Payment.where(stripe_payment_id: permitted_params[:stripe_payment_id]).first
-    elsif permitted_params[:id]
+    Rails.logger.debug { "PaymentsController: set_payment params: #{params}" }
+
+    if permitted_params[:payment_intent] || permitted_params[:stripe_payment_id]
+      strip_id = permitted_params[:payment_intent] || permitted_params[:stripe_payment_id]
+      @payment = Payment.where(stripe_payment_id: strip_id).first
+    elsif permitted_params[:ticket_request_id].is_a?(Numeric)
+      @payment = Payment.where(ticket_request_id: permitted_params[:ticket_request_id]).first
+    elsif permitted_params[:id].is_a?(Numeric)
       @payment = Payment.find(permitted_params[:id])
     else
       true
@@ -116,12 +134,16 @@ class PaymentsController < ApplicationController
 
   # @description Redirect the user if the payment can not be applied to the ticket request
   def validate_payment
+    Rails.logger.debug { "PaymentsController: @ticket_request #{@ticket_request.id} current_user: #{@user&.inspect}" }
+
     unless @event.ticket_sales_open?
       redirect_to event_path(@event),
                   alert: "Sorry, ticket sales for #{@event.name} have closed."
     end
 
     unless @ticket_request.owner?(current_user)
+      Rails.logger.debug { "PaymentsController: @ticket_request #{@ticket_request.id} NOT OWNER current_user: #{@user&.inspect}" }
+
       redirect_to root_path, alert: 'You are not authorized to make payments for this ticket request.'
     end
 
@@ -131,28 +153,13 @@ class PaymentsController < ApplicationController
     end
   end
 
-  def mark_received
-    @ticket_request = TicketRequest.find(permitted_params[:ticket_request_id])
-    return redirect_to root_path unless @ticket_request.can_view?(current_user)
-
-    @payment = Payment.where(ticket_request_id: @ticket_request.id,
-                             status: Payment::STATUS_IN_PROGRESS)
-                      .first
-
-    if @payment
-      @payment.mark_received
-      @payment.ticket_request.mark_complete
-      PaymentMailer.payment_received(@payment).deliver_now
-      redirect_to :back
-    end
-  end
-
   def permitted_params
     params.permit(
       :id,
       :event_id,
       :ticket_request_id,
       :stripe_payment_id,
+      :payment_intent,
       payment: %i[
         ticket_request
         ticket_request_id

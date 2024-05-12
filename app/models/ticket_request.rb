@@ -143,11 +143,20 @@ class TicketRequest < ApplicationRecord
   scope :not_declined, -> { where.not(status: STATUS_DECLINED) }
 
   def can_view?(user)
-    self.user == user || event.admin?(user)
+    same = (self.user == user)
+    # self.user == user || event.admin?(user)
+    Rails.logger.debug { "ticket_request:can_view? self.user: #{self.user} same: #{same}" }
+    same
   end
 
   def owner?(user)
-    self.user == user
+    same = self.user == user || event.admin?(user)
+    # self.user == user || event.admin?(user)
+
+    Rails.logger.debug { "ticket_request:owner? self.user: #{self.user} same: #{same}" }
+    # Rails.logger.debug("ticket_request:owner?: self.user: #{self.user.inspect} user: #{user.inspect}")
+    # self.user eq user
+    same
   end
 
   def status_name
@@ -159,7 +168,7 @@ class TicketRequest < ApplicationRecord
   end
 
   def mark_complete
-    Rails.logger.debug("ticket request marking completed: #{self.id}")
+    Rails.logger.debug { "ticket request marking completed: #{id}" }
     update status: STATUS_COMPLETED
   end
 
