@@ -1,3 +1,4 @@
+- ticket_request = payment.ticket_request
 %p.lead
   Hi #{ticket_request.user.first_name},
 
@@ -17,7 +18,7 @@
   %strong
     = number_to_currency(payment.dollar_cost)
     - if ticket_request.donation > 0
-    (including #{number_to_currency(ticket_request.donation)} donation)
+      (including #{number_to_currency(ticket_request.donation)} donation)
 
 - else
   %p.lead
