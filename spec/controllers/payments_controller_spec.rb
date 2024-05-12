@@ -5,13 +5,13 @@ require 'rails_helper'
 describe PaymentsController, type: :controller do
   let(:event) { create(:event) }
   let(:user) { create(:user) }
-  let(:ticket_request) { create(:ticket_request, user:) }
+  let(:ticket_request) { create(:ticket_request, event:, user:) }
   let(:payment) { create(:payment, ticket_request:) }
 
   before { sign_in user if user }
 
   describe 'GET #show' do
-    subject { get(:show, params: { id: payment.id }) }
+    subject { get :show, params: { id: payment.id, event_id: ticket_request.event.id, ticket_request_id: ticket_request.id } }
 
     context 'when payment exists' do
       it { is_expected.to have_http_status(:ok) }

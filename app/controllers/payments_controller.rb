@@ -9,7 +9,7 @@ class PaymentsController < ApplicationController
   before_action :validate_payment
 
   def show
-    # Rails.logger.debug("Show Payment: payment #{@payment.id}")
+    Rails.logger.debug("Show Payment: payment #{@payment.id}")
 
     unless @payment&.can_view?(current_user)
       return redirect_to root_path, alert: 'This payment request is inaccessible to the logged in user'

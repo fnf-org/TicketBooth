@@ -71,6 +71,7 @@ class Payment < ApplicationRecord
     self.status = STATUS_IN_PROGRESS
 
     save
+    self
   end
 
   # Calculate ticket cost from ticket request in cents
