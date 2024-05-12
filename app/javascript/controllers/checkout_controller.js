@@ -50,7 +50,7 @@ export default class CheckoutController extends Controller {
                     },
                 })
             ;
-            let {clientSecret} = await response.json();
+            let {clientSecret, paymentId} = await response.json();
 
             console.log("initialize Stripe clientSecret:", clientSecret);
 
@@ -72,7 +72,8 @@ export default class CheckoutController extends Controller {
             e.preventDefault();
             setLoading(true);
 
-            const confirmUrl = `${siteUrl}${createPaymentUrl}/confirm`;
+            const confirmPaymentUrl = `/events/${eventId}/ticket_requests/${ticketRequestId}/payment/${paymentId}`;
+            const confirmUrl = `${siteUrl}${confirmPaymentUrl}/confirm`;
             console.log(`handleSubmit: Stripe confirmPayment, url: ${confirmUrl}`);
 
             const {error} = await stripe.confirmPayment({

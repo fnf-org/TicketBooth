@@ -6,7 +6,7 @@ class PaymentsController < ApplicationController
   before_action :set_event
   before_action :set_ticket_request
   before_action :set_payment
-  before_action :validate_payment
+  before_action :validate_payment, except: [:confirm]
 
   def show
     Rails.logger.debug { "#show() => @ticket_request = #{@ticket_request&.inspect} params: #{params}" }
@@ -35,7 +35,8 @@ class PaymentsController < ApplicationController
       respond_to do |format|
         format.json do
           render json: {
-            clientSecret: @payment.payment_intent_client_secret
+            clientSecret: @payment.payment_intent_client_secret,
+            paymentId: @payment.id,
           }
         end
       end
@@ -54,10 +55,27 @@ class PaymentsController < ApplicationController
   # create new payment and stripe payment intent using existing payment
 
   def confirm
-    validate_payment_confirmation
-    @payment.mark_received
-    @payment.ticket_request.mark_complete
+    # stripe_payment_id = params.permit(:stripe_payment_id)[:stripe_payment_id]
+    redirect_path, options = validate_payment_confirmation
+    if redirect_path
+      Rails.logger.error("#confirm() => redirect_path: #{redirect_path}")
+      return redirect_to redirect_path, options || {}
+    else
+      Rails.logger.info("#confirm() => marking payment as received #{@payment.inspect}")
+    end
+
+    Payment.trasaction do
+      @payment.mark_received
+      @payment.ticket_request.mark_complete
+
+    rescue StandardError => e
+      Rails.logger.error("#confirm() => error marking payment as received: #{e.message}")
+      flash.error[:now] = "ERROR: #{e.message}"
+      return render_flash(flash)
+    end
+
     PaymentMailer.payment_received(@payment).deliver_now
+    @payment.reload
   end
 
   def other
@@ -148,21 +166,21 @@ class PaymentsController < ApplicationController
   def validate_payment_confirmation
     unless @payment.in_progress?
       Rails.logger.info("Payment Confirmation not in progress: #{@payment.id} status: #{@payment.status}")
-      return redirect_to root_path, alert: 'This payment request can not be confirmed'
+      return root_path, alert: 'This payment request can not be confirmed'
     end
 
     if @payment.received?
       Rails.logger.info("Payment Confirmation already received: #{@payment.id} status: #{@payment.status}")
-      return redirect_to root_path, alert: 'This payment request has already been confirmed.'
+      return root_path, alert: 'This payment request has already been confirmed.'
     end
 
     # has to have a stripe payment id and payment must not already be received
     unless @payment.stripe_payment?
       Rails.logger.error("Invalid payment confirmation id: #{@payment.id} missing stripe_payment_id")
-      return redirect_to root_path, alert: 'This payment request can not be confirmed.'
+      return root_path, alert: 'This payment request can not be confirmed.'
     end
 
-    true
+    nil
   end
 
   def permitted_params

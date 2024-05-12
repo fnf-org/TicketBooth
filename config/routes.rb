@@ -57,9 +57,13 @@ Rails.application.routes.draw do
         post :revert_to_pending
       end
 
-      resources :payments, only: %i[new create show] do
-        collection do
-          post :confirm
+      resources :payments do
+
+        member do
+          get :confirm
+          get :new
+          post :create
+          get :show
           get  :other
           post :sent
         end
