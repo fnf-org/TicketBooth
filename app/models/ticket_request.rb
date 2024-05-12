@@ -159,7 +159,7 @@ class TicketRequest < ApplicationRecord
   end
 
   def mark_complete
-    Rails.logger.debug("ticket request marking completed: #{self.id}")
+    Rails.logger.debug { "ticket request marking completed: #{id}" }
     update status: STATUS_COMPLETED
   end
 

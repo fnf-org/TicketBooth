@@ -54,7 +54,7 @@ class PaymentsController < ApplicationController
   # create new payment and stripe payment intent using existing payment
 
   def confirm
-    Rails.logger.debug("Payments: confirming payment_id [#{@payment.id}]")
+    Rails.logger.debug { "Payments: confirming payment_id [#{@payment.id}]" }
 
     @payment.mark_received
     @payment.ticket_request.mark_complete
