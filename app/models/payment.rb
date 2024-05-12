@@ -5,8 +5,8 @@
 # Table name: payments
 #
 #  id                :integer          not null, primary key
-#  explanation       :string(255)˘
-#  status            :string(1)        default("N"), not null
+#  explanation       :string(255)
+#  status            :string(1)        default("P"), not null
 #  created_at        :datetime
 #  updated_at        :datetime
 #  stripe_charge_id  :string(255)
