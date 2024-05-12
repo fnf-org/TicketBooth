@@ -143,20 +143,11 @@ class TicketRequest < ApplicationRecord
   scope :not_declined, -> { where.not(status: STATUS_DECLINED) }
 
   def can_view?(user)
-    same = (self.user == user)
-    # self.user == user || event.admin?(user)
-    Rails.logger.debug { "ticket_request:can_view? self.user: #{self.user} same: #{same}" }
-    same
+    self.user == user || event.admin?(user)
   end
 
   def owner?(user)
-    same = self.user == user || event.admin?(user)
-    # self.user == user || event.admin?(user)
-
-    Rails.logger.debug { "ticket_request:owner? self.user: #{self.user} same: #{same}" }
-    # Rails.logger.debug("ticket_request:owner?: self.user: #{self.user.inspect} user: #{user.inspect}")
-    # self.user eq user
-    same
+    self.user == user || event.admin?(user)
   end
 
   def status_name

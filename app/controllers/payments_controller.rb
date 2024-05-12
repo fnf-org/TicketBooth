@@ -26,7 +26,6 @@ class PaymentsController < ApplicationController
 
   def new
     Rails.logger.info("New Payment ticket request id: #{@ticket_request.id}")
-
     initialize_payment
   end
 
@@ -55,10 +54,13 @@ class PaymentsController < ApplicationController
   # create new payment and stripe payment intent using existing payment
 
   def confirm
-    Rails.logger.debug { "Payments: confirming payment_id [#{@payment.id}]" }
+    unless @payment.in_progress?
+      Rails.logger.info("Payment Confirmation not in progress: #{@payment.id} status: #{@payment.status}")
+      return redirect_to root_path, alert: 'This payment request can not be confirmed'
+    end
 
     if @payment.received?
-      Rails.logger.warn("Payment Confirmation already received: #{@payment.id} status: #{@payment.status}")
+      Rails.logger.info("Payment Confirmation already received: #{@payment.id} status: #{@payment.status}")
       return redirect_to root_path, alert: 'This payment request has already been confirmed.'
     end
 
@@ -100,8 +102,9 @@ class PaymentsController < ApplicationController
 
   def set_payment
     Rails.logger.debug { "PaymentsController: set_payment params: #{params}" }
-
-    if permitted_params[:payment_intent] || permitted_params[:stripe_payment_id]
+    if @ticket_request.present?
+      @payment = @ticket_request.payment
+    elsif permitted_params[:payment_intent] || permitted_params[:stripe_payment_id]
       strip_id = permitted_params[:payment_intent] || permitted_params[:stripe_payment_id]
       @payment = Payment.where(stripe_payment_id: strip_id).first
     elsif permitted_params[:ticket_request_id].is_a?(Numeric)
@@ -148,6 +151,22 @@ class PaymentsController < ApplicationController
     unless @ticket_request.all_guests_specified?
       redirect_to edit_event_ticket_request_path(@event, @ticket_request),
                   alert: 'You must fill out all your guests before you can purchase a ticket.'
+    end
+  end
+
+  def mark_received
+    @ticket_request = TicketRequest.find(permitted_params[:ticket_request_id])
+    return redirect_to root_path unless @ticket_request.can_view?(current_user)
+
+    @payment = Payment.where(ticket_request_id: @ticket_request.id,
+                             status: Payment::STATUS_IN_PROGRESS)
+                      .first
+
+    if @payment
+      @payment.mark_received
+      @payment.ticket_request.mark_complete
+      PaymentMailer.payment_received(@payment).deliver_now
+      redirect_to :back
     end
   end
 

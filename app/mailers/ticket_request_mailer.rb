@@ -39,9 +39,7 @@ class TicketRequestMailer < ApplicationMailer
     # Generate an authentication token for the user
     @auth_token = ticket_request&.user&.generate_auth_token!
 
-    @payment_url = new_payment_url(ticket_request_id: @ticket_request.id,
-                                   user_id: @ticket_request.user.id,
-                                   user_token: @auth_token)
+    @payment_url = new_event_ticket_request_payment_url(@event, @ticket_request, @auth_token)
 
     if @event.eald?
       @extra_params = {}.tap do |params|
