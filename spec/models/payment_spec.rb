@@ -77,16 +77,14 @@ describe Payment do
   end
 
   describe 'save_with_payment_intent' do
-    subject { payment.save_with_payment_intent }
+    subject(:payment_intent) { payment.save_with_payment_intent }
 
     let(:payment) { build(:payment) }
 
-    describe 'payment_intent' do
-      it { is_expected.to be_a(Stripe::PaymentIntent) }
-    end
+    it { is_expected.to be_a(Stripe::PaymentIntent) }
 
-    it 'changes payment status' do
-      expect { subject }.to(change(payment, :status).to(Payment::STATUS_IN_PROGRESS))
+    it 'changes the payment status' do
+      expect { payment_intent }.to(change(payment, :status).to(Payment::STATUS_IN_PROGRESS))
     end
   end
 
@@ -118,7 +116,7 @@ describe Payment do
   end
 
   describe 'retrieve_or_save_payment_intent' do
-    subject { payment.retrieve_or_save_payment_intent }
+    subject(:payment_intent) { payment.retrieve_or_save_payment_intent }
 
     let(:amount) { 1000 }
     let(:payment) { build(:payment, stripe_payment_id: nil) }
@@ -126,18 +124,18 @@ describe Payment do
     it { is_expected.to be_a(Stripe::PaymentIntent) }
 
     it 'changes payment status' do
-      expect { subject }.to(change(payment, :status).to(Payment::STATUS_IN_PROGRESS))
+      expect { payment_intent }.to(change(payment, :status).to(Payment::STATUS_IN_PROGRESS))
     end
 
     context 'when stripe payment exists' do
       before { payment.save_with_payment_intent }
 
       it 'does not chanmge stripe payment id when it exists' do
-        expect { subject }.to_not(change(payment, :stripe_payment_id))
+        expect {  payment_intent }.not_to(change(payment, :stripe_payment_id))
       end
 
       it 'does not change payment intent' do
-        expect { subject }.to_not(change(payment, :payment_intent))
+        expect {  payment_intent }.not_to(change(payment, :payment_intent))
       end
     end
   end

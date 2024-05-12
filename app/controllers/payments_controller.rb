@@ -101,7 +101,7 @@ class PaymentsController < ApplicationController
     end
   end
 
-    # initialize payment and save stripe payment intent
+  # initialize payment and save stripe payment intent
   def save_payment_intent
     initialize_payment
     return redirect_to root_path unless @payment.present? && @payment.can_view?(current_user)

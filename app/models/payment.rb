@@ -75,7 +75,7 @@ class Payment < ApplicationRecord
   end
 
   def retrieve_or_save_payment_intent
-    Rails.logger.debug { "retrieve_or_save_payment_intent payment => #{self.inspect}}" }
+    Rails.logger.debug { "retrieve_or_save_payment_intent payment => #{inspect}}" }
     return payment_intent if payment_in_progress?
 
     if stripe_payment? && payment_intent.blank?
@@ -124,6 +124,7 @@ class Payment < ApplicationRecord
 
   def retrieve_payment_intent
     return unless stripe_payment_id
+
     self.payment_intent = Stripe::PaymentIntent.retrieve(stripe_payment_id)
   end
 
