@@ -9,19 +9,10 @@ class PaymentsController < ApplicationController
   before_action :validate_payment
 
   def show
-    Rails.logger.debug("Show Payment: payment #{@payment.id}")
+    Rails.logger.debug { "Show Payment: params #{params}" }
+    Rails.logger.debug { "#show() => @ticket_request = #{@ticket_request&.inspect}" }
 
-    unless @payment&.can_view?(current_user)
-      return redirect_to root_path, alert: 'This payment request is inaccessible to the logged in user'
-    end
-
-    unless @payment.ticket_request == @ticket_request
-      return redirect_to root_path, alert: 'This payment request does not belong to this ticket_request'
-    end
-
-    @payment_intent = @payment.payment_intent if @payment.stripe_payment_id
-    @ticket_request = @payment.ticket_request
-    @event = @ticket_request.event
+    self
   end
 
   def new
@@ -54,26 +45,12 @@ class PaymentsController < ApplicationController
   # create new payment and stripe payment intent using existing payment
 
   def confirm
-    unless @payment.in_progress?
-      Rails.logger.info("Payment Confirmation not in progress: #{@payment.id} status: #{@payment.status}")
-      return redirect_to root_path, alert: 'This payment request can not be confirmed'
-    end
-
-    if @payment.received?
-      Rails.logger.info("Payment Confirmation already received: #{@payment.id} status: #{@payment.status}")
-      return redirect_to root_path, alert: 'This payment request has already been confirmed.'
-    end
-
-    # has to have a stripe payment id and payment must not already be received
-    if @payment.stripe_payment_id.blank?
-      Rails.logger.error("Invalid payment confirmation id: #{@payment.id} missing stripe_payment_id")
-      return redirect_to root_path, alert: 'This payment request can not be confirmed.'
-    end
-
+    validate_payment_confirmation
     @payment.mark_received
     @payment.ticket_request.mark_complete
     PaymentMailer.payment_received(@payment).deliver_now
   end
+
 
   def other
     @user = @ticket_request.user
@@ -118,7 +95,6 @@ class PaymentsController < ApplicationController
 
   def save_payment
     initialize_payment
-
     return redirect_to root_path unless @payment.present? && @payment.can_view?(current_user)
 
     @payment.save_with_payment_intent.tap do |result|
@@ -138,36 +114,44 @@ class PaymentsController < ApplicationController
     Rails.logger.debug { "PaymentsController: @ticket_request #{@ticket_request.id} current_user: #{@user&.inspect}" }
 
     unless @event.ticket_sales_open?
-      redirect_to event_path(@event),
-                  alert: "Sorry, ticket sales for #{@event.name} have closed."
+      return redirect_to event_path(@event),
+                         alert: "Sorry, ticket sales for #{@event.name} have closed."
     end
 
     unless @ticket_request.owner?(current_user)
       Rails.logger.debug { "PaymentsController: @ticket_request #{@ticket_request.id} NOT OWNER current_user: #{@user&.inspect}" }
-
-      redirect_to root_path, alert: 'You are not authorized to make payments for this ticket request.'
+      return redirect_to root_path,
+                         alert: 'You are not authorized to make payments for this ticket request.'
     end
 
     unless @ticket_request.all_guests_specified?
-      redirect_to edit_event_ticket_request_path(@event, @ticket_request),
-                  alert: 'You must fill out all your guests before you can purchase a ticket.'
+      Rails.logger.debug { "PaymentsController: @ticket_request guests not specified: #{@ticket_request&.inspect}" }
+      return redirect_to edit_event_ticket_request_path(@event, @ticket_request),
+                         alert: 'You must fill out all your guests before you can purchase a ticket.'
     end
+
+    true
   end
 
-  def mark_received
-    @ticket_request = TicketRequest.find(permitted_params[:ticket_request_id])
-    return redirect_to root_path unless @ticket_request.can_view?(current_user)
-
-    @payment = Payment.where(ticket_request_id: @ticket_request.id,
-                             status: Payment::STATUS_IN_PROGRESS)
-                      .first
-
-    if @payment
-      @payment.mark_received
-      @payment.ticket_request.mark_complete
-      PaymentMailer.payment_received(@payment).deliver_now
-      redirect_to :back
+  # ensure we have a valid payment in progress that is not received
+  def validate_payment_confirmation
+    unless @payment.in_progress?
+      Rails.logger.info("Payment Confirmation not in progress: #{@payment.id} status: #{@payment.status}")
+      return redirect_to root_path, alert: 'This payment request can not be confirmed'
     end
+
+    if @payment.received?
+      Rails.logger.info("Payment Confirmation already received: #{@payment.id} status: #{@payment.status}")
+      return redirect_to root_path, alert: 'This payment request has already been confirmed.'
+    end
+
+    # has to have a stripe payment id and payment must not already be received
+    unless @payment.has_stripe_payment?
+      Rails.logger.error("Invalid payment confirmation id: #{@payment.id} missing stripe_payment_id")
+      return redirect_to root_path, alert: 'This payment request can not be confirmed.'
+    end
+
+    true
   end
 
   def permitted_params

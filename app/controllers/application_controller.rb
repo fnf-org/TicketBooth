@@ -53,7 +53,7 @@ class ApplicationController < ActionController::Base
     @ticket_request = TicketRequest.find(ticket_request_id)
     Rails.logger.debug { "#set_ticket_request() => @ticket_request = #{@ticket_request&.inspect}" }
 
-    redirect_to @event unless @ticket_request.event == @event
+    redirect_to @event unless (@ticket_request.event == @event)
   end
 
   # Override a Devise method
