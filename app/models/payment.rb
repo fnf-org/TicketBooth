@@ -50,8 +50,8 @@ class Payment < ApplicationRecord
   # Set status Payment
   def save_with_payment_intent
     # only save 1 payment intent
-    if !valid? || payment_intent.present?
-      errors.add :base, 'Invalid Payment or Stripe Payment already exists'
+    unless valid?
+      errors.add :base, 'Invalid Payment'
       return false
     end
 
@@ -71,7 +71,23 @@ class Payment < ApplicationRecord
     self.status = STATUS_IN_PROGRESS
 
     save
-    self
+    payment_intent
+  end
+
+  def retrieve_or_save_payment_intent
+    Rails.logger.debug { "retrieve_or_save_payment_intent payment => #{self.inspect}}" }
+    return payment_intent if payment_in_progress?
+
+    if stripe_payment? && payment_intent.blank?
+      # retrieve Payment Intent from Stripe payment
+      retrieve_payment_intent
+    else
+      # generate and save new stripe payment intent
+      save_with_payment_intent
+    end
+
+    Rails.logger.debug { "retrieve_or_save_payment_intent payment intent => #{payment_intent}}" }
+    payment_intent
   end
 
   # Calculate ticket cost from ticket request in cents
@@ -108,8 +124,11 @@ class Payment < ApplicationRecord
 
   def retrieve_payment_intent
     return unless stripe_payment_id
-
     self.payment_intent = Stripe::PaymentIntent.retrieve(stripe_payment_id)
+  end
+
+  def payment_in_progress?
+    payment_intent.present? && status == STATUS_IN_PROGRESS
   end
 
   def status_name

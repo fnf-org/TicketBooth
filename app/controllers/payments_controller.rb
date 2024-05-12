@@ -9,21 +9,29 @@ class PaymentsController < ApplicationController
   before_action :validate_payment
 
   def show
-    Rails.logger.debug { "Show Payment: params #{params}" }
-    Rails.logger.debug { "#show() => @ticket_request = #{@ticket_request&.inspect}" }
-
+    Rails.logger.debug { "#show() => @ticket_request = #{@ticket_request&.inspect} params: #{params}" }
     self
   end
 
   def new
-    Rails.logger.info("New Payment ticket request id: #{@ticket_request.id}")
+    Rails.logger.debug { "#new() => @ticket_request = #{@ticket_request&.inspect}" }
     initialize_payment
   end
 
   # Creates new Payment
   # Create Payment Intent and save PaymentIntentId in Payment
   def create
-    if save_payment
+    Rails.logger.debug { "#create() => @ticket_request = #{@ticket_request&.inspect} params: #{params}" }
+
+    # init the payment, user from ticket request
+    initialize_payment
+
+    # check to see if we have an existing stripe payment intent
+    # if so, use that one and do not create a new one
+    # if not, call save payment which generates a new payment intent
+    @payment.retrieve_or_save_payment_intent
+
+    if @payment.payment_in_progress?
       respond_to do |format|
         format.json do
           render json: {
@@ -32,6 +40,7 @@ class PaymentsController < ApplicationController
         end
       end
     else
+      Rails.logger.error("Create Payment payment #{@payment.id} missing payment intent. stripe_payment_id: #{@payment.stripe_payment_id}")
       respond_to do |format|
         format.json do
           render json: {
@@ -92,7 +101,8 @@ class PaymentsController < ApplicationController
     end
   end
 
-  def save_payment
+    # initialize payment and save stripe payment intent
+  def save_payment_intent
     initialize_payment
     return redirect_to root_path unless @payment.present? && @payment.can_view?(current_user)
 
@@ -106,11 +116,12 @@ class PaymentsController < ApplicationController
 
     @user = @ticket_request.user
     @payment = @ticket_request&.payment || @ticket_request&.build_payment
+    Rails.logger.debug { "PaymentsController: initialize_payment: #{@payment&.inspect}" }
   end
 
   # @description Redirect the user if the payment can not be applied to the ticket request
   def validate_payment
-    Rails.logger.debug { "PaymentsController: @ticket_request #{@ticket_request.id} current_user: #{@user&.inspect}" }
+    Rails.logger.debug { "PaymentsController: validate_payment @ticket_request #{@ticket_request&.inspect}" }
 
     unless @event.ticket_sales_open?
       return redirect_to event_path(@event),
@@ -129,6 +140,7 @@ class PaymentsController < ApplicationController
                          alert: 'You must fill out all your guests before you can purchase a ticket.'
     end
 
+    Rails.logger.debug { "PaymentsController: valid payment #{@payment&.inspect}" }
     true
   end
 
