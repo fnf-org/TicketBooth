@@ -2,6 +2,11 @@
   padding: 3em;
 }
 
+
+.lead {
+  font-size: 16pt !important;
+}
+
 // Hide navbar text for small screens
 @media (max-width: 600px) {
   small.nowrap {

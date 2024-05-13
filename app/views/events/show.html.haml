@@ -32,7 +32,7 @@
               - if current_user.site_admin? || admin != current_user
                 = link_to remove_admin_event_path(@event, user_id: admin),
                   data: {"turbo-frame": "_top", "turbo-method": "post", "turbo-confirm": "Are you sure?" },
-                  class: 'btn btn-danger float-end btn-small' do
+                  class: 'btn btn-danger float-end btn-sm' do
                   Demote
                   &nbsp;
                   %i.bi-x-square-fill

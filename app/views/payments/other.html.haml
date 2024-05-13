@@ -1,6 +1,6 @@
 .card
   .card-header
-    %h3 Pay for "#{@event.name}" using alternative methods
+    %h4 Pay for "#{@event.name}" using alternative methods
 
   .card-body
     %p.lead
@@ -26,7 +26,7 @@
       = text_area_tag(:explanation, nil, class: 'input-xlarge w-75', rows: 4, required: true)
 
       .actions
-        = submit_tag('Submit request', class: 'btn btn-primary')
+        = submit_tag('Submit request', class: 'btn btn-primary btn-sm')
 
     %strong
       After submitting your request, we will contact you to arrange payment details.

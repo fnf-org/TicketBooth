@@ -13,11 +13,11 @@ module TicketRequestsHelper
   def text_class_for_status(ticket_request)
     case ticket_request.status
     when 'P', 'A'
-      'muted'
+      'bg-warning'
     when 'D', 'R'
-      'text-error'
+      'bg-danger'
     when 'C'
-      'text-success'
+      'bg-success'
     end
   end
 

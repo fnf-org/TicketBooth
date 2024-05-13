@@ -74,3 +74,19 @@ form {
   }
 }
 
+#stripe-form {
+  margin: 10px auto;
+  text-align: left;
+  max-width: 60%;
+  max-height: 500px;
+}
+
+// Hide navbar text for small screens
+@media (max-width: 700px) {
+  #stripe-form {
+    margin: 10px auto;
+    text-align: left;
+    max-width: 100%;
+    max-height: 500px;
+  }
+}
