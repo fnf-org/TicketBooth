@@ -191,6 +191,11 @@ class TicketRequest < ApplicationRecord
     payment.try(:stripe_payment_id) && payment.received?
   end
 
+  # not able to purchase tickets in this state
+  def can_purchase?
+    !status.in? [STATUS_DECLINED, STATUS_PENDING]
+  end
+
   def refund
     if refunded?
       errors.add(:base, 'Cannot refund a ticket that has already been refunded')
