@@ -2,7 +2,7 @@
 
 .row
   .col-sm-12.col-md-12.col-lg-6
-    .card.border-1
+    .card.border-1.my-3
       .card-body
         = render partial: "events/event_summary"
     .card.mt-4
@@ -17,8 +17,8 @@
         = link_to tickets_request_url(@event), tickets_request_url(@event), class: "button-link ticket-request-link", target: "_top"
 
 
-  .col-sm-6.col-md-6.col-lg-6.col-xl-6
-    .card.border-1
+  .col-sm-12.col-md-6.col-lg-6.col-xl-6
+    .card.my-3
       .card-body
         %h4 Event Admins
         %p
@@ -32,7 +32,7 @@
               - if current_user.site_admin? || admin != current_user
                 = link_to remove_admin_event_path(@event, user_id: admin),
                   data: {"turbo-frame": "_top", "turbo-method": "post", "turbo-confirm": "Are you sure?" },
-                  class: 'btn float-end' do
+                  class: 'btn btn-danger float-end btn-small' do
                   Demote
                   &nbsp;
                   %i.bi-x-square-fill
@@ -46,7 +46,7 @@
             %strong
               User Email
             %span.muted.bg-info-subtle.p-2.rounded-3 NOTE: Must already be registered
-          = submit_tag "Add Admin ✚ ", data: {"turbo-frame": "_top", "turbo-method": "post"}, class: "btn btn-primary btn-large float-end"
+          = submit_tag "Add Admin ✚ ", data: {"turbo-frame": "_top", "turbo-method": "post"}, class: "btn btn-primary float-end"
           .vertical-20
           .btn-group-md
             = text_field_tag :user_email, nil, class: 'd-inline',

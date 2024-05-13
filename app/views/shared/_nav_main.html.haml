@@ -1,4 +1,4 @@
-- button_class="btn btn-primary btn-lg m-1 text-nowrap"
+- button_class="btn btn-primary  m-1 text-nowrap"
 %nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
   .container-fluid
     %a.navbar-brand{ href: root_path, id: "brand-logo" }
@@ -14,7 +14,7 @@
           - elsif current_user.event_admin?
             = button_to "Manage Events", events_path, method: :get, class: "#{button_class}", data: { turbo: false }
           - else
-            = button_to "Home", root_path, class: 'btn btn-primary btn-lg m-1'
+            = button_to "Home", root_path, class: 'btn btn-primary  m-1'
         - else
           - unless controller_name == 'sessions' && action_name == 'new' && request.path == '/users/sign_in'
             = button_to "Log In", new_user_session_path, method: :get, class: "#{button_class}", data: { turbo: false }

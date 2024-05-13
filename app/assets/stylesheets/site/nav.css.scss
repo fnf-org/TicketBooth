@@ -29,6 +29,8 @@ nav.navbar {
     margin-left: 10px !important;
 
     li.nav-item {
+      font-size: 15pt;
+
       a.nav-link {
         border-radius: 5px;
         color: rgb(255, 255, 255) !important;
@@ -37,7 +39,7 @@ nav.navbar {
         margin-right: 10px !important;
         margin-left: 10px !important;
         background-color: rgba(69, 150, 254, 0.65) !important;
-        //font-size: 16pt;
+        font-size: 15pt;
 
         &:focus,
         &:hover {

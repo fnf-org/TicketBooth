@@ -52,7 +52,7 @@
                     = link_to event_shift_path(@event,
                                                time_slot.shifts.select { |shift| shift.user == current_user }.first),
                       method: :delete,
-                      class: 'btn btn-link hover-tooltip',
+                      class: 'btn  btn-link btn-primary btn-sm  hover-tooltip',
                       title: 'Remove yourself from this volunteer position' do
                       Unvolunteer
                   - elsif time_slot.slots_left?

@@ -73,11 +73,9 @@ module TicketBooth
     # default host for the routes
     routes.default_url_options[:host] = config.puma.host
 
-    config.active_job.queue_adapter = :async
-
     config.active_job.queue_adapter = ActiveJob::QueueAdapters::AsyncAdapter.new \
       min_threads: 1,
-      max_threads: 2 * Concurrent.processor_count,
-      idletime: 600.seconds
+      max_threads: 3,
+      idletime: 30.seconds
   end
 end
