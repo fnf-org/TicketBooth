@@ -6,13 +6,11 @@
 - if payment.received?
   %p Thanks for purchasing your tickets for #{ticket_request.event.name}!
 
-  %p Adults Tickets:
   %strong
+    %p Adults Tickets:
     = ticket_request.adults
 
-  %p
-  %p Kids Tickets:
-  %strong
+    %p Kids Tickets:
     = ticket_request.kids
 
   %hr

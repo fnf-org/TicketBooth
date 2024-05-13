@@ -17,6 +17,14 @@
                 = @ticket_request.adults
                 = 'ticket'.pluralize(@ticket_request.total_tickets)
               has been approved!
+
+            %td.text-end.small.p-2.px-4.text-nowrap= "Total Ticket Price:"
+            %td
+              %strong
+                %span{ class: ('label label-info' if @ticket_request.special_price) }
+                  = number_to_currency(@ticket_request.price, precision: 0)
+              %p
+
             %p
               Now all that's left is to pay for your tickets.
               If you are paying via credit card, please fill out the form ➜
@@ -36,7 +44,12 @@
     .col-sm-12.col-md-12.col-lg-8.col-xl-8
       .card.my-2
         .card-header.bg-body-secondary
-          %h4 Please Enter Your Payment Details
+          %h5 Please Enter Your Payment Details
+          %strong
+            Total Ticket Price:
+            = number_to_currency(@ticket_request.price, precision: 0)
+          %p
+
         .card-body
           %div#stripe-form{"data-controller" => "checkout",
                            "data-checkout-site-url-value" => "#{controller.send(:site_url)}",

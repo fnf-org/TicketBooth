@@ -53,7 +53,7 @@ class PaymentsController < ApplicationController
   def confirm
     redirect_path, options = validate_payment_confirmation
     if redirect_path
-      Rails.logger.error("#confirm() => redirect_path: #{redirect_path}")
+      Rails.logger.info("#confirm() => redirect_path: #{redirect_path}")
       return redirect_to redirect_path, options || {}
     else
       Rails.logger.info("#confirm() => marking payment id #{@payment.id} as received")
@@ -86,7 +86,7 @@ class PaymentsController < ApplicationController
     Rails.logger.info("#sent() => @payment #{@payment.inspect}")
 
     flash[:notice] = "We've recorded that your payment is en route"
-    redirect_to edit_event_ticket_request_path(@event, @ticket_request)
+    redirect_to event_ticket_requests_path(@event, @ticket_request)
   end
 
   private
@@ -173,20 +173,20 @@ class PaymentsController < ApplicationController
 
   # ensure we have a valid payment in progress that is not received
   def validate_payment_confirmation
+    if @payment.received?
+      Rails.logger.info("Payment Confirmation already received: #{@payment.id} status: #{@payment.status}")
+      return root_path, information: 'This payment request has been confirmed! Thank you!'
+    end
+
     unless @payment.in_progress?
       Rails.logger.info("Payment Confirmation not in progress: #{@payment.id} status: #{@payment.status}")
       return root_path, alert: 'This payment request can not be confirmed'
     end
 
-    if @payment.received?
-      Rails.logger.info("Payment Confirmation already received: #{@payment.id} status: #{@payment.status}")
-      return root_path, alert: 'This payment request has already been confirmed.'
-    end
-
     # has to have a stripe payment id and payment must not already be received
     unless @payment.stripe_payment?
       Rails.logger.error("Invalid payment confirmation id: #{@payment.id} missing stripe_payment_id")
-      return root_path, alert: 'This payment request can not be confirmed.'
+      return root_path, alert: 'This payment request is missing the stripe payment.'
     end
 
     nil
