@@ -14,7 +14,7 @@
     .card-body
       = render 'shared/form_errors', resource: @ticket_request
 
-      - if signed_in?
+      - if signed_in? && @user.present?
         Signed in as
         = "#{@user.name} <#{@user.email}>"
       - else
