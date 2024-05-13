@@ -156,24 +156,29 @@
                   - if ticket_request.declined?
                     = button_to revert_to_pending_event_ticket_request_path(@event, ticket_request),
                       method: :post,
-                      class: 'btn  btn-link btn-primary btn-sm ' do
+                      class: 'btn btn-danger btn-sm ' do
                       %span.hover-tooltip{ title: 'Reset status of request to Pending', data: { placement: 'left' } }
                         Revert
                   - elsif !ticket_request.completed?
                     = button_to resend_approval_event_ticket_request_path(@event, ticket_request),
                       method: :post,
-                      class: 'btn  btn-link btn-primary btn-sm ' do
+                      class: 'btn btn-primary btn-sm ' do
                       Resend Approval
                     = button_to decline_event_ticket_request_path(@event, ticket_request),
                       method: :post,
-                      class: 'btn  btn-link btn-primary btn-sm ',
+                      class: 'btn btn-primary btn-sm ',
                       data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s already approved request?" } do
                       %span.text-error Decline
+                    = button_to manual_confirmation_event_ticket_request_payments_path(@event, ticket_request),
+                      method: :post,
+                      class: 'btn btn-primary btn-sm ' do
+                      Mark Payment Received
+                      %i.icon-ok
 
-              - elsif ticket_request.payment && !ticket_request.payment.received?
+              - elsif ticket_request.payment && ticket_request.awaiting_payment? && !ticket_request.payment_received?
                 .btn-group.pull-right
-                  = button_to confirm_event_ticket_request_payment_path(@event, ticket_request, ticket_request.payment),
+                  = button_to manual_confirmation_event_ticket_request_payments_path(@event, ticket_request),
                     method: :post,
-                    class: 'btn btn-primary' do
+                    class: 'btn btn-primary btn-sm ' do
                     Mark Payment Received
                     %i.icon-ok

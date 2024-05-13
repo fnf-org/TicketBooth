@@ -16,6 +16,9 @@ Style/IfUnlessModifier:
 RSpecRails/InferredSpecType:
   Enabled: false
 
+Metrics/ClassLength:
+  Max: 300
+
 Layout/HashAlignment:
   Enabled: true
   EnforcedColonStyle: table

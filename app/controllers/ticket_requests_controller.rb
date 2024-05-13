@@ -4,7 +4,6 @@ require 'tempfile'
 require 'csv'
 
 # Manage all pages related to ticket requests.
-# rubocop: disable Metrics/ClassLength
 class TicketRequestsController < ApplicationController
   before_action :authenticate_user!, except: %i[new create]
 
@@ -305,5 +304,3 @@ class TicketRequestsController < ApplicationController
           .with_indifferent_access
   end
 end
-
-# rubocop: enable Metrics/ClassLength
