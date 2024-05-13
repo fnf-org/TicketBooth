@@ -31,6 +31,20 @@ NOTE: Please see the xref:#acknowledgements[Acknowledgements] at the end of this
 
 The goal of the app is to make ticket and volunteer management for community events easier and automated.
 
+== Production Deploy, as of 2024
+
+To deploy to production site — https://tickets.fnf.events — the deployer's IP address must be white-listed with EC2. Contact Konstantin Gredeskoul to get white-listed.
+
+The deploy is performed via Capistrano:
+
+[source,bash]
+----
+git checkout main
+git pull
+bundle install
+bundle exec cap production deploy
+----
+
 == Development Environment Setup
 
 The following walks through a local setup on OS-X M1.
