@@ -62,6 +62,39 @@ class PaymentsController < ApplicationController
       Rails.logger.info("#confirm() => marking payment id #{@payment.id} as received")
     end
 
+    mark_payment_completed
+  end
+
+  # init and mark the payment as completed.
+  # Annotate that manual was set
+  def manual_confirmation
+    initialize_payment
+    @payment.update(explanation: 'manual confirm')
+    @payment.reload
+    Rails.logger.info("#manual_confirm() => @payment #{@payment.inspect}")
+    mark_payment_completed
+    redirect_to event_ticket_requests_path(@event, @ticket_request)
+  end
+
+  def other
+    @user = @ticket_request.user
+  end
+
+  # handle other forms of payment than credit card / stripe
+  def sent
+    initialize_payment
+    @payment.update(explanation: permitted_params[:explanation], status: Payment::STATUS_IN_PROGRESS)
+    @payment.reload
+
+    Rails.logger.info("#sent() => @payment #{@payment.inspect}")
+
+    flash[:notice] = "We've recorded that your payment is en route"
+    redirect_to edit_event_ticket_request_path(@event, @ticket_request)
+  end
+
+  private
+
+  def mark_payment_completed
     Payment.transaction do
       @payment.mark_received
       @payment.ticket_request.mark_complete
@@ -72,32 +105,11 @@ class PaymentsController < ApplicationController
       # Deliver the email asynchronously
       PaymentMailer.payment_received(@payment).deliver_later
     rescue StandardError => e
-      Rails.logger.error("#confirm() => error marking payment as received: #{e.message}")
+      Rails.logger.error("#mark_payment_completed() => error marking payment as received: #{e.message}")
       flash.now[:error] = "ERROR: #{e.message}"
       render_flash(flash)
     end
   end
-
-  def other
-    @user = @ticket_request.user
-  end
-
-  def sent
-    return redirect_to root_path unless @ticket_request.can_view?(current_user)
-
-    @payment = Payment.new(ticket_request_id: @ticket_request.id,
-                           explanation: permitted_params[:explanation],
-                           status: Payment::STATUS_IN_PROGRESS)
-    if @payment.save
-      flash[:notice] = "We've recorded that your payment is en route"
-      redirect_to event_ticket_request_payment_path(@event, @ticket_request, @payment)
-    else
-      flash[:error] = 'There was a problem recording your intent to pay'
-      redirect_to :back
-    end
-  end
-
-  private
 
   def ticket_request_id
     permitted_params[:ticket_request_id]
@@ -190,12 +202,12 @@ class PaymentsController < ApplicationController
       :ticket_request_id,
       :stripe_payment_id,
       :payment_intent,
+      :explanation,
       payment: %i[
         ticket_request
         ticket_request_id
         ticket_request_attributes
         status
-        explanation
       ]
     )
           .to_hash

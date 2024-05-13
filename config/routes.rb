@@ -60,14 +60,15 @@ Rails.application.routes.draw do
       resources :payments do
         collection do
           get :confirm
+          post :sent
+          post :manual_confirmation
         end
 
         member do
           get :new
           post :create
           get :show
-          get  :other
-          post :sent
+          get :other
         end
       end
     end
