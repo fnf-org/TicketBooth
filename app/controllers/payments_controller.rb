@@ -26,9 +26,7 @@ class PaymentsController < ApplicationController
     # init the payment, user from ticket request
     initialize_payment
 
-    # check to see if we have an existing stripe payment intent
-    # if so, use that one and do not create a new one
-    # if not, call save payment which generates a new payment intent
+    # check to see if we have an existing stripe payment intent. retrieve or save
     @payment.retrieve_or_save_payment_intent
 
     if @payment.payment_in_progress?
@@ -52,7 +50,6 @@ class PaymentsController < ApplicationController
   end
 
   # create new payment and stripe payment intent using existing payment
-
   def confirm
     redirect_path, options = validate_payment_confirmation
     if redirect_path

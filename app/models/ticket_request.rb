@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-#
-# rubocop: disable Metrics/ClassLength
-
 # == Schema Information
 #
 # Table name: ticket_requests
@@ -279,5 +276,3 @@ class TicketRequest < ApplicationRecord
     self.guests = Array(guests).map { |guest| guest&.strip }.select(&:present?).compact
   end
 end
-
-# rubocop: enable Metrics/ClassLength
