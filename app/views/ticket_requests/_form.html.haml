@@ -138,7 +138,7 @@
 
                   = f.label :adults, 'Number of adult tickets' + " @ $#{@event.adult_ticket_price.to_i} each"
                   = f.number_field :adults, class: 'input-mini', min: 1, required: true,
-                    max: (TicketRequest::TICKET_LIMITS[TicketRequest::ROLE_VOLUNTEER] unless form_action_name == :update),
+                    max: @event.max_adult_tickets_per_request,
                     data: { default_price: @event.adult_ticket_price.to_i }
 
                   %strong.help-inline.inline-price
