@@ -190,7 +190,7 @@ class TicketRequestsController < ApplicationController
 
   def destroy
     unless @event.admin?(current_user) || current_user == @ticket_request.user
-      flash.now[:error] = 'You do not have sufficient priviliges to delete this request.'
+      flash.now[:error] = 'You do not have sufficient privileges to delete this request.'
       return render_flash(flash)
     end
 
