@@ -40,7 +40,7 @@ class PaymentsController < ApplicationController
         end
       end
     else
-      Rails.logger.error("Create Payment payment #{@payment.id} missing payment intent. stripe_payment_id: #{@payment.stripe_payment_id}")
+      Rails.logger.error("Create Payment payment #{@payment.id} missing payment intent")
       respond_to do |format|
         format.json do
           render json: {
