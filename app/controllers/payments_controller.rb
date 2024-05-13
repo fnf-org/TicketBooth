@@ -35,7 +35,7 @@ class PaymentsController < ApplicationController
       respond_to do |format|
         format.json do
           render json: {
-            clientSecret: @payment.payment_intent_client_secret,
+            clientSecret: @payment.payment_intent_client_secret
           }
         end
       end
