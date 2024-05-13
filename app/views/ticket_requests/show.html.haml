@@ -63,36 +63,37 @@
               %span.p-1{ class: text_class_for_status(@ticket_request) }
                 = @ticket_request.status_name
 
-        %tr
-          %td.text-end.small.p-2.px-4.text-nowrap= "Payment:"
-          %td
-            %strong
-            - if @payment&.received?
-              - if @ticket_request.refunded?
-                %span.bg-success Refunded
-              - else
-                .bg-success
-                  = link_to 'Received', event_ticket_request_payment_path(@payment, @ticket_request)
+        - if @ticket_request.can_purchase?
+          %tr
+            %td.text-end.small.p-2.px-4.text-nowrap= "Payment:"
+            %td
+              %strong
+              - if @ticket_request.payment_received?
+                - if @ticket_request.refunded?
+                  %span.bg-success Refunded
+                - else
+                  .bg-success
+                    = link_to 'Received', event_ticket_request_payment_path(@payment, @ticket_request)
 
-                - if @event.admin?(current_user)
-                  = link_to 'Refund', refund_event_ticket_request_path(@event, @ticket_request),
-                    method: :post,
-                    class: 'btn btn-sm btn-danger',
-                    data: { confirm: "Are you sure you want to refund #{@ticket_request.user.name}'s ticket? This cannot be undone!",
-                            disable_with: 'Refunding...' }
-            - elsif @ticket_request.free?
-              .text-success
-                Free
-            - else
-              - if @event.ticket_sales_open?
-                = link_to 'Purchase your ticket now',
-                  new_event_ticket_request_payment_path(@event, @ticket_request),
-                  class: 'btn btn-primary m-0'
+                  - if @event.admin?(current_user)
+                    = link_to 'Refund', refund_event_ticket_request_path(@event, @ticket_request),
+                      method: :post,
+                      class: 'btn btn-sm btn-danger',
+                      data: { confirm: "Are you sure you want to refund #{@ticket_request.user.name}'s ticket? This cannot be undone!",
+                              disable_with: 'Refunding...' }
+              - elsif @ticket_request.free?
+                .text-success
+                  Free
               - else
-                %span.bg-warning
-                  Unfortunately, ticket sales are now closed. You can no longer purchase your
-                  = succeed '.' do
-                    = 'ticket'.pluralize(@ticket_request.total_tickets)
+                - if @event.ticket_sales_open?
+                  = link_to 'Purchase your ticket now',
+                    new_event_ticket_request_payment_path(@event, @ticket_request),
+                    class: 'btn btn-primary m-0'
+                - else
+                  %span.bg-warning
+                    Unfortunately, ticket sales are now closed. You can no longer purchase your
+                    = succeed '.' do
+                      = 'ticket'.pluralize(@ticket_request.total_tickets)
 
         %tr
           %td.text-end.small.p-2.px-4.text-nowrap= "Email:"
