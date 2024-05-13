@@ -14,7 +14,6 @@ export default class CheckoutController extends Controller {
     }
 
     connect() {
-        console.log('initializePayment: ticketRequestId=' + this.ticketRequestIdValue);
         let elements;
 
         // Stripe client instance
@@ -26,14 +25,13 @@ export default class CheckoutController extends Controller {
         const eventId = this.eventIdValue;
         const createPaymentUrl = `/events/${eventId}/ticket_requests/${ticketRequestId}/payments`;
 
-        console.log('initializePayment: siteUrl=' + siteUrl);
-        console.log('initializePayment: ticketRequestId=' + ticketRequestId);
         console.log('initializePayment: eventId=' + eventId);
-        console.log('initializePayment: createPaymentUrl=' + createPaymentUrl);
+        console.log('initializePayment: ticketRequestId=' + ticketRequestId);
+        // console.log('initializePayment: siteUrl=' + siteUrl);
+        // console.log('initializePayment: createPaymentUrl=' + createPaymentUrl);
 
-        let { paymentId } = initialize();
+        initialize();
         checkStatus();
-        console.log("connect after initialize Stripe paymentId:", paymentId);
 
         document
             .querySelector("#payment-form")
@@ -52,8 +50,6 @@ export default class CheckoutController extends Controller {
                 })
             ;
             let {clientSecret} = await response.json();
-
-            console.log("initialize Stripe clientSecret:", clientSecret);
 
             const appearance = {
                 theme: 'stripe',
