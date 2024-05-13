@@ -23,4 +23,4 @@ jobs:
           bundler-cache: true
 
       - name: RuboCop
-        run: bin/rubocop --parallel
+        run: bundle exec rubocop --format progress

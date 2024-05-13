@@ -10,7 +10,8 @@
 @import "bootstrap/scss/root";
 @import "bootstrap/scss/type";
 
-$font-size-root: 20pt;
+$font-size-root: 17pt;
+$bg-focus-input: #fae06d;
 $theme-colors: map-remove($theme-colors, "info", "light", "dark");
 
 @import 'flatpickr/dist/flatpickr';

@@ -19,16 +19,41 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def stripe_js_needed?
-    false
+  def site_host
+    Rails.application.config.action_mailer.default_url_options[:host]
+  end
+
+  def site_url
+    request.ssl? ? "https://#{site_host}" : "http://#{site_host}"
   end
 
   def stripe_publishable_api_key
-    @stripe_publishable_api_key ||= ::Rails.application.credentials[Rails.env.to_sym].stripe.publishable_api_key
+    @stripe_publishable_api_key ||= Rails.configuration.stripe[:publishable_api_key]
   end
 
-  def stripe_secret_api_key
-    @stripe_secret_api_key ||= ::Rails.application.credentials[Rails.env.to_sym].stripe.secret_api_key
+  def set_event
+    event_id = permitted_params[:event_id].to_i
+    Rails.logger.debug { "#set_event() => event_id = #{event_id}, params[:event_id] => #{permitted_params[:event_id]}" }
+
+    @event = Event.where(id: event_id).first
+    if @event.nil?
+      flash.now[:error] = "Event with id #{event_id} was not found."
+      raise ArgumentError, flash.now[:error]
+    end
+  end
+
+  def ticket_request_id
+    nil
+  end
+
+  def set_ticket_request
+    Rails.logger.debug { "#set_ticket_request() => ticket_request_id = #{ticket_request_id}" }
+    return unless ticket_request_id
+
+    @ticket_request = TicketRequest.find(ticket_request_id)
+    Rails.logger.debug { "#set_ticket_request() => @ticket_request = #{@ticket_request&.inspect}" }
+
+    redirect_to @event unless @ticket_request.event == @event
   end
 
   # Override a Devise method
@@ -66,7 +91,7 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    permitted_attributes = %i[email password password_confirmation first last redirect_to]
+    permitted_attributes = %i[email password password_confirmation current_password first last redirect_to]
     devise_parameter_sanitizer.permit(:sign_up) { |user| user.permit(*permitted_attributes) }
     devise_parameter_sanitizer.permit(:account_update) { |user| user.permit(*permitted_attributes) }
   end

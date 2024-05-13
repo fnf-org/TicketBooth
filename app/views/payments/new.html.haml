@@ -1,37 +1,68 @@
-- content_for(:meta) do
-  %meta{ name: 'stripe-key', content: Rails.application.credentials.send(Rails.env.to_sym).stripe.publishable_api_key }
-
 - content_for(:head) do
-  = javascript_include_tag 'https://js.stripe.com/v3/'
+  %link{:href => "checkout.css.scss", :rel => "stylesheet"}
 
 .content-fluid
   .row
-    .col-4
-      .card
+    .col-sm-12.col-md-12.col-lg-4.col-xl-4
+      .card.my-2
         .card-header.bg-dark-subtle
-          %h3
+          %h4
             Hi, #{@user.first_name}
 
-        .card-body
-          - if @event.tickets_require_approval
-            %p.lead.text-success
+        - if @event.tickets_require_approval
+          .card-body.bg-success-subtle
+            %p.lead
               Your request for
-              %b
+              %strong
                 = @ticket_request.adults
                 = 'ticket'.pluralize(@ticket_request.total_tickets)
               has been approved!
             %p
               Now all that's left is to pay for your tickets.
-              If you are paying via credit card, fill out the form below.
-              %br
+              If you are paying via credit card, please fill out the form ➜
+
+          .card-footer.bg-body-secondary
+            %strong
               = link_to 'I am not paying via credit card',
-                other_payments_path(ticket_request_id: @ticket_request.id)
+                other_event_ticket_request_payment_path(@event, @ticket_request)
 
-          - else
-            %p.lead.text-success
-              You're almost done! All that's left is to purchase your
-              = succeed '.' do
-                = 'ticket'.pluralize(@ticket_request.total_tickets)
+        - else
+          .card-body.bg-success
+          %p.lead.text-success
+            You're almost done! All that's left is to purchase your
+            = succeed '.' do
+              = 'ticket'.pluralize(@ticket_request.total_tickets)
 
-    .col-8
-      = render 'form'
+    .col-sm-12.col-md-12.col-lg-8.col-xl-8
+      .card.my-2
+        .card-header.bg-body-secondary
+          %h4 Please Enter Your Payment Details
+        .card-body
+          %div#stripe-form{"data-controller" => "checkout",
+                           "data-checkout-site-url-value" => "#{controller.send(:site_url)}",
+                           "data-checkout-authenticity-token-value" => "#{controller.send(:form_authenticity_token)}",
+                           "data-checkout-stripe-api-key-value" => "#{@stripe_publishable_api_key}",
+                           "data-checkout-event-id-value" => "#{@event.id}",
+                           "data-checkout-ticket-request-id-value" => "#{@ticket_request.id}"}
+            %form#payment-form
+              #payment-element
+                / Stripe.js injects the Payment Element
+              #payment-message.hidden
+
+              %button.submit
+                #spinner.spinner.hidden
+                %span.button-text
+                Pay Now
+        .card-footer
+          %p.small
+            By purchasing tickets to an FnF event, you acknowledge that you have read
+            = link_to 'The FnF Way', 'https://fnf.events/the-fnf-way/', target: '_blank', onclick: "popupWindow('https://fnf.events/the-fnf-way/', 'The FnF Way', window, 700, 900); return false;"
+            and
+            = link_to 'Code of Conduct', 'https://fnf.page.link/coc', target: '_blank', onclick: "popupWindow('https://fnf.page.link/coc', 'Code of Conduct', window, 800, 900); return false;"
+            and are responsible for sharing these documents with your guests. You
+            further understand that you are responsible for the conduct of your guests
+            while they attend an FnF event. By making clear the values that inform our
+            events and setting the expectation of conduct at our events, we hope to
+            continue to embrace radical self-expression while continuing to invite new
+            and diverse people into our community.
+

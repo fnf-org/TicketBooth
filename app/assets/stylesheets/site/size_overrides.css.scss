@@ -1,15 +1,67 @@
+.main-container {
+  padding: 3em;
+}
+
+
+.lead {
+  font-size: 16pt !important;
+}
 
 // Hide navbar text for small screens
 @media (max-width: 600px) {
   small.nowrap {
     white-space: normal;
   }
+
+  .main-container {
+    padding: 0;
+  }
+
+}
+// Hide navbar text for small screens
+@media (max-width: 1200px) {
+  table {
+    tr {
+      td.optional, th.optional {
+        display: none;
+      }
+    }
+  }
 }
 
 // Hide navbar text for small screens
-@media (max-width: 800px) {
+@media (max-width: 900px) {
+  .main-container {
+    padding: 1em;
+  }
+
+  .lead {
+    font-size: 13pt !important;
+  }
   #brand-logo img {
     display: none !important;
+  }
+
+  .btn, .nav-link {
+    font-size: 1em !important;
+  }
+
+  .nav-tabs {
+    padding: 4px !important;
+  }
+
+  .nav {
+    a.nav-link, a.nav-link:active {
+      font-size: 13pt !important;
+    }
+  }
+
+  table {
+    tr {
+      td.optional, th.optional {
+        display: none;
+      }
+    }
   }
 
 }

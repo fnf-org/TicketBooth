@@ -80,7 +80,7 @@ gem 'mini_racer'
 gem 'protected_attributes_continued'
 gem 'psych'
 gem 'rake'
-gem 'stripe'
+gem 'stripe', '~> 11.3'
 gem 'ventable', '>= 1.3'
 gem 'yard'
 
@@ -96,7 +96,6 @@ group :development, :test do
   gem 'rubocop-rails-omakase', require: false
   gem 'rubocop-rake'
   gem 'rubocop-rspec'
-  gem 'stripe-ruby-mock', '~> 2.5.0', require: 'stripe_mock'
 end
 
 group :development do

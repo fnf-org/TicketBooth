@@ -2,4 +2,4 @@
 web: bin/rails server -p 8080
 js: yarn watch:js
 css: yarn watch:css
-browser: sleep 4 && open http://localhost:8080/ && while true; do sleep 100; echo .; done
+browser: sleep 4 && open http://tickets-local.fnf.org:8080/ && while true; do sleep 100; echo .; done

@@ -3,7 +3,7 @@
 <table>
   <tr>
     <th>Ticket request</th>
-    <th>Stripe customer token</th>
+    <th>Stripe payment</th>
     <th>Amount</th>
     <th></th>
     <th></th>
@@ -13,10 +13,11 @@
 <% @payments.each do |payment| %>
   <tr>
     <td><%= payment.ticket_request_id %></td>
-    <td><%= payment.stripe_customer_token %></td>
+    <td><%= payment.stripe_payment_id %></td>
     <td><%= payment.amount %></td>
     <td><%= link_to 'Show', payment %></td>
-    <td><%= link_to 'Edit', edit_payment_path(payment) %></td>
+<!--    <td><%#= link_to 'Edit', edit_payment_path(payment) %></td>-->
+    <td><%= link_to 'Edit', payment %></td>
     <td><%= link_to 'Destroy', payment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
   </tr>
 <% end %>

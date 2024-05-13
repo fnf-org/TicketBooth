@@ -186,10 +186,11 @@ CREATE TABLE public.payments (
     id integer NOT NULL,
     ticket_request_id integer NOT NULL,
     stripe_charge_id character varying(255),
-    status character varying(1) DEFAULT 'P'::character varying NOT NULL,
+    status character varying(1) DEFAULT 'N'::character varying NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    explanation character varying(255)
+    explanation character varying(255),
+    stripe_payment_id character varying
 );
 
 
@@ -648,6 +649,13 @@ CREATE INDEX index_event_admins_on_user_id ON public.event_admins USING btree (u
 
 
 --
+-- Name: index_payments_on_stripe_payment_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_payments_on_stripe_payment_id ON public.payments USING btree (stripe_payment_id);
+
+
+--
 -- Name: index_price_rules_on_event_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -696,6 +704,8 @@ CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING b
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240513035005'),
+('20240509025037'),
 ('20240423054549'),
 ('20240423054149'),
 ('20240418004856'),

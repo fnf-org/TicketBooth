@@ -2,8 +2,10 @@ ul.shared-user-links {
   list-style-type: none;
   margin-top: 40px !important;
   padding-left: 0 !important;
+
   li {
     margin: 10px auto;
+
     a {
       margin-left: 0;
     }
@@ -15,9 +17,11 @@ ul.shared-user-links {
     list-style-type: none;
     margin-top: 40px !important;
     padding-left: 0 !important;
+
     li {
       display: inline-block;
       margin-left: 0;
+
       a {
         display: inline-block;
         margin-left: 0;
@@ -26,3 +30,22 @@ ul.shared-user-links {
   }
 }
 
+.card {
+  .button-links {
+    a.button-link, a.ticket-request-link {
+      border-width: 0 !important;
+
+      background-color: #ff7800 !important;
+      color: #fff !important;
+
+      &:focus, &:active, &:hover {
+        color: black !important;
+        background-color: #ffda00 !important;
+      }
+
+      &:visited {
+        background-color: #ab5507 !important;
+      }
+    }
+  }
+}

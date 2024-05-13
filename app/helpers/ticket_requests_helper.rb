@@ -13,11 +13,11 @@ module TicketRequestsHelper
   def text_class_for_status(ticket_request)
     case ticket_request.status
     when 'P', 'A'
-      'muted'
+      'bg-warning'
     when 'D', 'R'
-      'text-error'
+      'bg-danger'
     when 'C'
-      'text-success'
+      'bg-success'
     end
   end
 
@@ -26,17 +26,15 @@ module TicketRequestsHelper
     when 'P'
       'Pending Approval'
     when 'A'
-      if ticket_request.payment && !ticket_request.payment.received?
-        'Awaiting Payment via Alternate Method'
-      else
-        'Awaiting Payment'
-      end
+      'Awaiting Payment'
     when 'D'
       'Declined'
     when 'R'
       'Refunded'
     when 'C'
       'Completed'
+    else
+      'Unknown. Please contact support'
     end
   end
 

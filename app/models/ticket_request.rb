@@ -146,6 +146,10 @@ class TicketRequest < ApplicationRecord
     self.user == user || event.admin?(user)
   end
 
+  def owner?(user)
+    self.user == user || event.admin?(user)
+  end
+
   def status_name
     STATUS_NAMES[status]
   end
@@ -155,6 +159,7 @@ class TicketRequest < ApplicationRecord
   end
 
   def mark_complete
+    Rails.logger.debug { "ticket request marking completed: #{id}" }
     update status: STATUS_COMPLETED
   end
 
@@ -182,8 +187,8 @@ class TicketRequest < ApplicationRecord
     status == STATUS_REFUNDED
   end
 
-  def paid_via_credit?
-    payment.try(:stripe_charge_id)
+  def payment_received?
+    payment.try(:stripe_payment_id) && payment.received?
   end
 
   def refund
@@ -192,20 +197,21 @@ class TicketRequest < ApplicationRecord
       return false
     end
 
-    unless payment
-      errors.add(:base, 'Cannot refund a ticket that has not been purchased')
-      return false
-    end
+    return if payment&.received?
 
-    begin
-      TicketRequest.transaction do
-        Stripe::Charge.retrieve(payment.stripe_charge_id).refund
-        return update(status: STATUS_REFUNDED)
-      end
-    rescue Stripe::StripeError => e
-      errors.add(:base, "Cannot refund ticket: #{e.message}")
-      false
-    end
+    errors.add(:base, 'Cannot refund a ticket that has not been purchased')
+    false
+
+    # XXX need to build refund. Put into Payment model
+    # begin
+    #   TicketRequest.transaction do
+    #     Stripe::Charge.retrieve(payment.stripe_charge_id).refund
+    #     return update(status: STATUS_REFUNDED)
+    #   end
+    # rescue Stripe::StripeError => e
+    #   errors.add(:base, "Cannot refund ticket: #{e.message}")
+    #   false
+    # end
   end
 
   def price

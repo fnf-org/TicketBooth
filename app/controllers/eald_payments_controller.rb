@@ -32,7 +32,7 @@ class EaldPaymentsController < ApplicationController
     @eald_payment = EaldPayment.new(params[:eald_payment])
 
     if @eald_payment.save_and_charge!
-      EaldPaymentMailer.eald_payment_received(@eald_payment).deliver_now
+      EaldPaymentMailer.eald_payment_received(@eald_payment).deliver_later
       redirect_to complete_event_eald_payments_path(@event)
     else
       render action: 'new'

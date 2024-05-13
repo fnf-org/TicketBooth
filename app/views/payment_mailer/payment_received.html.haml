@@ -1,22 +1,4 @@
-%p
-  Hi #{@user.first_name},
-%p
-  Your payment of
-  %b= number_to_currency(@ticket_request.price)
-  - if @ticket_request.payment.try(:via_credit_card?) && extra_amount_to_charge(@ticket_request.price) > 0
-    +
-    %b= number_to_currency(extra_amount_to_charge(@ticket_request.price))
-    service charge
-  - if @ticket_request.donation && @ticket_request.donation > 0
-    +
-    %b= number_to_currency(@ticket_request.donation)
-    donation
-  for
-  %b= @ticket_request.adults
-  = 'ticket'.pluralize(@ticket_request.adults)
-  to
-  %b= @event.name
-  was received. Thank you!
+= render partial: "payments/payment", locals: { payment: @payment }
 
 - if @event.eald?
   %p

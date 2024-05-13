@@ -29,9 +29,11 @@
     - if existing
       .row
         .col-md-6.col-sm-12
-          %h5.nowrap
+          %p.lead
             We need your current password to confirm your changes
-          = f.label :current_password
+          %strong
+            = f.label :current_password
+            %br
           = f.password_field :current_password, autocomplete: "current-password"
 
 

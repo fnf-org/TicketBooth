@@ -11,6 +11,10 @@
     %p= f.password_field :password, autofocus: true, autocomplete: "new-password"
   .field
     %p= f.label :password_confirmation, "Confirm new password"
+    - if @minimum_password_length
+      %p
+        %em
+          (#{@minimum_password_length} characters minimum)
     %p= f.password_field :password_confirmation, autocomplete: "new-password"
   .actions
     = f.submit "Change my password", class: 'btn btn-primary btn-large'

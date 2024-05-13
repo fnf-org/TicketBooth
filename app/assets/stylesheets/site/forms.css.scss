@@ -37,7 +37,6 @@ form {
     width: 400px !important;
     min-width: 400px !important;
     font-size: 14pt;
-    background-color: $primary-bg-subtle !important;
   }
 
   input[type=text] {
@@ -45,11 +44,18 @@ form {
     width: 300px;
     text-align: left;
     padding-left: 10px;
+
+    &:active, &:focus {
+      background-color: $bg-focus-input;
+    }
   }
 
   input[type=email]#user_email {
     width: 100% !important;
     max-width: 30em !important;
+    &:active, &:focus {
+      background-color: $bg-focus-input;
+    }
   }
 
   input[name="event[name]"] {
@@ -65,12 +71,35 @@ form {
     text-align: right;
     width: 80px;
     min-width: 30px;
+    &:active, &:focus {
+      background-color: $bg-focus-input;
+    }
   }
 
   input[type=email], input[type=password] {
     padding: 9px !important;
     width: 300px;
     min-width: 100px;
+    &:active, &:focus {
+      background-color: $bg-focus-input;
+    }
+
   }
 }
 
+#stripe-form {
+  margin: 10px auto;
+  text-align: left;
+  max-width: 60%;
+  max-height: 500px;
+}
+
+// Hide navbar text for small screens
+@media (max-width: 700px) {
+  #stripe-form {
+    margin: 10px auto;
+    text-align: left;
+    max-width: 100%;
+    max-height: 500px;
+  }
+}

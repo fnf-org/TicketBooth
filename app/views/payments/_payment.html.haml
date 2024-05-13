@@ -1,0 +1,38 @@
+- ticket_request = payment.ticket_request
+
+%p.lead
+  Hi #{ticket_request.user.first_name},
+
+- if payment.received?
+  %p Thanks for purchasing your tickets for #{ticket_request.event.name}!
+
+  %p Adults Tickets:
+  %strong
+    = ticket_request.adults
+
+  %p Kids Tickets:
+  %strong
+    = ticket_request.kids
+
+  %hr
+  %p Amount:
+  %strong
+    = number_to_currency(payment.dollar_cost)
+    - if ticket_request.donation > 0
+      (including #{number_to_currency(ticket_request.donation)} donation)
+
+- else
+  %p.lead
+    You've indicated that you're paying via another form of payment.
+
+  %p
+    The explanation we have on file for the type of payment to be expecting
+    from you is below:
+
+  %blockquote
+    %em= ticket_request.payment.explanation
+
+  %p
+    You will receive a confirmation email when your payment of
+    %span.text-success= number_to_currency(payment.dollar_cost)
+    is received.

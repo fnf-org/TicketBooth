@@ -39,9 +39,7 @@ class TicketRequestMailer < ApplicationMailer
     # Generate an authentication token for the user
     @auth_token = ticket_request&.user&.generate_auth_token!
 
-    @payment_url = new_payment_url(ticket_request_id: @ticket_request.id,
-                                   user_id: @ticket_request.user.id,
-                                   user_token: @auth_token)
+    @payment_url = new_event_ticket_request_payment_url(@event, @ticket_request, @auth_token)
 
     if @event.eald?
       @extra_params = {}.tap do |params|
@@ -81,17 +79,11 @@ class TicketRequestMailer < ApplicationMailer
     end
 
     def ticket_request(event)
-      request_received(event.ticket_request).tap do |mail|
-        Rails.logger.info("delivering mail #{mail.inspect}")
-        Rails.logger.info("mail config: #{mail_config.inspect}")
-      end.deliver_now
+      request_received(event.ticket_request).deliver_now
     end
 
     def ticket_request_approved(event)
-      request_approved(event.ticket_request).tap do |mail|
-        Rails.logger.info("delivering mail #{mail.inspect}")
-        Rails.logger.info("mail config: #{mail_config.inspect}")
-      end.deliver_now
+      request_approved(event.ticket_request).deliver_now
     end
 
     def ticket_request_declined(_)

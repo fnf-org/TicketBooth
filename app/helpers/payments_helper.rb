@@ -5,6 +5,7 @@ module PaymentsHelper
   # full original amount is sent to the event organizer.
   STRIPE_RATE = BigDecimal('0.029', 10) # 2.9% per transaction
   STRIPE_TRANSACTION_FEE = BigDecimal('0.30', 10) # +30 cents per transaction
+
   def extra_amount_to_charge(_original_amount)
     # XXX: For now, disable passing fees on to user
     # extra = (original_amount * STRIPE_RATE + STRIPE_TRANSACTION_FEE) / (1 - STRIPE_RATE)
