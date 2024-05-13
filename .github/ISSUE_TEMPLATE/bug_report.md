@@ -38,7 +38,7 @@ If applicable, add screenshots to help explain your problem.
 Add any other context about the problem here.
 
 **Credentials**  
-<!--- Necessary information to quicky get to the unexpected behavior -->
+<!--- Necessary information to quickly get to the unexpected behavior -->
 URL: [https://stateless.deep.links.preferred](https://stateless.deep.links.preferred)  
 User: `username`  
 Pass: `password`  
