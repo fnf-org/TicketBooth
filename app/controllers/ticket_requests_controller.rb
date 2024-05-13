@@ -98,6 +98,7 @@ class TicketRequestsController < ApplicationController
     @user = @ticket_request.user
   end
 
+  # @description
   # rubocop: disable Metrics/AbcSize
   def create
     unless @event.ticket_sales_open?

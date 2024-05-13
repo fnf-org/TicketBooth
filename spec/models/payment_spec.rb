@@ -127,6 +127,7 @@ describe Payment do
       expect { payment_intent }.to(change(payment, :status).to(Payment::STATUS_IN_PROGRESS))
     end
 
+
     context 'when stripe payment exists' do
       before { payment.save_with_payment_intent }
 

@@ -4,26 +4,33 @@
 #
 # Table name: payments
 #
-#  id                :integer          not null, primary key
-#  explanation       :string(255)
-#  status            :string(1)        default("N"), not null
-#  created_at        :datetime
-#  updated_at        :datetime
-#  stripe_charge_id  :string(255)
-#  stripe_payment_id :string
-#  ticket_request_id :integer          not null
+#  id                       :integer          not null, primary key
+#  explanation              :string(255)
+#  status                   :string(1)        default("N"), not null
+#  created_at               :datetime
+#  updated_at               :datetime
+#  stripe_charge_id         :string(255)
+#  stripe_payment_id        :string
+#  stripe_payment_intent_id :integer
+#  ticket_request_id        :integer          not null
 #
 # Indexes
 #
-#  index_payments_on_stripe_payment_id  (stripe_payment_id)
+#  index_payments_on_stripe_payment_id         (stripe_payment_id)
+#  index_payments_on_stripe_payment_intent_id  (stripe_payment_intent_id) WHERE (stripe_payment_intent_id IS NOT NULL)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (stripe_payment_intent_id => stripe_payment_intents.id) ON DELETE => restrict
 #
 
 # @description Payment record from Stripe
 # @deprecated stripe_charge_id
 class Payment < ApplicationRecord
+  # Also tacking on additional Stripe fees to the total amount charged
+  # Disabled by the default.
   include PaymentsHelper
 
-  # TOOD: Change to Enum
   STATUSES = [
     STATUS_NEW         = 'N',
     STATUS_IN_PROGRESS = 'P',
@@ -32,39 +39,36 @@ class Payment < ApplicationRecord
 
   STATUS_NAMES = {
     'N' => 'New',
-    'P' => 'In Progress',
-    'R' => 'Received'
+    'P' => 'Processing',
+    'R' => 'Completed',
+    'I' => 'See Stripe Payment Intent'
   }.freeze
 
   belongs_to :ticket_request
 
-  attr_accessible :ticket_request_id, :ticket_request_attributes,
-                  :status, :stripe_payment_id, :explanation
-
-  accepts_nested_attributes_for :ticket_request,
-                                reject_if: :modifying_forbidden_attributes?
+  has_one :stripe_payment_intent, required: false, dependent: :restrict_with_error
 
   validates :ticket_request, uniqueness: { message: 'ticket request has already been paid' }
   validates :status, presence: true, inclusion: { in: STATUSES }
 
-  attr_accessor :payment_intent
+  after_create :create_stripe_payment_intent
+
+  def stripe_payment_id
+    stripe_charge_id || stripe_payment_intent&.intent_id
+  end
 
   # Create new Payment
   # Create Stripe PaymentIntent
   # Set status Payment
   def save_with_payment_intent
-    # only save 1 payment intent
-    unless valid?
-      errors.add :base, 'Invalid Payment'
-      return false
-    end
+    return false unless valid?
 
     # calculate cost from Ticket Request
     cost = calculate_cost
 
     begin
       # Create new Stripe PaymentIntent
-      self.payment_intent = create_payment_intent(cost)
+      self.payment_intent = stripe_payment_intent(cost)
       log_intent(payment_intent)
       self.stripe_payment_id = payment_intent.id
     rescue Stripe::StripeError => e
@@ -106,23 +110,6 @@ class Payment < ApplicationRecord
     (calculate_cost / 100).to_i
   end
 
-  # Stripe Payment Intent
-  # https://docs.stripe.com/api/payment_intents/object
-  def create_payment_intent(amount)
-    Stripe::PaymentIntent.create({
-                                   amount:,
-                                   currency:                  'usd',
-                                   automatic_payment_methods: { enabled: true },
-                                   description:               "#{ticket_request.event.name} Tickets",
-                                   metadata:                  {
-                                     ticket_request_id:      ticket_request.id,
-                                     ticket_request_user_id: ticket_request.user_id,
-                                     event_id:               ticket_request.event.id,
-                                     event_name:             ticket_request.event.name
-                                   }
-                                 })
-  end
-
   def payment_intent_client_secret
     payment_intent&.client_secret
   end
@@ -141,9 +128,14 @@ class Payment < ApplicationRecord
     STATUS_NAMES[status]
   end
 
-  # Manually mark that a payment was received.
-  def mark_received
-    update status: STATUS_RECEIVED
+  # @description update the payment as properly received
+  def receive!
+    self.class.transaction do
+      update status: STATUS_RECEIVED
+      self.stripe_payment_intent_id = stripe_payment_intent
+      ticket_request.complete!
+      reload
+    end
   end
 
   delegate :can_view?, to: :ticket_request
@@ -157,7 +149,11 @@ class Payment < ApplicationRecord
   end
 
   def stripe_payment?
-    stripe_payment_id.present?
+    stripe_payment_intent.present?
+  end
+
+  def payment_service
+    FnF::PaymentsService.new(ticket_request:)
   end
 
   private
@@ -168,6 +164,10 @@ class Payment < ApplicationRecord
                       "status: #{payment_intent['status'].colorize(:green)}, " \
                       "for user: #{ticket_request.user.email.colorize(:blue)}, " \
                       "amount: #{intent_amount}"
+  end
+
+  def create_stripe_payment_intent
+    self.stripe_payment_intent = payment_service.stripe_payment_request
   end
 
   def modifying_forbidden_attributes?(attributed)

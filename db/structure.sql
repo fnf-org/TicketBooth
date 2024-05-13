@@ -190,7 +190,8 @@ CREATE TABLE public.payments (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     explanation character varying(255),
-    stripe_payment_id character varying
+    stripe_payment_id character varying,
+    stripe_payment_intent_id integer
 );
 
 
@@ -318,6 +319,43 @@ CREATE SEQUENCE public.site_admins_id_seq
 --
 
 ALTER SEQUENCE public.site_admins_id_seq OWNED BY public.site_admins.id;
+
+
+--
+-- Name: stripe_payment_intents; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.stripe_payment_intents (
+    id bigint NOT NULL,
+    intent_id character varying NOT NULL,
+    status character varying NOT NULL,
+    amount integer NOT NULL,
+    description character varying,
+    customer_id character varying,
+    last_payment_error character varying,
+    payment_id integer,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: stripe_payment_intents_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.stripe_payment_intents_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: stripe_payment_intents_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.stripe_payment_intents_id_seq OWNED BY public.stripe_payment_intents.id;
 
 
 --
@@ -518,6 +556,13 @@ ALTER TABLE ONLY public.site_admins ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: stripe_payment_intents id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.stripe_payment_intents ALTER COLUMN id SET DEFAULT nextval('public.stripe_payment_intents_id_seq'::regclass);
+
+
+--
 -- Name: ticket_requests id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -611,6 +656,14 @@ ALTER TABLE ONLY public.site_admins
 
 
 --
+-- Name: stripe_payment_intents stripe_payment_intents_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.stripe_payment_intents
+    ADD CONSTRAINT stripe_payment_intents_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: ticket_requests ticket_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -656,10 +709,31 @@ CREATE INDEX index_payments_on_stripe_payment_id ON public.payments USING btree 
 
 
 --
+-- Name: index_payments_on_stripe_payment_intent_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_payments_on_stripe_payment_intent_id ON public.payments USING btree (stripe_payment_intent_id) WHERE (stripe_payment_intent_id IS NOT NULL);
+
+
+--
 -- Name: index_price_rules_on_event_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_price_rules_on_event_id ON public.price_rules USING btree (event_id);
+
+
+--
+-- Name: index_stripe_payment_intents_on_intent_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_stripe_payment_intents_on_intent_id ON public.stripe_payment_intents USING btree (intent_id);
+
+
+--
+-- Name: index_stripe_payment_intents_on_payment_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_stripe_payment_intents_on_payment_id ON public.stripe_payment_intents USING btree (payment_id);
 
 
 --
@@ -698,6 +772,22 @@ CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING b
 
 
 --
+-- Name: payments fk_rails_ea984401ae; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.payments
+    ADD CONSTRAINT fk_rails_ea984401ae FOREIGN KEY (stripe_payment_intent_id) REFERENCES public.stripe_payment_intents(id) ON DELETE RESTRICT;
+
+
+--
+-- Name: stripe_payment_intents fk_rails_fb6602c24d; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.stripe_payment_intents
+    ADD CONSTRAINT fk_rails_fb6602c24d FOREIGN KEY (payment_id) REFERENCES public.payments(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -705,6 +795,8 @@ SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
 ('20240513035005'),
+('20240513020000'),
+('20240513013550'),
 ('20240509025037'),
 ('20240423054549'),
 ('20240423054149'),

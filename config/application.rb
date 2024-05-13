@@ -34,6 +34,12 @@ Bundler.require(*Rails.groups)
 
 module TicketBooth
   class Application < Rails::Application
+    class << self
+      def setting(key)
+        Hashie::Mash.new(Rails.application.credentials[Rails.env.to_sym][key])
+      end
+    end
+
     # Application Version
     VERSION = File.read('.version').freeze
 
