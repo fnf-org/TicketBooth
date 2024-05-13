@@ -31,8 +31,9 @@ export default class CheckoutController extends Controller {
         console.log('initializePayment: eventId=' + eventId);
         console.log('initializePayment: createPaymentUrl=' + createPaymentUrl);
 
-        initialize();
+        let { paymentId } = initialize();
         checkStatus();
+        console.log("connect after initialize Stripe paymentId:", paymentId);
 
         document
             .querySelector("#payment-form")
@@ -50,7 +51,7 @@ export default class CheckoutController extends Controller {
                     },
                 })
             ;
-            let {clientSecret, paymentId} = await response.json();
+            let {clientSecret} = await response.json();
 
             console.log("initialize Stripe clientSecret:", clientSecret);
 
@@ -72,8 +73,8 @@ export default class CheckoutController extends Controller {
             e.preventDefault();
             setLoading(true);
 
-            const confirmPaymentUrl = `/events/${eventId}/ticket_requests/${ticketRequestId}/payment/${paymentId}`;
-            const confirmUrl = `${siteUrl}${confirmPaymentUrl}/confirm`;
+            const confirmPaymentUrl = `/events/${eventId}/ticket_requests/${ticketRequestId}/payments/confirm`;
+            const confirmUrl = `${siteUrl}${confirmPaymentUrl}`;
             console.log(`handleSubmit: Stripe confirmPayment, url: ${confirmUrl}`);
 
             const {error} = await stripe.confirmPayment({
