@@ -1,7 +1,7 @@
 - ticket_request = payment.ticket_request
 
 %p.lead
-  Hi #{ticket_request.user.first_name},
+  Hi #{ticket_request.user.first_name.capitalize},
 
 - if payment.received?
   %p Thanks for purchasing your tickets for #{ticket_request.event.name}!
@@ -10,6 +10,7 @@
   %strong
     = ticket_request.adults
 
+  %p
   %p Kids Tickets:
   %strong
     = ticket_request.kids

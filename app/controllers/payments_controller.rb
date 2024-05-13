@@ -35,8 +35,7 @@ class PaymentsController < ApplicationController
       respond_to do |format|
         format.json do
           render json: {
-            clientSecret: @payment.payment_intent_client_secret,
-            paymentId:    @payment.id
+            clientSecret: @payment.payment_intent_client_secret
           }
         end
       end
@@ -111,9 +110,9 @@ class PaymentsController < ApplicationController
     elsif permitted_params[:payment_intent] || permitted_params[:stripe_payment_id]
       strip_id = permitted_params[:payment_intent] || permitted_params[:stripe_payment_id]
       @payment = Payment.where(stripe_payment_id: strip_id).first
-    elsif permitted_params[:ticket_request_id].is_a?(Numeric)
+    elsif permitted_params[:ticket_request_id].present?
       @payment = Payment.where(ticket_request_id: permitted_params[:ticket_request_id]).first
-    elsif permitted_params[:id].is_a?(Numeric)
+    elsif permitted_params[:id].present?
       @payment = Payment.find(permitted_params[:id])
     else
       true
