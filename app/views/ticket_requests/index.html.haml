@@ -172,7 +172,7 @@
 
               - elsif ticket_request.payment && !ticket_request.payment.received?
                 .btn-group.pull-right
-                  = button_to confirm_event_ticket_request_payment_path(@event, ticket_request),
+                  = button_to confirm_event_ticket_request_payment_path(@event, ticket_request, ticket_request.payment),
                     method: :post,
                     class: 'btn btn-primary' do
                     Mark Payment Received
