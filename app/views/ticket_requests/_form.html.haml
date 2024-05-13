@@ -54,8 +54,8 @@
                   %li DJ Carl Cox (as himself) &lt;carl@carlcox.com&gt;
                   %li John Digweed &lt;digweed@bedrock-records.com&gt;
                   %li Kid: Taylor Swift (11yo kid, requires no supervision)
-                  %li Kid: Jonah Hill (12yo kid with bad manners)
-                  %li Kid: Channing Tatum (5-month old baby, still breast-fed)
+                  %li Kid: Jonah Hill (12yo kid with socks untied)
+                  %li Kid: Channing Tatum (5-month old baby, cute and funny)
 
                 - list_finalized = (@event.start_time - Time.current) < ::Event::GUEST_LIST_FINAL_WITHIN
                 - if list_finalized
@@ -71,7 +71,7 @@
                     %br
 
 
-            %h5 How are you contributing to the campout this year?
+            %h5 How are you contributing to the event?
             .content-fluid
               .row
                 .col-lg-6.col-xl-6.col-md-12.col-sm-12
@@ -130,7 +130,7 @@
 
                   - if signed_in? && @event.admin?(current_user) && form_action_name == :update
                     .well
-                      = f.label :special_price, 'Special Total Price ($)'
+                      = f.label :special_price, 'Total Special Price ($)'
 
                       %p.text-error
                         Editable by event admins only. Leave blank to use default price.

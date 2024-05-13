@@ -63,10 +63,11 @@ class TicketRequestsController < ApplicationController
 
     # if ticket_request is approved, but guests are not filled out
     # we could redirect to the ticket request edit path
-    if @ticket_request.approved? && !@ticket_request.all_guests_specified?
+    if !@event.admin?(current_user) && @ticket_request.approved? && !@ticket_request.all_guests_specified?
       return redirect_to "#{edit_event_ticket_request_path(@event, @ticket_request)}#guests",
                          alert: 'Please fill out your guest names and guest emails before purchasing a ticket.'
     end
+
     @payment = @ticket_request.payment
   end
 
@@ -175,7 +176,7 @@ class TicketRequestsController < ApplicationController
 
     Rails.logger.info("ticket_request_params: #{ticket_request_params.inspect}")
 
-    if guests.size != @ticket_request.total_tickets
+    if !@event.admin?(current_user) && guests.size != @ticket_request.total_tickets
       flash.now[:error] = 'Please enter each guest and kid in your party. For the kids include their ages, instead of the emails.'
       return render_flash(flash)
     end

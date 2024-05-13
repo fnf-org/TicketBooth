@@ -65,6 +65,13 @@
 
         - if @ticket_request.can_purchase?
           %tr
+            %td.text-end.small.p-2.px-4.text-nowrap= "Total Tickets Price:"
+            %td
+              %strong
+                %span{ class: ('label label-info' if @ticket_request.special_price) }
+                  = number_to_currency(@ticket_request.price, precision: 0)
+
+          %tr
             %td.text-end.small.p-2.px-4.text-nowrap= "Payment:"
             %td
               %strong
@@ -72,7 +79,7 @@
                 - if @ticket_request.refunded?
                   %span.bg-success Refunded
                 - else
-                  .bg-success
+                  .text-success
                     = link_to 'Received', event_ticket_request_payment_path(@payment, @ticket_request)
 
                   - if @event.admin?(current_user)
@@ -86,9 +93,12 @@
                   Free
               - else
                 - if @event.ticket_sales_open?
-                  = link_to 'Purchase your ticket now',
-                    new_event_ticket_request_payment_path(@event, @ticket_request),
-                    class: 'btn btn-primary m-0'
+                  - if @ticket_request.payment.present? && @ticket_request.payment.explanation.present?
+                    %span.bg-warning Paying with #{@ticket_request.payment.explanation}
+                  - else
+                    = link_to 'Purchase your ticket now',
+                      new_event_ticket_request_payment_path(@event, @ticket_request),
+                      class: 'btn btn-primary m-0'
                 - else
                   %span.bg-warning
                     Unfortunately, ticket sales are now closed. You can no longer purchase your
@@ -145,14 +155,6 @@
             %td
               %strong Cabins:
               = @ticket_request.cabins
-
-        - if @event.admin?(current_user)
-          %tr
-            %td.text-end.small.p-2.px-4.text-nowrap= "Total Tickets Price:"
-            %td
-              %strong
-                %span{ class: ('label label-info' if @ticket_request.special_price) }
-                  = number_to_currency(@ticket_request.price, precision: 0)
 
         - if @ticket_request.previous_contribution.present?
           %tr

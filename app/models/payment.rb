@@ -62,6 +62,8 @@ class Payment < ApplicationRecord
     # calculate cost from Ticket Request
     cost = calculate_cost
 
+    Rails.logger.debug { "save_with_payment_intent: cost => #{cost}}" }
+
     begin
       # Create new Stripe PaymentIntent
       self.payment_intent = create_payment_intent(cost)
@@ -115,12 +117,17 @@ class Payment < ApplicationRecord
                                    automatic_payment_methods: { enabled: true },
                                    description:               "#{ticket_request.event.name} Tickets",
                                    metadata:                  {
+                                     event_id:               ticket_request.event.id,
+                                     event_name:             ticket_request.event.name,
                                      ticket_request_id:      ticket_request.id,
                                      ticket_request_user_id: ticket_request.user_id,
-                                     event_id:               ticket_request.event.id,
-                                     event_name:             ticket_request.event.name
+                                     payment_id:             id
                                    }
                                  })
+  end
+
+  def update_payment_intent_amount(amount)
+    self.payment_intent = Stripe::PaymentIntent.update(stripe_payment_id, { amount: })
   end
 
   def payment_intent_client_secret
@@ -131,6 +138,14 @@ class Payment < ApplicationRecord
     return unless stripe_payment_id
 
     self.payment_intent = Stripe::PaymentIntent.retrieve(stripe_payment_id)
+
+    # check if we have the same cost
+    if payment_intent.amount != (amount = calculate_cost)
+      self.payment_intent = update_payment_intent_amount(amount)
+      Rails.logger.debug { "retrieve_payment_intent updated payment intent with new amount [#{amount}] => #{payment_intent}}" }
+    end
+
+    Rails.logger.debug { "retrieve_payment_intent payment => #{inspect}}" }
   end
 
   def payment_in_progress?
