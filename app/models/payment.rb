@@ -165,7 +165,9 @@ class Payment < ApplicationRecord
   def log_intent(payment_intent)
     intent_amount = '$%.2f'.colorize(:red) % (payment_intent['amount'].to_i / 100.0)
     Rails.logger.info "Payment Intent => id: #{payment_intent['id'].colorize(:yellow)}, " \
-                      "status: #{payment_intent['status'].colorize(:green)}, for user: #{ticket_request.user.email.colorize(:blue)}, amount: #{intent_amount}"
+                      "status: #{payment_intent['status'].colorize(:green)}, " \
+                      "for user: #{ticket_request.user.email.colorize(:blue)}, " \
+                      "amount: #{intent_amount}"
   end
 
   def modifying_forbidden_attributes?(attributed)
