@@ -25,9 +25,9 @@ class Payment < ApplicationRecord
 
   # TOOD: Change to Enum
   STATUSES = [
-    STATUS_NEW = 'N',
+    STATUS_NEW         = 'N',
     STATUS_IN_PROGRESS = 'P',
-    STATUS_RECEIVED = 'R'
+    STATUS_RECEIVED    = 'R'
   ].freeze
 
   STATUS_NAMES = {
@@ -65,6 +65,7 @@ class Payment < ApplicationRecord
     begin
       # Create new Stripe PaymentIntent
       self.payment_intent = create_payment_intent(cost)
+      log_intent(payment_intent)
       self.stripe_payment_id = payment_intent.id
     rescue Stripe::StripeError => e
       errors.add :base, e.message
@@ -90,13 +91,13 @@ class Payment < ApplicationRecord
       save_with_payment_intent
     end
 
-    Rails.logger.debug { "retrieve_or_save_payment_intent payment intent => #{payment_intent}}" }
+    log_intent(payment_intent)
     payment_intent
   end
 
   # Calculate ticket cost from ticket request in cents
   def calculate_cost
-    cost = ticket_request.cost
+    cost             = ticket_request.cost
     amount_to_charge = cost + extra_amount_to_charge(cost)
     (amount_to_charge * 100).to_i
   end
@@ -160,6 +161,12 @@ class Payment < ApplicationRecord
   end
 
   private
+
+  def log_intent(payment_intent)
+    intent_amount = '$%.2f'.colorize(:red) % (payment_intent['amount'].to_i / 100.0)
+    Rails.logger.info "Payment Intent => id: #{payment_intent['id'].colorize(:yellow)}, " \
+                      "status: #{payment_intent['status'].colorize(:green)}, for user: #{ticket_request.user.email.colorize(:blue)}, amount: #{intent_amount}"
+  end
 
   def modifying_forbidden_attributes?(attributed)
     # Only allow donation field to be updated

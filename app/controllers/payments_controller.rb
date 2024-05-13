@@ -55,13 +55,12 @@ class PaymentsController < ApplicationController
   # create new payment and stripe payment intent using existing payment
 
   def confirm
-    # stripe_payment_id = params.permit(:stripe_payment_id)[:stripe_payment_id]
     redirect_path, options = validate_payment_confirmation
     if redirect_path
       Rails.logger.error("#confirm() => redirect_path: #{redirect_path}")
       return redirect_to redirect_path, options || {}
     else
-      Rails.logger.info("#confirm() => marking payment as received #{@payment.inspect}")
+      Rails.logger.info("#confirm() => marking payment id #{@payment.id} as received")
     end
 
     Payment.transaction do
@@ -92,7 +91,7 @@ class PaymentsController < ApplicationController
                            status: Payment::STATUS_IN_PROGRESS)
     if @payment.save
       flash[:notice] = "We've recorded that your payment is en route"
-      redirect_to payment_path(@payment)
+      redirect_to event_ticket_request_payment_path(@event, @ticket_request, @payment)
     else
       flash[:error] = 'There was a problem recording your intent to pay'
       redirect_to :back
