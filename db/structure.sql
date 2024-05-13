@@ -704,6 +704,7 @@ CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING b
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240513035005'),
 ('20240509025037'),
 ('20240423054549'),
 ('20240423054149'),
