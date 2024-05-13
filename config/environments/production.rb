@@ -120,9 +120,7 @@ Rails.application.configure do
   }
 
   config.stripe = {
-    secret_api_key:      Rails.application.credentials.development.dig(:stripe, :secret_api_key),
-    publishable_api_key: Rails.application.credentials.development.dig(:stripe, :publishable_api_key)
-    # secret_api_key:      Rails.application.credentials.production.dig(:stripe, :secret_api_key),
-    # publishable_api_key: Rails.application.credentials.production.dig(:stripe, :publishable_api_key)
+    secret_api_key:      Rails.application.credentials.production.dig(:stripe, :secret_api_key),
+    publishable_api_key: Rails.application.credentials.production.dig(:stripe, :publishable_api_key)
   }
 end
