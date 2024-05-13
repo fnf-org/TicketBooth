@@ -236,7 +236,7 @@ class TicketRequestsController < ApplicationController
       return render_flash(flash)
     end
 
-    TicketRequestMailer.request_approved(@ticket_request).deliver_now
+    TicketRequestMailer.request_approved(@ticket_request).deliver_later
     flash.now[:notice] = 'Approval requests has been resent.'
     render_flash(flash)
   end

@@ -36,7 +36,7 @@ class PaymentsController < ApplicationController
         format.json do
           render json: {
             clientSecret: @payment.payment_intent_client_secret,
-            paymentId: @payment.id,
+            paymentId:    @payment.id
           }
         end
       end
@@ -64,18 +64,20 @@ class PaymentsController < ApplicationController
       Rails.logger.info("#confirm() => marking payment as received #{@payment.inspect}")
     end
 
-    Payment.trasaction do
+    Payment.transaction do
       @payment.mark_received
       @payment.ticket_request.mark_complete
+      @payment.reload
 
+      flash.now[:notice] = 'Payment has been received and marked as completed.'
+
+      # Deliver the email asynchronously
+      PaymentMailer.payment_received(@payment).deliver_later
     rescue StandardError => e
       Rails.logger.error("#confirm() => error marking payment as received: #{e.message}")
-      flash.error[:now] = "ERROR: #{e.message}"
-      return render_flash(flash)
+      flash.now[:error] = "ERROR: #{e.message}"
+      render_flash(flash)
     end
-
-    PaymentMailer.payment_received(@payment).deliver_now
-    @payment.reload
   end
 
   def other

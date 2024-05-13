@@ -58,7 +58,6 @@ Rails.application.routes.draw do
       end
 
       resources :payments do
-
         member do
           get :confirm
           get :new

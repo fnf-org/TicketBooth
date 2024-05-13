@@ -82,14 +82,14 @@ class TicketRequestMailer < ApplicationMailer
       request_received(event.ticket_request).tap do |mail|
         Rails.logger.info("delivering mail #{mail.inspect}")
         Rails.logger.info("mail config: #{mail_config.inspect}")
-      end.deliver_now
+      end.deliver_later
     end
 
     def ticket_request_approved(event)
       request_approved(event.ticket_request).tap do |mail|
         Rails.logger.info("delivering mail #{mail.inspect}")
         Rails.logger.info("mail config: #{mail_config.inspect}")
-      end.deliver_now
+      end.deliver_later
     end
 
     def ticket_request_declined(_)
