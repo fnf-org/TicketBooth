@@ -35,7 +35,16 @@ Bundler.require(*Rails.groups)
 module TicketBooth
   class Application < Rails::Application
     # Application Version
-    VERSION = File.read('.version').freeze
+    VERSION  = File.read('.version').freeze
+
+    # Read the latest revision
+    REVISION = if File.exist?('REVISION')
+                 File.read('REVISION').strip
+               elsif Dir.exist?('.git')
+                 `git rev-parse --short HEAD`.strip
+               else
+                 VERSION
+               end
 
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
@@ -76,6 +85,6 @@ module TicketBooth
     config.active_job.queue_adapter = ActiveJob::QueueAdapters::AsyncAdapter.new \
       min_threads: 1,
       max_threads: 3,
-      idletime: 30.seconds
+      idletime:    30.seconds
   end
 end

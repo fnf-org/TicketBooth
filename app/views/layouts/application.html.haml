@@ -48,12 +48,11 @@
             Crafted with ♡ in San Francisco &mdash; &copy; CFAEA 2010-#{Date.current.strftime('%Y')}
             All rights reserved.
             %br
-            App Version #{TicketBooth::Application::VERSION},
-            Rails
-            = Rails.version
-            , Ruby
-            = RUBY_VERSION
-            , In
-            = Rails.env
-            mode
+            App Version #{TicketBooth::Application::VERSION}
+            | Revision
+            %a{href: "https://github.com/fnf-org/TicketBooth/commit/#{TicketBooth::Application::REVISION}", target: "_blank" }
+              = TicketBooth::Application::REVISION
+            | Rails #{Rails.version}
+            | Ruby #{RUBY_VERSION}
+            | #{Rails.env.to_s.capitalize} Env
 
