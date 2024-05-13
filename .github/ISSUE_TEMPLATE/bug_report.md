@@ -37,6 +37,12 @@ If applicable, add screenshots to help explain your problem.
 **Additional context**  
 Add any other context about the problem here.
 
+**Credentials**  
+<!--- Necessary information to quickly get to the unexpected behavior -->
+URL: [https://stateless.deep.links.preferred](https://stateless.deep.links.preferred)  
+User: `username`  
+Pass: `password`  
+
 <!--- Add any relevant version info that can help with triaging_ -->
 **Version info**  
 App Version: `1.0.1`  
