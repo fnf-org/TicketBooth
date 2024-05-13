@@ -12,6 +12,8 @@ require 'capistrano/bundler'
 require 'capistrano/rails/assets'
 
 require 'capistrano/scm/git'
+require 'capistrano/slackify'
+
 install_plugin Capistrano::SCM::Git
 
 # Loads custom tasks from capistrano/tasks if you have any defined.

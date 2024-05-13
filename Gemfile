@@ -113,6 +113,7 @@ group :development, :deploy do
   gem 'capistrano-rails'
   gem 'capistrano-rake', require: false
   gem 'capistrano-rbenv'
+  gem 'capistrano-slackify', '~> 2.10', require: false
   gem 'ed25519'
 end
 
