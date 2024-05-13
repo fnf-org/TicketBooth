@@ -4,14 +4,14 @@ require 'rails_helper'
 
 describe PaymentsController, type: :controller do
   let(:event) { create(:event, max_adult_tickets_per_request: 1) }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :confirmed) }
   let(:ticket_request) { create(:ticket_request, event:, user:, kids: 0) }
   let(:payment) { create(:payment, status: Payment::STATUS_IN_PROGRESS, stripe_payment_id: 'pi_3PF4524ofUrW5ZY40NeGThOz', ticket_request:) }
 
   before { sign_in user if user }
 
   describe 'POST #confirm' do
-    subject { post :confirm, params: { id: payment.id, event_id: ticket_request.event.id, ticket_request_id: ticket_request.id } }
+    subject { post :confirm, params: { event_id: ticket_request.event.id, ticket_request_id: ticket_request.id, id: payment.id } }
 
     context 'when payment status in progress' do
       it { is_expected.to have_http_status(:ok) }

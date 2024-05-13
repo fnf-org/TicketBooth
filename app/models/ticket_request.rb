@@ -51,7 +51,7 @@ class TicketRequest < ApplicationRecord
 
   STATUS_NAMES = {
     'P' => 'Pending',
-    'A' => 'Waiting for Payment',
+    'A' => 'Approved, Waiting for Payment',
     'D' => 'Declined',
     'C' => 'Completed',
     'R' => 'Refunded'
@@ -158,8 +158,7 @@ class TicketRequest < ApplicationRecord
     status == STATUS_COMPLETED
   end
 
-  def mark_complete
-    Rails.logger.debug { "ticket request marking completed: #{id}" }
+  def complete!
     update status: STATUS_COMPLETED
   end
 
@@ -201,17 +200,6 @@ class TicketRequest < ApplicationRecord
 
     errors.add(:base, 'Cannot refund a ticket that has not been purchased')
     false
-
-    # XXX need to build refund. Put into Payment model
-    # begin
-    #   TicketRequest.transaction do
-    #     Stripe::Charge.retrieve(payment.stripe_charge_id).refund
-    #     return update(status: STATUS_REFUNDED)
-    #   end
-    # rescue Stripe::StripeError => e
-    #   errors.add(:base, "Cannot refund ticket: #{e.message}")
-    #   false
-    # end
   end
 
   def price
@@ -253,11 +241,15 @@ class TicketRequest < ApplicationRecord
   end
 
   def all_guests_specified?
-    guests_specified >= guest_count
+    guests_specified == guest_count
   end
 
   def country_name
     ISO3166::Country[country_code]
+  end
+
+  def to_s
+    "#{self.class.name}\#<id: #{id}, status: #{status_name}, total_tickets: #{total_tickets}, cost: #{'$%.2f' % cost}, user: #{user.email}>"
   end
 
   private

@@ -6,20 +6,28 @@ class PaymentsController < ApplicationController
   before_action :set_event
   before_action :set_ticket_request
   before_action :set_payment
-  before_action :validate_payment, except: [:confirm]
+  before_action :validate_payment
 
   def show
     Rails.logger.debug { "#show() => @ticket_request = #{@ticket_request&.inspect} params: #{params}" }
     self
   end
 
+  # @description
+  #   Rendered whenever a +TicketRequest+ is ready to be paid for (i.e. has been approved).
+  #   This renders the new.html.haml view, and initializes Stimulus +checkout_controller.js+
+  #   which uses StripeJS API to render the credit card collection form. In order to render
+  #   the form, the StripeJS calls via Ajax the POST #create action on this controller, to
+  #   initialize the +PaymentIntent+ object, and return the +clientSecret+ to the front-end.
+  #   After the user enters their card number, and clicks Submit, Stripe API will handle the
+  #   credit card errors. Once the payment goes through, however, StripeJS will redirect the
+  #   user to the GET #confirm action, which must update the payment as 'paid'
+  #
   def new
     Rails.logger.debug { "#new() => @ticket_request = #{@ticket_request&.inspect}" }
     initialize_payment
   end
 
-  # Creates new Payment
-  # Create Payment Intent and save PaymentIntentId in Payment
   def create
     Rails.logger.debug { "#create() => @ticket_request = #{@ticket_request&.inspect} params: #{params}" }
 
@@ -120,7 +128,7 @@ class PaymentsController < ApplicationController
     end
   end
 
-  # initialize payment and save stripe payment intent
+  # @description Initialize the @payment and save the PaymentIntent by calling StripeAPI
   def save_payment_intent
     initialize_payment
     return redirect_to root_path unless @payment.present? && @payment.can_view?(current_user)
@@ -130,6 +138,7 @@ class PaymentsController < ApplicationController
     end
   end
 
+  # @description Either fetches from the database @payment instance or builds one in memory
   def initialize_payment
     @stripe_publishable_api_key ||= Rails.configuration.stripe[:publishable_api_key]
 

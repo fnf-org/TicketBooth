@@ -255,14 +255,24 @@ describe TicketRequest do
   end
 
   describe '#approve' do
-    subject { create(:ticket_request, special_price: price, status: TicketRequest::STATUS_PENDING) }
+    subject(:ticket_request) { create(:ticket_request, special_price: price, status: TicketRequest::STATUS_PENDING) }
 
     before { subject.approve }
 
     context 'when the ticket request has a price of zero dollars' do
       let(:price) { 0 }
+      let(:to_string) do
+        StringIO.new.tap do |io|
+          io.print 'TicketRequest#'
+          io.print "<id: #{ticket_request.id}, "
+          io.print "status: Completed, total_tickets: #{ticket_request.total_tickets}, "
+          io.print "cost: $0.00, user: #{ticket_request.user.email}>"
+        end.string
+      end
 
       it { is_expected.to be_completed }
+
+      its(:to_s) { is_expected.to eq to_string }
     end
 
     context 'when the ticket request has a price greater than zero dollars' do
