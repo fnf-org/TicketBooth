@@ -194,6 +194,11 @@ class TicketRequestsController < ApplicationController
       return render_flash(flash)
     end
 
+    if @ticket_request.payment_received?
+      flash.now[:error] = 'Can not delete request when payment has been received.'
+      return render_flash(flash)
+    end
+
     ticket_request_id = @ticket_request.id
     @ticket_request.destroy if @ticket_request&.persisted?
 
