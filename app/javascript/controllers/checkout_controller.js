@@ -31,9 +31,8 @@ export default class CheckoutController extends Controller {
         console.log('initializePayment: eventId=' + eventId);
         console.log('initializePayment: createPaymentUrl=' + createPaymentUrl);
 
-        let { paymentId } = initialize();
+        initialize();
         checkStatus();
-        console.log("connect after initialize Stripe paymentId:", paymentId);
 
         document
             .querySelector("#payment-form")
