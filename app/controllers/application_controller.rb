@@ -91,7 +91,7 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    permitted_attributes = %i[email password password_confirmation first last redirect_to]
+    permitted_attributes = %i[email password password_confirmation current_password first last redirect_to]
     devise_parameter_sanitizer.permit(:sign_up) { |user| user.permit(*permitted_attributes) }
     devise_parameter_sanitizer.permit(:account_update) { |user| user.permit(*permitted_attributes) }
   end
