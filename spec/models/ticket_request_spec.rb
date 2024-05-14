@@ -406,7 +406,6 @@ describe TicketRequest do
     end
 
     describe 'guests_array' do
-
       it 'builds a guests array from a string' do
         expect(ticket_request.guests_array).to be_a(Array)
       end
@@ -419,7 +418,6 @@ describe TicketRequest do
         ticket_request.guests << ''
         expect(ticket_request.guests_array.size).to eq(2)
       end
-
     end
   end
 end

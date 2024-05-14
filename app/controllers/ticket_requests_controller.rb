@@ -45,7 +45,7 @@ class TicketRequestsController < ApplicationController
     raise ArgumentError('Tempfile is nil') if temp_csv.nil? || temp_csv.path.nil?
 
     CSV.open(temp_csv.path, 'wb') do |csv|
-      csv << (%w[name email]
+      csv << (%w[name email])
       TicketRequest.where(event_id: @event).find_each do |ticket_request|
         csv << ticket_request.guests_array
       end
