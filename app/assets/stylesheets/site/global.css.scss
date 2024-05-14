@@ -6,12 +6,12 @@
 @import "fonts.css.scss";
 
 body {
-  @include titillium-web-regular;
+  @include dosis-regular;
   font-size: 12pt;
 }
 
 h1, h2, h3, h4, h5 {
-  @include oswald-regular;
+  @include oswald-thin;
 }
 
 h1 { font-size: 50pt; }
