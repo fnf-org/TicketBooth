@@ -262,6 +262,11 @@ class TicketRequest < ApplicationRecord
     ISO3166::Country[country_code]
   end
 
+  # generate a guest list with user and each guest
+  def guests_array
+    Array(guests).map { |guest| guest&.strip }.select(&:present?).compact
+  end
+
   private
 
   def set_defaults
@@ -278,6 +283,6 @@ class TicketRequest < ApplicationRecord
 
     # Remove empty guests
     # Note that guests are serialized as an array field.
-    self.guests = Array(guests).map { |guest| guest&.strip }.select(&:present?).compact
+    self.guests = guests_array
   end
 end
