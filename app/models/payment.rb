@@ -47,7 +47,7 @@ class Payment < ApplicationRecord
   validates :ticket_request, uniqueness: { message: 'ticket request has already been paid' }
   validates :status, presence: true, inclusion: { in: STATUSES }
 
-  attr_accessor :payment_intent
+  attr_accessor :payment_intent, :refund
 
   # Create new Payment
   # Create Stripe PaymentIntent
@@ -146,6 +146,19 @@ class Payment < ApplicationRecord
     end
 
     Rails.logger.debug { "retrieve_payment_intent payment => #{inspect}}" }
+  end
+
+  # reasons 'request_by_customer', 'duplicate'
+  def refund_payment(reason: 'request_by_customer')
+    return unless stripe_payment_id && status == STATUS_RECEIVED
+
+    self.refund = Stripe::Refund.create({payment_intent: stripe_payment_id,
+                                         reason:,
+                                         metadata:       {event_id:               ticket_request.event.id,
+                                                          event_name:             ticket_request.event.name,
+                                                          ticket_request_id:      ticket_request.id,
+                                                          ticket_request_user_id: ticket_request.user_id}})
+    # check status
   end
 
   def payment_in_progress?
