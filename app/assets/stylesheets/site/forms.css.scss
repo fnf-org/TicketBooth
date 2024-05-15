@@ -34,9 +34,8 @@ form {
   }
 
   input[type=text]#event_name {
-    width: 400px !important;
-    min-width: 400px !important;
-    font-size: 14pt;
+    font-size: 18pt;
+    font-weight: 500;
   }
 
   input[type=text] {
@@ -59,7 +58,7 @@ form {
   }
 
   input[name="event[name]"] {
-    width: 500px !important;
+    width: 300px;
   }
 
   input[type=submit] {

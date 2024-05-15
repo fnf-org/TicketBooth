@@ -1,7 +1,7 @@
 = render partial: 'shared/nav_event', locals: { event: @event, active_tab: { ticket_requests: 'active' } }
 
 .card
-  .card-header.bg-body-secondary
+  .card-header.bg-primary-subtle
     .btn-group.mx-4
       = link_to download_event_ticket_requests_path(@event), class: 'btn btn-warning ' do
         %i.icon-th-list
@@ -12,65 +12,65 @@
       %thead.border-1.border-dark-subtle
         %tr
           %th.text-nowrap.bg-dark-subtle.text-left Ticket Status
-          %th.bg-dark-subtle.text-right Requests
-          %th.bg-dark-subtle.text-right
+          %th.bg-dark-subtle.text-end Requests
+          %th.bg-dark-subtle.text-end
             Tickets
           - if @event.kid_ticket_price
-            %th.bg-dark-subtle.text-right Kids
+            %th.bg-dark-subtle.text-end Kids
           - if @event.cabin_price
-            %th.bg-dark-subtle.text-right Cabins
-          %th.bg-dark-subtle.text-right Earn
+            %th.bg-dark-subtle.text-end Cabins
+          %th.bg-dark-subtle.text-end Earn
       %tbody
         %tr
           %td
             %span.text-nowrap Paid
-          %td.text-right
+          %td.text-end
             %span= @stats[:completed][:requests]
-          %td.text-right
+          %td.text-end
             %span= @stats[:completed][:adults]
           - if @event.kid_ticket_price
-            %td.text-right
+            %td.text-end
               %span= @stats[:completed][:kids]
           - if @event.cabin_price
-            %td.text-right
+            %td.text-end
               %span= @stats[:completed][:cabins]
-          %td.text-right
+          %td.text-end
             %span
               = number_to_currency(@stats[:completed][:raised], precision: 0)
         %tr.warning
           %td.text-nowrap
             Pending Approval
-          %td.text-right= @stats[:pending][:requests]
-          %td.text-right= @stats[:pending][:adults]
+          %td.text-end= @stats[:pending][:requests]
+          %td.text-end= @stats[:pending][:adults]
           - if @event.kid_ticket_price
-            %td.text-right= @stats[:pending][:kids]
+            %td.text-end= @stats[:pending][:kids]
           - if @event.cabin_price
-            %td.text-right= @stats[:pending][:cabins]
-          %td.text-right
+            %td.text-end= @stats[:pending][:cabins]
+          %td.text-end
             %span.muted
               = number_to_currency(@stats[:pending][:raised], precision: 0)
         %tr.success
           %td.text-nowrap
             Awaiting Payment
-          %td.text-right= @stats[:awaiting_payment][:requests]
-          %td.text-right= @stats[:awaiting_payment][:adults]
+          %td.text-end= @stats[:awaiting_payment][:requests]
+          %td.text-end= @stats[:awaiting_payment][:adults]
           - if @event.kid_ticket_price
-            %td.text-right= @stats[:awaiting_payment][:kids]
+            %td.text-end= @stats[:awaiting_payment][:kids]
           - if @event.cabin_price
-            %td.text-right= @stats[:awaiting_payment][:cabins]
-          %td.text-right
+            %td.text-end= @stats[:awaiting_payment][:cabins]
+          %td.text-end
             %span.muted
               = number_to_currency(@stats[:awaiting_payment][:raised], precision: 0)
         %tr.muted.border-1.border-dark-subtle
-          %td.bg-dark-subtle.text-right
+          %td.bg-dark-subtle.text-end
             Total
-          %td.bg-dark-subtle.text-right= @stats[:total][:requests]
-          %td.bg-dark-subtle.text-right= @stats[:total][:adults]
+          %td.bg-dark-subtle.text-end= @stats[:total][:requests]
+          %td.bg-dark-subtle.text-end= @stats[:total][:adults]
           - if @event.kid_ticket_price
-            %td.bg-dark-subtle.text-right= @stats[:total][:kids]
+            %td.bg-dark-subtle.text-end= @stats[:total][:kids]
           - if @event.cabin_price
-            %td.bg-dark-subtle.text-right= @stats[:total][:cabins]
-          %td.bg-dark-subtle.text-right= number_to_currency(@stats[:total][:raised], precision: 0)
+            %td.bg-dark-subtle.text-end= @stats[:total][:cabins]
+          %td.bg-dark-subtle.text-end= number_to_currency(@stats[:total][:raised], precision: 0)
 
     .vertical-20
     %hr
@@ -80,30 +80,30 @@
       %thead.border-1.border-dark-subtle
         %tr
           %th.bg-dark-subtle Name
-          %th.bg-dark-subtle Role
+          %th.bg-dark-subtle.optional Role
           %th.bg-dark-subtle
-          %th.bg-dark-subtle.text-right Tickets
+          %th.bg-dark-subtle.text-end Tickets
           - if @event.kid_ticket_price
-            %th.bg-dark-subtle Kids
+            %th.bg-dark-subtle.text-end Kids
           - if @event.cabin_price
-            %th.bg-dark-subtle Cabins
+            %th.bg-dark-subtle.text-end Cabins
           - if @event.eald?
-            %th.bg-dark-subtle EA/LD
-          %th.bg-dark-subtle.text-right Price
-          %th.bg-dark-subtle.text-center Date Requested
-          %th.bg-dark-subtle.text-right Status
+            %th.bg-dark-subtle.text-end EA/LD
+          %th.bg-dark-subtle.text-end Price
+          %th.bg-dark-subtle.text-end.optional Date Requested
+          %th.bg-dark-subtle.text-end Status
           %th.bg-dark-subtle.text-center Payment
       %tbody
         - @ticket_requests.each do |ticket_request|
           %tr{ class: class_for_table_row(ticket_request) }
-            %td
+            %td.align-content-center
               = link_to event_ticket_request_path(@event, ticket_request) do
                 = ticket_request.user.name
-            %td.muted
+            %td.muted.align-content-center.optional
               = TicketRequest::ROLES[ticket_request.role]
               - if ticket_request.role_explanation.present?
                 %i.icon-comment.hover-tooltip{ title: ticket_request.role_explanation }
-            %td
+            %td.align-content-center
               - if ticket_request.admin_notes.present?
                 %i.icon-asterisk.hover-tooltip{ title: 'Ticket Coordinator Notes: ' + ticket_request.admin_notes }
               - if ticket_request.car_camping
@@ -116,38 +116,38 @@
               - if ticket_request.notes.present?
                 %i.icon-comment.hover-tooltip{ title: 'Additional requests or comments: ' + ticket_request.notes }
 
-            %td.text-right= ticket_request.adults
+            %td.align-content-center.text-end= ticket_request.adults
             - if @event.kid_ticket_price
-              %td.text-right= ticket_request.kids
+              %td.align-content-center.text-end= ticket_request.kids
             - if @event.eald?
-              %td.text-right
+              %td.align-content-center.text-end
                 #{ticket_request.early_arrival_passes} / #{ticket_request.late_departure_passes}
                 - if eald_requested?(ticket_request)
                   - if eald_paid?(ticket_request)
                     %i.text-success.icon-ok-sign.hover-tooltip{ title: 'All requested EA/LD passes have been purchased' }
                   - else
                     %i.text-warning.icon-question-sign.hover-tooltip{ title: 'Not all requested EA/LD passes have been purchased' }
-            %td.text-right
+            %td.align-content-center.text-end
               %span{ class: ('label label-info' if ticket_request.special_price) }
                 = number_to_currency(ticket_request.price, precision: 0)
-            %td.text-right
-              = ticket_request.created_at.localtime.to_formatted_s(:month_day)
-            %td
-              %span{ class: text_class_for_status(ticket_request) }
+            %td.align-content-center.text-end.optional
+              = ticket_request.created_at.to_date
+            %td.align-content-center.text-end
+              %span.p-1.rounded.small.text-nowrap{ class: text_class_for_status(ticket_request) }
                 = text_for_status ticket_request
                 - if ticket_request.payment && !ticket_request.payment.received?
                   %i.icon-comment.hover-tooltip{ title: ticket_request.payment.explanation }
-            %td
+            %td.align-content-center
               - if @event.tickets_require_approval && ticket_request.pending?
                 .btn-group.pull-right
                   = button_to approve_event_ticket_request_path(@event, ticket_request),
                     method: :post,
-                    class: 'btn btn-primary' do
+                    class: 'btn btn-primary btn-sm' do
                     Approve
                     %i.icon-ok
                   = button_to decline_event_ticket_request_path(@event, ticket_request),
                     method: :post,
-                    class: 'btn btn-danger',
+                    class: 'btn btn-danger btn-sm',
                     data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s request?" } do
                     Decline
                     %i.icon-remove
@@ -156,7 +156,7 @@
                   - if ticket_request.declined?
                     = button_to revert_to_pending_event_ticket_request_path(@event, ticket_request),
                       method: :post,
-                      class: 'btn btn-danger btn-sm ' do
+                      class: 'btn btn-danger btn-sm' do
                       %span.hover-tooltip{ title: 'Reset status of request to Pending', data: { placement: 'left' } }
                         Revert
                   - elsif !ticket_request.completed?
@@ -172,7 +172,7 @@
                     = button_to manual_confirmation_event_ticket_request_payments_path(@event, ticket_request),
                       method: :post,
                       class: 'btn btn-primary btn-sm ' do
-                      Mark Payment Received
+                      Mark as Received
                       %i.icon-ok
 
               - elsif ticket_request.payment && ticket_request.awaiting_payment? && !ticket_request.payment_received?
@@ -180,5 +180,5 @@
                   = button_to manual_confirmation_event_ticket_request_payments_path(@event, ticket_request),
                     method: :post,
                     class: 'btn btn-primary btn-sm ' do
-                    Mark Payment Received
+                    Mark as Received
                     %i.icon-ok

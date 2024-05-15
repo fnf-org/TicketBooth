@@ -7,7 +7,6 @@
 
 body {
   @include dosis-regular;
-  font-size: 12pt;
 }
 
 h1, h2, h3, h4, h5 {
@@ -51,6 +50,12 @@ legend {
 
 label.strong {
   font-weight: 800;
+}
+
+.event-row {
+  .card {
+    margin-top: -2px;
+  }
 }
 
 

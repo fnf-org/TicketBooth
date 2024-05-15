@@ -1,7 +1,7 @@
 = render partial: 'shared/nav_event', locals: { event: @event, active_tab: { guest_list: 'active' } }
 
 .card
-  .card-header.bg-dark-subtle
+  .card-header.bg-primary-subtle
     .btn-group.mx-4
       = link_to download_guest_list_event_path(@event),
         class: 'btn btn-warning ',

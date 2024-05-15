@@ -20,17 +20,17 @@
             %td.p-1.align-content-center
               = link_to event, class: "text-nowrap btn btn-#{status_widget.css_class}" do
                 = event.name
-            %td.p-1.optional
+            %td.p-1.optional.align-content-center
               = status_widget.name
-            %td.p-1.text-end.optional
+            %td.p-1.text-end.optional.align-content-center
               = event.ticket_requests.count
-            %td.p-1.text-end
+            %td.p-1.text-end.align-content-center
               = event.ticket_requests.sum(&:guest_count)
-            %td.p-1.text-end.optional
+            %td.p-1.text-end.optional.align-content-center
               = number_to_currency(event.ticket_requests.completed.sum(&:cost))
-            %td.p-1.text-end.optional
+            %td.p-1.text-end.optional.align-content-center
               = number_to_currency(event.ticket_requests.awaiting_payment.sum(&:cost))
-            %td.fs-7.text-nowrap.small
+            %td.fs-7.text-nowrap.small.align-content-center
               = TimeHelper.for_display(event.start_time.localtime)
               %br
               = TimeHelper.for_display(event.end_time.localtime)

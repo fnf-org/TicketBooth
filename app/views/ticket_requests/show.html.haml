@@ -11,10 +11,10 @@
 
     - if @event.admin?(current_user) && @ticket_request.pending?
       %hr
-      .btn-group
+      .btn-group.p-2
         = button_to approve_event_ticket_request_path(@event, @ticket_request),
           method: :post,
-          class: 'btn btn-primary btn-mini' do
+          class: 'btn btn-primary btn-mini mx-3' do
           Approve
           %i.icon-ok
         = button_to decline_event_ticket_request_path(@event, @ticket_request),
@@ -60,7 +60,7 @@
           %td.text-end.small.p-2.px-4.text-nowrap= "Status:"
           %td
             %strong
-              %span.p-1{ class: text_class_for_status(@ticket_request) }
+              %span.p-2.rounded{ class: text_class_for_status(@ticket_request) }
                 = @ticket_request.status_name
 
         - if @ticket_request.can_purchase?
@@ -232,18 +232,17 @@
               must be purchased separately!
 
     .card-footer.bg-body-secondary.border-2
-      .btn-group.btn-group-sm
+      .btn-group
         - if @event.admin?(current_user)
-          = link_to event_ticket_requests_path(@event), class: 'btn btn-primary btn-round' do
+          = link_to event_ticket_requests_path(@event), class: 'btn btn-success btn-round btn-sm' do
             All Requests
 
         - if @event.admin?(current_user) || @ticket_request.guest_count > 0
-          = link_to edit_event_ticket_request_path(@event, @ticket_request), class: 'btn btn-primary btn-round mx-0' do
+          = link_to edit_event_ticket_request_path(@event, @ticket_request), class: 'btn btn-primary btn-round btn-sm mx-0' do
             = @event.admin?(current_user) ? 'Edit Ticket Request' : 'Edit Guests'
 
-        -# - if !@ticket_request.payment_received?
-        -#   - if @event.admin?(current_user) || @ticket_request.user == current_user
-        -#     = button_to "Delete this Ticket Request ✘ ", event_ticket_request_path(@event, @ticket_request), class: 'btn btn-warning', method: :destroy, data: { "turbo-confirm": "Are you sure?" }
+        - if signed_in? && @ticket_request.user.id == current_user&.id && !@ticket_request.payment_received?
+          = button_to " ✘ Cancel My Ticket Request", event_ticket_request_path(@event, @ticket_request), class: 'btn btn-warning', method: :delete, data: { "turbo-confirm": "Are you sure you want to delete this ticket request?" }
 
 
 

@@ -1,11 +1,11 @@
 = render partial: 'shared/nav_event_tabs', locals: { active_tab: { event_show: 'active'}, event: @event }
 
-.row
+.row.event-row
   .col-sm-12.col-md-12.col-lg-6
-    .card.border-1.my-3
+    .card.border-1
       .card-body
         = render partial: "events/event_summary"
-    .card.mt-4
+    .card
       .card-header
         %h4 Ticket Request Link
         %span.help-inline
@@ -17,8 +17,8 @@
         = link_to tickets_request_url(@event), tickets_request_url(@event), class: "button-link ticket-request-link", target: "_top"
 
 
-  .col-sm-12.col-md-6.col-lg-6.col-xl-6
-    .card.my-3
+  .col-sm-12.col-md-12.col-lg-6.col-xl-6
+    .card
       .card-body
         %h4 Event Admins
         %p

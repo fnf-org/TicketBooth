@@ -7,19 +7,12 @@
   font-size: 16pt !important;
 }
 
-// Hide navbar text for small screens
-@media (max-width: 600px) {
-  small.nowrap {
-    white-space: normal;
-  }
 
-  .main-container {
-    padding: 0;
-  }
-
-}
 // Hide navbar text for small screens
 @media (max-width: 1200px) {
+  body {
+    font-size: 16pt;
+  }
   table {
     tr {
       td.optional, th.optional {
@@ -29,8 +22,14 @@
   }
 }
 
+
 // Hide navbar text for small screens
 @media (max-width: 900px) {
+
+  body {
+    font-size: 14pt;
+  }
+
   .main-container {
     padding: 1em;
   }
@@ -63,6 +62,35 @@
       }
     }
   }
-
 }
 
+
+// Hide navbar text for small screens
+@media (max-width: 600px) {
+  body {
+    font-size: 12pt;
+
+    h1 { font-size: 30pt; }
+    h2 { font-size: 25pt; }
+    h3 { font-size: 23pt; margin: 15px auto; text-shadow: 1px 1px 2px #000; color: #999 !important; }
+    h4 { font-size: 19pt; margin: 10px auto; }
+    h5 { font-size: 16pt; margin: 5px auto; }
+
+    .container-fluid, .container {
+      margin: 0 !important;
+
+      .card {
+        margin-top: 20px;
+      }
+    }
+  }
+
+  small.nowrap {
+    white-space: normal;
+  }
+
+  .main-container {
+    padding: 0;
+  }
+
+}
