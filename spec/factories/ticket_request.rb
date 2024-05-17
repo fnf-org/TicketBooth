@@ -8,7 +8,12 @@ FactoryBot.define do
     needs_assistance { [true, false].sample }
     notes { Faker::Lorem.paragraph }
     agrees_to_terms { true }
-    guests { [Faker::Name.name, Faker::Name.name, Faker::Name.name] }
+    guests do
+      [
+        "#{Faker::Name.first_name} #{Faker::Name.last_name} <#{Faker::Internet.email}>",
+        "#{Faker::Name.first_name} #{Faker::Name.last_name} <#{Faker::Internet.email}>"
+      ]
+    end
 
     user
     event

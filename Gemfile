@@ -126,3 +126,5 @@ group :test do
   gem 'timecop'
   gem 'timeout'
 end
+
+gem 'paranoia', '~> 2.6'

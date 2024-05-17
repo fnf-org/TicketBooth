@@ -4,7 +4,7 @@
 #
 # Table name: ticket_requests
 #
-#  id                      :integer          not null, primary key
+#  id                      :bigint           not null, primary key
 #  address_line1           :string(200)
 #  address_line2           :string(200)
 #  admin_notes             :string(512)
@@ -15,6 +15,7 @@
 #  car_camping_explanation :string(200)
 #  city                    :string(50)
 #  country_code            :string(4)
+#  deleted_at              :datetime
 #  donation                :decimal(8, 2)    default(0.0)
 #  early_arrival_passes    :integer          default(0), not null
 #  guests                  :text
@@ -23,27 +24,99 @@
 #  needs_assistance        :boolean          default(FALSE), not null
 #  notes                   :string(500)
 #  previous_contribution   :string(250)
-#  role                    :string(255)      default("volunteer"), not null
+#  role                    :string           default("volunteer"), not null
 #  role_explanation        :string(200)
 #  special_price           :decimal(8, 2)
 #  state                   :string(50)
 #  status                  :string(1)        not null
 #  zip_code                :string(32)
-#  created_at              :datetime
-#  updated_at              :datetime
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
 #  event_id                :integer          not null
 #  user_id                 :integer          not null
 #
+# Indexes
+#
+#  index_ticket_requests_on_deleted_at  (deleted_at) WHERE (deleted_at IS NULL)
+#
 class TicketRequest < ApplicationRecord
+  # Class methods
+  class << self
+    # @description
+    #   This method returns a two-dimensional array. The first row is the header row,
+    #   and then for each ticket request we return the primary user with the ticket request info,
+    #   followed by one row per guest.
+    def for_csv(event)
+      table = []
+
+      event.ticket_requests.active.each do |ticket_request|
+        # Main Ticket Request User Row
+        row = []
+
+        row << ticket_request.user.first
+        row << ticket_request.user.last
+        row << ticket_request.user.email
+
+        csv_columns.each do |column|
+          row << ticket_request.attributes[column]
+        end
+
+        table << row
+
+        ticket_request.guests.each do |guest|
+          first, last, = guest.split(/\s+/)
+          email        = guest.gsub(/.*</, '').gsub(/>.*/, '')
+          table << [last, first, email]
+        end
+        Rails.logger.debug table
+      end
+
+      table
+    end
+
+    def csv_header
+      ['Last', 'First', 'Email', *csv_columns.map(&:titleize)]
+    end
+
+    def csv_columns
+      %w[
+        address_line1
+        address_line2
+        city
+        state
+        zip_code
+        country_code
+        adults
+        kids
+        special_price
+        donation
+        needs_assistance
+        status
+        notes
+        role
+        role_explanation
+        previous_contribution
+        car_camping
+        car_camping_explanation
+        admin_notes
+        early_arrival_passes
+        late_departure_passes
+      ]
+    end
+  end
+
+  # Deletions of TicketRequests are logical, not physical
+  acts_as_paranoid
+
   include ActiveModel::Validations
   include ActiveModel::Validations::Callbacks
 
   STATUSES = [
-    STATUS_PENDING = 'P',
+    STATUS_PENDING          = 'P',
     STATUS_AWAITING_PAYMENT = 'A',
-    STATUS_DECLINED = 'D',
-    STATUS_COMPLETED = 'C',
-    STATUS_REFUNDED = 'R'
+    STATUS_DECLINED         = 'D',
+    STATUS_COMPLETED        = 'C',
+    STATUS_REFUNDED         = 'R'
   ].freeze
 
   STATUS_NAMES = {
@@ -103,30 +176,30 @@ class TicketRequest < ApplicationRecord
             presence: { if: -> { event.try(:require_mailing_address) } }
 
   validates :adults, presence: true,
-                     numericality: { only_integer: true, greater_than: 0 }
+            numericality:      { only_integer: true, greater_than: 0 }
 
   validates :early_arrival_passes, presence: true,
-                                   numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+            numericality:                    { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :late_departure_passes, presence: true,
-                                    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+            numericality:                     { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :kids, allow_nil: true,
-                   numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+            numericality:     { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :cabins, allow_nil: true,
-                     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+            numericality:       { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :role, presence: true, inclusion: { in: ROLES.keys }
   validates :role_explanation, presence: { if: -> { role == ROLE_OTHER } },
-                               length: { maximum: 200 }
+            length:                      { maximum: 200 }
 
   validates :notes, length: { maximum: 500 }
 
   validates :guests, length: { maximum: 8 }
 
   validates :special_price, allow_nil: true,
-                            numericality: { greater_than_or_equal_to: 0 }
+            numericality:              { greater_than_or_equal_to: 0 }
 
   validates :donation, numericality: { greater_than_or_equal_to: 0 }
 
@@ -138,6 +211,8 @@ class TicketRequest < ApplicationRecord
   scope :approved, -> { awaiting_payment }
   scope :declined, -> { where(status: STATUS_DECLINED) }
   scope :not_declined, -> { where.not(status: STATUS_DECLINED) }
+
+  scope :active, -> { where(status: [STATUS_COMPLETED, STATUS_AWAITING_PAYMENT]) }
 
   def can_view?(user)
     self.user == user || event.admin?(user)
@@ -254,6 +329,13 @@ class TicketRequest < ApplicationRecord
     Array(guests).size
   end
 
+  def guest_list
+    [].tap do |guest_list|
+      guest_list << user.name_and_email
+      guests.each { |guest| guest_list << guest }
+    end.compact
+  end
+
   def all_guests_specified?
     guests_specified >= guest_count
   end
@@ -261,8 +343,6 @@ class TicketRequest < ApplicationRecord
   def country_name
     ISO3166::Country[country_code]
   end
-
-  private
 
   def set_defaults
     self.status = nil if status.blank?

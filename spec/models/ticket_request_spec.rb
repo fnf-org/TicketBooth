@@ -378,7 +378,7 @@ describe TicketRequest do
     let(:guests) do
       [
         'Carl Cox <carl@cox.com>',
-        'John Digweed <digweed@bedrock-records.com'
+        'John Dig Meet <digweed@bedrock-records.com'
       ]
     end
 
@@ -399,10 +399,80 @@ describe TicketRequest do
           expect(raw_guests).to be_a(String)
         end
 
-        it 'stores guests as a string that parses as YAML' do
-          expect(YAML.load(raw_guests)).to be_a(Array)
+        describe 'parsed array' do
+          subject { YAML.load(raw_guests) }
+
+          it { is_expected.to be_a(Array) }
+
+          its(:size) { is_expected.to be 3 }
         end
       end
+    end
+
+    describe '#guest_list' do
+      subject { ticket_request.guest_list }
+
+      it { is_expected.to be_a(Array) }
+
+      its(:size) { is_expected.to be(3) }
+
+      its(:first) { is_expected.to eq(ticket_request.user.name_and_email) }
+    end
+  end
+
+  describe '.for_csv' do
+    let(:event) { create(:event) }
+    let(:number_of_active_requests) { 5 }
+    let(:number_of_inactive_requests) { 2 }
+
+    let(:guest_list) { ['Konstantin Gredeskoul <kig@fnf.org>', 'Matt Levy <matt@fnf.org>'] }
+
+    before do
+      # These are completed
+      (number_of_active_requests - 2).times do |_index|
+        event.ticket_requests.create!(user: create(:user), agrees_to_terms: true, status: TicketRequest::STATUS_COMPLETED, guests: guest_list)
+      end
+
+      # These are still waiting on the payment
+      (number_of_active_requests - 3).times do
+        event.ticket_requests.create!(user: create(:user), agrees_to_terms: true, status: TicketRequest::STATUS_AWAITING_PAYMENT, guests: guest_list)
+      end
+
+      # These should not be included in the CSV, as they have not been approved
+      number_of_inactive_requests.times do
+        event.ticket_requests.create!(user: create(:user), agrees_to_terms: true, status: TicketRequest::STATUS_PENDING, guests: guest_list)
+      end
+    end
+
+    describe 'event with active requests' do
+      subject { described_class.for_csv(event) }
+
+      it 'has the right number of total ticket requests' do
+        expect(event.ticket_requests.size).to eq(number_of_active_requests + number_of_inactive_requests)
+      end
+
+      it 'has the right number of active ticket requests' do
+        expect(event.ticket_requests.active.size).to eq(number_of_active_requests)
+      end
+
+      it 'each request should have two guests' do
+        event.ticket_requests.each do |tr|
+          expect(tr.guests.size).to eq(2)
+        end
+      end
+
+      it { is_expected.to be_a(Array) }
+
+      it { is_expected.not_to eq [] }
+
+      # number of active requests with two guests each
+      its(:size) { is_expected.to eq(number_of_active_requests * 3) }
+    end
+
+    describe '.csv_columns' do
+      subject { described_class.csv_header }
+
+      it { is_expected.to start_with %w[Last First Email] }
     end
   end
 end

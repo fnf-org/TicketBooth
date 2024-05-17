@@ -4,11 +4,11 @@
 #
 # Table name: payments
 #
-#  id                :integer          not null, primary key
-#  explanation       :string(255)
+#  id                :bigint           not null, primary key
+#  explanation       :string
 #  status            :string(1)        default("N"), not null
-#  created_at        :datetime
-#  updated_at        :datetime
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
 #  stripe_charge_id  :string(255)
 #  stripe_payment_id :string
 #  ticket_request_id :integer          not null

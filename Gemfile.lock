@@ -261,6 +261,8 @@ GEM
       racc (~> 1.4)
     orm_adapter (0.5.0)
     parallel (1.24.0)
+    paranoia (2.6.3)
+      activerecord (>= 5.1, < 7.2)
     parser (3.3.1.0)
       ast (~> 2.4.1)
       racc
@@ -504,6 +506,7 @@ DEPENDENCIES
   mini_magick
   mini_racer
   newrelic_rpm
+  paranoia (~> 2.6)
   pg
   propshaft
   protected_attributes_continued
