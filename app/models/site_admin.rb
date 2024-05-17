@@ -4,9 +4,9 @@
 #
 # Table name: site_admins
 #
-#  id         :integer          not null, primary key
-#  created_at :datetime
-#  updated_at :datetime
+#  id         :bigint           not null, primary key
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #  user_id    :integer          not null
 #
 class SiteAdmin < ApplicationRecord

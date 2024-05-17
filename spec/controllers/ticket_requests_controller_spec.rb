@@ -6,7 +6,6 @@ require 'rails_helper'
 describe TicketRequestsController, type: :controller do
   let(:user) { create(:user) }
   let(:event) { create(:event) }
-
   let(:viewer) { nil }
 
   before { sign_in viewer if viewer }
@@ -247,6 +246,79 @@ describe TicketRequestsController, type: :controller do
 
           it { is_expected.to eql(created_user) }
         end
+      end
+    end
+  end
+
+  describe 'DELETE #destroy' do
+    let(:ticket_request) { create(:ticket_request, event:, user:) }
+    let(:ticket_request_id) { ticket_request.id }
+    let(:ticket_request_from_db) { TicketRequest.where(id: ticket_request_id).first }
+
+    describe 'before destroy' do
+      subject { ticket_request_from_db }
+
+      it { is_expected.to eql(ticket_request) }
+    end
+
+    describe 'after DELETE #destroy' do
+      subject { delete_request_proc[ticket_request] }
+
+      let(:delete_request_proc) do
+        lambda do |ticket_request|
+          delete :destroy, params: { event_id: ticket_request.event.to_param,
+                                     id:       ticket_request.to_param }
+        end
+      end
+
+      context 'attempt to delete when not allowed' do
+        context 'when viewer not signed in' do
+          it 'has no logged in user' do
+            expect(controller.current_user).to be_nil
+          end
+
+          it { succeeds }
+        end
+
+        context 'when viewer is not a ticket request owner' do
+          let(:viewer) { create(:user) }
+
+          it 'logged in user is not the same user as the ticket_request owner' do
+            expect(controller.current_user).not_to be_nil
+            expect(controller.current_user).to eql(viewer)
+            expect(controller.current_user).not_to eql(ticket_request.user)
+          end
+
+          it { is_expected.to have_http_status(:redirect) }
+        end
+      end
+
+      shared_examples_for 'successful deletion of the ticket request' do
+        before { sign_in(viewer) }
+
+        subject { delete_request_proc[ticket_request] }
+
+        it { is_expected.to have_http_status(:ok) }
+
+        it 'should no longer have the TicketRequest'
+      end
+
+      context 'when viewer is the event admin' do
+        let(:viewer) { create(:event_admin, event:).user }
+
+        it_behaves_like 'successful deletion of the ticket request'
+      end
+
+      context 'when viewer is a site admin' do
+        let(:viewer) { create(:user, :site_admin) }
+
+        it_behaves_like 'successful deletion of the ticket request'
+      end
+
+      context 'when viewer is ticket request owner' do
+        let(:viewer) { ticket_request.user }
+
+        it_behaves_like 'successful deletion of the ticket request'
       end
     end
   end

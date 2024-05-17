@@ -40,22 +40,22 @@ class TicketRequestsController < ApplicationController
   end
 
   def download
-    temp_csv = Tempfile.new('csv')
+    csv_file = Tempfile.new('csv')
 
-    raise ArgumentError('Tempfile is nil') if temp_csv.nil? || temp_csv.path.nil?
-
-    CSV.open(temp_csv.path, 'wb') do |csv|
-      csv << (%w[name email] + TicketRequest.columns.map(&:name))
-      TicketRequest.where(event_id: @event).find_each do |ticket_request|
-        csv << ([ticket_request.user.name, ticket_request.user.email] +
-          ticket_request.attributes.values)
+    CSV.open(csv_file.path, 'w',
+             write_headers: true,
+             headers: TicketRequest.csv_header) do |csv|
+      TicketRequest.for_csv(@event).each do |row|
+        csv << row
       end
     end
 
-    temp_csv.close
-    send_file(temp_csv.path,
-              filename: "#{@event.name} Ticket Requests.csv",
+    send_file(csv_file.path,
+              filename: "#{@event.to_param}-ticket-requests.csv",
               type:     'text/csv')
+  rescue StandardError => e
+    flash.now[:error] = "Error creating CSV file: #{e.message}"
+    render_flash(flash)
   end
 
   def show
@@ -189,7 +189,10 @@ class TicketRequestsController < ApplicationController
   end
 
   def destroy
+    Rails.logger.error("destroy# params: #{permitted_params}".colorize(:yellow))
+
     unless @event.admin?(current_user) || current_user == @ticket_request.user
+      Rails.logger.error("ATTEMPT TO DELETE TICKET REQUEST #{@ticket_request} by #{current_user}".colorize(:red))
       flash.now[:error] = 'You do not have sufficient privileges to delete this request.'
       return render_flash(flash)
     end
