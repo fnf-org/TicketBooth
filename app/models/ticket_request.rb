@@ -67,8 +67,9 @@ class TicketRequest < ApplicationRecord
         ticket_request.guests.each do |guest|
           age_string   = guest.include?(',') ? guest.gsub(/.*,/, '').strip : ''
           first, last, = guest.split(/\s+/)
-          email        = guest.gsub(/.*</, '').gsub(/>.*/, '')
-          kids_age     = age_string.empty? ? '' : Integer(age_string)
+          email        = guest.include?('<') ? guest.gsub(/.*</, '').gsub(/>.*/, '') : ''
+          kids_age     = age_string.empty? ? '' : kids_age(age_string)
+
           table << ["#{first} #{last}", email, 'Yes', kids_age]
         end
         Rails.logger.debug table
@@ -105,6 +106,14 @@ class TicketRequest < ApplicationRecord
         early_arrival_passes
         late_departure_passes
       ]
+    end
+
+    private
+
+    def kids_age(string)
+      Integer(string)
+    rescue
+      ''
     end
   end
 

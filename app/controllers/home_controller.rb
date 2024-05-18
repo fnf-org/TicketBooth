@@ -24,7 +24,7 @@ class HomeController < ApplicationController
 
       # Otherwise, redirect to the ticket request page for this event
       return redirect_to new_event_ticket_request_path(event_id: most_recent_event.to_param)
-    elsif current_user.site_admin? || current_user.event_admin?
+    elsif signed_in? && current_user && (current_user.site_admin? || current_user.event_admin?)
 
       # redirect event admins to the events listing
       return redirect_to events_path
