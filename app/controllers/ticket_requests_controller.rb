@@ -9,7 +9,7 @@ class TicketRequestsController < ApplicationController
 
   before_action :set_event
 
-  before_action :require_event_admin, except: %i[new create show edit update]
+  before_action :require_event_admin, except: %i[new create show edit update destroy]
   before_action :set_ticket_request, except: %i[new create index download]
 
   def index
@@ -198,12 +198,11 @@ class TicketRequestsController < ApplicationController
     end
 
     if @ticket_request.payment_received?
-      flash.now[:error] = 'Can not delete request when payment has been received.'
+      flash.now[:error] = 'Can not delete request when payment has been received. It must be refunded instead.'
       return render_flash(flash)
     end
 
-    ticket_request_id = @ticket_request.id
-    @ticket_request.destroy if @ticket_request&.persisted?
+    @ticket_request.destroy! if @ticket_request&.persisted?
 
     redirect_to new_event_ticket_request_path(@event), notice: "Ticket Request ID #{ticket_request_id} was deleted."
   end

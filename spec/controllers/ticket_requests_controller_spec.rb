@@ -253,54 +253,55 @@ describe TicketRequestsController, type: :controller do
   describe 'DELETE #destroy' do
     let(:ticket_request) { create(:ticket_request, event:, user:) }
     let(:ticket_request_id) { ticket_request.id }
-    let(:ticket_request_from_db) { TicketRequest.where(id: ticket_request_id).first }
 
-    describe 'before destroy' do
-      subject { ticket_request_from_db }
+    subject { delete_request_proc[ticket_request] }
 
-      it { is_expected.to eql(ticket_request) }
+    let(:delete_request_proc) do
+      lambda do |ticket_request|
+        delete :destroy, params: { event_id: ticket_request.event.to_param,
+                                   id:       ticket_request.to_param }
+      end
     end
 
-    describe 'after DELETE #destroy' do
-      subject { delete_request_proc[ticket_request] }
-
-      let(:delete_request_proc) do
-        lambda do |ticket_request|
-          delete :destroy, params: { event_id: ticket_request.event.to_param,
-                                     id:       ticket_request.to_param }
+    context 'attempt to delete when not allowed' do
+      context 'when viewer not signed in' do
+        it 'has no logged in user' do
+          expect(controller.current_user).to be_nil
         end
+
+        it { succeeds }
       end
 
-      context 'attempt to delete when not allowed' do
-        context 'when viewer not signed in' do
-          it 'has no logged in user' do
-            expect(controller.current_user).to be_nil
-          end
+      context 'when viewer is not a ticket request owner' do
+        let(:viewer) { create(:user) }
 
-          it { succeeds }
+        it 'logged in user is not the same user as the ticket_request owner' do
+          expect(controller.current_user).not_to be_nil
+          expect(controller.current_user).to eql(viewer)
+          expect(controller.current_user).not_to eql(ticket_request.user)
         end
 
-        context 'when viewer is not a ticket request owner' do
-          let(:viewer) { create(:user) }
-
-          it 'logged in user is not the same user as the ticket_request owner' do
-            expect(controller.current_user).not_to be_nil
-            expect(controller.current_user).to eql(viewer)
-            expect(controller.current_user).not_to eql(ticket_request.user)
-          end
-
-          it { is_expected.to have_http_status(:redirect) }
-        end
+        it { is_expected.to have_http_status(:ok) }
       end
+    end
+
+    context 'delete when either event admin, site admin, or ticket request owner' do
+      let(:ticket_request_from_db_proc) { ->(id) { TicketRequest.where(id:).first } }
 
       shared_examples_for 'successful deletion of the ticket request' do
         before { sign_in(viewer) }
 
         subject { delete_request_proc[ticket_request] }
 
-        it { is_expected.to have_http_status(:ok) }
+        it { is_expected.to redirect_to(new_event_ticket_request_path(event)) }
 
-        it 'should no longer have the TicketRequest'
+        describe 'deleted ticket request should not exist' do
+          subject { ticket_request_from_db_proc[ticket_request.id] }
+
+          before { delete_request_proc[ticket_request] }
+
+          it { is_expected.to be_nil }
+        end
       end
 
       context 'when viewer is the event admin' do
