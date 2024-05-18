@@ -121,6 +121,6 @@ prod:           node_modules gems ## Build production assets and start in prod m
 
 
 tag:            ## Tag this main with the .version
-		@/usr/bin/env bash -c "git tag | grep -q $(TAG) && { echo 'Tag $(TAG) is already assigned.'; exit 1; }"
-		@/usr/bin/env bash -c "if [[ $(BRANCH) != main ]]; then echo 'Must be on the main branch'; else echo git tag -f $(TAG); echo git push --tags --force; fi"
+		@/usr/bin/env bash -c "git tag | grep -q '$(TAG)' && { echo 'Tag $(TAG) is already assigned.'; exit 1; } || true"
+		@/usr/bin/env bash -c "if [[ $(BRANCH) != main ]]; then echo 'Must be on the main branch'; else git tag -f '$(TAG)'; git push --tags --force; fi"
 
