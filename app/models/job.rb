@@ -4,16 +4,12 @@
 #
 # Table name: jobs
 #
-#  id          :bigint           not null, primary key
+#  id          :integer          not null, primary key
 #  description :string(512)      not null
 #  name        :string(100)      not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  event_id    :bigint           not null
-#
-# Indexes
-#
-#  index_jobs_on_event_id  (event_id)
+#  created_at  :datetime
+#  updated_at  :datetime
+#  event_id    :integer          not null
 #
 class Job < ApplicationRecord
   belongs_to :event

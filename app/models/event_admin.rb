@@ -4,11 +4,11 @@
 #
 # Table name: event_admins
 #
-#  id         :bigint           not null, primary key
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  event_id   :bigint
-#  user_id    :bigint
+#  id         :integer          not null, primary key
+#  created_at :datetime
+#  updated_at :datetime
+#  event_id   :integer
+#  user_id    :integer
 #
 # Indexes
 #

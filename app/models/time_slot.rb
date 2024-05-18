@@ -4,17 +4,13 @@
 #
 # Table name: time_slots
 #
-#  id         :bigint           not null, primary key
+#  id         :integer          not null, primary key
 #  end_time   :datetime         not null
 #  slots      :integer          not null
 #  start_time :datetime         not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  job_id     :bigint           not null
-#
-# Indexes
-#
-#  index_time_slots_on_job_id  (job_id)
+#  created_at :datetime
+#  updated_at :datetime
+#  job_id     :integer          not null
 #
 class TimeSlot < ApplicationRecord
   belongs_to :job
