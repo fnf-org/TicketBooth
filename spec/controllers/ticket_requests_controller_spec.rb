@@ -270,6 +270,10 @@ describe TicketRequestsController, type: :controller do
         end
 
         it { succeeds }
+
+        it 'should not be cancellable' do
+          expect(ticket_request.can_be_cancelled?(by_user: viewer)).to be_falsey
+        end
       end
 
       context 'when viewer is not a ticket request owner' do
@@ -281,7 +285,11 @@ describe TicketRequestsController, type: :controller do
           expect(controller.current_user).not_to eql(ticket_request.user)
         end
 
-        it { is_expected.to have_http_status(:ok) }
+        it { succeeds }
+
+        it 'should not be cancellable' do
+          expect(ticket_request.can_be_cancelled?(by_user: viewer)).to be_falsey
+        end
       end
     end
 

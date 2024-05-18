@@ -12,7 +12,6 @@
     %p= f.label :email
     %p= f.email_field :email, autofocus: true, autocomplete: "email", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email)
 
-  .actions
+  .actions.btn-group-sm
     = f.submit "Resend Confirmation Instructions", class: 'btn btn-primary btn-large'
-
-= render "devise/shared/links"
+    = render "devise/shared/links"

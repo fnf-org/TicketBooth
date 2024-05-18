@@ -53,9 +53,10 @@ class TicketRequest < ApplicationRecord
         # Main Ticket Request User Row
         row = []
 
-        row << ticket_request.user.first
-        row << ticket_request.user.last
+        row << ticket_request.user.name
         row << ticket_request.user.email
+        row << 'No'
+        row << ''
 
         csv_columns.each do |column|
           row << ticket_request.attributes[column]
@@ -64,9 +65,11 @@ class TicketRequest < ApplicationRecord
         table << row
 
         ticket_request.guests.each do |guest|
+          age_string   = guest.include?(',') ? guest.gsub(/.*,/, '').strip : ''
           first, last, = guest.split(/\s+/)
           email        = guest.gsub(/.*</, '').gsub(/>.*/, '')
-          table << [last, first, email]
+          kids_age     = age_string.empty? ? '' : Integer(age_string)
+          table << ["#{first} #{last}", email, 'Yes', kids_age]
         end
         Rails.logger.debug table
       end
@@ -75,7 +78,7 @@ class TicketRequest < ApplicationRecord
     end
 
     def csv_header
-      ['Last', 'First', 'Email', *csv_columns.map(&:titleize)]
+      ['Name', 'Email', 'Guest?', 'Kids Age', *csv_columns.map(&:titleize)]
     end
 
     def csv_columns
@@ -245,6 +248,10 @@ class TicketRequest < ApplicationRecord
   # not able to purchase tickets in this state
   def can_purchase?
     !status.in? [STATUS_DECLINED, STATUS_PENDING]
+  end
+
+  def can_be_cancelled?(by_user:)
+    user.id == by_user&.id && !payment_received?
   end
 
   def refund

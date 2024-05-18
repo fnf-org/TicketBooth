@@ -7,16 +7,37 @@
   font-size: 16pt !important;
 }
 
+.container-fluid, .container {
+  .card {
+    margin-top: 20px !important;
+  }
+
+  #ticket-request-form {
+    font-size: 1em !important;
+
+    input, label {
+      font-size: 1em;
+    }
+  }
+}
 
 // Hide navbar text for small screens
-@media (max-width: 1200px) {
+@media (min-width: 1300px) {
+  body {
+    font-size: 16pt;
+  }
+}
+
+
+// Hide navbar text for small screens
+@media (max-width: 1300px) {
   body {
     font-size: 16pt;
   }
   table {
     tr {
       td.optional, th.optional {
-        display: none;
+        display: none !important;
       }
     }
   }
@@ -25,9 +46,22 @@
 
 // Hide navbar text for small screens
 @media (max-width: 900px) {
+  table {
+    tr {
+      td.optional, th.optional {
+        display: none !important;
+      }
+    }
+  }
 
   body {
     font-size: 14pt;
+  }
+
+  .event-admins {
+    a {
+      font-size: 1.3em;
+    }
   }
 
   .main-container {
@@ -35,8 +69,9 @@
   }
 
   .lead {
-    font-size: 13pt !important;
+    font-size: 1.2em !important;
   }
+
   #brand-logo img {
     display: none !important;
   }
@@ -51,7 +86,7 @@
 
   .nav {
     a.nav-link, a.nav-link:active {
-      font-size: 13pt !important;
+      font-size: 1.1em !important;
     }
   }
 
@@ -62,25 +97,58 @@
       }
     }
   }
+
+  .container-fluid, .container {
+    .card {
+      margin-top: 20px !important;
+    }
+  }
 }
 
 
 // Hide navbar text for small screens
 @media (max-width: 600px) {
   body {
-    font-size: 12pt;
+    font-size: 15pt;
 
-    h1 { font-size: 30pt; }
-    h2 { font-size: 25pt; }
-    h3 { font-size: 23pt; margin: 15px auto; text-shadow: 1px 1px 2px #000; color: #999 !important; }
-    h4 { font-size: 19pt; margin: 10px auto; }
-    h5 { font-size: 16pt; margin: 5px auto; }
+    h1 {
+      font-size: 30pt;
+    }
+
+    h2 {
+      font-size: 25pt;
+    }
+
+    h3 {
+      font-size: 23pt;
+      margin: 15px auto;
+      text-shadow: 1px 1px 2px #000;
+      color: #999 !important;
+    }
+
+    h4 {
+      font-size: 19pt;
+      margin: 10px auto;
+    }
+
+    h5 {
+      font-size: 16pt;
+      margin: 5px auto;
+    }
 
     .container-fluid, .container {
-      margin: 0 !important;
+      margin: 5px !important;
+
+      .event-admins {
+        a {
+          font-size: 1em;
+        }
+      }
 
       .card {
-        margin-top: 20px;
+        margin-left: 4px;
+        margin-right: 4px;
+        margin-top: 20px !important;
       }
     }
   }
@@ -91,6 +159,10 @@
 
   .main-container {
     padding: 0;
+  }
+
+  .nav.navbar {
+    padding-left: 0 !important;
   }
 
 }

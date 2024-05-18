@@ -1,7 +1,7 @@
 ul.event-tabs {
-  margin-bottom: 0px !important;
-  font-size: 20pt;
-  margin-top: -10px;
+  font-size: 1.1em;
+  margin-top: -20px;
+  margin-bottom: -21px !important;
 
   a.nav-link.active {
     background-color: $primary-bg-subtle;
@@ -64,5 +64,15 @@ img.event-preview {
 
   .event-admins {
     padding-left: 0px;
+  }
+
+  ul.event-tabs {
+    font-size: 0.8em;
+    margin-top: -10px;
+    margin-bottom: -10px !important;
+
+    a.nav-link.active {
+      background-color: $primary-bg-subtle;
+    }
   }
 }

@@ -315,6 +315,37 @@ RSpec.describe Event do
 
         it { is_expected.to be false }
       end
+
+      context 'scope #sales_open' do
+        subject { described_class.sales_open.first }
+
+        before { event.save! }
+
+        let(:ticket_sale_start_time) { 1.day.ago }
+
+        it { is_expected.to eq event }
+      end
+
+      context 'scope #live_event' do
+        subject { described_class.live_events.first }
+
+        before { event.save! }
+
+        describe 'when it exists' do
+          let(:ticket_sale_start_time) { 1.day.ago }
+          let(:start_time) { 1.day.from_now }
+
+          it { is_expected.to eq event }
+        end
+
+        describe 'when it does not exist' do
+          let(:ticket_sale_start_time) { 1.day.from_now }
+          let(:start_time) { 1.month.from_now }
+          let(:end_time) { 1.month.from_now + 2.days }
+
+          it { is_expected.to be_nil }
+        end
+      end
     end
 
     context 'when the ticket sale start time is not specified' do

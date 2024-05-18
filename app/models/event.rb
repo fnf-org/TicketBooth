@@ -59,23 +59,19 @@ class Event < ApplicationRecord
   validates :name, presence: true, length: { maximum: MAX_NAME_LENGTH }
   validates :start_time, presence: true
   validates :end_time, presence: true
-  validates :adult_ticket_price, presence: true,
-            numericality:                  { greater_than_or_equal_to: 0 }
-  validates :kid_ticket_price, allow_nil: true,
-            numericality:                 { greater_than_or_equal_to: 0 }
-  validates :cabin_price, allow_nil: true,
-            numericality:            { greater_than_or_equal_to: 0 }
-  validates :max_adult_tickets_per_request, allow_nil: true,
-            numericality:                              { only_integer: true, greater_than: 0 }
-  validates :max_kid_tickets_per_request, allow_nil: true,
-            numericality:                            { only_integer: true, greater_than: 0 }
-  validates :max_cabins_per_request, allow_nil: true,
-            numericality:                       { only_integer: true, greater_than: 0 }
-  validates :max_cabin_requests, allow_nil: true,
-            numericality:                   { only_integer: true, greater_than: 0 }
+  validates :adult_ticket_price, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :kid_ticket_price, allow_nil: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :cabin_price, allow_nil: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :max_adult_tickets_per_request, allow_nil: true, numericality: { only_integer: true, greater_than: 0 }
+  validates :max_kid_tickets_per_request, allow_nil: true, numericality: { only_integer: true, greater_than: 0 }
+  validates :max_cabins_per_request, allow_nil: true, numericality: { only_integer: true, greater_than: 0 }
+  validates :max_cabin_requests, allow_nil: true, numericality: { only_integer: true, greater_than: 0 }
 
-  validate :end_time_after_start_time, :sales_end_time_after_start_time,
-           :ensure_prices_set_if_maximum_specified
+  validate :end_time_after_start_time, :sales_end_time_after_start_time, :ensure_prices_set_if_maximum_specified
+
+  scope :sales_open, -> { where('ticket_sales_start_time < :now', now: Time.current) }
+  scope :future_event, -> { where('start_time > :now', now: Time.current) }
+  scope :live_events, -> { sales_open.future_event.order('start_time ASC') }
 
   START_DATE_WITH_OFFSET = ->(delta = 0) { Date.current + 2.months + delta }
   DEFAULT_ATTRIBUTES     = {
@@ -137,15 +133,15 @@ class Event < ApplicationRecord
 
   def status
     if past_event?
-      StatusWidget.new('Past Event', 'secondary')
+      StatusWidget.new('Past Event', 'danger')
     elsif ticket_sales_open?
       StatusWidget.new('Tickets on Sale', 'primary')
     elsif ticket_requests_open?
       StatusWidget.new('Collecting Ticket Requests', 'success')
     elsif future_event?
-      StatusWidget.new('Pending Future Event', 'info')
+      StatusWidget.new('Pending Future Event', 'warning')
     else
-      StatusWidget.new('Misconfigured', 'warning')
+      StatusWidget.new('Misconfigured', 'secondary')
     end
   end
 
@@ -176,10 +172,12 @@ class Event < ApplicationRecord
   end
 
   def ticket_requests_open?
-    if ticket_requests_end_time && Time.current.after?(ticket_requests_end_time)
+    if ticket_requests_end_time.present? && Time.current.after?(ticket_requests_end_time)
       errors.add(:ticket_requests_end_time, 'Ticket requests are no longer accepted.')
     elsif Time.current.after?(end_time)
       errors.add(:end_time, 'This event has ended and ticket sales are closed.')
+    elsif ticket_sales_start_time.present? && Time.current.before?(ticket_sales_start_time)
+      errors.add(:end_time, 'Tickets are not on sale yet for this event')
     else
       return true
     end

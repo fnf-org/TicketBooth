@@ -1,29 +1,35 @@
 .card
   .card-header.bg-dark-subtle
     = content_for(:title, "#{@event.name} — Ticket Request")
-    %h4= @event.name
+    %h4
+      = @event.name
+    .h5
+      Ticket Request for #{@ticket_request.total_tickets} tickets for
+      = @ticket_request.user.name
 
   .card-body
+    - if @event.admin?(current_user) && @ticket_request.pending?
+      .card
+        .card-header.bg-warning-subtle
+          %h5 Admin Section
+        .card-body.bg-white
+          .btn-group.p-2
+            = button_to approve_event_ticket_request_path(@event, @ticket_request),
+              method: :post,
+              class: 'btn btn-primary btn-mini mx-3' do
+              ✔︎ Approve
+              %i.icon-ok
+            = button_to decline_event_ticket_request_path(@event, @ticket_request),
+              method: :post,
+              class: 'btn btn-danger btn-mini',
+              data: { confirm: "Are you sure you want to decline #{@ticket_request.user.name}'s request?" } do
+              ✘ Decline Request
+
     %p.lead
       %h5
         Ticket Status:
         = @ticket_request.status_name
 
-    - if @event.admin?(current_user) && @ticket_request.pending?
-      %hr
-      .btn-group.p-2
-        = button_to approve_event_ticket_request_path(@event, @ticket_request),
-          method: :post,
-          class: 'btn btn-primary btn-mini mx-3' do
-          Approve
-          %i.icon-ok
-        = button_to decline_event_ticket_request_path(@event, @ticket_request),
-          method: :post,
-          class: 'btn btn-danger btn-mini',
-          data: { confirm: "Are you sure you want to decline #{@ticket_request.user.name}'s request?" } do
-          Decline
-          %i.icon-remove
-            = text_for_status @ticket_request
 
     - if @ticket_request.user == current_user
       - if @ticket_request.pending?
@@ -96,9 +102,16 @@
                   - if @ticket_request.payment.present? && @ticket_request.payment.explanation.present?
                     %span.bg-warning Paying with #{@ticket_request.payment.explanation}
                   - else
-                    = link_to 'Purchase your ticket now',
-                      new_event_ticket_request_payment_path(@event, @ticket_request),
-                      class: 'btn btn-primary m-0'
+                    - if @ticket_request.all_guests_specified?
+                      = link_to 'Purchase your ticket now',
+                        new_event_ticket_request_payment_path(@event, @ticket_request),
+                        class: 'btn btn-primary m-0'
+                    - else
+                      .small
+                        You must register all of your guests before you can pay for your ticket.
+                      = link_to edit_event_ticket_request_path(@event, @ticket_request), class: 'btn btn-primary btn-round btn-sm mx-0' do
+                        = @event.admin?(current_user) ? 'Add Their Guests' : 'Add My Guests'
+
                 - else
                   %span.bg-warning
                     Unfortunately, ticket sales are now closed. You can no longer purchase your
@@ -241,7 +254,7 @@
           = link_to edit_event_ticket_request_path(@event, @ticket_request), class: 'btn btn-primary btn-round btn-sm mx-0' do
             = @event.admin?(current_user) ? 'Edit Ticket Request' : 'Edit Guests'
 
-        - if signed_in? && @ticket_request.user.id == current_user&.id && !@ticket_request.payment_received?
+        - if signed_in? && @ticket_request.can_be_cancelled?(by_user: current_user)
           = button_to " ✘ Cancel My Ticket Request", event_ticket_request_path(@event, @ticket_request), class: 'btn btn-warning', method: :delete, data: { "turbo-confirm": "Are you sure you want to delete this ticket request?" }
 
 
