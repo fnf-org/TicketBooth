@@ -64,11 +64,21 @@
                     = mail_to 'tickets@fnf.org'
                   %br
                 - else
-                  - @ticket_request.guest_count.times do |guest_id|
-                    = f.label "Guest #{guest_id + 1}"
+                  %h5 Adults
+                  - total_guests = @ticket_request.guest_count
+                  - adult_guests = @ticket_request.adults
+                  - adult_guests.times do |guest_id|
+                    = f.label "Adult Guest #{guest_id + 1}"
                     - default_value = guest_id == 0 ? @ticket_request.user.name_and_email : ''
-                    = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests)[guest_id] || default_value, style: 'width: 80%'
-                    %br
+                    = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests[0..adult_guests])[guest_id] || default_value, style: 'width: 80%'
+
+                  - if @ticket_request.kids.positive?
+                    %h5 Kids
+                    .small Please enter "Full Name, Age" eg "Justin Bieber, 12"
+                    - kid_guests = @ticket_request.kids
+                    - kid_guests.times do |guest_id|
+                      = f.label "Kid Guest #{guest_id + 1}"
+                      = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests[adult_guests..total_guests])[guest_id + adult_guests], style: 'width: 80%'
 
 
             %h5 How are you contributing to the event?

@@ -1,5 +1,10 @@
 %h4 Event Summary
 %dl.dl-horizontal
+  %dt
+    Event Status
+    %button{class: "btn btn-#{@event.status.css_class}"}
+      = @event.status.name
+
   %dt Start Time
   %dd= TimeHelper.for_display(@event.start_time.localtime)
   %dt End Time

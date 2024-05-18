@@ -13,11 +13,11 @@ h1, h2, h3, h4, h5 {
   @include oswald-thin;
 }
 
-h1 { font-size: 50pt; }
-h2 { font-size: 47pt; }
-h3 { font-size: 44pt; margin: 25px auto; text-shadow: 1px 1px 2px #000; color: #999 !important; }
-h4 { font-size: 32pt; margin: 15px auto; }
-h5 { font-size: 23pt; margin: 25px auto; }
+h1 { font-size: 4em; }
+h2 { font-size: 3em; }
+h3 { font-size: 2em; margin: 25px auto; text-shadow: 1px 1px 2px #000; color: #999 !important; }
+h4 { font-size: 1.5em; margin: 15px auto; }
+h5 { font-size: 1.3em; margin: 25px auto; }
 
 legend {
   font-family: Oswald, "Bebas Neue", sans-serif;

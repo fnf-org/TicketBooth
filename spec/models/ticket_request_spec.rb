@@ -472,7 +472,7 @@ describe TicketRequest do
     describe '.csv_columns' do
       subject { described_class.csv_header }
 
-      it { is_expected.to start_with %w[Last First Email] }
+      it { is_expected.to start_with %w[Name Email Guest?] }
     end
   end
 end

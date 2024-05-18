@@ -75,8 +75,7 @@ class TicketRequestsController < ApplicationController
     @ticket_request = TicketRequest.new(event_id: @event.id)
 
     unless @event.ticket_requests_open?
-      flash.now[:error] = @event.errors.full_messages.join('. ')
-      return render action: 'new'
+      return redirect_to root_path
     end
 
     if signed_in?
@@ -145,7 +144,8 @@ class TicketRequestsController < ApplicationController
       ).fire!
 
       if @event.tickets_require_approval || @ticket_request.free?
-        redirect_to edit_event_ticket_request_path(@event, @ticket_request), notice: 'Please add everyone in your party.'
+        redirect_to edit_event_ticket_request_path(@event, @ticket_request),
+                    notice: 'When you know your guest names, please return here and add them below.'
       else
         redirect_to new_payment_url(ticket_request_id: @ticket_request)
       end
@@ -171,18 +171,8 @@ class TicketRequestsController < ApplicationController
     ticket_request_params.delete(:guest_list)
     ticket_request_params[:guests] = guests
 
-    Rails.logger.info("guests: #{guests.inspect}")
-    Rails.logger.info("params: #{permitted_params.inspect}")
-
-    Rails.logger.info("ticket_request_params: #{ticket_request_params.inspect}")
-
-    if !@event.admin?(current_user) && guests.size != @ticket_request.total_tickets
-      flash.now[:error] = 'Please enter each guest and kid in your party. For the kids include their ages, instead of the emails.'
-      return render_flash(flash)
-    end
-
     if @ticket_request.update(ticket_request_params)
-      redirect_to event_ticket_request_path(@event, @ticket_request)
+      redirect_to event_ticket_request_path(@event, @ticket_request), notice: 'Ticket Request has been updated.'
     else
       render action: 'edit'
     end
@@ -213,13 +203,12 @@ class TicketRequestsController < ApplicationController
         user:   current_user,
         target: @ticket_request
       ).fire!
-      flash.now[:notice] = "#{@ticket_request.user.name}'s request was approved"
+      redirect_to event_ticket_requests_path(@event),
+                  notice: "#{@ticket_request.user.name}'s request was approved"
     else
-      flash.now[:error] = "Unable to approve #{@ticket_request.user.name}'s request"
+      redirect_to event_ticket_requests_path(@event),
+                  error: "Unable to approve #{@ticket_request.user.name}'s request"
     end
-
-    # render_flash(flash) && redirect_to(event_ticket_requests_path(@event))
-    redirect_to(event_ticket_requests_path(@event))
   end
 
   def decline
@@ -228,13 +217,14 @@ class TicketRequestsController < ApplicationController
         user:   current_user,
         target: @ticket_request
       ).fire!
-      flash[:notice] = "#{@ticket_request.user.name}'s request was declined"
+      redirect_to event_ticket_requests_path(@event),
+                  error: "#{@ticket_request.user.name}'s request was declined"
     else
-      flash[:error] = "Unable to decline #{@ticket_request.user.name}'s request"
+      redirect_to event_ticket_requests_path(@event),
+                  error: "Error attempting to decline #{@ticket_request.user.name}'s request: #{@ticket_request.errors.full_messages.join('; ')}"
     end
 
     # render_flash(flash) && redirect_to(event_ticket_requests_path(@event))
-    redirect_to(event_ticket_requests_path(@event))
   end
 
   def resend_approval

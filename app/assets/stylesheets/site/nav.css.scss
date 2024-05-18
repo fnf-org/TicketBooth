@@ -2,11 +2,14 @@
 nav.navbar {
   z-index: 100 !important;
   width: 100%;
+  padding-top: 4px;
+  padding-bottom: 4px;
   padding-left: 20px;
-
+  background-color: rgba(80, 133, 197, 0.58);
+  border-bottom: 2px solid rgba(6, 74, 124, 0.58);
   .navbar-toggler {
-    margin-right: 20px;
-    margin-top: 20px;
+    margin-right: 10px;
+    margin-top: 10px;
   }
 
   a.nav-brand {
@@ -29,8 +32,6 @@ nav.navbar {
     margin-left: 10px !important;
 
     li.nav-item {
-      font-size: 15pt;
-
       a.nav-link {
         border-radius: 5px;
         color: rgb(255, 255, 255) !important;
@@ -39,7 +40,6 @@ nav.navbar {
         margin-right: 10px !important;
         margin-left: 10px !important;
         background-color: rgba(69, 150, 254, 0.65) !important;
-        font-size: 15pt;
 
         &:focus,
         &:hover {

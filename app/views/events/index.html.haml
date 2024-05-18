@@ -18,9 +18,10 @@
 
           %tr
             %td.p-1.align-content-center
-              = link_to event, class: "text-nowrap btn btn-#{status_widget.css_class}" do
-                = event.name
-            %td.p-1.optional.align-content-center
+              .span.me-3
+                = link_to event, class: "text-nowrap btn btn-#{status_widget.css_class} w-100" do
+                  = event.name
+            %td.p-1.optional.align-content-center.mx-4
               = status_widget.name
             %td.p-1.text-end.optional.align-content-center
               = event.ticket_requests.count

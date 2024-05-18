@@ -10,7 +10,10 @@
 @import "bootstrap/scss/root";
 @import "bootstrap/scss/type";
 
+// Hide navbar text for small screens
 $font-size-root: 17pt;
+$font-size-sm: 15pt;
+
 $bg-focus-input: #fae06d;
 $theme-colors: map-remove($theme-colors, "info", "light", "dark");
 

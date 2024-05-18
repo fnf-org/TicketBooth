@@ -77,7 +77,7 @@
     .vertical-20
 
     %table.table
-      %thead.border-1.border-dark-subtle
+      %thead.border-1.border-dark-subtle.w-100
         %tr
           %th.bg-dark-subtle Name
           %th.bg-dark-subtle.optional Role
@@ -96,13 +96,15 @@
       %tbody
         - @ticket_requests.each do |ticket_request|
           %tr{ class: class_for_table_row(ticket_request) }
-            %td.align-content-center
+            %td.align-content-center.text-nowrap
               = link_to event_ticket_request_path(@event, ticket_request) do
                 = ticket_request.user.name
+
             %td.muted.align-content-center.optional
               = TicketRequest::ROLES[ticket_request.role]
               - if ticket_request.role_explanation.present?
                 %i.icon-comment.hover-tooltip{ title: ticket_request.role_explanation }
+
             %td.align-content-center
               - if ticket_request.admin_notes.present?
                 %i.icon-asterisk.hover-tooltip{ title: 'Ticket Coordinator Notes: ' + ticket_request.admin_notes }
@@ -117,63 +119,70 @@
                 %i.icon-comment.hover-tooltip{ title: 'Additional requests or comments: ' + ticket_request.notes }
 
             %td.align-content-center.text-end= ticket_request.adults
+
             - if @event.kid_ticket_price
               %td.align-content-center.text-end= ticket_request.kids
+
+            - if @event.cabin_price
+              %td.align-content-center.text-end= ticket_request.cabins
+
             - if @event.eald?
               %td.align-content-center.text-end
                 #{ticket_request.early_arrival_passes} / #{ticket_request.late_departure_passes}
-                - if eald_requested?(ticket_request)
-                  - if eald_paid?(ticket_request)
-                    %i.text-success.icon-ok-sign.hover-tooltip{ title: 'All requested EA/LD passes have been purchased' }
-                  - else
-                    %i.text-warning.icon-question-sign.hover-tooltip{ title: 'Not all requested EA/LD passes have been purchased' }
+                -# %br
+                -# - if eald_requested?(ticket_request)
+                -#   - if eald_paid?(ticket_request)
+                -#     ✔︎ EALD Paid
+                -#   - else
+                -#     ✘ Not All EALD Bought
+                -# - else
+                -#   ✘ Not Requested
             %td.align-content-center.text-end
               %span{ class: ('label label-info' if ticket_request.special_price) }
                 = number_to_currency(ticket_request.price, precision: 0)
-            %td.align-content-center.text-end.optional
+
+            %td.align-content-center.text-end.optional.text-nowrap.small
               = ticket_request.created_at.to_date
+
             %td.align-content-center.text-end
-              %span.p-1.rounded.small.text-nowrap{ class: text_class_for_status(ticket_request) }
+              %span.p-2.rounded.small.text-nowrap.bi-credit-card.text-black.shadow-lg{ class: text_class_for_status(ticket_request) }
                 = text_for_status ticket_request
                 - if ticket_request.payment && !ticket_request.payment.received?
                   %i.icon-comment.hover-tooltip{ title: ticket_request.payment.explanation }
+
             %td.align-content-center
               - if @event.tickets_require_approval && ticket_request.pending?
-                .btn-group.pull-right
+                .btn-group
                   = button_to approve_event_ticket_request_path(@event, ticket_request),
                     method: :post,
-                    class: 'btn btn-primary btn-sm' do
-                    Approve
-                    %i.icon-ok
+                    class: 'btn btn-primary btn-sm text-nowrap' do
+                    ✔︎ Approve
                   = button_to decline_event_ticket_request_path(@event, ticket_request),
                     method: :post,
-                    class: 'btn btn-danger btn-sm',
+                    class: 'btn btn-danger btn-sm text-nowrap',
                     data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s request?" } do
-                    Decline
-                    %i.icon-remove
+                    ✘ Decline
               - elsif !ticket_request.payment
-                .btn-group.pull-right
+                .btn-group
                   - if ticket_request.declined?
                     = button_to revert_to_pending_event_ticket_request_path(@event, ticket_request),
                       method: :post,
-                      class: 'btn btn-danger btn-sm' do
-                      %span.hover-tooltip{ title: 'Reset status of request to Pending', data: { placement: 'left' } }
-                        Revert
+                      class: 'btn btn-danger btn-sm text-nowrap' do
+                      ↩︎ Revert
                   - elsif !ticket_request.completed?
                     = button_to resend_approval_event_ticket_request_path(@event, ticket_request),
                       method: :post,
-                      class: 'btn btn-primary btn-sm ' do
-                      Resend Approval
+                      class: 'btn btn-primary btn-sm text-nowrap' do
+                      ↺ Resend Approval
                     = button_to decline_event_ticket_request_path(@event, ticket_request),
                       method: :post,
-                      class: 'btn btn-danger btn-sm ',
+                      class: 'btn btn-danger btn-sm text-nowrap',
                       data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s already approved request?" } do
-                      %span.text-error Decline
+                      ✘ Decline
                     = button_to manual_confirmation_event_ticket_request_payments_path(@event, ticket_request),
                       method: :post,
-                      class: 'btn btn-primary btn-sm ' do
-                      Mark as Received
-                      %i.icon-ok
+                      class: 'btn btn-primary btn-sm text-nowrap' do
+                      ＄ Mark as Received
 
               - elsif ticket_request.payment && ticket_request.awaiting_payment? && !ticket_request.payment_received?
                 .btn-group.pull-right

@@ -2,31 +2,46 @@
 
 class HomeController < ApplicationController
   def index
-    if signed_in?
-      most_recent_event = Event.order(id: :desc).first
+    most_recent_event = Event.live_events.first
 
-      if most_recent_event.nil? || most_recent_event.id.nil?
-        flash.now[:error] = 'No events have been defined.'
-        redirect_to :oops
+    if most_recent_event.present?
+      if signed_in? && current_user.present?
+        if current_user.site_admin? || current_user.manages_event?(most_recent_event)
+          # event admin —> let them manage the event
+          return redirect_to events_path(most_recent_event)
 
-      elsif current_user.site_admin? || current_user.event_admin?
-        redirect_to events_path
+        elsif (ticket_request = TicketRequest.where(user: current_user)
+                                             .where(event: most_recent_event).last)
 
-      elsif (ticket_request = TicketRequest.where(user: current_user)
-                                           .where(event: most_recent_event).last)
+          # This user already has a ticket request, so redirect there.s
+          return redirect_to event_ticket_request_path(event_id: most_recent_event.to_param, id: ticket_request.id)
+        elsif current_user.site_admin? || current_user.event_admin?
 
-        redirect_to event_ticket_request_path(event_id: most_recent_event.to_param, id: ticket_request.id)
-
-      else
-        redirect_to new_event_ticket_request_path(event_id: most_recent_event.to_param)
+          # redirect event admins to the events listing
+          return redirect_to events_path
+        end
       end
-    else
-      render
+
+      # Otherwise, redirect to the ticket request page for this event
+      return redirect_to new_event_ticket_request_path(event_id: most_recent_event.to_param)
+    elsif current_user.site_admin? || current_user.event_admin?
+
+      # redirect event admins to the events listing
+      return redirect_to events_path
     end
+
+    # If we don't have any live events, render oops.
+    @error_description = flash.now[:error] || no_events_message
+    render :oops
   end
 
   def oops
-    flash.now[:error] = 'No events exist at the moment, please have your Site Administrator create a public event first.'
     render
+  end
+
+  private
+
+  def no_events_message
+    'No currently live events exist that have tickets on sale.'
   end
 end

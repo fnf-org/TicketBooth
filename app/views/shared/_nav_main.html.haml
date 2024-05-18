@@ -1,12 +1,12 @@
-- button_class="btn btn-primary  m-1 text-nowrap"
-%nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+- button_class="btn btn-primary btn-lg text-nowrap"
+%nav.navbar.navbar-expand-lg.navbar-dark#main_nav
   .container-fluid
     %a.navbar-brand{ href: root_path, id: "brand-logo" }
       = image_tag "logos/nav-bar-logo.png", size: "80x80"
     %button.navbar-toggler{"aria-controls" => "navbarSupportedContent", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-bs-target" => "#navbarSupportedContent", "data-bs-toggle" => "collapse", :type => "button"}
       %span.navbar-toggler-icon
     #navbarSupportedContent.collapse.navbar-collapse
-      %ul.navbar-nav.me-auto.mb-2.mb-lg-0
+      %ul.navbar-nav.me-auto
         %li.nav-item
         - if signed_in?
           - if current_user.site_admin?
@@ -25,7 +25,7 @@
       %ul.navbar-nav
         %li.nav-item.dropdown
           - if signed_in?
-            %a#navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "data-bs-toggle" => "dropdown", :href => "#", :role => "button"} Account
+            %a#navbarDropdown.nav-link.btn.btn-lg.dropdown-toggle{"aria-expanded" => "false", "data-bs-toggle" => "dropdown", :href => "#", :role => "button"} Account
             %ul.dropdown-menu.dropdown-menu-end{"aria-labelledby" => "navbarDropdown"}
               %li
                 = button_to "Edit Profile", edit_user_registration_path, method: :get, data: { turbo: false }, class: "dropdown-item fs-6"

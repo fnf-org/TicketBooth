@@ -7,24 +7,19 @@
       .field
         %p
           %strong= f.label :email
-        %p= f.email_field :email, autofocus: true, autocomplete: "email"
+        %p= f.email_field :email, autofocus: true, autocomplete: "email", required: true
     .col-md-6.col-sm-12
       .field
         %p
           %strong= f.label :password
-        %p= f.password_field :password, autocomplete: "current-password"
+        %p= f.password_field :password, autocomplete: "current-password", required: true
 
         - if defined?(redirect_to)
           = hidden_field_tag :redirect_to, redirect_to
 
-
   .row
     .col-12
-      - if devise_mapping.rememberable?
-        .form-check
-          %p= f.check_box :remember_me, id: 'remember-me', class: 'form-check-input'
-          %p= f.label :remember_me, class: 'form-check-label', for: 'remember-me'
-
-      .actions
-        = f.submit "Log in", class: 'btn btn-primary btn-large'
+      .btn-group-sm
+        = f.submit "Log in", class: 'btn btn-primary btn-md'
+        = render partial: "devise/shared/links", layout: false, locals: { resource: devise_mapping.singular, resource_name: devise_mapping.name, redirect_to: redirect_to }
 
