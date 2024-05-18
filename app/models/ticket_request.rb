@@ -4,7 +4,7 @@
 #
 # Table name: ticket_requests
 #
-#  id                      :bigint           not null, primary key
+#  id                      :integer          not null, primary key
 #  address_line1           :string(200)
 #  address_line2           :string(200)
 #  admin_notes             :string(512)
@@ -24,14 +24,14 @@
 #  needs_assistance        :boolean          default(FALSE), not null
 #  notes                   :string(500)
 #  previous_contribution   :string(250)
-#  role                    :string           default("volunteer"), not null
+#  role                    :string(255)      default("volunteer"), not null
 #  role_explanation        :string(200)
 #  special_price           :decimal(8, 2)
 #  state                   :string(50)
 #  status                  :string(1)        not null
 #  zip_code                :string(32)
-#  created_at              :datetime         not null
-#  updated_at              :datetime         not null
+#  created_at              :datetime
+#  updated_at              :datetime
 #  event_id                :integer          not null
 #  user_id                 :integer          not null
 #
@@ -179,7 +179,8 @@ class TicketRequest < ApplicationRecord
   validates :kids, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :cabins, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :role, presence: true, inclusion: { in: ROLES.keys }
-  validates :role_explanation, presence: { if: -> { role == ROLE_OTHER } }, length: { maximum: 200 }
+  validates :role_explanation, presence: { if: -> { role == ROLE_OTHER } }, length: { maximum: 400 }
+  validates :previous_contribution, length: { maximum: 250 }
   validates :notes, length: { maximum: 500 }
   validates :guests, length: { maximum: 8 }
   validates :special_price, allow_nil: true, numericality: { greater_than_or_equal_to: 0 }
