@@ -28,6 +28,9 @@ MAKEFILE_PATH 	:= $(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_DIR 	:= $(shell ( cd .; pwd -P ) )
 BASHMATIC_HOME  := $(shell echo $(CURRENT_DIR)/dev/bashmatic)
 MAKE_ENV	:= .make.env
+VERSION		:= $(shell cat $(CURRENT_DIR)/.version | tr -d '\n')
+TAG		:= $(shell echo "v`cat .version | tr -d '\n'`" | tr -d '\n')
+BRANCH          := $(shell git branch --show)
 DEV_DB          := $(shell grep database config/database.yml | grep development | awk '{print $$2}' | sed 's/^$$/ticketing_app_development/g')
 
 help:	   	## Prints help message auto-generated from the comments.
@@ -116,4 +119,8 @@ prod:           node_modules gems ## Build production assets and start in prod m
 		RAILS_ENV=production bundle exec rake assets:precompile
 		RAILS_ENV=production bundle exec rails s
 
+
+tag:            ## Tag this main with the .version
+		@/usr/bin/env bash -c "git tag | grep -q $(TAG) && { echo 'Tag $(TAG) is already assigned.'; exit 1; }"
+		@/usr/bin/env bash -c "if [[ $(BRANCH) != main ]]; then echo 'Must be on the main branch'; else echo git tag -f $(TAG); echo git push --tags --force; fi"
 
