@@ -167,42 +167,20 @@ class TicketRequest < ApplicationRecord
   before_validation :set_defaults
 
   validates :user, presence: { unless: -> { user.try(:new_record?) } }
-
   validates :event, presence: { unless: -> { event.try(:new_record?) } }
-
   validates :status, presence: true, inclusion: { in: STATUSES }
-
-  validates :address_line1, :city, :state, :zip_code, :country_code,
-            presence: { if: -> { event.try(:require_mailing_address) } }
-
-  validates :adults, presence: true,
-            numericality:      { only_integer: true, greater_than: 0 }
-
-  validates :early_arrival_passes, presence: true,
-            numericality:                    { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :late_departure_passes, presence: true,
-            numericality:                     { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :kids, allow_nil: true,
-            numericality:     { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :cabins, allow_nil: true,
-            numericality:       { only_integer: true, greater_than_or_equal_to: 0 }
-
+  validates :address_line1, :city, :state, :zip_code, :country_code, presence: { if: -> { event.try(:require_mailing_address) } }
+  validates :adults, presence: true, numericality: { only_integer: true, greater_than: 0 }
+  validates :early_arrival_passes, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :late_departure_passes, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :kids, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :cabins, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :role, presence: true, inclusion: { in: ROLES.keys }
-  validates :role_explanation, presence: { if: -> { role == ROLE_OTHER } },
-            length:                      { maximum: 200 }
-
+  validates :role_explanation, presence: { if: -> { role == ROLE_OTHER } }, length: { maximum: 200 }
   validates :notes, length: { maximum: 500 }
-
   validates :guests, length: { maximum: 8 }
-
-  validates :special_price, allow_nil: true,
-            numericality:              { greater_than_or_equal_to: 0 }
-
+  validates :special_price, allow_nil: true, numericality: { greater_than_or_equal_to: 0 }
   validates :donation, numericality: { greater_than_or_equal_to: 0 }
-
   validates :agrees_to_terms, presence: true
 
   scope :completed, -> { where(status: STATUS_COMPLETED) }
@@ -212,6 +190,7 @@ class TicketRequest < ApplicationRecord
   scope :declined, -> { where(status: STATUS_DECLINED) }
   scope :not_declined, -> { where.not(status: STATUS_DECLINED) }
 
+  # Those TicketRequests that should be exported as a Guest List
   scope :active, -> { where(status: [STATUS_COMPLETED, STATUS_AWAITING_PAYMENT]) }
 
   def can_view?(user)
