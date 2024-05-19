@@ -169,10 +169,12 @@
 
 
                     - unless is_update
-                      .card.bg-warning-subtle.mb-3{:style => "max-width: 18rem;"}
-                        .card-body.bg-success.text-light
+                      .card.bg-warning-subtle.mb-3{:style => "max-width: 100%;"}
+                        .card-body.bg-success-subtle.text-dark.pt-1
                           %h5.card-title Please Note:
-                          %p.card-text Once you submit this ticket request form, you will be required to additionally enter each guest (including yourself and the kids).
+                          %p.card-text
+                            Once you submit this ticket request, and it's approved, you'll receive an email stating so. You can also bookmark this URL and return to it at a later date.
+                            In order to pay for the ticket(s) you are required to fill out the list of guests (if any) and kids (if any) you are bringing and/or inviting.
 
                   -# - if false @event.cabin_price
 

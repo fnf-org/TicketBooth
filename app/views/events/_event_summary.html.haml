@@ -1,41 +1,56 @@
-%h4 Event Summary
-%dl.dl-horizontal
-  %dt
-    Event Status
-    %button{class: "btn btn-#{@event.status.css_class}"}
-      = @event.status.name
-
-  %dt Start Time
-  %dd= TimeHelper.for_display(@event.start_time.localtime)
-  %dt End Time
-  %dd= TimeHelper.for_display(@event.end_time.localtime)
+%table.w-100.event-summary
+  %tr
+    %th{colspan: 2}
+      %h4 Event Summary
+  %tr
+    %td.text-start
+      Event Status
+    %td
+      %div{class: "event-status bg-#{@event.status.css_class} b-0 text-white px-2"}
+        = @event.status.name
+  %tr
+    %td.text-start Start Time
+    %td.px-2= TimeHelper.for_display(@event.start_time.localtime)
+  %tr
+    %td.text-start End Time
+    %td.px-2= TimeHelper.for_display(@event.end_time.localtime)
 
   - if @event.ticket_sales_start_time
-    %dt Tickets On Sale At
-    %dd= TimeHelper.for_display(@event.ticket_sales_start_time)
+    %tr
+      %td.text-start Tickets On Sale At
+      %td.px-2= TimeHelper.for_display(@event.ticket_sales_start_time)
 
   - if @event.ticket_sales_end_time
-    %dt Tickets Sales Stop At
-    %dd= TimeHelper.for_display(@event.ticket_sales_end_time)
+    %tr
+      %td.text-start Tickets Sales Stop At
+      %td.px-2= TimeHelper.for_display(@event.ticket_sales_end_time)
 
-  %dt Adult Ticket Price
-  %dd
-    = number_to_currency(@event.adult_ticket_price)
-    - if @event.max_adult_tickets_per_request
-      %span.muted
-        (Maximum #{@event.max_adult_tickets_per_request} adult tickets per request)
-  %dt Kid Ticket Price
-  %dd
-    - if @event.price_rules.any?
-      %ul
-        - @event.price_rules.order(:created_at).each do |price_rule|
-          %li= price_rule.rule_text
-        %li
-          Otherwise:
+  %tr
+    %td{colspan: 2}
+      %hr
+  %tr
+    %td.text-start Adult Ticket Price
+    %td.px-2
+      %span.price
+        = number_to_currency(@event.adult_ticket_price)
+      - if @event.max_adult_tickets_per_request
+        %span.muted
+          (Maximum #{@event.max_adult_tickets_per_request} tickets)
+  %tr
+    %td.text-start Kid Ticket Price
+    %td.px-2
+      - if @event.price_rules.any?
+        %ul
+          - @event.price_rules.order(:created_at).each do |price_rule|
+            %li= price_rule.rule_text
+          %li
+            Otherwise:
+            = number_to_currency(@event.kid_ticket_price)
+
+      - else
+        %span.price
           = number_to_currency(@event.kid_ticket_price)
-          \/ kid
-    - else
-      = number_to_currency(@event.kid_ticket_price)
-    - if @event.max_kid_tickets_per_request
-      %span.muted
-        (Maximum #{@event.max_kid_tickets_per_request} kid tickets per request)
+
+      - if @event.max_kid_tickets_per_request&.positive?
+        %span.muted
+          (Maximum #{@event.max_kid_tickets_per_request} kid tickets)

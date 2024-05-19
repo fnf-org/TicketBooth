@@ -1,0 +1,123 @@
+
+// Hide navbar text for small screens
+@media (min-width: 0px) and (max-width: 600px) {
+
+  body {
+    font-size: 0.9em;
+
+    td.ticket-user {
+      a {
+        font-size: 0.9em !important;
+        white-space: wrap;
+      }
+    }
+
+    td.ticket-status {
+      font-size: 0.6em;
+      white-space: wrap;
+    }
+
+    img.event-preview {
+      max-width: 80px;
+      max-height: 80px;
+    }
+
+    .event-admins {
+      padding-left: 0px;
+    }
+
+    ul.event-tabs {
+      font-size: 0.8em;
+      margin-top: -10px;
+      margin-bottom: -10px !important;
+
+      a.nav-link.active {
+        background-color: $primary-bg-subtle;
+      }
+    }
+
+    .btn {
+      font-size: 0.8em !important;
+    }
+    h1 {
+      font-size: 30pt;
+    }
+
+    h2 {
+      font-size: 25pt;
+    }
+
+    h3 {
+      font-size: 23pt;
+      margin: 15px auto;
+      text-shadow: 1px 1px 2px #000;
+      color: #999 !important;
+    }
+
+    h4 {
+      font-size: 19pt;
+      margin: 10px auto;
+    }
+
+    h5 {
+      font-size: 16pt;
+      margin: 5px auto;
+    }
+
+    .container-fluid, .container {
+      margin: 5px 0 !important;
+
+      .event-admins {
+        a {
+          font-size: 1em;
+        }
+      }
+
+      .card {
+        margin-left: 4px;
+        margin-right: 4px;
+        margin-top: 20px !important;
+      }
+
+      table.event-summary {
+        font-size: 0.7em;
+      }
+
+      .event-dates {
+        font-size: 0.6em;
+      }
+
+    }
+  }
+
+  table {
+    tr {
+      td.optional, th.optional {
+        display: none !important;
+      }
+      td.optional-small, th.optional-small {
+        display: none !important;
+      }
+      td.optional-medium, th.optional-medium  {
+        display: none !important;
+      }
+    }
+  }
+
+  small.nowrap {
+    white-space: normal;
+  }
+
+  .main-container {
+    padding: 0;
+  }
+
+  .nav.navbar {
+    padding-left: 0 !important;
+  }
+
+  #footer {
+    font-size: 0.7em;
+  }
+
+}

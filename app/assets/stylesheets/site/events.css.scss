@@ -29,6 +29,54 @@ img.event-preview {
   margin-left: 20px;
 }
 
+table.event-summary {
+  td {
+    white-space: nowrap;
+  }
+
+  td {
+    div.event-status {
+      opacity: 0.7 !important;
+      border-radius: 5px;
+      font-weight: 500;
+    }
+  }
+
+  span.price {
+    float: left;
+    font-weight: 700;
+    display: inline-block;
+    text-align: right;
+    width: 5em;
+    margin-right: 20px;
+  }
+}
+
+.event-dates {
+  font-size: 0.8em;
+}
+
+
+td.ticket-user {
+  a {
+    line-height: 0.7;
+    white-space: nowrap;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1em;
+    color: $link-color-dark;
+    padding: 0;
+  }
+}
+
+.ticket-status {
+  span {
+    display: inline-block;
+    white-space: nowrap;
+    box-shadow: 2px 2px 2px #555 !important;
+  }
+}
+
 .row > .card {
   flex-shrink: 0;
   width: 100%;
@@ -47,32 +95,11 @@ img.event-preview {
 .card.event-nav {
   .card-body {
     background-color: transparent !important;
+
     .btn-group {
       .btn {
         font-size: 12pt !important;
       }
-    }
-  }
-}
-
-// Hide navbar text for small screens
-@media (max-width: 600px) {
-  img.event-preview {
-    max-width: 80px;
-    max-height: 80px;
-  }
-
-  .event-admins {
-    padding-left: 0px;
-  }
-
-  ul.event-tabs {
-    font-size: 0.8em;
-    margin-top: -10px;
-    margin-bottom: -10px !important;
-
-    a.nav-link.active {
-      background-color: $primary-bg-subtle;
     }
   }
 }
