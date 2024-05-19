@@ -133,15 +133,15 @@ class Event < ApplicationRecord
 
   def status
     if past_event?
-      StatusWidget.new('Past Event', 'danger')
+      StatusWidget.new('Past Event', 'secondary')
     elsif ticket_sales_open?
-      StatusWidget.new('Tickets on Sale', 'primary')
+      StatusWidget.new('On Sale', 'success')
     elsif ticket_requests_open?
-      StatusWidget.new('Collecting Ticket Requests', 'success')
+      StatusWidget.new('Collecting Requests', 'primary')
     elsif future_event?
-      StatusWidget.new('Pending Future Event', 'warning')
+      StatusWidget.new('A Future Event', 'warning')
     else
-      StatusWidget.new('Misconfigured', 'secondary')
+      StatusWidget.new('Unknown', 'danger')
     end
   end
 

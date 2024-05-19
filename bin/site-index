@@ -1,14 +1,35 @@
 #!/usr/bin/env bash
 # vim: ft=bash
+export RAILS_ROOT="$(dirname "$(cd $(dirname "${BASH_SOURCE[0]:-${(%):-%x}}") || exit 1; pwd -P)")"
 
-dir=app/assets/stylesheets/site
-file=${dir}/_index.css.scss
-temp=$(mktemp -t index-css)
+dir="app/assets/stylesheets/site"
+file="_index.css.scss"
 
-/bin/ls -1 "${dir}"/[a-z]* | xargs basename | awk '{printf "%s \"%s\";\n", "@import", $1}' > "${temp}"
+index_path="${RAILS_ROOT}/${dir}"
+index_file="${index_path}/${file}"
 
-if [[ ! -f "${file}" || -n $(diff "${file}" "${temp}") ]]; then
-  cp -v "${temp}" "${file}"
-  echo -e "\e[1;32m${dir}/_index.css.scss has been updated with $(wc -l ${dir}/_index.css.scss | awk '{print $1}') imports.\e[0;0m"
+temp="$(mktemp)"
+ls -1 "${index_path}"/[a-z]* | xargs basename | awk '{printf "%s \"%s\";\n", "@import", $1}' > "${temp}"
+
+export _diff
+if [[ -f "${index_file}" ]]; then
+  _diff="$(diff "${index_file}" "${temp}")"
+else
+  _diff="$(cat "${temp}")"
+fi
+
+if [[ ! -f "${index_file}" || -n "${_diff}" ]]; then
+  cp -f "${temp}" "${index_file}"
+  printf "\e[1;33m${dir}/${file} has been updated with $(wc -l "${index_file}" | awk '{print $1}') imports.\e[0;0m\n"
+elif [[ -z "${_diff}" ]]; then
+  printf "\e[1;32m${dir}/${file} is already up to date.\e[0;0m\n"
+  exit 0
+fi
+
+if [[ -s "${index_file}" ]] ; then
+  exit 0
+ else
+   printf "\e[1;31m${file}ERROR: ${dir}/${file} could not be created!\e[0;0m\n"
+  exit 1
 fi
 

@@ -112,7 +112,7 @@ class TicketRequest < ApplicationRecord
 
     def kids_age(string)
       Integer(string)
-    rescue
+    rescue StandardError
       ''
     end
   end

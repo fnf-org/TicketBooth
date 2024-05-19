@@ -1,0 +1,78 @@
+
+// Hide navbar text for small screens
+@media (min-width: 601px) and (max-width: 900px) {
+  table {
+    tr {
+      td.optional, th.optional {
+        display: none !important;
+      }
+      td.optional-small, th.optional-small {
+        display: none !important;
+      }
+      td.optional-medium, th.optional-medium  {
+        display: none !important;
+      }
+    }
+  }
+  td.ticket-user {
+    a {
+      font-size: 0.8em !important;
+      white-space: wrap;
+    }
+  }
+
+  table.event-summary {
+    width: 85% !important;
+    font-size: 1.1em;
+  }
+
+  body {
+    font-size: 14pt;
+  }
+
+  .event-admins {
+    a {
+      font-size: 1.3em;
+    }
+  }
+
+  .main-container {
+    padding: 1em;
+  }
+
+  .lead {
+    font-size: 1.2em !important;
+  }
+
+  #brand-logo img {
+    display: none !important;
+  }
+
+  .btn, .nav-link {
+    font-size: 1em !important;
+  }
+
+  .nav-tabs {
+    padding: 4px !important;
+  }
+
+  .nav {
+    a.nav-link, a.nav-link:active {
+      font-size: 1.1em !important;
+    }
+  }
+
+  .container-fluid, .container {
+    .card {
+      margin-top: 20px !important;
+    }
+
+    td.ticket-user {
+      a {
+        font-size: 0.7em;
+        white-space: wrap;
+      }
+    }
+  }
+}
+
