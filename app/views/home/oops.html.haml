@@ -1,7 +1,8 @@
 .hero-unit
   %h1
     #{@error_description}
-  %h2
-    Please ask your administrator to do so if you'd like to party soon.
+  - if @error_description.nil?
+    %h2
+      Please ask your administrator to do so if you'd like to party soon.
 
 = render 'shared/marketing'
