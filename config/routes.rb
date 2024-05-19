@@ -90,5 +90,6 @@ Rails.application.routes.draw do
   resources :site_admins, only: %i[index new create destroy]
 
   get '/tickets/request/:event_id', to: 'ticket_requests#new', as: :tickets_request
+  get '/attend/:event_id', to: 'ticket_requests#new', as: :attend_event
 end
 # rubocop: enable Metrics/BlockLength
