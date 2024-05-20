@@ -1,0 +1,42 @@
+@import "fonts.css.scss";
+
+.popover {
+  padding: 20px !important;
+
+  h3.popover-header {
+    text-shadow: none;
+    background-color: transparent;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 10px;
+    @include dosis-popover-header;
+  }
+
+  .popover-body {
+    @include dosis-popover;
+    padding: 0;
+    font-size: 0.9em;
+  }
+}
+
+body {
+  .tooltip-box {
+    margin-left: 10px;
+    opacity: 0.9;
+    cursor: pointer;
+
+    background-color: #64d84b !important;
+    color: #fff !important;
+    padding: 5px;
+    border-radius: 5px;
+
+    &:focus, &:active, &:hover {
+      color: black !important;
+      background-color: #2cf002 !important;
+    }
+
+    &:visited {
+      background-color: #3b9627 !important;
+    }
+  }
+}

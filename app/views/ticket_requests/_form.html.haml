@@ -2,7 +2,6 @@
 - is_update = form_action_name == :update
 
 %div{"data-controller": "tickets-request"}
-
   .card
     .card-header.bg-dark-subtle
       - unless is_update && !@event.admin?(current_user)
@@ -26,7 +25,7 @@
         = turbo_frame_tag :turbo_register do
           = render partial: "devise/shared/register", layout: false, locals: { resource: User.new, resource_name: devise_mapping.name, existing: false, redirect_to: new_event_ticket_request_url(@event) }
 
-      #ticket-request-form
+      #ticket-request-form{"data-controller": "popovers"}
         - if !(signed_in? && @user)
         - else
           = form_for @ticket_request,
@@ -154,7 +153,7 @@
 
                     = f.label :kids do
                       Number of children (12 and under) you are bringing with you (not transferable to adults; babes in arms are free)
-                      = help_mark help_text_for(:kids)
+                      = tooltip_box help_text_for(:kids), title: "Bringing Kids to FnF"
 
                     = f.number_field :kids, class: 'input-mini', min: 0,
                       max: @event.max_kid_tickets_per_request,
@@ -163,7 +162,6 @@
 
                     %span.help-inline.inline-price
                     %p.help-inline-block.muted
-
 
                     - unless is_update
                       .card.bg-warning-subtle.mb-3{:style => "max-width: 100%;"}
@@ -177,7 +175,7 @@
 
                     = f.label :cabins do
                       How many cabins did you want?
-                      = help_mark help_text_for(:cabins)
+                      = tooltip_box help_text_for(:cabins)
 
                     = f.number_field :cabins, class: 'input-mini', min: 0,
                       max: @event.max_cabins_per_request,
@@ -195,7 +193,14 @@
                   = f.label :needs_assistance, class: 'checkbox' do
                     = f.check_box :needs_assistance
                     I’m requesting financial assistance with purchasing my ticket(s)
-                    = help_mark help_text_for(:needs_assistance)
+                    = tooltip_box help_text_for(:needs_assistance), title: "Financial Assistance"
+
+                .control-group
+
+                - if @event.allow_donations
+                  %br
+                  = f.label :donation, 'Your Donation'
+                  = f.number_field :donation, class: 'input-mini', min: 0, required: false
 
                 .control-group
 
@@ -203,7 +208,7 @@
                   %fieldset
                     = f.label :address_line1, class: 'required-label' do
                       Address1
-                      = help_mark help_text_for(:address)
+                      = tooltip_box help_text_for(:address)
                     = f.text_field :address_line1, required: true, placeholder: 'Street address, P.O. box, etc.', maxlength: 200
                     = f.label :address_line2 do
                       Address2
@@ -256,7 +261,7 @@
                              id: 'submit-request',
                              data: { disable_with: 'Submitting...' }
                   - if @ticket_request && @ticket_request.id
-                    = link_to event_ticket_request_path(event_id: @event.id, id: @ticket_request&.id), method: :get, class: 'btn btn-large btn-danger' do
-                      Back
+                    = link_to event_ticket_request_path(event_id: @event.id, id: @ticket_request&.id), method: :get, class: 'btn btn-large btn-secondary' do
+                      View Request
 
 

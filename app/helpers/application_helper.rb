@@ -8,12 +8,18 @@ module ApplicationHelper
     end
   end
 
-  def help_mark(help_text, options = {})
-    extra_classes = options[:class] || ''
-    content_tag :a, class: "help-popover help-inline #{extra_classes}",
-                data:      { placement: 'right', content: help_text } do
-      content_tag :i, nil, class: 'icon-question-sign'
-    end
+  def tooltip_box(content, title: nil, **options, &block)
+    css_class = 'tooltip-box ' unless block
+    css_class += options[:class] if options[:class]
+    block ||= proc { content_tag :strong, nil, class: 'bi bi-question-square' }
+
+    content_tag(:a,
+                tabindex: 0,
+                role:     'button',
+                class:    css_class,
+                title:,
+                data:     { 'bs-toggle': 'popover', 'bs-content': content, 'bs-trigger': 'focus', 'bs-placement': 'right' },
+                &block)
   end
 
   def alert_class(alert_type)
