@@ -1,3 +1,10 @@
+import "@popperjs";
+
+import * as popover from "@popperjs/core";
+
+window.popover= popover;
+
+
 // open a popup
 window.popupWindow = function(url, windowName, win, w, h) {
   const y = win.top.outerHeight / 2 + win.top.screenY - (h / 2);

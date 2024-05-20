@@ -11,25 +11,50 @@
 
         - if @event.tickets_require_approval
           .card-body.bg-success-subtle
-            %p.lead
-              Your request for
-              %strong
-                = @ticket_request.adults
-                = 'ticket'.pluralize(@ticket_request.total_tickets)
-              has been approved!
+            %table.w-100
+              %thead
+                %tr
+                  %th
+                    Your request for
+                    %strong
+                      = @ticket_request.adults
+                      = 'ticket'.pluralize(@ticket_request.total_tickets)
+                    has been approved!
 
-            %td.text-end.small.p-2.px-4.text-nowrap= "Total Ticket Price:"
-            %td
-              %strong
-                %span{ class: ('label label-info' if @ticket_request.special_price) }
-                  = number_to_currency(@ticket_request.price, precision: 0)
-              %p
+              %tbody
+                %tr
+                  %td.w-100{colspan: 2}
+                    %hr.w-100
+                %tr
+                  %td= "Total Price for Tickets:"
+                  %td.text-end
+                    %strong
+                      %span{ class: ('label label-info' if @ticket_request.special_price) }
+                        = number_to_currency(@ticket_request.price, precision: 0)
 
+                - if @ticket_request.donation&.positive?
+                  %tr
+                    %td= "Additional Donation:"
+                    %td.text-end
+                      %strong
+                        = number_to_currency(@ticket_request.donation, precision: 0)
+
+                %tbody
+                  %tr
+                    %td.w-100{colspan: 2}
+                      %hr.w-100
+
+                %tr
+                  %td= "Total Amount"
+                  %td.text-end
+                    %strong
+                      = number_to_currency(@ticket_request.cost, precision: 0)
+
+
+          .card-footer.bg-body-secondary
             %p
               Now all that's left is to pay for your tickets.
               If you are paying via credit card, please fill out the form ➜
-
-          .card-footer.bg-body-secondary
             %strong
               = link_to 'I am not paying via credit card',
                 other_event_ticket_request_payment_path(@event, @ticket_request)
@@ -46,8 +71,8 @@
         .card-header.bg-body-secondary
           %h5 Please Enter Your Payment Details
           %strong
-            Total Ticket Price:
-            = number_to_currency(@ticket_request.price, precision: 0)
+            Total Amount Due:
+            = number_to_currency(@ticket_request.cost, precision: 0)
           %p
 
         .card-body
