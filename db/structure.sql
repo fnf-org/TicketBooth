@@ -354,7 +354,8 @@ CREATE TABLE public.ticket_requests (
     early_arrival_passes integer DEFAULT 0 NOT NULL,
     late_departure_passes integer DEFAULT 0 NOT NULL,
     guests text,
-    deleted_at timestamp(6) without time zone
+    deleted_at timestamp(6) without time zone,
+    guests_kids text
 );
 
 
@@ -712,6 +713,7 @@ CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING b
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240520043030'),
 ('20240516225937'),
 ('20240513035005'),
 ('20240509025037'),

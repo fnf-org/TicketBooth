@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :ticket_request do
-    adults { event&.max_adult_tickets_per_request || 1 }
-    kids { Random.rand(2) }
+    adults { 3 }
+    kids { 1 }
     cabins { Random.rand(2) }
     needs_assistance { [true, false].sample }
     notes { Faker::Lorem.paragraph }
@@ -12,6 +12,12 @@ FactoryBot.define do
       [
         "#{Faker::Name.first_name} #{Faker::Name.last_name} <#{Faker::Internet.email}>",
         "#{Faker::Name.first_name} #{Faker::Name.last_name} <#{Faker::Internet.email}>"
+      ]
+    end
+
+    guests_kids do
+      [
+        "#{Faker::Name.first_name} #{Faker::Name.last_name}, 2",
       ]
     end
 

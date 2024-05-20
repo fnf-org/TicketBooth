@@ -199,16 +199,16 @@
               %strong
                 = @ticket_request.notes
 
-        - if @ticket_request.guest_count > 0
+        - if @ticket_request.guests_expected_count > 0
           %tr
             %td
             %td
               %hr
           %tr.align-middle
-            %td.text-end.small.p-2.px-4.text-nowrap= 'Guest'.pluralize(@ticket_request.guest_count) + ':'
+            %td.text-end.small.p-2.px-4.text-nowrap= 'Guest'.pluralize(@ticket_request.guests_expected_count) + ':'
             %td
               %em
-                - @ticket_request.guest_count.times do |guest_id|
+                - @ticket_request.guests_expected_count.times do |guest_id|
                   .text-nowrap.small
                     = Array(@ticket_request.guests)[guest_id] || 'Unspecified'
                     %br
@@ -250,7 +250,7 @@
           = link_to event_ticket_requests_path(@event), class: 'btn btn-success btn-round btn-sm' do
             All Requests
 
-        - if @event.admin?(current_user) || @ticket_request.guest_count > 0
+        - if @event.admin?(current_user) || @ticket_request.guests_expected_count > 0
           = link_to edit_event_ticket_request_path(@event, @ticket_request), class: 'btn btn-primary btn-round btn-sm mx-0' do
             = @event.admin?(current_user) ? 'Edit Ticket Request' : 'Edit Guests'
 

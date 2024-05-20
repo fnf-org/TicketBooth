@@ -42,7 +42,7 @@ class TicketRequestsController < ApplicationController
 
     CSV.open(csv_file.path, 'w',
              write_headers: true,
-             headers: TicketRequest.csv_header) do |csv|
+             headers:       TicketRequest.csv_header) do |csv|
       TicketRequest.for_csv(@event).each do |row|
         csv << row
       end
@@ -154,11 +154,11 @@ class TicketRequestsController < ApplicationController
     # Allow ticket request to edit guests and nothing else
     ticket_request_params = permitted_params[:ticket_request]
 
-    guests = (Array(ticket_request_params[:guest_list]) || [])
+    guests = (Array(ticket_request_params[:adult_guest_list]) || [])
              .flatten.map(&:presence)
              .compact
 
-    ticket_request_params.delete(:guest_list)
+    ticket_request_params.delete(:adult_guest_list)
     ticket_request_params[:guests] = guests
 
     if @ticket_request.valid? && @ticket_request.update!(ticket_request_params)
@@ -286,7 +286,8 @@ class TicketRequestsController < ApplicationController
         :agrees_to_terms,
         :early_arrival_passes,
         :late_departure_passes,
-        { guest_list: [] }
+        { adult_guest_list: [] },
+        { kid_guest_list: [] },
       ]
     )
           .to_hash

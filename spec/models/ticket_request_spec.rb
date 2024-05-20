@@ -372,8 +372,8 @@ describe TicketRequest do
     its(:total_tickets) { is_expected.to be(5) }
   end
 
-  describe '#guests' do
-    subject(:ticket_request) { create(:ticket_request, guests:) }
+  describe '#guests (adults)' do
+    subject(:ticket_request) { create(:ticket_request, guests:, adults: 3) }
 
     let(:guests) do
       [
@@ -409,8 +409,8 @@ describe TicketRequest do
       end
     end
 
-    describe '#guest_list' do
-      subject { ticket_request.guest_list }
+    describe '#adult_guest_list' do
+      subject { ticket_request.adult_guest_list }
 
       it { is_expected.to be_a(Array) }
 
@@ -424,23 +424,42 @@ describe TicketRequest do
     let(:event) { create(:event) }
     let(:number_of_active_requests) { 5 }
     let(:number_of_inactive_requests) { 2 }
-
-    let(:guest_list) { ['Konstantin Gredeskoul <kig@fnf.org>', 'Matt Levy <matt@fnf.org>'] }
+    let(:user) { create(:user) }
+    let(:adult_guest_list) { ['Konstantin Gredeskoul <kig@fnf.org>', 'Matt Levy <matt@fnf.org>'] }
+    let(:kid_guest_list) { ['Kid One, 12', 'Kig Two, 5', 'Kid Three, 12'] }
 
     before do
       # These are completed
       (number_of_active_requests - 2).times do |_index|
-        event.ticket_requests.create!(user: create(:user), agrees_to_terms: true, status: TicketRequest::STATUS_COMPLETED, guests: guest_list)
+        event.ticket_requests.create!(user:,
+                                      agrees_to_terms: true,
+                                      status: TicketRequest::STATUS_COMPLETED,
+                                      guests: adult_guest_list,
+                                      guests_kids: kid_guest_list,
+                                      adults: 3,
+                                      kids: 3)
       end
 
       # These are still waiting on the payment
       (number_of_active_requests - 3).times do
-        event.ticket_requests.create!(user: create(:user), agrees_to_terms: true, status: TicketRequest::STATUS_AWAITING_PAYMENT, guests: guest_list)
+        event.ticket_requests.create!(user: create(:user),
+                                      agrees_to_terms: true,
+                                      status: TicketRequest::STATUS_AWAITING_PAYMENT,
+                                      guests: adult_guest_list,
+                                      guests_kids: kid_guest_list,
+                                      adults: 3,
+                                      kids: 3)
       end
 
       # These should not be included in the CSV, as they have not been approved
       number_of_inactive_requests.times do
-        event.ticket_requests.create!(user: create(:user), agrees_to_terms: true, status: TicketRequest::STATUS_PENDING, guests: guest_list)
+        event.ticket_requests.create!(user: create(:user),
+                                      agrees_to_terms: true,
+                                      status: TicketRequest::STATUS_PENDING,
+                                      guests: adult_guest_list,
+                                      guests_kids: kid_guest_list,
+                                      adults: 3,
+                                      kids: 3)
       end
     end
 
@@ -455,9 +474,15 @@ describe TicketRequest do
         expect(event.ticket_requests.active.size).to eq(number_of_active_requests)
       end
 
-      it 'each request should have two guests' do
+      it 'each request should have two adult guests' do
         event.ticket_requests.each do |tr|
           expect(tr.guests.size).to eq(2)
+        end
+      end
+
+      it 'each request should have three kid guests' do
+        event.ticket_requests.each do |tr|
+          expect(tr.guests_kids.size).to eq(3)
         end
       end
 
@@ -466,13 +491,13 @@ describe TicketRequest do
       it { is_expected.not_to eq [] }
 
       # number of active requests with two guests each
-      its(:size) { is_expected.to eq(number_of_active_requests * 3) }
+      its(:size) { is_expected.to eq(number_of_active_requests * 6) }
     end
 
     describe '.csv_columns' do
       subject { described_class.csv_header }
 
-      it { is_expected.to start_with %w[Name Email Guest?] }
+      it { is_expected.to start_with ['Name', 'Email', 'Guest Type', 'Kids Age'] }
     end
   end
 end

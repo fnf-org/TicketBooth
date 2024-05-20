@@ -19,6 +19,7 @@
 #  donation                :decimal(8, 2)    default(0.0)
 #  early_arrival_passes    :integer          default(0), not null
 #  guests                  :text
+#  guests_kids             :text
 #  kids                    :integer          default(0), not null
 #  late_departure_passes   :integer          default(0), not null
 #  needs_assistance        :boolean          default(FALSE), not null
@@ -45,7 +46,7 @@ class TicketRequest < ApplicationRecord
     # @description
     #   This method returns a two-dimensional array. The first row is the header row,
     #   and then for each ticket request we return the primary user with the ticket request info,
-    #   followed by one row per guest.
+    #   followed by one row per kid.
     def for_csv(event)
       table = []
 
@@ -64,16 +65,23 @@ class TicketRequest < ApplicationRecord
 
         table << row
 
-        ticket_request.guests.each do |guest|
-          age_string   = guest.include?(',') ? guest.gsub(/.*,/, '').strip : ''
-          first, last, = guest.split(/[\s,]+/)
+        ticket_request.guests&.each do |guest|
+          next if guest.blank?
+
+          guest.include?(',') ? guest.gsub(/.*,/, '').strip : ''
+          first, last, = guest.split(/\s+/)
           email        = guest.include?('<') ? guest.gsub(/.*</, '').gsub(/>.*/, '') : ''
+          table << ["#{first} #{last}", email, 'Adult', '']
+        end
 
-          next if "#{first} #{last}" == ticket_request.user.name || email == ticket_request.user.email
+        ticket_request.guests_kids&.each do |kid|
+          next if kid.blank?
 
-          kids_age = age_string.empty? ? '' : kids_age(age_string)
+          age_string   = kid.include?(',') ? kid.gsub(/.*,/, '').strip : ''
+          first, last, = kid.split(/\s+/)
+          kids_age     = age_string.empty? ? '' : kids_age(age_string)
 
-          table << ["#{first} #{last}", email, 'Yes', kids_age]
+          table << ["#{first} #{last}", '', 'Kid', kids_age]
         end
       end
 
@@ -81,7 +89,7 @@ class TicketRequest < ApplicationRecord
     end
 
     def csv_header
-      ['Name', 'Email', 'Guest?', 'Kids Age', *csv_columns.map(&:titleize)]
+      ['Name', 'Email', 'Guest Type', 'Kids Age', *csv_columns.map(&:titleize)]
     end
 
     def csv_columns
@@ -164,6 +172,8 @@ class TicketRequest < ApplicationRecord
 
   # Serialize guest emails as an array in a text field.
   serialize :guests, coder: Psych, type: Array
+  # Serialize kids names and ages as an array in a text field.
+  serialize :guests_kids, coder: Psych, type: Array
 
   attr_accessible :user_id, :adults, :kids, :cabins, :needs_assistance,
                   :notes, :status, :special_price, :event_id,
@@ -171,7 +181,7 @@ class TicketRequest < ApplicationRecord
                   :car_camping, :car_camping_explanation, :previous_contribution,
                   :address_line1, :address_line2, :city, :state, :zip_code,
                   :country_code, :admin_notes, :agrees_to_terms,
-                  :early_arrival_passes, :late_departure_passes, :guests
+                  :early_arrival_passes, :late_departure_passes, :guests, :guests_kids
 
   normalize_attributes :notes, :role_explanation, :previous_contribution,
                        :admin_notes, :car_camping_explanation
@@ -190,13 +200,15 @@ class TicketRequest < ApplicationRecord
   validates :kids, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :cabins, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :role, presence: true, inclusion: { in: ROLES.keys }
-  validates :role_explanation, presence: { if: -> { role == ROLE_OTHER } }, length: { maximum: 400 }
+  validates :role_explanation, presence: { if: -> { role == ROLE_OTHER } }, length: { maximum: 200 }
   validates :previous_contribution, length: { maximum: 250 }
   validates :notes, length: { maximum: 500 }
-  validates :guests, length: { maximum: 10 }
   validates :special_price, allow_nil: true, numericality: { greater_than_or_equal_to: 0 }
   validates :donation, numericality: { greater_than_or_equal_to: 0 }
   validates :agrees_to_terms, presence: true
+
+  # Validate that the total number of adult + kid guests is less that the total_tickets - 1 (for the ticket request user)
+  validate :maximum_guests
 
   scope :completed, -> { where(status: STATUS_COMPLETED) }
   scope :pending, -> { where(status: STATUS_PENDING) }
@@ -319,23 +331,31 @@ class TicketRequest < ApplicationRecord
     adults + kids
   end
 
-  def guest_count
+  def guest_expected_count
     total_tickets - 1
   end
 
-  def guests_specified
-    Array(guests).size
+  def adult_guests_count
+    Array(guests || []).size || 0
   end
 
-  def guest_list
+  def kid_guests_count
+    Array(guests_kids || []).size || 0
+  end
+
+  def adult_guest_list
     [].tap do |guest_list|
       guest_list << user.name_and_email
       guests.each { |guest| guest_list << guest }
     end.compact
   end
 
+  def kid_guest_list
+    guests_kids.compact
+  end
+
   def all_guests_specified?
-    guests_specified >= guest_count
+    adult_guests_count + kid_guests_count == guests_expected_count
   end
 
   def country_name
@@ -356,6 +376,20 @@ class TicketRequest < ApplicationRecord
 
     # Remove empty guests
     # Note that guests are serialized as an array field.
-    self.guests = Array(guests).map { |guest| guest&.strip }.select(&:present?).compact
+    self.guests      = Array(guests).map { |guest| guest&.strip }.select(&:present?).compact
+    self.guests_kids = Array(guests_kids).map { |guest| guest&.strip }.select(&:present?).compact
+  end
+
+  def maximum_guests
+    if adults.present? && guests.present? && adult_guests_count > (adults - 1)
+      # adult guests must be less that adult tickets - 1 (for the request owner)
+      errors.add(:base, 'You provided more adult guests than tickets')
+      false
+    elsif kids.present? && kids.positive? && guests_kids.present? && kid_guests_count > kids
+      errors.add(:base, 'You provided more kid guests than kid tickets')
+      false
+    else
+      true
+    end
   end
 end

@@ -11,8 +11,8 @@ FactoryBot.define do
     adult_ticket_price { Random.rand(100..150) }
     kid_ticket_price { Random.rand(40..50) }
     cabin_price { nil }
-    max_adult_tickets_per_request { Random.rand(2..4) }
-    max_kid_tickets_per_request { 2 }
+    max_adult_tickets_per_request { 4 }
+    max_kid_tickets_per_request { 3 }
     max_cabins_per_request { nil }
     tickets_require_approval { true }
 
