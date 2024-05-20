@@ -30,15 +30,15 @@
               - if ticket_request.role_explanation.present?
                 %i.icon-comment.hover-tooltip{ title: ticket_request.role_explanation }
 
-            %td.align-content-center
-              - if ticket_request.admin_notes.present?
-                = image_tag('icons/comments-admin.png', width: 20, class: 'hover-tooltip', title: "Admin Notes:\n" + ticket_request.admin_notes)
-              - if ticket_request.car_camping
-                = image_tag('icons/car.png', width: 20, class: 'hover-tooltip', title: "Car/RV Request:\n" + ticket_request.car_camping_explanation)
-              - if ticket_request.needs_assistance
-                = image_tag('icons/dollar.png', width: 20, class: 'hover-tooltip', title: 'Financial Assistance was requested.')
+            %td.align-content-center.text-start
               - if ticket_request.notes.present?
                 = image_tag('icons/comments-user.png', width: 20, class: 'hover-tooltip', title: "User Comments:\n" + ticket_request.notes)
+              - if ticket_request.needs_assistance
+                = image_tag('icons/dollar.png', width: 20, class: 'hover-tooltip', title: 'Financial Assistance was requested.')
+              - if ticket_request.car_camping
+                = image_tag('icons/car.png', width: 20, class: 'hover-tooltip', title: "Car/RV Request:\n" + ticket_request.car_camping_explanation)
+              - if ticket_request.admin_notes.present?
+                = image_tag('icons/comments-admin.png', width: 20, class: 'hover-tooltip', title: "Admin Notes:\n" + ticket_request.admin_notes)
 
             %td.align-content-center.text-end.optional-medium= ticket_request.adults
 
