@@ -51,9 +51,9 @@
           = succeed '!' do
             = 'ticket'.pluralize(@ticket_request.total_tickets)
 
+    - if @ticket_request.user == current_user || @event.admin?(current_user)
       %hr
-
-      = render partial: 'ticket_request_show', locals: { event: @event, ticket_request: @ticket_request, payment: @payment }
+      = render partial: 'ticket_request_show', locals: { event: @event, ticket_request: @ticket_request, payment: @payment, current_user:  }
 
     .card-footer.bg-body-secondary.border-dark-subtle
       .row
