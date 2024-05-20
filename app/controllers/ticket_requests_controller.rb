@@ -106,7 +106,7 @@ class TicketRequestsController < ApplicationController
     end
 
     tr_params = permitted_params[:ticket_request].to_h || {}
-
+    tr_params[:donation] = 0 unless tr_params[:donation].present? && tr_params[:donation] =~ /^[\d.]+$/
     if tr_params.empty?
       flash.now[:error] = 'Please fill out the form below to request tickets.'
       return render_flash(flash)
@@ -157,6 +157,8 @@ class TicketRequestsController < ApplicationController
     guests = (Array(ticket_request_params[:guest_list]) || [])
              .flatten.map(&:presence)
              .compact
+
+    ticket_request_params[:donation] = 0 unless ticket_request_params[:donation].present? && ticket_request_params[:donation] =~ /^[\d.]+$/
 
     ticket_request_params.delete(:guest_list)
     ticket_request_params[:guests] = guests
