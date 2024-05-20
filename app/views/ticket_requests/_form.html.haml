@@ -30,55 +30,55 @@
         - if !(signed_in? && @user)
         - else
           = form_for @ticket_request,
-            url: { controller: :ticket_requests, action: form_action_name }, data: { "turbo-target": "_top", turbo: true } do |f|
+            url: { controller: :ticket_requests, action: form_action_name }, data: { "turbo-target": "_top", turbo: false } do |f|
             = f.hidden_field :event_id, value: @event.id
 
             - if is_update
-              .col-12
-                %a{name: "guests"}/
-                %p
-                .control-group
-                %h4 Guests
-                %p
-                  Please list everyone in your party including the kids. We do not (currently) send automated emails to any of the guests you specify.
-                %p
-                  For adults — please list their full name, and an email address as shown in the below example.
+              %hr
+              %h4 Guests
+              %p
+                Please list everyone in your party including the kids. We do not (currently) send automated emails to any of the guests you specify.
+              %p
+                For adults — please list their full name, and an email address as shown in the below example.
+              .content-fluid
+                .row
+                  .col-lg-6.col-xl-6.col-md-12.col-sm-12
 
-                - list_finalized = (@event.start_time - Time.current) < ::Event::GUEST_LIST_FINAL_WITHIN
-                - if list_finalized
-                  %span.text-error
-                    Guest list has already been finalized. If you need to update your guests, please email
-                    = mail_to 'tickets@fnf.org'
-                  %br
-                - else
-                  %h4 Adult Guests
-                  %h5 Examples:
-                  %ul
-                    %li DJ Carl Cox (as himself) &lt;carl@carlcox.com&gt;
-                    %li John Digweed &lt;digweed@bedrock-records.com&gt;
+                    - list_finalized = (@event.start_time - Time.current) < ::Event::GUEST_LIST_FINAL_WITHIN
+                    - if list_finalized
+                      %span.text-error
+                        Guest list has already been finalized. If you need to update your guests, please email
+                        = mail_to 'tickets@fnf.org'
+                      %br
+                    - else
+                      %h4 Adult Guests
+                      %h5 Examples:
+                      %ul
+                        %li DJ Carl Cox (as himself) &lt;carl@carlcox.com&gt;
+                        %li John Digweed &lt;digweed@bedrock-records.com&gt;
 
-                  - total_guests = @ticket_request.guest_count
-                  - adult_guests = @ticket_request.adults
-                  - adult_guests.times do |guest_id|
-                    = f.label "Adult Guest #{guest_id + 1}"
-                    - default_value = guest_id == 0 ? @ticket_request.user.name_and_email : ''
-                    = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests[0...adult_guests])[guest_id] || default_value, style: 'width: 80%'
+                      - total_guests = @ticket_request.guest_count
+                      - adult_guests = @ticket_request.adults - 1
+                      - adult_guests.times do |guest_id|
+                        - next if @ticket_request.guests[guest_id] == "#{@ticket_request.user.name} <#{@ticket_request.user.email}>"
+                        = f.label "Adult Guest #{guest_id + 1}"
+                        = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests[0...adult_guests])[guest_id], style: 'width: 80%'
 
                   - if @ticket_request.kids.positive?
-                    %h4 Kid Guests
-                    %h5 Examples:
-                    %ul
-                      %li Taylor Swift, 12
-                      %li Jonah Hill, 11
-                      %li Channing Tatum, 4
-                    .small Please enter "Full Name, Age" eg "Justin Bieber, 12"
-                    - kid_guests = @ticket_request.kids
-                    - kid_guests.times do |guest_id|
-                      = f.label "Kid Guest #{guest_id + 1}"
-                      = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests[(adult_guests)...total_guests])[guest_id], style: 'width: 80%'
+                    .col-lg-6.col-xl-6.col-md-12.col-sm-12
 
+                      %h4 Kid Guests
+                      %h5 Examples:
+                      %ul
+                        %li Taylor Swift, 12
+                        %li Channing Tatum, 4
+                      - kid_guests = @ticket_request.kids
+                      - kid_guests.times do |guest_id|
+                        = f.label "Kid Guest #{guest_id + 1}"
+                        = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests[(adult_guests)...total_guests])[guest_id], style: 'width: 80%'
 
-            %h5 How are you contributing to the event?
+            %hr
+            %h4 How are you contributing to the event?
             .content-fluid
               .row
                 .col-lg-6.col-xl-6.col-md-12.col-sm-12

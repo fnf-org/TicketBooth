@@ -5,10 +5,10 @@ require 'csv'
 
 # Manage all pages related to ticket requests.
 class TicketRequestsController < ApplicationController
-  before_action :authenticate_user!, except: %i[new]
+  before_action :authenticate_user!, except: %i[create new]
   before_action :set_event
-  before_action :set_ticket_request, except: %i[new create index download]
-  before_action :require_event_admin, except: %i[new create show edit update destroy]
+  before_action :set_ticket_request, except: %i[create index download]
+  before_action :require_event_admin, except: %i[create new show edit update destroy]
 
   def index
     @ticket_requests = TicketRequest
@@ -95,40 +95,26 @@ class TicketRequestsController < ApplicationController
     @user = @ticket_request.user
   end
 
-  # rubocop: disable Metrics/AbcSize
   def create
+    unless signed_in?
+      Rails.logger.error('#create: not signed in!'.colorize(:yellow))
+      return redirect_to attend_event_path(@event)
+    end
+
     unless @event.ticket_sales_open?
-      flash.now[:error] = @event.errors.messages.values.join('. ')
-      return render_flash(flash)
+      return redirect_to attend_event_path(@event), error: @event.errors.messages.values.join('. ')
     end
 
     tr_params = permitted_params[:ticket_request].to_h || {}
-
-    ticket_request_user = if signed_in? && current_user.present?
-                            current_user
-                          else
-                            User.build(email:                 permitted_params[:email],
-                                       name:                  permitted_params[:name],
-                                       password:              permitted_params[:password],
-                                       password_confirmation: permitted_params[:password]).tap do |user|
-                              if user.valid?
-                                user.save! && sign_in(user)
-                              else
-                                flash.now[:error] = user.errors.full_messages.join('. ')
-                                @ticket_request   = TicketRequest.new(tr_params, user:, event: @event)
-                                return render_flash(flash)
-                              end
-                            end
-                          end
 
     if tr_params.empty?
       flash.now[:error] = 'Please fill out the form below to request tickets.'
       return render_flash(flash)
     end
 
+    ticket_request_user = current_user
     tr_params[:user_id] = ticket_request_user.id
 
-    @ticket_request = TicketRequest.new(tr_params, user_id: ticket_request_user.id, event_id: @event.id)
     @ticket_request = TicketRequest.new(tr_params,
                                         user_id: ticket_request_user.id,
                                         event_id: @event.id,
@@ -164,8 +150,6 @@ class TicketRequestsController < ApplicationController
     end
   end
 
-  # rubocop: enable Metrics/AbcSize
-
   def update
     # Allow ticket request to edit guests and nothing else
     ticket_request_params = permitted_params[:ticket_request]
@@ -177,12 +161,10 @@ class TicketRequestsController < ApplicationController
     ticket_request_params.delete(:guest_list)
     ticket_request_params[:guests] = guests
 
-    if @ticket_request.update(ticket_request_params)
+    if @ticket_request.valid? && @ticket_request.update!(ticket_request_params)
       redirect_to event_ticket_request_path(@event, @ticket_request), notice: 'Ticket Request has been updated.'
-    if @ticket_request.valid? && @ticket_request.update(ticket_request_params)
-      return redirect_to event_ticket_request_path(@event, @ticket_request), notice: 'Ticket Request has been updated.'
     else
-      render action: 'edit', error: @ticket_request.errors.full_messages.join("; ")
+      render action: 'edit', error: @ticket_request.errors.full_messages.join('; ')
     end
   end
 
