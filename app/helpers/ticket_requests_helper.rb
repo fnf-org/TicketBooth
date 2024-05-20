@@ -86,11 +86,8 @@ module TicketRequestsHelper
       # HACK: This copy is specific for TicketBooth--we'll have to add a
       # customization so that this can be set on a per-event basis
       <<-HELP
-      Kids up to 12 years of age are free, within limits. Kids older than 12 are not
-      currently permitted. We've attempted to create a pricing model that is
-      reasonable and well-balanced. If anyone needs further assistance, check#{'  '}
-      the financial assistance checkbox below, and give us a brief explanation#{' '}
-      of what your needs are. We'll do our best to work with you to figure something out.
+      Kids 12 and under are free. They do need to be registered with name and age on the
+      ticket request form. Reach out to tickets@fnf.org if you have any questions.
       HELP
     when :cabins
       <<-HELP
