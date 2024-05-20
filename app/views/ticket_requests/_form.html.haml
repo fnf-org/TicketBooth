@@ -43,19 +43,6 @@
                   Please list everyone in your party including the kids. We do not (currently) send automated emails to any of the guests you specify.
                 %p
                   For adults — please list their full name, and an email address as shown in the below example.
-                %p
-                  DJs should write their DJ Name, as well as the regular name and email address.
-                %p
-                  For kids, start with the word "Kid:" and follow up with the name and age, and any optional additional comments.
-
-                %p.text-success
-                  %b Examples of good names
-                %ol
-                  %li DJ Carl Cox (as himself) &lt;carl@carlcox.com&gt;
-                  %li John Digweed &lt;digweed@bedrock-records.com&gt;
-                  %li Kid: Taylor Swift (11yo kid, requires no supervision)
-                  %li Kid: Jonah Hill (12yo kid with socks untied)
-                  %li Kid: Channing Tatum (5-month old baby, cute and funny)
 
                 - list_finalized = (@event.start_time - Time.current) < ::Event::GUEST_LIST_FINAL_WITHIN
                 - if list_finalized
@@ -64,21 +51,31 @@
                     = mail_to 'tickets@fnf.org'
                   %br
                 - else
-                  %h5 Adults
+                  %h4 Adult Guests
+                  %h5 Examples:
+                  %ul
+                    %li DJ Carl Cox (as himself) &lt;carl@carlcox.com&gt;
+                    %li John Digweed &lt;digweed@bedrock-records.com&gt;
+
                   - total_guests = @ticket_request.guest_count
                   - adult_guests = @ticket_request.adults
                   - adult_guests.times do |guest_id|
                     = f.label "Adult Guest #{guest_id + 1}"
                     - default_value = guest_id == 0 ? @ticket_request.user.name_and_email : ''
-                    = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests[0..adult_guests])[guest_id] || default_value, style: 'width: 80%'
+                    = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests[0...adult_guests])[guest_id] || default_value, style: 'width: 80%'
 
                   - if @ticket_request.kids.positive?
-                    %h5 Kids
+                    %h4 Kid Guests
+                    %h5 Examples:
+                    %ul
+                      %li Taylor Swift, 12
+                      %li Jonah Hill, 11
+                      %li Channing Tatum, 4
                     .small Please enter "Full Name, Age" eg "Justin Bieber, 12"
                     - kid_guests = @ticket_request.kids
                     - kid_guests.times do |guest_id|
                       = f.label "Kid Guest #{guest_id + 1}"
-                      = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests[adult_guests..total_guests])[guest_id + adult_guests], style: 'width: 80%'
+                      = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests[(adult_guests)...total_guests])[guest_id], style: 'width: 80%'
 
 
             %h5 How are you contributing to the event?

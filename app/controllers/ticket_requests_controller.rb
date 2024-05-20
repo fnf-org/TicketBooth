@@ -269,6 +269,7 @@ class TicketRequestsController < ApplicationController
       :password,
       :authenticity_token,
       :commit,
+      :_method,
       ticket_request: [
         :user_id,
         :adults,
