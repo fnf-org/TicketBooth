@@ -153,10 +153,13 @@ describe TicketRequestsController, type: :controller do
       end
 
       context 'when event ticket sales are closed' do
+        let(:viewer) { create(:user) }
+
         it 'has no error message before the request' do
           Timecop.freeze(event.end_time + 1.hour) do
-            make_request.call
-            expect(flash[:error]).to_not be_nil
+            make_request[]
+            expect(response).to redirect_to(attend_event_path(event))
+            expect(flash.now[:error]).to_not be_nil
           end
         end
       end
@@ -190,61 +193,16 @@ describe TicketRequestsController, type: :controller do
       end
 
       context 'when viewer is not signed in' do
-        subject { make_request[user_attributes] }
+        before { make_request.call }
 
-        let(:email) { Faker::Internet.email }
-        let(:name) { "#{Faker::Name.first_name} #{Faker::Name.last_name}" }
-        let(:password) { Faker::Internet.password }
+        let(:viewer) { nil }
 
-        let(:user_attributes) do
-          {
-            name:,
-            email:,
-            password:,
-            password_confirmation: password
-          }
-        end
+        it { expect(response).to have_http_status(:redirect) }
 
-        let(:created_user) { User.find_by(email:) }
-        let(:users_request_count) { -> { created_user&.ticket_requests&.count } }
+        it { expect(flash.now[:error]).to be_nil }
 
-        it { succeeds }
-
-        it 'has no errors' do
-          expect(flash[:error]).to be_nil
-        end
-
-        describe 'ticket requests count' do
-          describe 'user creation' do
-            it 'creates a user' do
-              expect { subject }.to change(User, :count).by(1)
-            end
-          end
-
-          it 'creates a ticket request' do
-            expect { subject }.to change(TicketRequest, :count).by(1)
-          end
-
-          it 'creates a user' do
-            expect { subject }.to change(User, :count).by(1)
-          end
-
-          describe 'creates a ticket request that' do
-            before { subject }
-            it 'belongs to the created user' do
-              expect(created_user.ticket_requests.count).to be(1)
-            end
-          end
-        end
-
-        describe '#current_user' do
-          subject { controller&.current_user }
-
-          before { make_request[user_attributes] }
-
-          it { is_expected.not_to be_nil }
-
-          it { is_expected.to eql(created_user) }
+        it 'not log the user in' do
+          expect(controller.current_user).to be_nil
         end
       end
     end

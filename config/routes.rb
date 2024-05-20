@@ -49,6 +49,7 @@ Rails.application.routes.draw do
       end
 
       member do
+        patch :update
         delete :destroy
         post :approve
         post :decline

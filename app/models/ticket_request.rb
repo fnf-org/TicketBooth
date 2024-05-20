@@ -66,13 +66,15 @@ class TicketRequest < ApplicationRecord
 
         ticket_request.guests.each do |guest|
           age_string   = guest.include?(',') ? guest.gsub(/.*,/, '').strip : ''
-          first, last, = guest.split(/\s+/)
+          first, last, = guest.split(/[\s,]+/)
           email        = guest.include?('<') ? guest.gsub(/.*</, '').gsub(/>.*/, '') : ''
-          kids_age     = age_string.empty? ? '' : kids_age(age_string)
+
+          next if "#{first} #{last}" == ticket_request.user.name || email == ticket_request.user.email
+
+          kids_age = age_string.empty? ? '' : kids_age(age_string)
 
           table << ["#{first} #{last}", email, 'Yes', kids_age]
         end
-        Rails.logger.debug table
       end
 
       table
@@ -191,7 +193,7 @@ class TicketRequest < ApplicationRecord
   validates :role_explanation, presence: { if: -> { role == ROLE_OTHER } }, length: { maximum: 400 }
   validates :previous_contribution, length: { maximum: 250 }
   validates :notes, length: { maximum: 500 }
-  validates :guests, length: { maximum: 8 }
+  validates :guests, length: { maximum: 10 }
   validates :special_price, allow_nil: true, numericality: { greater_than_or_equal_to: 0 }
   validates :donation, numericality: { greater_than_or_equal_to: 0 }
   validates :agrees_to_terms, presence: true
@@ -318,7 +320,7 @@ class TicketRequest < ApplicationRecord
   end
 
   def guest_count
-    total_tickets
+    total_tickets - 1
   end
 
   def guests_specified
