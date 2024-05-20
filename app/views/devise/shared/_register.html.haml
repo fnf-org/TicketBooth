@@ -46,11 +46,7 @@
 
       .row
         .col-12
-          .actions
-            = f.submit "Register", class: 'btn btn-primary btn-large'
-
-
-      .row
-        .col-12
-          = link_to "Go Back &larrhk;".html_safe, :back
+          .actions.btn-group-md
+            = f.submit "Register", class: 'btn btn-primary btn-lg'
+            = link_to "Go Back &larrhk;".html_safe, :back, class: 'btn btn-warning btn-md'
 

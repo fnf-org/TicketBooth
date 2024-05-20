@@ -1,0 +1,115 @@
+
+.card
+  .card-body.overflow-x-scroll
+    %table.table
+      %thead.border-1.border-dark-subtle
+        %tr
+          %th.bg-dark-subtle Name
+          %th.bg-dark-subtle.optional-medium Role
+          %th.bg-dark-subtle
+          %th.bg-dark-subtle.text-end.optional-medium Tickets
+          - if event.kid_ticket_price
+            %th.bg-dark-subtle.text-end.optional-medium Kids
+          - if event.cabin_price
+            %th.bg-dark-subtle.text-end.optional-medium Cabins
+          - if event.eald?
+            %th.bg-dark-subtle.text-end.optional-medium EA/LD
+          %th.bg-dark-subtle.text-end Total
+          %th.bg-dark-subtle.text-end.optional-medium Date Requested
+          %th.bg-dark-subtle.text-center Status
+          %th.bg-dark-subtle.text-end Payment
+      %tbody
+        - ticket_requests.each do |ticket_request|
+          %tr{ class: class_for_table_row(ticket_request) }
+            %td.align-content-center.ticket-user
+              = link_to event_ticket_request_path(event, ticket_request) do
+                = ticket_request.user.name
+
+            %td.muted.align-content-center.optional-medium
+              = TicketRequest::ROLES[ticket_request.role]
+              - if ticket_request.role_explanation.present?
+                %i.icon-comment.hover-tooltip{ title: ticket_request.role_explanation }
+
+            %td.align-content-center
+              - if ticket_request.admin_notes.present?
+                = image_tag('icons/comments-admin.png', width: 20, class: 'hover-tooltip', title: "Admin Notes:\n" + ticket_request.admin_notes)
+              - if ticket_request.car_camping
+                = image_tag('icons/car.png', width: 20, class: 'hover-tooltip', title: "Car/RV Request:\n" + ticket_request.car_camping_explanation)
+              - if ticket_request.needs_assistance
+                = image_tag('icons/dollar.png', width: 20, class: 'hover-tooltip', title: 'Financial Assistance was requested.')
+              - if ticket_request.notes.present?
+                = image_tag('icons/comments-user.png', width: 20, class: 'hover-tooltip', title: "User Comments:\n" + ticket_request.notes)
+
+            %td.align-content-center.text-end.optional-medium= ticket_request.adults
+
+            - if event.kid_ticket_price
+              %td.align-content-center.text-end.optional-medium= ticket_request.kids
+
+            - if event.cabin_price
+              %td.align-content-center.text-end.optional-medium= ticket_request.cabins
+
+            - if event.eald?
+              %td.align-content-center.text-end.optional-medium
+                #{ticket_request.early_arrival_passes} / #{ticket_request.late_departure_passes}
+                -# %br
+                -# - if eald_requested?(ticket_request)
+                -#   - if eald_paid?(ticket_request)
+                -#     ✔︎ EALD Paid
+                -#   - else
+                -#     ✘ Not All EALD Bought
+                -# - else
+                -#   ✘ Not Requested
+            %td.align-content-center.text-end
+              %span{ class: ('label label-info' if ticket_request.special_price) }
+                = number_to_currency(ticket_request.price, precision: 0)
+
+            %td.align-content-center.text-end.optional-medium.text-nowrap.small
+              = ticket_request.created_at.to_date
+
+            %td.align-content-center.text-center.ticket-status
+              %span.p-2.rounded.small.bi-credit-card.text-black{ class: text_class_for_status(ticket_request) }
+                = text_for_status ticket_request
+                - if ticket_request.payment && !ticket_request.payment.received?
+                  %i.icon-comment.hover-tooltip{ title: ticket_request.payment.explanation }
+
+            %td.align-content-end.text-end
+              - if event.tickets_require_approval && ticket_request.pending?
+                .btn-group
+                  = button_to approve_event_ticket_request_path(event, ticket_request),
+                    method: :post,
+                    class: 'btn btn-primary btn-sm text-nowrap' do
+                    ✔︎ Approve
+                  = button_to decline_event_ticket_request_path(event, ticket_request),
+                    method: :post,
+                    class: 'btn btn-danger btn-sm text-nowrap',
+                    data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s request?" } do
+                    ✘ Decline
+              - elsif !ticket_request.payment
+                .btn-group
+                  - if ticket_request.declined?
+                    = button_to revert_to_pending_event_ticket_request_path(event, ticket_request),
+                      method: :post,
+                      class: 'btn btn-danger btn-sm text-nowrap' do
+                      ↩︎ Revert
+                  - elsif !ticket_request.completed?
+                    = button_to resend_approval_event_ticket_request_path(event, ticket_request),
+                      method: :post,
+                      class: 'btn btn-primary btn-sm text-nowrap' do
+                      ↺ Re-Approve
+                    = button_to manual_confirmation_event_ticket_request_payments_path(event, ticket_request),
+                      method: :post,
+                      class: 'btn btn-success btn-sm text-nowrap' do
+                      ＄ Received
+                    = button_to decline_event_ticket_request_path(event, ticket_request),
+                      method: :post,
+                      class: 'btn btn-danger btn-sm text-nowrap',
+                      data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s already approved request?" } do
+                      ✘ Decline
+
+              - elsif ticket_request.payment && ticket_request.awaiting_payment? && !ticket_request.payment_received?
+                .btn-group.pull-right
+                  = button_to manual_confirmation_event_ticket_request_payments_path(event, ticket_request),
+                    method: :post,
+                    class: 'btn btn-primary btn-sm ' do
+                    Mark as Received
+                    %i.icon-ok

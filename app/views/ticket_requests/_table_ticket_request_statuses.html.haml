@@ -1,0 +1,73 @@
+
+.card
+  .card-header.bg-primary-subtle
+    .btn-group.mx-4
+      = link_to download_event_ticket_requests_path(event), class: 'btn btn-warning ' do
+        %i.icon-th-list
+        Download CSV ▼
+  .card-body
+    .vertical-20
+    %table.table.border-1.overflow-scroll.w-100
+      %thead.border-1.border-dark-subtle
+        %tr
+          %th.text-nowrap.bg-dark-subtle.text-left Ticket Status
+          %th.bg-dark-subtle.text-end.optional-medium Requests
+          %th.bg-dark-subtle.text-end
+            Tickets
+          - if event.kid_ticket_price
+            %th.bg-dark-subtle.text-end Kids
+          - if event.cabin_price
+            %th.bg-dark-subtle.text-end Cabins
+          %th.bg-dark-subtle.text-end Earn
+      %tbody
+        %tr
+          %td
+            %span.text-nowrap Paid
+          %td.text-end.optional-medium
+            %span= stats[:completed][:requests]
+          %td.text-end
+            %span= stats[:completed][:adults]
+          - if event.kid_ticket_price
+            %td.text-end
+              %span= stats[:completed][:kids]
+          - if event.cabin_price
+            %td.text-end
+              %span= stats[:completed][:cabins]
+          %td.text-end
+            %span
+              = number_to_currency(stats[:completed][:raised], precision: 0)
+        %tr.warning
+          %td.text-nowrap
+            Pending Approval
+          %td.text-end.optional-medium= stats[:pending][:requests]
+          %td.text-end= stats[:pending][:adults]
+          - if event.kid_ticket_price
+            %td.text-end= stats[:pending][:kids]
+          - if event.cabin_price
+            %td.text-end= stats[:pending][:cabins]
+          %td.text-end
+            %span.muted
+              = number_to_currency(stats[:pending][:raised], precision: 0)
+        %tr.success
+          %td.text-nowrap
+            Awaiting Payment
+          %td.text-end.optional-medium= stats[:awaiting_payment][:requests]
+          %td.text-end= stats[:awaiting_payment][:adults]
+          - if event.kid_ticket_price
+            %td.text-end= stats[:awaiting_payment][:kids]
+          - if event.cabin_price
+            %td.text-end= stats[:awaiting_payment][:cabins]
+          %td.text-end
+            %span.muted
+              = number_to_currency(stats[:awaiting_payment][:raised], precision: 0)
+        %tr.muted.border-1.border-dark-subtle
+          %td.bg-dark-subtle.text-start.fs-6
+            %strong
+              Total
+          %td.bg-dark-subtle.text-end.optional-medium= stats[:total][:requests]
+          %td.bg-dark-subtle.text-end.fs-6= stats[:total][:adults]
+          - if event.kid_ticket_price
+            %td.bg-dark-subtle.text-end.fs-6= stats[:total][:kids]
+          - if event.cabin_price
+            %td.bg-dark-subtle.text-end.fs-6= stats[:total][:cabins]
+          %td.bg-dark-subtle.text-end.fs-6= number_to_currency(stats[:total][:raised], precision: 0)

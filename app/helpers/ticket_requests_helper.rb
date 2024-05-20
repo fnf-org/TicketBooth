@@ -13,9 +13,9 @@ module TicketRequestsHelper
   def text_class_for_status(ticket_request)
     case ticket_request.status
     when 'P'
-      'bg-warning-subtle'
+      'bg-warning'
     when 'A'
-      'bg-primary-subtle'
+      'bg-warning-subtle'
     when 'D', 'R'
       'bg-danger-subtle'
     when 'C'
