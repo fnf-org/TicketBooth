@@ -1,4 +1,5 @@
-= render partial: 'shared/nav_event', locals: { event: @event, active_tab: { ticket_requests: 'active' } }
-= render partial: 'table_ticket_request_statuses', locals: { event: @event, stats: @stats }
-= render partial: 'table_ticket_requests', locals: { event: @event, ticket_requests: @ticket_requests }
+%div{"data-controller": "popovers"}
+  = render partial: 'shared/nav_event', locals: { event: @event, active_tab: { ticket_requests: 'active' } }
+  = render partial: 'table_ticket_request_statuses', locals: { event: @event, stats: @stats }
+  = render partial: 'table_ticket_requests', locals: { event: @event, ticket_requests: @ticket_requests }
 

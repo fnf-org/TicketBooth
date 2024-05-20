@@ -4,9 +4,9 @@ module TicketRequestsHelper
   def class_for_table_row(ticket_request)
     case ticket_request.status
     when 'P'
-      'warning'
+      'bg-warning'
     when 'A'
-      ticket_request.payment ? 'info' : 'success'
+      ticket_request.payment ? 'bg-info' : 'bg-success'
     end
   end
 
@@ -86,15 +86,11 @@ module TicketRequestsHelper
       # HACK: This copy is specific for TicketBooth--we'll have to add a
       # customization so that this can be set on a per-event basis
       <<-HELP
-      The cost of tickets for children will be dependent on how many you bring.
-      Unfortunately, kids count against our limit capacity with our contract
-      at the site.  As much as we would like to allow kids in for free, we
-      simply cannot afford it. However, we know we start excluding families
-      from attending if we charge too much for kids to attend, and so we've
-      attempted to create a pricing model that is reasonable and well-balanced.
-      If anyone needs further assistance, check the financial assistance
-      checkbox below, and give us a brief explanation of what your needs are.
-      We'll do our best to work with you to figure something out.
+      Kids up to 12 years of age are free, within limits. Kids older than 12 are not
+      currently permitted. We've attempted to create a pricing model that is
+      reasonable and well-balanced. If anyone needs further assistance, check#{'  '}
+      the financial assistance checkbox below, and give us a brief explanation#{' '}
+      of what your needs are. We'll do our best to work with you to figure something out.
       HELP
     when :cabins
       <<-HELP

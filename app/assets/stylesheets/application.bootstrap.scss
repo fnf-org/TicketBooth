@@ -24,3 +24,10 @@ $theme-colors: map-remove($theme-colors, "info", "light", "dark");
 // via yarn run build:css:index
 @import './site/_index.css.scss';
 
+@import "bootstrap/scss/popover";
+@import "bootstrap/scss/tooltip";
+
+// .popover{:role => "tooltip"}
+//  .arrow
+//  %h3.popover-header
+//  .popover-body

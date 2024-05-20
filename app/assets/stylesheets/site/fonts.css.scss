@@ -23,3 +23,22 @@
   font-weight: 400;
   font-style: normal;
 }
+
+@mixin dosis-popover {
+  font-family: "Dosis", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  color: $dark-text-emphasis;
+  font-size: 0.9em;
+}
+
+@mixin dosis-popover-header {
+  font-family: "Oswald", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  color: $dark-text-emphasis;
+  font-size: 1.1em;
+}
+
