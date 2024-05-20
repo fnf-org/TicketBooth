@@ -320,7 +320,7 @@ class TicketRequest < ApplicationRecord
   end
 
   def guest_count
-    total_tickets - 1
+    total_tickets
   end
 
   def guests_specified
