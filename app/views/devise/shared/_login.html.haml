@@ -19,7 +19,7 @@
 
   .row
     .col-12
-      .btn-group-sm
-        = f.submit "Log in", class: 'btn btn-primary btn-md'
+      .btn-group-md
+        = f.submit "Log in", class: 'btn btn-primary btn-lg'
         = render partial: "devise/shared/links", layout: false, locals: { resource: devise_mapping.singular, resource_name: devise_mapping.name, redirect_to: redirect_to }
 
