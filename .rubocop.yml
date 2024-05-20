@@ -19,7 +19,7 @@ RSpecRails/InferredSpecType:
 Metrics/ClassLength:
   Max: 300
 
-Metrics/ModuleLines:
+Metrics/ModuleLength:
   Enabled: false
   
 Layout/HashAlignment:
