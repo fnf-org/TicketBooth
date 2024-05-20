@@ -5,12 +5,10 @@ require 'csv'
 
 # Manage all pages related to ticket requests.
 class TicketRequestsController < ApplicationController
-  before_action :authenticate_user!, except: %i[new create]
-
+  before_action :authenticate_user!, except: %i[new]
   before_action :set_event
-
-  before_action :require_event_admin, except: %i[new create show edit update destroy]
   before_action :set_ticket_request, except: %i[new create index download]
+  before_action :require_event_admin, except: %i[new create show edit update destroy]
 
   def index
     @ticket_requests = TicketRequest
@@ -131,6 +129,10 @@ class TicketRequestsController < ApplicationController
     tr_params[:user_id] = ticket_request_user.id
 
     @ticket_request = TicketRequest.new(tr_params, user_id: ticket_request_user.id, event_id: @event.id)
+    @ticket_request = TicketRequest.new(tr_params,
+                                        user_id: ticket_request_user.id,
+                                        event_id: @event.id,
+                                        guests: [])
 
     Rails.logger.info("Newly created request: #{@ticket_request.inspect}")
 
@@ -144,10 +146,14 @@ class TicketRequestsController < ApplicationController
       ).fire!
 
       if @event.tickets_require_approval || @ticket_request.free?
-        redirect_to edit_event_ticket_request_path(@event, @ticket_request),
+        redirect_to event_ticket_request_path(@event, @ticket_request),
                     notice: 'When you know your guest names, please return here and add them below.'
+      elsif @ticket_request.all_guests_specified?
+        redirect_to edit_event_ticket_request_path(@event, @ticket_request),
+                    notice: 'Please enter the guest names before you are able to pay for the ticket.'
       else
-        redirect_to new_payment_url(ticket_request_id: @ticket_request)
+        redirect_to new_payment_path(ticket_request_id: @ticket_request.id),
+                    notice: 'Please pay for your ticket(s).'
       end
     rescue StandardError => e
       Rails.logger.error("Error Processing Ticket Send Request: #{e.message}\n\n#{@ticket_request.errors.full_messages.join(', ')}")
@@ -173,8 +179,10 @@ class TicketRequestsController < ApplicationController
 
     if @ticket_request.update(ticket_request_params)
       redirect_to event_ticket_request_path(@event, @ticket_request), notice: 'Ticket Request has been updated.'
+    if @ticket_request.valid? && @ticket_request.update(ticket_request_params)
+      return redirect_to event_ticket_request_path(@event, @ticket_request), notice: 'Ticket Request has been updated.'
     else
-      render action: 'edit'
+      render action: 'edit', error: @ticket_request.errors.full_messages.join("; ")
     end
   end
 
