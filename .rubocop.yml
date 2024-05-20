@@ -19,6 +19,9 @@ RSpecRails/InferredSpecType:
 Metrics/ClassLength:
   Max: 300
 
+Metrics/ModuleLines:
+  Enabled: false
+  
 Layout/HashAlignment:
   Enabled: true
   EnforcedColonStyle: table
