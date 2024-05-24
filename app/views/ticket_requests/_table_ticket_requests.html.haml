@@ -122,3 +122,12 @@
                     class: 'btn btn-primary btn-sm ' do
                     Mark as Received
                     %i.icon-ok
+
+              - elsif ticket_request.payment_received? && !ticket_request.refunded?
+                .btn-group.pull-right
+                  = button_to refund_event_ticket_request_path(event, ticket_request),
+                    method: :post,
+                    class: 'btn btn-danger btn-sm text-nowrap',
+                    data: { confirm: "Are you sure you want to refund #{ticket_request.user.name}'s payment?'" } do
+                    ↩︎ Refund
+

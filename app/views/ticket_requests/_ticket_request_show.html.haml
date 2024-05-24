@@ -40,14 +40,7 @@
           %span.bg-success Refunded
         - else
           .text-success
-            = link_to 'Received', event_ticket_request_payment_path(payment, ticket_request)
-
-          - if event.admin?(current_user)
-            = link_to 'Refund', refund_event_ticket_request_path(event, ticket_request),
-                  method: :post,
-                  class: 'btn btn-sm btn-danger',
-                  data: { confirm: "Are you sure you want to refund #{ticket_request.user.name}'s ticket? This cannot be undone!",
-                          disable_with: 'Refunding...' }
+            = link_to 'Received', event_ticket_request_payment_path(event, payment, ticket_request)
       - elsif ticket_request.free?
         .text-success
           Free
