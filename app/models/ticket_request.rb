@@ -254,7 +254,6 @@ class TicketRequest < ApplicationRecord
   end
 
   def mark_refunded
-    Rails.logger.info { "ticket request marking refunded: #{id}" }
     update status: STATUS_REFUNDED
   end
 
@@ -284,9 +283,8 @@ class TicketRequest < ApplicationRecord
     Rails.logger.info { "ticket_request [#{id}] payment [#{payment.id}] refunding [#{payment.stripe_payment_id}]" }
     if payment.refund_payment
       mark_refunded
-      true
     else
-      Rails.logger.error { "ticket_request failed to refund [#{payment.stripe_payment_id}]" }
+      Rails.logger.error { "ticket_request failed to refund [#{payment.stripe_payment_id}] #{errors&.error_messages&.join('; ')}" }
       false
     end
   end

@@ -169,10 +169,13 @@ class Payment < ApplicationRecord
       self.status = STATUS_REFUNDED
       Rails.logger.info { "refund_payment success stripe_refund_id [#{stripe_refund_id}] status [#{status}]" }
       log_refund(refund)
-      save
+      save!
     rescue Stripe::StripeError => e
       Rails.logger.error { "refund_payment Stripe::Refund.create failed [#{stripe_payment_id}]: #{e}" }
       errors.add :base, e.message
+      false
+    rescue StandardError => e
+      Rails.logger.error("#{e.class.name} ERROR during a refund: #{e.message.colorize(:red)}")
       false
     end
   end
