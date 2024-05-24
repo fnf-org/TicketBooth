@@ -17,7 +17,7 @@ module FnF
         # @param [Object] subclass
         def inherited(subclass)
           # noinspection RubyMismatchedArgumentType
-          super(subclass)
+          super
 
           subclass.include Ventable::Event
 

@@ -466,13 +466,13 @@ describe TicketRequest do
       it { is_expected.not_to eq [] }
 
       # number of active requests with two guests each
-      its(:size) { is_expected.to eq(number_of_active_requests * 3) }
+      its(:size) { is_expected.to eq(number_of_active_requests) }
     end
 
     describe '.csv_columns' do
       subject { described_class.csv_header }
 
-      it { is_expected.to start_with %w[Name Email Guest?] }
+      it { is_expected.to start_with %w[name email id adults kids] }
     end
   end
 end

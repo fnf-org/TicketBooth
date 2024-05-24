@@ -47,75 +47,58 @@ class TicketRequest < ApplicationRecord
     #   and then for each ticket request we return the primary user with the ticket request info,
     #   followed by one row per guest.
     def for_csv(event)
-      table = []
+      [].tap do |table|
+        event.ticket_requests.active.each do |ticket_request|
+          # Main Ticket Request User Row
+          row = []
 
-      event.ticket_requests.active.each do |ticket_request|
-        # Main Ticket Request User Row
-        row = []
+          row << ticket_request.user.name
+          row << ticket_request.user.email
 
-        row << ticket_request.user.name
-        row << ticket_request.user.email
-        row << 'No'
-        row << ''
+          csv_columns.each do |column|
+            row << ticket_request.attributes[column]
+          end
 
-        csv_columns.each do |column|
-          row << ticket_request.attributes[column]
-        end
-
-        table << row
-
-        ticket_request.guests.each do |guest|
-          age_string   = guest.include?(',') ? guest.gsub(/.*,/, '').strip : ''
-          first, last, = guest.split(/[\s,]+/)
-          email        = guest.include?('<') ? guest.gsub(/.*</, '').gsub(/>.*/, '') : ''
-
-          next if "#{first} #{last}" == ticket_request.user.name || email == ticket_request.user.email
-
-          kids_age = age_string.empty? ? '' : kids_age(age_string)
-
-          table << ["#{first} #{last}", email, 'Yes', kids_age]
+          table << row
         end
       end
-
-      table
     end
 
     def csv_header
-      ['Name', 'Email', 'Guest?', 'Kids Age', *csv_columns.map(&:titleize)]
+      ['name', 'email', *csv_columns]
     end
 
     def csv_columns
       %w[
+        id
+        adults
+        kids
+        cabins
+        needs_assistance
+        notes
+        status
+        created_at
+        updated_at
+        user_id
+        special_price
+        event_id
+        donation
+        role
+        role_explanation
+        previous_contribution
         address_line1
         address_line2
         city
         state
         zip_code
         country_code
-        adults
-        kids
-        special_price
-        donation
-        needs_assistance
-        status
-        notes
-        role
-        role_explanation
-        previous_contribution
+        admin_notes
         car_camping
         car_camping_explanation
-        admin_notes
         early_arrival_passes
         late_departure_passes
+        guests
       ]
-    end
-
-    private
-
-    def kids_age(string)
-      Integer(string)
-    rescue StandardError
-      ''
     end
   end
 
@@ -205,8 +188,9 @@ class TicketRequest < ApplicationRecord
   scope :declined, -> { where(status: STATUS_DECLINED) }
   scope :not_declined, -> { where.not(status: STATUS_DECLINED) }
 
-  # Those TicketRequests that should be exported as a Guest List
-  scope :active, -> { where(status: [STATUS_COMPLETED, STATUS_AWAITING_PAYMENT]) }
+  # Those TicketRequests that should be exported as a Guest List and include user record to avoid N+1
+  # @see https://medium.com/doctolib/how-to-find-fix-and-prevent-n-1-queries-on-rails-6b30d9cfbbaf
+  scope :active, -> { where(status: [STATUS_COMPLETED, STATUS_AWAITING_PAYMENT]).includes(:user) }
 
   def can_view?(user)
     self.user == user || event.admin?(user)
