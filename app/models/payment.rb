@@ -11,6 +11,7 @@
 #  updated_at        :datetime
 #  stripe_charge_id  :string(255)
 #  stripe_payment_id :string
+#  stripe_refund_id  :string
 #  ticket_request_id :integer          not null
 #
 # Indexes
@@ -27,13 +28,15 @@ class Payment < ApplicationRecord
   STATUSES = [
     STATUS_NEW         = 'N',
     STATUS_IN_PROGRESS = 'P',
-    STATUS_RECEIVED    = 'R'
+    STATUS_RECEIVED    = 'R',
+    STATUS_REFUNDED    = 'F' # canceled, refunded
   ].freeze
 
   STATUS_NAMES = {
     'N' => 'New',
     'P' => 'In Progress',
-    'R' => 'Received'
+    'R' => 'Received',
+    'F' => 'Refunded'
   }.freeze
 
   belongs_to :ticket_request
@@ -47,7 +50,8 @@ class Payment < ApplicationRecord
   validates :ticket_request, uniqueness: { message: 'ticket request has already been paid' }
   validates :status, presence: true, inclusion: { in: STATUSES }
 
-  attr_accessor :payment_intent
+  # stripe payment objects
+  attr_accessor :payment_intent, :refund
 
   # Create new Payment
   # Create Stripe PaymentIntent
@@ -148,6 +152,34 @@ class Payment < ApplicationRecord
     Rails.logger.debug { "retrieve_payment_intent payment => #{inspect}}" }
   end
 
+  # https://docs.stripe.com/api/refunds
+  # reasons duplicate, fraudulent, or requested_by_customer
+  def refund_payment(reason: 'requested_by_customer')
+    return false unless received?
+
+    begin
+      Rails.logger.info "refund_payment: #{id} stripe_payment_id: #{stripe_payment_id} status: #{status}"
+      self.refund = Stripe::Refund.create({ payment_intent: stripe_payment_id,
+                                            reason:,
+                                            metadata:       { event_id:               ticket_request.event.id,
+                                                              event_name:             ticket_request.event.name,
+                                                              ticket_request_id:      ticket_request.id,
+                                                              ticket_request_user_id: ticket_request.user_id } })
+      self.stripe_refund_id = refund.id
+      self.status = STATUS_REFUNDED
+      Rails.logger.info { "refund_payment success stripe_refund_id [#{stripe_refund_id}] status [#{status}]" }
+      log_refund(refund)
+      save!
+    rescue Stripe::StripeError => e
+      Rails.logger.error { "refund_payment Stripe::Refund.create failed [#{stripe_payment_id}]: #{e}" }
+      errors.add :base, e.message
+      false
+    rescue StandardError => e
+      Rails.logger.error("#{e.class.name} ERROR during a refund: #{e.message.colorize(:red)}")
+      false
+    end
+  end
+
   def payment_in_progress?
     payment_intent.present? && status == STATUS_IN_PROGRESS
   end
@@ -167,15 +199,30 @@ class Payment < ApplicationRecord
     status == STATUS_IN_PROGRESS
   end
 
-  def received?
-    status == STATUS_RECEIVED
-  end
-
   def stripe_payment?
     stripe_payment_id.present?
   end
 
+  def received?
+    stripe_payment? && status == STATUS_RECEIVED
+  end
+
+  def refunded?
+    status == STATUS_REFUNDED && stripe_refund_id.present?
+  end
+
+  def refundable?
+    received? && !refunded?
+  end
+
   private
+
+  def log_payment
+    Rails.logger.info "Payment => id: #{id.colorize(:yellow)}, " \
+                      "status: #{status.colorize(:green)}, " \
+                      "user: #{ticket_request.user.email.colorize(:blue)}, " \
+                      "amount: #{intent_amount}"
+  end
 
   def log_intent(payment_intent)
     intent_amount = '$%.2f'.colorize(:red) % (payment_intent['amount'].to_i / 100.0)
@@ -183,6 +230,14 @@ class Payment < ApplicationRecord
                       "status: #{payment_intent['status'].colorize(:green)}, " \
                       "for user: #{ticket_request.user.email.colorize(:blue)}, " \
                       "amount: #{intent_amount}"
+  end
+
+  def log_refund(refund)
+    refund_amount = '$%.2f'.colorize(:red) % (refund['amount'].to_i / 100.0)
+    Rails.logger.info "Refund => id: #{refund['id'].colorize(:yellow)}, " \
+                      "status: #{refund['status'].colorize(:green)}, " \
+                      "for user: #{ticket_request.user.email.colorize(:blue)}, " \
+                      "amount: #{refund_amount}"
   end
 
   def modifying_forbidden_attributes?(attributed)

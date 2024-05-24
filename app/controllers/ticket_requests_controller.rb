@@ -239,7 +239,7 @@ class TicketRequestsController < ApplicationController
   def refund
     if @ticket_request.refund
       redirect_to event_ticket_request_path(@event, @ticket_request),
-                  notice: 'Ticket request was refunded'
+                  notice: 'Ticket payment was refunded'
     else
       redirect_to event_ticket_request_path(@event, @ticket_request),
                   alert: @ticket_request.errors.full_messages.join('. ')

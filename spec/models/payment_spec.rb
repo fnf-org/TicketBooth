@@ -131,12 +131,73 @@ describe Payment do
       before { payment.save_with_payment_intent }
 
       it 'does not chanmge stripe payment id when it exists' do
-        expect {  payment_intent }.not_to(change(payment, :stripe_payment_id))
+        expect { payment_intent }.not_to(change(payment, :stripe_payment_id))
       end
 
       it 'does not change payment intent' do
-        expect {  payment_intent }.not_to(change(payment, :payment_intent))
+        expect { payment_intent }.not_to(change(payment, :payment_intent))
       end
     end
+  end
+
+  describe 'refunds' do
+    describe '#stripe_payment?' do
+      subject { payment.stripe_payment? }
+
+      let(:payment) { build(:payment) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    describe '#refunded?' do
+      subject { payment.refunded? }
+
+      let(:payment) { build(:payment, status: Payment::STATUS_REFUNDED, stripe_refund_id: 'refundId') }
+
+      it { is_expected.to be_truthy }
+
+      context 'when payment not refunded' do
+        let(:payment) { build(:payment, status: Payment::STATUS_RECEIVED) }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    describe '#refundable?' do
+      subject { payment.refundable? }
+
+      let(:payment) { build(:payment, status: Payment::STATUS_RECEIVED, stripe_refund_id: nil) }
+
+      it { is_expected.to be_truthy }
+
+      context 'when payment already refunded' do
+        let(:payment) { build(:payment, status: Payment::STATUS_REFUNDED, stripe_refund_id: 'refundId') }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when payment is nil' do
+        let(:payment) { nil }
+
+        it 'returns false when payment is nil' do
+          expect(payment&.refundable?).to be_falsey
+        end
+      end
+    end
+
+    # describe '#refund_payment' do
+    #   subject { payment.refund_payment }
+    #
+    #   before { payment.save_with_payment_intent }
+    #
+    #   let(:amount) { 1000 }
+    #   let(:payment) { build(:payment) }
+    #
+    #   context 'when payment received' do
+    #     before { payment.mark_received }
+    #
+    #     it { is_expected.to be_truthy }
+    #   end
+    # end
   end
 end
