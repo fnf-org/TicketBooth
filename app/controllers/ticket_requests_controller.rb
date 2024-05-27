@@ -186,7 +186,7 @@ class TicketRequestsController < ApplicationController
 
     @ticket_request.destroy! if @ticket_request&.persisted?
 
-    redirect_to new_event_ticket_request_path(@event), notice: "Ticket Request was successfully deleted. (id: #{@ticket_request.id})"
+    redirect_to new_event_ticket_request_path(@event), notice: 'Ticket Request was successfully cancelled.'
   end
 
   def approve

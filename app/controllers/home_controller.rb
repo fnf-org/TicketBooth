@@ -21,10 +21,6 @@ class HomeController < ApplicationController
         if (ticket_request = TicketRequest.where(user: current_user).where(event: most_recent_event).last)
           return redirect_to event_ticket_request_path(event_id: most_recent_event.to_param, id: ticket_request.id)
         end
-
-        # new ticket request
-        return redirect_to new_event_ticket_request_path(event_id: most_recent_event.to_param)
-
       end
 
     elsif signed_in? && current_user && (current_user.site_admin? || current_user.event_admin?)

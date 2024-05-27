@@ -16,13 +16,12 @@
         %span.p-2.rounded{ class: text_class_for_status(ticket_request) }
           = ticket_request.status_name
 
-  - if ticket_request.can_purchase?
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Total Tickets Price:"
-      %td
-        %strong
-          %span{ class: ('label label-info' if ticket_request.special_price) }
-            = number_to_currency(ticket_request.price, precision: 0)
+  %tr
+    %td.text-end.small.p-2.px-4.text-nowrap= "Total Tickets Price:"
+    %td
+      %strong
+        %span{ class: ('label label-info' if ticket_request.special_price) }
+          = number_to_currency(ticket_request.price, precision: 0)
 
   - if ticket_request.donation&.positive?
     %tr

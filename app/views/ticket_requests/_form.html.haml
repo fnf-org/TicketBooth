@@ -182,20 +182,6 @@
                               Once you submit this ticket request, and it's approved, you'll receive an email stating so. You can also bookmark this URL and return to it at a later date.
                               In order to pay for the ticket(s) you are required to fill out the list of guests (if any) and kids (if any) you are bringing and/or inviting.
 
-                    -# - if false @event.cabin_price
-
-                      = f.label :cabins do
-                        How many cabins did you want?
-                        = tooltip_box help_text_for(:cabins)
-
-                      = f.number_field :cabins, class: 'input-mini', min: 0,
-                        max: @event.max_cabins_per_request,
-                        data: { default_price: @event.cabin_price.to_i },
-                        disabled: !@event.cabins_available?
-
-                      %span.help-inline.inline-price
-                        - unless @event.cabins_available?
-                          Sorry, we are sold out of cabins at this point in time.
                 .col-lg-6.col-xl-6.col-md-12.col-sm-12
                   .control-group
 
@@ -275,7 +261,7 @@
                   %br
 
             .actions
-              - submit_btn_text = is_update ? 'Update Request' : 'Submit Request - YES!'
+              - submit_btn_text = is_update ? 'Update Request' : 'Submit Request'
               = f.submit submit_btn_text, class: 'btn btn-primary btn-large', disabled: !is_update,
                          id: 'submit-request',
                          data: { disable_with: 'Submitting...' }

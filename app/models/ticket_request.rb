@@ -252,11 +252,6 @@ class TicketRequest < ApplicationRecord
     payment&.received? || payment&.refunded?
   end
 
-  # not able to purchase tickets in this state
-  def can_purchase?
-    !status.in? [STATUS_DECLINED, STATUS_REFUNDED]
-  end
-
   def can_be_cancelled?(by_user:)
     user.id == by_user&.id && !payment_received?
   end
