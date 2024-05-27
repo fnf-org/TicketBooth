@@ -147,21 +147,23 @@
                     max: @event.max_adult_tickets_per_request,
                     data: { default_price: @event.adult_ticket_price.to_i }
 
-                  %strong.help-inline.inline-price
+                  %br
 
                   - if @event.kid_ticket_price
+                    %table.w-100.m-0.p-0
+                      %tbody.m-0.p-0
+                        %tr.align-middle
+                          %td.w-90.m-0.p-0.text-start
+                            = f.label :kids do
+                              Number of children (12 and under) you are bringing with you
+                              (not transferable to adults; babes in arms are free)
+                            = f.number_field :kids, class: 'input-mini', min: 0,
+                                max: @event.max_kid_tickets_per_request,
+                                data: { default_price: @event.kid_ticket_price.to_i,
+                                        custom_prices: price_rules_to_json(@event) }
 
-                    = f.label :kids do
-                      Number of children (12 and under) you are bringing with you (not transferable to adults; babes in arms are free)
-                      = tooltip_box help_text_for(:kids), title: "Bringing Kids to FnF"
-
-                    = f.number_field :kids, class: 'input-mini', min: 0,
-                      max: @event.max_kid_tickets_per_request,
-                      data: { default_price: @event.kid_ticket_price.to_i,
-                              custom_prices: price_rules_to_json(@event) }
-
-                    %span.help-inline.inline-price
-                    %p.help-inline-block.muted
+                          %td.w-10.text-end
+                            = tooltip_box help_text_for(:kids), title: "Kid Tickets"
 
                     - unless is_update
                       .card.bg-warning-subtle.mb-3{:style => "max-width: 100%;"}
@@ -189,19 +191,28 @@
                 .control-group
 
                 - if @event.allow_financial_assistance
-                  %br
-                  = f.label :needs_assistance, class: 'checkbox' do
-                    = f.check_box :needs_assistance
-                    I’m requesting financial assistance with purchasing my ticket(s)
-                    = tooltip_box help_text_for(:needs_assistance), title: "Financial Assistance"
+                  %table.w-100
+                    %tbody
+                      %tr
+                        %td.text-start
+                          = f.label :needs_assistance, class: 'checkbox' do
+                            = f.check_box :needs_assistance
+                            I’m requesting financial assistance with purchasing my ticket(s)
+                        %td.text-end
+                          = tooltip_box help_text_for(:needs_assistance), title: "Financial Assistance"
+
 
                 .control-group
 
                 - if @event.allow_donations
-                  %br
-                  = f.label :donation, 'Your Donation'
-                  = f.number_field :donation, class: 'input-mini', min: 0, required: false
-                  = tooltip_box "Your donation is optional, but would be greatly appreciated!"
+                  %table.w-100
+                    %tbody
+                      %tr
+                        %td
+                          = f.label :donation, 'Your Optional Donation:'
+                          = f.number_field :donation, class: 'input-mini', min: 0, required: false
+                        %td.text-end
+                          = tooltip_box "Your donation is optional to California Foundation for Advancement of Electronic Arts, but is greatly appreciated, and is indeed tax deductible!"
 
                 .control-group
 
