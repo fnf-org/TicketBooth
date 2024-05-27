@@ -14,7 +14,7 @@
           - elsif current_user.event_admin?
             = button_to "Manage Events", events_path, method: :get, class: "#{button_class}", data: { turbo: false }
           - else
-            = button_to "Home", root_path, class: 'btn btn-primary  m-1'
+            = button_to "Home", events_path, class: 'btn btn-primary  m-1'
         - else
           - unless controller_name == 'sessions' && action_name == 'new' && request.path == '/users/sign_in'
             = button_to "Log In", new_user_session_path, method: :get, class: "#{button_class}", data: { turbo: false }

@@ -108,7 +108,6 @@ class TicketRequestsController < ApplicationController
     end
 
     tr_params = permitted_params[:ticket_request].to_h || {}
-    tr_params[:donation] = 0 unless tr_params[:donation].present? && tr_params[:donation] =~ /^[\d.]+$/
     if tr_params.empty?
       flash.now[:error] = 'Please fill out the form below to request tickets.'
       return render_flash(flash)
@@ -133,14 +132,15 @@ class TicketRequestsController < ApplicationController
         target: @ticket_request
       ).fire!
 
-      if @event.tickets_require_approval || @ticket_request.free?
+      if (@event.tickets_require_approval || @ticket_request.free?) && @ticket_request.total_tickets > 1
         redirect_to event_ticket_request_path(@event, @ticket_request),
                     notice: 'When you know your guest names, please return here and add them below.'
-      elsif @ticket_request.all_guests_specified?
+      elsif !@ticket_request.all_guests_specified?
+        # XXX there is a bug here that flashes this when only 1 ticket being purchased.
         redirect_to edit_event_ticket_request_path(@event, @ticket_request),
                     notice: 'Please enter the guest names before you are able to pay for the ticket.'
-      else
-        redirect_to new_payment_path(ticket_request_id: @ticket_request.id),
+      elsif @ticket_request.approved?
+        redirect_to event_ticket_request_payments_path(@event, @ticket_request),
                     notice: 'Please pay for your ticket(s).'
       end
     rescue StandardError => e
@@ -159,8 +159,6 @@ class TicketRequestsController < ApplicationController
     guests = (Array(ticket_request_params[:guest_list]) || [])
              .flatten.map(&:presence)
              .compact
-
-    ticket_request_params[:donation] = 0 unless ticket_request_params[:donation].present? && ticket_request_params[:donation] =~ /^[\d.]+$/
 
     ticket_request_params.delete(:guest_list)
     ticket_request_params[:guests] = guests
@@ -188,7 +186,7 @@ class TicketRequestsController < ApplicationController
 
     @ticket_request.destroy! if @ticket_request&.persisted?
 
-    redirect_to new_event_ticket_request_path(@event), notice: "Ticket Request ID #{ticket_request_id} was deleted."
+    redirect_to new_event_ticket_request_path(@event), notice: 'Ticket Request was successfully cancelled.'
   end
 
   def approve

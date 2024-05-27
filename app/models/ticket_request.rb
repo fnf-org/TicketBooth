@@ -119,7 +119,7 @@ class TicketRequest < ApplicationRecord
   ].freeze
 
   STATUS_NAMES = {
-    'P' => 'Pending',
+    'P' => 'Pending Approval',
     'A' => 'Waiting for Payment',
     'D' => 'Declined',
     'C' => 'Completed',
@@ -232,6 +232,10 @@ class TicketRequest < ApplicationRecord
     update status: (free? ? STATUS_COMPLETED : STATUS_AWAITING_PAYMENT)
   end
 
+  def post_payment?
+    completed? || refunded?
+  end
+
   def declined?
     status == STATUS_DECLINED
   end
@@ -245,12 +249,7 @@ class TicketRequest < ApplicationRecord
   end
 
   def payment_received?
-    payment&.received?
-  end
-
-  # not able to purchase tickets in this state
-  def can_purchase?
-    !status.in? [STATUS_DECLINED, STATUS_PENDING]
+    payment&.received? || payment&.refunded?
   end
 
   def can_be_cancelled?(by_user:)
