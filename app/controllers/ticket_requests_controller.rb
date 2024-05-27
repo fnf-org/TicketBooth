@@ -38,12 +38,14 @@ class TicketRequestsController < ApplicationController
   end
 
   def download
+    download_type = permitted_params[:type] || :active
+
     csv_file = Tempfile.new('csv')
 
     CSV.open(csv_file.path, 'w',
              write_headers: true,
              headers: TicketRequest.csv_header) do |csv|
-      TicketRequest.for_csv(@event).each do |row|
+      TicketRequest.for_csv(@event, type: download_type).each do |row|
         csv << row
       end
     end
@@ -261,6 +263,7 @@ class TicketRequestsController < ApplicationController
       :password,
       :authenticity_token,
       :commit,
+      :type,
       :_method,
       ticket_request: [
         :user_id,
