@@ -46,9 +46,11 @@ class TicketRequest < ApplicationRecord
     #   This method returns a two-dimensional array. The first row is the header row,
     #   and then for each ticket request we return the primary user with the ticket request info,
     #   followed by one row per guest.
-    def for_csv(event)
+    def for_csv(event, type: :active)
       [].tap do |table|
-        event.ticket_requests.active.each do |ticket_request|
+        raise ArgumentError, "#for_csv: invalid scope #{type}" if type && !TicketRequest.respond_to?(type)
+
+        event.ticket_requests.send(type).each do |ticket_request|
           # Main Ticket Request User Row
           row = []
 
@@ -191,6 +193,7 @@ class TicketRequest < ApplicationRecord
   # Those TicketRequests that should be exported as a Guest List and include user record to avoid N+1
   # @see https://medium.com/doctolib/how-to-find-fix-and-prevent-n-1-queries-on-rails-6b30d9cfbbaf
   scope :active, -> { where(status: [STATUS_COMPLETED, STATUS_AWAITING_PAYMENT]).includes(:user) }
+  scope :everything, -> { includes(:user) }
 
   def can_view?(user)
     self.user == user || event.admin?(user)
