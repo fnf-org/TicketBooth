@@ -4,18 +4,20 @@
 %div{"data-controller": "tickets-request"}
   .card
     .card-header.bg-dark-subtle
-      - unless is_update && !@event.admin?(current_user)
-        - if @user
-          %h4 Ticket Request for #{@user.name}
-        - else
-          %h5 Please sign-in or register to request tickets.
+      - if signed_in? && @user.present?
+        %h4 Ticket Request for #{@user.name}
+      - else
+        %h5 Please sign-in or register to request tickets.
 
     .card-body
       = render 'shared/form_errors', resource: @ticket_request
 
       - if signed_in? && @user.present?
         Signed in as
-        = "#{@user.name} <#{@user.email}>"
+        - if is_update && @event.admin?(current_user)
+          = "#{current_user.name} <#{current_user.email}>"
+        - else
+          = "#{@user.name} <#{@user.email}>"
       - else
         = turbo_frame_tag :turbo_login do
           = render partial: "devise/shared/login", layout: false, locals: { resource: devise_mapping.singular,
@@ -31,8 +33,7 @@
                                                                                redirect_to: new_event_ticket_request_url(@event) }
 
       #ticket-request-form{"data-controller": "popovers"}
-        - if !(signed_in? && @user)
-        - else
+        - if signed_in? && @user.present?
           = form_for @ticket_request,
             url: { controller: :ticket_requests, action: form_action_name }, data: { "turbo-target": "_top", turbo: false } do |f|
             = f.hidden_field :event_id, value: @event.id
@@ -84,7 +85,7 @@
               -# on create, set user into guests list
               = f.hidden_field :guests, value: @user.name_and_email
 
-            - unless @ticket_request.post_payment?
+            - if !@ticket_request.post_payment? || (@event.admin?(current_user) && is_update)
               %hr
               %h4 How are you contributing to the event?
               .content-fluid
@@ -143,7 +144,7 @@
                     = f.text_area :previous_contribution, style: 'min-width: 100%',
                         rows: 2, maxlength: 250, required: false
 
-                    - if signed_in? && @event.admin?(current_user) && form_action_name == :update
+                    - if signed_in? && @event.admin?(current_user) && is_update
                       .well
                         = f.label :special_price, 'Total Special Price ($)'
 
@@ -238,7 +239,7 @@
                     = f.text_area :notes,
                       rows: 4, columns: 100, maxlength: 500, style: 'width: 100%'
 
-                    - if signed_in? && @event.admin?(current_user) && form_action_name == :update
+                    - if signed_in? && @event.admin?(current_user) && is_update
                       .well
                         = f.label :admin_notes do
                           Additional Notes
