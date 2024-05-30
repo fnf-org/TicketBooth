@@ -85,7 +85,7 @@
               -# on create, set user into guests list
               = f.hidden_field :guests, value: @user.name_and_email
 
-            - if !@ticket_request.post_payment? || (@event.admin?(current_user) && form_action_name == :update)
+            - if !@ticket_request.post_payment? || (@event.admin?(current_user) && is_update)
               %hr
               %h4 How are you contributing to the event?
               .content-fluid
@@ -144,7 +144,7 @@
                     = f.text_area :previous_contribution, style: 'min-width: 100%',
                         rows: 2, maxlength: 250, required: false
 
-                    - if signed_in? && @event.admin?(current_user) && form_action_name == :update
+                    - if signed_in? && @event.admin?(current_user) && is_update
                       .well
                         = f.label :special_price, 'Total Special Price ($)'
 
@@ -239,7 +239,7 @@
                     = f.text_area :notes,
                       rows: 4, columns: 100, maxlength: 500, style: 'width: 100%'
 
-                    - if signed_in? && @event.admin?(current_user) && form_action_name == :update
+                    - if signed_in? && @event.admin?(current_user) && is_update
                       .well
                         = f.label :admin_notes do
                           Additional Notes
