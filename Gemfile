@@ -80,7 +80,7 @@ gem 'mini_racer'
 gem 'protected_attributes_continued'
 gem 'psych'
 gem 'rake'
-gem 'stripe', '~> 11.3'
+gem 'stripe', '~> 11.6'
 gem 'ventable', '>= 1.3'
 gem 'yard'
 
