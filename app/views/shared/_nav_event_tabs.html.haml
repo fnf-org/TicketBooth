@@ -31,9 +31,10 @@
         = link_to event_ticket_requests_path(event), class: "nav-link #{active_tab[:ticket_requests]}" do
           Ticket Requests
 
-      %li.nav-item
-        = link_to event_eald_payments_path(event), class: "nav-link #{active_tab[:eald_passes]}" do
-          EA/LD Passes
+      - if event.eald?
+        %li.nav-item
+          = link_to event_eald_payments_path(event), class: "nav-link #{active_tab[:eald_passes]}" do
+            EA/LD Passes
 
       %li.nav-item
         = link_to guest_list_event_path(event), class: "nav-link #{active_tab[:guest_list]}" do
