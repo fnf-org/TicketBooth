@@ -99,23 +99,12 @@ class EventsController < ApplicationController
   end
 
   def guest_list
-    @ticket_requests = completed_ticket_requests
+    @ticket_requests = @event.admissible_requests
   end
 
   def download_guest_list
-    temp_csv = Tempfile.new('csv')
-
-    CSV.open(temp_csv.path, 'wb') do |csv|
-      csv << %w[name Guest-1 Guest-2 Guest-3 Guest-4 Guest-5]
-
-      completed_ticket_requests.each do |ticket_request|
-        csv << [ticket_request.user.name, ticket_request.guests].flatten
-      end
-    end
-
-    temp_csv.close
-    send_file(temp_csv.path,
-              filename: "#{@event.name} Guest List.csv",
+    send_file(FnF::Services::GuestListCSV.new(@event).csv,
+              filename: "#{@event.name} Guest List.csv".gsub(/\s+/, '-'),
               type: 'text/csv')
   end
 
@@ -123,15 +112,6 @@ class EventsController < ApplicationController
 
   def params_symbolized_hash
     @params_symbolized_hash ||= permitted_params.to_h.tap(&:symbolize_keys!)
-  end
-
-  def completed_ticket_requests
-    TicketRequest
-      .includes(:payment, :user)
-      .where(event_id: @event)
-      .order('created_at DESC')
-      .completed
-      .sort_by { |ticket_request| ticket_request.user.name.upcase }
   end
 
   def set_event

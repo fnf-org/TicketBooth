@@ -100,6 +100,12 @@ class Event < ApplicationRecord
     cabin_price:                   nil
   }.freeze
 
+  def admissible_requests
+    ticket_requests
+      .for_guest_list
+      .order('status desc')
+  end
+
   def long_name
     "#{name} (Starting #{starting})"
   end

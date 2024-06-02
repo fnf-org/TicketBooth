@@ -194,6 +194,7 @@ class TicketRequest < ApplicationRecord
   # @see https://medium.com/doctolib/how-to-find-fix-and-prevent-n-1-queries-on-rails-6b30d9cfbbaf
   scope :active, -> { where(status: [STATUS_COMPLETED, STATUS_AWAITING_PAYMENT]).includes(:user) }
   scope :everything, -> { includes(:user) }
+  scope :for_guest_list, -> { where(status: [STATUS_COMPLETED, STATUS_AWAITING_PAYMENT, STATUS_PENDING]).includes(:user) }
 
   def can_view?(user)
     self.user == user || event.admin?(user)

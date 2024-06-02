@@ -18,6 +18,10 @@ FactoryBot.define do
     user
     event
 
+    trait :completed do |*|
+      status { TicketRequest::STATUS_COMPLETED }
+    end
+
     trait :pending do |*|
       status { TicketRequest::STATUS_PENDING }
     end
@@ -28,6 +32,16 @@ FactoryBot.define do
 
     trait :declined do |*|
       status { TicketRequest::STATUS_DECLINED }
+    end
+
+    trait :includes_user_and_kids do |*|
+      guests do
+        [
+          "#{user.name} <#{user.email}>",
+          "#{Faker::Name.first_name} #{Faker::Name.last_name} <#{Faker::Internet.email}>",
+          "#{Faker::Name.first_name}, 12"
+        ]
+      end
     end
   end
 end
