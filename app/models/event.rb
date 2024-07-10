@@ -20,6 +20,7 @@
 #  name                          :string(255)
 #  photo                         :string(255)
 #  require_mailing_address       :boolean          default(FALSE), not null
+#  require_role                  :boolean          default(TRUE), not null
 #  slug                          :text
 #  start_time                    :datetime
 #  ticket_requests_end_time      :datetime
