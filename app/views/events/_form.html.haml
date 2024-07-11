@@ -44,6 +44,13 @@
               Check this box if you want to manually approve all requests before
               allowing ticket to be purchased.
 
+          = f.label :require_role, class: 'checkbox' do
+            = f.check_box :require_role
+            Ticket requester event role required
+            %p.muted
+              Check this box if you want to collect a details of what role a ticket requester is
+              taking on for the event. e.g. volunteer, coordinator, etc....
+
           = f.label :require_mailing_address, class: 'checkbox' do
             = f.check_box :require_mailing_address
             Mailing address required

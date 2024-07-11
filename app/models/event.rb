@@ -47,7 +47,7 @@ class Event < ApplicationRecord
                   :kid_ticket_price, :cabin_price, :max_adult_tickets_per_request,
                   :max_kid_tickets_per_request, :max_cabins_per_request, :max_cabin_requests,
                   :photo, :photo_cache, :tickets_require_approval, :require_mailing_address,
-                  :allow_financial_assistance, :allow_donations,
+                  :require_role, :allow_financial_assistance, :allow_donations,
                   :ticket_sales_start_time, :ticket_sales_end_time,
                   :ticket_requests_end_time
 
@@ -95,6 +95,7 @@ class Event < ApplicationRecord
     allow_donations:               true,
 
     require_mailing_address:       false,
+    require_role:                  true,
 
     max_cabins_per_request:        nil,
     max_cabin_requests:            nil,
