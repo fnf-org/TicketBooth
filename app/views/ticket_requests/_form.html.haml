@@ -88,7 +88,6 @@
             - if !@ticket_request.post_payment? || (@event.admin?(current_user) && is_update)
               %hr
               - if @event.require_role
-
                 %h4 How are you contributing to the event?
                 .content-fluid
                   .row
@@ -147,44 +146,44 @@
                       = f.text_area :previous_contribution, style: 'min-width: 100%',
                           rows: 2, maxlength: 250, required: false
 
-                    - if signed_in? && @event.admin?(current_user) && is_update
-                      .well
-                        = f.label :special_price, 'Total Special Price ($)'
+              - if signed_in? && @event.admin?(current_user) && is_update
+                .well
+                  = f.label :special_price, 'Total Special Price ($)'
 
-                        %p.text-error
-                          Editable by event admins only. Leave blank to use default price.
-                        = f.number_field :special_price, class: 'input-small', min: 0
+                %p.text-error
+                  Editable by event admins only. Leave blank to use default price.
+                  = f.number_field :special_price, class: 'input-small', min: 0
 
-                    = f.label :adults, 'Number of adult tickets' + " @ $#{@event.adult_ticket_price.to_i} each"
-                    = f.number_field :adults, class: 'input-mini', min: 1, required: true,
-                      max: @event.max_adult_tickets_per_request,
-                      data: { default_price: @event.adult_ticket_price.to_i }
+              = f.label :adults, 'Number of adult tickets' + " @ $#{@event.adult_ticket_price.to_i} each"
+              = f.number_field :adults, class: 'input-mini', min: 1, required: true,
+                max: @event.max_adult_tickets_per_request,
+                data: { default_price: @event.adult_ticket_price.to_i }
 
-                    %br
+              %br
 
-                    - if @event.kid_ticket_price
-                      %table.w-100.m-0.p-0
-                        %tbody.m-0.p-0
-                          %tr.align-middle
-                            %td.w-90.m-0.p-0.text-start
-                              = f.label :kids do
-                                Number of children (12 and under) you are bringing with you
-                                (not transferable to adults; babes in arms are free)
-                              = f.number_field :kids, class: 'input-mini', min: 0,
-                                  max: @event.max_kid_tickets_per_request,
-                                  data: { default_price: @event.kid_ticket_price.to_i,
-                                          custom_prices: price_rules_to_json(@event) }
+              - if @event.kid_ticket_price
+                %table.w-100.m-0.p-0
+                  %tbody.m-0.p-0
+                    %tr.align-middle
+                      %td.w-90.m-0.p-0.text-start
+                        = f.label :kids do
+                          Number of children (12 and under) you are bringing with you
+                          (not transferable to adults; babes in arms are free)
+                        = f.number_field :kids, class: 'input-mini', min: 0,
+                            max: @event.max_kid_tickets_per_request,
+                            data: { default_price: @event.kid_ticket_price.to_i,
+                                    custom_prices: price_rules_to_json(@event) }
 
-                            %td.w-10.text-end
-                              = tooltip_box help_text_for(:kids), title: "Kid Tickets"
+                      %td.w-10.text-end
+                        = tooltip_box help_text_for(:kids), title: "Kid Tickets"
 
-                      - unless is_update
-                        .card.bg-warning-subtle.mb-3{:style => "max-width: 100%;"}
-                          .card-body.bg-success-subtle.text-dark.pt-1
-                            %h5.card-title Please Note:
-                            %p.card-text
-                              Once you submit this ticket request, and it's approved, you'll receive an email stating so. You can also bookmark this URL and return to it at a later date.
-                              In order to pay for the ticket(s) you are required to fill out the list of guests (if any) and kids (if any) you are bringing and/or inviting.
+                - unless is_update
+                  .card.bg-warning-subtle.mb-3{:style => "max-width: 100%;"}
+                    .card-body.bg-success-subtle.text-dark.pt-1
+                      %h5.card-title Please Note:
+                      %p.card-text
+                        Once you submit this ticket request, and it's approved, you'll receive an email stating so. You can also bookmark this URL and return to it at a later date.
+                        In order to pay for the ticket(s) you are required to fill out the list of guests (if any) and kids (if any) you are bringing and/or inviting.
 
                 .col-lg-6.col-xl-6.col-md-12.col-sm-12
                   .control-group
