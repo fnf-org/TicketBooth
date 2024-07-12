@@ -80,7 +80,7 @@ describe EventsController, type: :controller do
       expect(new_event.start_time.to_datetime).to be_a(DateTime)
     end
 
-    it 'has requires role to be true' do
+    it 'has require_role set to true' do
       expect(new_event.require_role).to be_truthy
     end
 

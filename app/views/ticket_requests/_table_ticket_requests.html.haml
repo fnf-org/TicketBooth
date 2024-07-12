@@ -7,8 +7,9 @@
 
         %tr
           %th.bg-dark-subtle Name
-          %th.bg-dark-subtle.optional-medium Role
-          %th.bg-dark-subtle
+          - if event.require_role
+            %th.bg-dark-subtle.optional-medium Role
+          %th.bg-dark-subtle Notes
           %th.bg-dark-subtle.text-end.optional-medium Tickets
           - if event.kid_ticket_price
             %th.bg-dark-subtle.text-end.optional-medium Kids
@@ -30,9 +31,9 @@
               = link_to event_ticket_request_path(event, ticket_request) do
                 = ticket_request.user.name
 
-            %td.muted.align-content-center.optional-medium
-              = TicketRequest::ROLES[ticket_request.role]
-              - if ticket_request.role_explanation.present?
+            - if event.require_role
+              %td.muted.align-content-center.optional-medium
+                = TicketRequest::ROLES[ticket_request.role]
                 %i.icon-comment.hover-tooltip{ title: ticket_request.role_explanation }
 
             %td.align-content-center.text-start.text-nowrap
