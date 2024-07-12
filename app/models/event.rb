@@ -241,5 +241,4 @@ class Event < ApplicationRecord
   def ensure_require_role_set_default
     attributes[:require_role] = true if attributes[:require_role].nil?
   end
-
 end
