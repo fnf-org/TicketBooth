@@ -146,6 +146,7 @@ class EventsController < ApplicationController
         max_kid_tickets_per_request
         name
         require_mailing_address
+        require_role
         start_time
         tickets_require_approval
       ]

@@ -1,3 +1,4 @@
+%h2 Register
 
 - http_method = existing ? :put : :post
 = form_for(resource, as: resource_name, url: user_registration_path, html: { method: http_method }, data: { turbo: false } ) do |f|

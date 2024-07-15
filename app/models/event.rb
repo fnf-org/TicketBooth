@@ -20,6 +20,7 @@
 #  name                          :string(255)
 #  photo                         :string(255)
 #  require_mailing_address       :boolean          default(FALSE), not null
+#  require_role                  :boolean          default(TRUE), not null
 #  slug                          :text
 #  start_time                    :datetime
 #  ticket_requests_end_time      :datetime
@@ -46,7 +47,7 @@ class Event < ApplicationRecord
                   :kid_ticket_price, :cabin_price, :max_adult_tickets_per_request,
                   :max_kid_tickets_per_request, :max_cabins_per_request, :max_cabin_requests,
                   :photo, :photo_cache, :tickets_require_approval, :require_mailing_address,
-                  :allow_financial_assistance, :allow_donations,
+                  :require_role, :allow_financial_assistance, :allow_donations,
                   :ticket_sales_start_time, :ticket_sales_end_time,
                   :ticket_requests_end_time
 
@@ -55,6 +56,7 @@ class Event < ApplicationRecord
   normalize_attributes :name
 
   before_validation :generate_slug!
+  before_validation :ensure_require_role_set_default
 
   validates :name, presence: true, length: { maximum: MAX_NAME_LENGTH }
   validates :start_time, presence: true
@@ -94,6 +96,7 @@ class Event < ApplicationRecord
     allow_donations:               true,
 
     require_mailing_address:       false,
+    require_role:                  true,
 
     max_cabins_per_request:        nil,
     max_cabin_requests:            nil,
@@ -233,5 +236,9 @@ class Event < ApplicationRecord
       errors.add(:max_cabin_requests,
                  'can be set only if a cabin price is set')
     end
+  end
+
+  def ensure_require_role_set_default
+    attributes[:require_role] = true if attributes[:require_role].nil?
   end
 end

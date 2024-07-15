@@ -9,7 +9,7 @@ index_path="${RAILS_ROOT}/${dir}"
 index_file="${index_path}/${file}"
 
 temp="$(mktemp)"
-ls -1 "${index_path}"/[a-z]* | xargs -n 1 basename | awk '{printf "%s \"%s\";\n", "@import", $1}' > "${temp}"
+ls -1 "${index_path}"/[a-z]* | xargs -n 1 basename | awk '{printf "%s \"%s\";\n", "@import", $1}' | grep -v '@import "Mobile"' > "${temp}"
 
 export _diff
 if [[ -f "${index_file}" ]]; then

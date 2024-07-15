@@ -122,7 +122,8 @@ CREATE TABLE public.events (
     ticket_requests_end_time timestamp without time zone,
     early_arrival_price numeric(8,2) DEFAULT 0,
     late_departure_price numeric(8,2) DEFAULT 0,
-    slug text
+    slug text,
+    require_role boolean DEFAULT true NOT NULL
 );
 
 
@@ -713,6 +714,7 @@ CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING b
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240710231611'),
 ('20240523173316'),
 ('20240516225937'),
 ('20240513035005'),
