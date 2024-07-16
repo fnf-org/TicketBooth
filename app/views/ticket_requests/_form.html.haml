@@ -88,7 +88,7 @@
             - if !@ticket_request.post_payment? || (@event.admin?(current_user) && is_update)
               %hr
               - if @event.require_role
-                = render partial: :event_role
+                = render partial: 'event_role', locals: { form: f }
 
               - if signed_in? && @event.admin?(current_user) && is_update
                 .well
