@@ -4,17 +4,32 @@
     %td
       %strong= ticket_request.user.name
 
+  - if @event.tickets_require_approval
   %tr
     %td.text-end.small.p-2.px-4.text-nowrap= "Date Requested:"
     %td
       %strong=  ticket_request.created_at.localtime.to_formatted_s(:friendly)
 
+  - if @event.tickets_require_approval
   %tr
     %td.text-end.small.p-2.px-4.text-nowrap= "Status:"
     %td
       %strong
         %span.p-2.rounded{ class: text_class_for_status(ticket_request) }
           = ticket_request.status_name
+
+  %tr
+    %td.text-end.small.p-2.px-4.text-nowrap= "Adult Tickets:"
+    %td
+      %strong
+        = ticket_request.adults
+
+  - if event.kid_ticket_price
+    %tr
+      %td.text-end.small.p-2.px-4.text-nowrap= "Kid Tickets:"
+      %td
+        %strong
+          = ticket_request.kids
 
   %tr
     %td.text-end.small.p-2.px-4.text-nowrap= "Total Tickets Price:"
@@ -52,7 +67,7 @@
           - else
             - if ticket_request.all_guests_specified?
               - if ticket_request.awaiting_payment?
-                = link_to 'Pay Now', new_event_ticket_request_payment_path(event, ticket_request), class: 'btn btn-primary m-0'
+                = link_to 'Buy Tickets', new_event_ticket_request_payment_path(event, ticket_request), class: 'btn btn-primary m-0'
               - else
                 = "Waiting on ticket approval"
             - else
@@ -97,20 +112,6 @@
           - if ticket_request.role_explanation.present?
             %blockquote= ticket_request.role_explanation
 
-
-  %tr
-    %td.text-end.small.p-2.px-4.text-nowrap= "Adult Tickets:"
-    %td
-      %strong
-        = ticket_request.adults
-
-
-  - if event.kid_ticket_price
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Kid Tickets:"
-      %td
-        %strong
-          = ticket_request.kids
 
   - if event.cabin_price
     %tr
