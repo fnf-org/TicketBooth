@@ -136,7 +136,7 @@ class TicketRequest < ApplicationRecord
 
   ROLES = {
     ROLE_UBER_COORDINATOR => 'Skipper/Board Member',
-    ROLE_COORDINATOR      => 'Lead Coordinator',
+    ROLE_COORDINATOR      => 'Coordinator',
     ROLE_CONTRIBUTOR      => 'Planner',
     ROLE_VOLUNTEER        => 'Volunteer',
     ROLE_OTHER            => 'Other (Art Grantee, a DJ, etc)'
