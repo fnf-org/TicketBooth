@@ -394,8 +394,8 @@ ALTER SEQUENCE public.site_admins_id_seq OWNED BY public.site_admins.id;
 
 CREATE TABLE public.ticket_request_event_addons (
     id bigint NOT NULL,
-    ticket_requests_id bigint NOT NULL,
-    event_addons_id bigint NOT NULL,
+    ticket_request_id bigint NOT NULL,
+    event_addon_id bigint NOT NULL,
     quantity integer NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
@@ -860,17 +860,17 @@ CREATE INDEX index_shifts_on_user_id ON public.shifts USING btree (user_id);
 
 
 --
--- Name: index_ticket_request_event_addons_on_event_addons_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_ticket_request_event_addons_on_event_addon_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_ticket_request_event_addons_on_event_addons_id ON public.ticket_request_event_addons USING btree (event_addons_id);
+CREATE INDEX index_ticket_request_event_addons_on_event_addon_id ON public.ticket_request_event_addons USING btree (event_addon_id);
 
 
 --
--- Name: index_ticket_request_event_addons_on_ticket_requests_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_ticket_request_event_addons_on_ticket_request_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_ticket_request_event_addons_on_ticket_requests_id ON public.ticket_request_event_addons USING btree (ticket_requests_id);
+CREATE INDEX index_ticket_request_event_addons_on_ticket_request_id ON public.ticket_request_event_addons USING btree (ticket_request_id);
 
 
 --
@@ -924,14 +924,6 @@ ALTER TABLE ONLY public.event_addons
 
 
 --
--- Name: ticket_request_event_addons fk_rails_1a1cdfc361; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.ticket_request_event_addons
-    ADD CONSTRAINT fk_rails_1a1cdfc361 FOREIGN KEY (event_addons_id) REFERENCES public.event_addons(id);
-
-
---
 -- Name: event_addons fk_rails_784eec636d; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -940,11 +932,19 @@ ALTER TABLE ONLY public.event_addons
 
 
 --
--- Name: ticket_request_event_addons fk_rails_8552a28bac; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: ticket_request_event_addons fk_rails_847e21fcca; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.ticket_request_event_addons
-    ADD CONSTRAINT fk_rails_8552a28bac FOREIGN KEY (ticket_requests_id) REFERENCES public.ticket_requests(id);
+    ADD CONSTRAINT fk_rails_847e21fcca FOREIGN KEY (ticket_request_id) REFERENCES public.ticket_requests(id);
+
+
+--
+-- Name: ticket_request_event_addons fk_rails_b0497bfcb6; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.ticket_request_event_addons
+    ADD CONSTRAINT fk_rails_b0497bfcb6 FOREIGN KEY (event_addon_id) REFERENCES public.event_addons(id);
 
 
 --

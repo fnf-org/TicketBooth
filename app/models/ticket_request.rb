@@ -148,7 +148,7 @@ class TicketRequest < ApplicationRecord
   has_one :payment, inverse_of: :ticket_request
 
   has_many :ticket_request_event_addons, dependent: :destroy
-  has_many :addons, through: :ticket_request_event_addons
+  has_many :event_addons, through: :ticket_request_event_addons
 
   # Serialize guest emails as an array in a text field.
   serialize :guests, coder: Psych, type: Array

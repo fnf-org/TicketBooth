@@ -17,8 +17,8 @@ class Addons < ActiveRecord::Migration[7.1]
     end
 
     create_table :ticket_request_event_addons do |t|
-      t.references :ticket_requests, index: true, foreign_key: true, null: false
-      t.references :event_addons, index: true, foreign_key: true, null: false
+      t.references :ticket_request, index: true, foreign_key: true, null: false
+      t.references :event_addon, index: true, foreign_key: true, null: false
       t.integer :quantity, null: false
       t.timestamps
     end
