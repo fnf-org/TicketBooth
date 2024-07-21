@@ -12,10 +12,6 @@
 #  updated_at    :datetime         not null
 #
 class Addon < ApplicationRecord
-  has_many :events
-  has_many :event_addons
-  has_many :ticket_requests
-
   CATEGORIES = [CATEGORY_PASS = 'pass',
                 CATEGORY_CAMP = 'camp'].freeze
 
