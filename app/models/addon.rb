@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: addons
@@ -10,6 +12,10 @@
 #  updated_at    :datetime         not null
 #
 class Addon < ApplicationRecord
+  has_many :events
+  has_many :event_addons
+  has_many :ticket_requests
+
   CATEGORIES = [CATEGORY_PASS = 'pass',
                 CATEGORY_CAMP = 'camp'].freeze
 
@@ -24,9 +30,9 @@ class Addon < ApplicationRecord
   def self.find_all_by_category(category)
     addons = []
 
-    where(category: category).find_each do |addon|
-          addons << addon
-        end
+    where(category:).find_each do |addon|
+      addons << addon
+    end
 
     addons
   end

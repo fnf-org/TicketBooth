@@ -4,7 +4,7 @@
 #
 # Table name: events
 #
-#  id                            :integer          not null, primary key
+#  id                            :bigint           not null, primary key
 #  adult_ticket_price            :decimal(8, 2)
 #  allow_donations               :boolean          default(FALSE), not null
 #  allow_financial_assistance    :boolean          default(FALSE), not null
@@ -17,8 +17,8 @@
 #  max_cabin_requests            :integer
 #  max_cabins_per_request        :integer
 #  max_kid_tickets_per_request   :integer
-#  name                          :string(255)
-#  photo                         :string(255)
+#  name                          :string
+#  photo                         :string
 #  require_mailing_address       :boolean          default(FALSE), not null
 #  require_role                  :boolean          default(TRUE), not null
 #  slug                          :text
@@ -27,8 +27,8 @@
 #  ticket_sales_end_time         :datetime
 #  ticket_sales_start_time       :datetime
 #  tickets_require_approval      :boolean          default(TRUE), not null
-#  created_at                    :datetime
-#  updated_at                    :datetime
+#  created_at                    :datetime         not null
+#  updated_at                    :datetime         not null
 #
 class Event < ApplicationRecord
   has_many :event_admins
@@ -37,6 +37,8 @@ class Event < ApplicationRecord
   has_many :time_slots, through: :jobs
   has_many :ticket_requests, dependent: :destroy
   has_many :price_rules, dependent: :destroy
+  has_many :events_addons, dependent: :destroy
+  has_many :addons, through: :event_addons
 
   MAX_NAME_LENGTH = 100
 
@@ -202,6 +204,10 @@ class Event < ApplicationRecord
     return nil unless persisted?
 
     [id, slug].join('-') # 1-summer-campout-xii
+  end
+
+  def find_all_addons
+    Addon.all
   end
 
   private

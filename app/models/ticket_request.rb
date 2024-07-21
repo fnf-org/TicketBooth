@@ -4,7 +4,7 @@
 #
 # Table name: ticket_requests
 #
-#  id                      :integer          not null, primary key
+#  id                      :bigint           not null, primary key
 #  address_line1           :string(200)
 #  address_line2           :string(200)
 #  admin_notes             :string(512)
@@ -24,14 +24,14 @@
 #  needs_assistance        :boolean          default(FALSE), not null
 #  notes                   :string(500)
 #  previous_contribution   :string(250)
-#  role                    :string(255)      default("volunteer"), not null
+#  role                    :string           default("volunteer"), not null
 #  role_explanation        :string(200)
 #  special_price           :decimal(8, 2)
 #  state                   :string(50)
 #  status                  :string(1)        not null
 #  zip_code                :string(32)
-#  created_at              :datetime
-#  updated_at              :datetime
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
 #  event_id                :integer          not null
 #  user_id                 :integer          not null
 #
@@ -146,6 +146,9 @@ class TicketRequest < ApplicationRecord
   belongs_to :event, inverse_of: :ticket_requests
 
   has_one :payment, inverse_of: :ticket_request
+
+  has_many :ticket_request_event_addons, dependent: :destroy
+  has_many :addons, through: :ticket_request_event_addons
 
   # Serialize guest emails as an array in a text field.
   serialize :guests, coder: Psych, type: Array
@@ -292,6 +295,10 @@ class TicketRequest < ApplicationRecord
     total += cabins * event.cabin_price if event.cabin_price
 
     total
+  end
+
+  def event_addons_price
+    # sum of all ticket_request_addons, calculate quantity * price
   end
 
   def cost
