@@ -15,6 +15,7 @@
 #  car_camping_explanation :string(200)
 #  city                    :string(50)
 #  country_code            :string(4)
+#  deleted_at              :datetime
 #  donation                :decimal(8, 2)    default(0.0)
 #  early_arrival_passes    :integer          default(0), not null
 #  guests                  :text
@@ -33,6 +34,11 @@
 #  updated_at              :datetime         not null
 #  event_id                :integer          not null
 #  user_id                 :integer          not null
+#
+# Indexes
+#
+#  index_ticket_requests_on_deleted_at  (deleted_at) WHERE (deleted_at IS NULL)
+#
 
 require 'rails_helper'
 

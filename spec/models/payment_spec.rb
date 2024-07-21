@@ -4,13 +4,20 @@
 #
 # Table name: payments
 #
-#  id                :integer          not null, primary key
-#  explanation       :string(255)
-#  status            :string(1)        default("P"), not null
-#  created_at        :datetime
-#  updated_at        :datetime
+#  id                :bigint           not null, primary key
+#  explanation       :string
+#  status            :string(1)        default("N"), not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
 #  stripe_charge_id  :string(255)
+#  stripe_payment_id :string
+#  stripe_refund_id  :string
 #  ticket_request_id :integer          not null
+#
+# Indexes
+#
+#  index_payments_on_stripe_payment_id  (stripe_payment_id)
+#
 
 require 'rails_helper'
 

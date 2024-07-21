@@ -20,6 +20,8 @@
 #  name                          :string
 #  photo                         :string
 #  require_mailing_address       :boolean          default(FALSE), not null
+#  require_role                  :boolean          default(TRUE), not null
+#  slug                          :text
 #  start_time                    :datetime
 #  ticket_requests_end_time      :datetime
 #  ticket_sales_end_time         :datetime
@@ -27,6 +29,7 @@
 #  tickets_require_approval      :boolean          default(TRUE), not null
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
+#
 
 require 'rails_helper'
 

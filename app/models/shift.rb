@@ -4,12 +4,17 @@
 #
 # Table name: shifts
 #
-#  id           :integer          not null, primary key
+#  id           :bigint           not null, primary key
 #  name         :string(70)
-#  created_at   :datetime
-#  updated_at   :datetime
-#  time_slot_id :integer          not null
-#  user_id      :integer          not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  time_slot_id :bigint           not null
+#  user_id      :bigint           not null
+#
+# Indexes
+#
+#  index_shifts_on_time_slot_id  (time_slot_id)
+#  index_shifts_on_user_id       (user_id)
 #
 class Shift < ApplicationRecord
   belongs_to :time_slot
