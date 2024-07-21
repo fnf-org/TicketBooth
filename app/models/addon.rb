@@ -1,0 +1,33 @@
+# == Schema Information
+#
+# Table name: addons
+#
+#  id            :bigint           not null, primary key
+#  category      :string           not null
+#  default_price :integer          not null
+#  name          :string           not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#
+class Addon < ApplicationRecord
+  CATEGORIES = [CATEGORY_PASS = 'pass',
+                CATEGORY_CAMP = 'camp'].freeze
+
+  validates :category, presence: true, inclusion: { in: CATEGORIES }
+  validates :name, presence: true
+  validates :default_price, presence: true, numericality: { greater_than_or_equal_to: 0 }
+
+  def self.categories
+    CATEGORIES
+  end
+
+  def self.find_all_by_category(category)
+    addons = []
+
+    where(category: category).find_each do |addon|
+          addons << addon
+        end
+
+    addons
+  end
+end

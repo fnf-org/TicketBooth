@@ -14,6 +14,39 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: addons; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.addons (
+    id bigint NOT NULL,
+    category character varying NOT NULL,
+    name character varying NOT NULL,
+    default_price integer NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: addons_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.addons_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: addons_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.addons_id_seq OWNED BY public.addons.id;
+
+
+--
 -- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -125,6 +158,39 @@ CREATE TABLE public.events (
     slug text,
     require_role boolean DEFAULT true NOT NULL
 );
+
+
+--
+-- Name: events_addons; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.events_addons (
+    id bigint NOT NULL,
+    event_id bigint NOT NULL,
+    addon_id bigint NOT NULL,
+    price integer NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: events_addons_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.events_addons_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: events_addons_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.events_addons_id_seq OWNED BY public.events_addons.id;
 
 
 --
@@ -361,6 +427,39 @@ CREATE TABLE public.ticket_requests (
 
 
 --
+-- Name: ticket_requests_events_addons; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.ticket_requests_events_addons (
+    id bigint NOT NULL,
+    ticket_requests_id bigint NOT NULL,
+    events_addons_id bigint NOT NULL,
+    quantity integer NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: ticket_requests_events_addons_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.ticket_requests_events_addons_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: ticket_requests_events_addons_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.ticket_requests_events_addons_id_seq OWNED BY public.ticket_requests_events_addons.id;
+
+
+--
 -- Name: ticket_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -465,6 +564,13 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: addons id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.addons ALTER COLUMN id SET DEFAULT nextval('public.addons_id_seq'::regclass);
+
+
+--
 -- Name: eald_payments id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -483,6 +589,13 @@ ALTER TABLE ONLY public.event_admins ALTER COLUMN id SET DEFAULT nextval('public
 --
 
 ALTER TABLE ONLY public.events ALTER COLUMN id SET DEFAULT nextval('public.events_id_seq'::regclass);
+
+
+--
+-- Name: events_addons id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.events_addons ALTER COLUMN id SET DEFAULT nextval('public.events_addons_id_seq'::regclass);
 
 
 --
@@ -528,6 +641,13 @@ ALTER TABLE ONLY public.ticket_requests ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
+-- Name: ticket_requests_events_addons id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.ticket_requests_events_addons ALTER COLUMN id SET DEFAULT nextval('public.ticket_requests_events_addons_id_seq'::regclass);
+
+
+--
 -- Name: time_slots id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -539,6 +659,14 @@ ALTER TABLE ONLY public.time_slots ALTER COLUMN id SET DEFAULT nextval('public.t
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Name: addons addons_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.addons
+    ADD CONSTRAINT addons_pkey PRIMARY KEY (id);
 
 
 --
@@ -563,6 +691,14 @@ ALTER TABLE ONLY public.eald_payments
 
 ALTER TABLE ONLY public.event_admins
     ADD CONSTRAINT event_admins_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: events_addons events_addons_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.events_addons
+    ADD CONSTRAINT events_addons_pkey PRIMARY KEY (id);
 
 
 --
@@ -614,6 +750,14 @@ ALTER TABLE ONLY public.site_admins
 
 
 --
+-- Name: ticket_requests_events_addons ticket_requests_events_addons_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.ticket_requests_events_addons
+    ADD CONSTRAINT ticket_requests_events_addons_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: ticket_requests ticket_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -652,6 +796,20 @@ CREATE INDEX index_event_admins_on_user_id ON public.event_admins USING btree (u
 
 
 --
+-- Name: index_events_addons_on_addon_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_events_addons_on_addon_id ON public.events_addons USING btree (addon_id);
+
+
+--
+-- Name: index_events_addons_on_event_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_events_addons_on_event_id ON public.events_addons USING btree (event_id);
+
+
+--
 -- Name: index_payments_on_stripe_payment_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -663,6 +821,20 @@ CREATE INDEX index_payments_on_stripe_payment_id ON public.payments USING btree 
 --
 
 CREATE INDEX index_price_rules_on_event_id ON public.price_rules USING btree (event_id);
+
+
+--
+-- Name: index_ticket_requests_events_addons_on_events_addons_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_ticket_requests_events_addons_on_events_addons_id ON public.ticket_requests_events_addons USING btree (events_addons_id);
+
+
+--
+-- Name: index_ticket_requests_events_addons_on_ticket_requests_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_ticket_requests_events_addons_on_ticket_requests_id ON public.ticket_requests_events_addons USING btree (ticket_requests_id);
 
 
 --
@@ -708,12 +880,47 @@ CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING b
 
 
 --
+-- Name: ticket_requests_events_addons fk_rails_28589af292; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.ticket_requests_events_addons
+    ADD CONSTRAINT fk_rails_28589af292 FOREIGN KEY (events_addons_id) REFERENCES public.events_addons(id);
+
+
+--
+-- Name: events_addons fk_rails_2fb89c6eaa; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.events_addons
+    ADD CONSTRAINT fk_rails_2fb89c6eaa FOREIGN KEY (event_id) REFERENCES public.events(id);
+
+
+--
+-- Name: ticket_requests_events_addons fk_rails_82bc0d5f40; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.ticket_requests_events_addons
+    ADD CONSTRAINT fk_rails_82bc0d5f40 FOREIGN KEY (ticket_requests_id) REFERENCES public.ticket_requests(id);
+
+
+--
+-- Name: events_addons fk_rails_b915d48de3; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.events_addons
+    ADD CONSTRAINT fk_rails_b915d48de3 FOREIGN KEY (addon_id) REFERENCES public.addons(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240718233057'),
+('20240718224717'),
+('20240718221420'),
 ('20240710231611'),
 ('20240523173316'),
 ('20240516225937'),
