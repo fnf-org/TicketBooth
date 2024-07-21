@@ -4,19 +4,18 @@
     %td
       %strong= ticket_request.user.name
 
-  - if @event.tickets_require_approval
   %tr
     %td.text-end.small.p-2.px-4.text-nowrap= "Date Requested:"
     %td
       %strong=  ticket_request.created_at.localtime.to_formatted_s(:friendly)
 
-  - if @event.tickets_require_approval
-  %tr
-    %td.text-end.small.p-2.px-4.text-nowrap= "Status:"
-    %td
-      %strong
-        %span.p-2.rounded{ class: text_class_for_status(ticket_request) }
-          = ticket_request.status_name
+  - if event.tickets_require_approval
+    %tr
+      %td.text-end.small.p-2.px-4.text-nowrap= "Status:"
+      %td
+        %strong
+          %span.p-2.rounded{ class: text_class_for_status(ticket_request) }
+            = ticket_request.status_name
 
   %tr
     %td.text-end.small.p-2.px-4.text-nowrap= "Adult Tickets:"
