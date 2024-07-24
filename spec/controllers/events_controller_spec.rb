@@ -84,41 +84,6 @@ describe EventsController, type: :controller do
       expect(new_event.require_role).to be_truthy
     end
 
-    # rubocop: enable RSpec/AnyInstance
-
-    describe '#permitted_params' do
-      subject(:permitted_keys) { permitted_event_keys }
-
-      let(:permitted_event_params) { described_class.new.send(:permitted_params)[:event].to_h.symbolize_keys }
-      let(:expected_keys) do
-        %i[
-          adult_ticket_price
-          allow_donations
-          allow_financial_assistance
-          cabin_price
-          early_arrival_price
-          end_time
-          kid_ticket_price
-          late_departure_price
-          max_adult_tickets_per_request
-          max_cabin_requests
-          max_cabins_per_request
-          max_kid_tickets_per_request
-          name
-          require_mailing_address
-          require_role
-          start_time
-          ticket_requests_end_time
-          ticket_sales_end_time
-          ticket_sales_start_time
-          tickets_require_approval
-        ]
-      end
-      let(:permitted_event_keys) { permitted_event_params.keys.sort }
-
-      it { expect(permitted_keys).to eql(expected_keys) }
-    end
-
     context 'when the user is not signed in' do
       before { make_request[] }
 

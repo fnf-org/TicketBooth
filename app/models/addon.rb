@@ -12,6 +12,9 @@
 #  updated_at    :datetime         not null
 #
 class Addon < ApplicationRecord
+  has_many :event_addons, autosave: true
+  has_many :ticket_request_event_addon, autosave: true
+
   CATEGORIES = [CATEGORY_PASS = 'pass',
                 CATEGORY_CAMP = 'camp'].freeze
 
@@ -23,6 +26,10 @@ class Addon < ApplicationRecord
     CATEGORIES
   end
 
+  def self.order_by_category
+    order(:category, :id)
+  end
+
   def self.find_all_by_category(category)
     addons = []
 
@@ -32,4 +39,5 @@ class Addon < ApplicationRecord
 
     addons
   end
+
 end

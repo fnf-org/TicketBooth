@@ -371,4 +371,94 @@ RSpec.describe Event do
       end
     end
   end
+
+  describe '#build_event_addons_from_params' do
+    let(:price) { 314 }
+    let!(:addon) { create(:addon) }
+    let(:event_addons_attributes) { {"0"=>{"addon_id"=>addon.id, "price"=>price} }}
+
+    before do
+      event.build_event_addons_from_params(event_addons_attributes)
+    end
+
+    context "event addon is built for event" do
+      it 'has 1 event addon' do
+        expect(event.event_addons.size).to eq(1)
+      end
+
+      it 'has price set from params' do
+        expect(event.event_addons.first&.price).to eq(price)
+      end
+
+      it 'has addon id set from params' do
+        expect(event.event_addons.first&.addon_id).to eq(addon.id)
+      end
+    end
+
+    context "event addon is not built for event" do
+      let(:event_addons_attributes) { {"0"=>{"addon_id"=>999, "price"=>price} }}
+
+      it 'has an unknown addon id' do
+        expect(event.event_addons.size).to eq(0)
+      end
+    end
+  end
+
+  describe '#create_default_event_addons' do
+    context 'event has no addons' do
+      it 'event has no addons' do
+        expect(event.event_addons.count).to eq(0)
+      end
+    end
+
+    context 'event has event addons' do
+      let!(:addon) { create(:addon) }
+
+      before do
+        event.create_default_event_addons
+      end
+
+      it 'creates and persists an EventAddon' do
+        expect(EventAddon.count).to eq(1)
+      end
+
+      it 'creates EventAddon with name' do
+        expect(EventAddon.first&.name).to eq(Addon.first.name)
+      end
+
+      it 'event has event addons for each Addon' do
+        expect(event.event_addons.size).to eq(Addon.count)
+      end
+
+      it 'event has default prices for addons' do
+        event_addon = event.event_addons.first
+        expect(event_addon&.price).to eq(event_addon&.addon&.default_price)
+      end
+
+    end
+  end
+
+  describe '#load_default_event_addons' do
+    context 'event has no addons' do
+      it 'event has no addons' do
+        expect(event.event_addons.count).to eq(0)
+      end
+    end
+
+    context 'event has event addons' do
+      let!(:addon) { create(:addon) }
+
+      before {
+        event.build_default_event_addons
+      }
+
+      it 'event has event addons for each Addon' do
+        expect(event.event_addons.size).to eq(Addon.count)
+      end
+
+      it 'event addons are not saved' do
+        expect(event.event_addons.first&.persisted?).to be_falsey
+      end
+    end
+  end
 end

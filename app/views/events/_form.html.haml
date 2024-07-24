@@ -16,7 +16,7 @@
 
         .vertical-20
         %fieldset
-          %legend Ticket Details
+          %legend Ticket Sale Details
           = f.label :ticket_sales_start_time do
             Ticket Sales Opening Time
             %p.muted
@@ -75,7 +75,7 @@
 
 
       .col-sm-12.col-md-6.col-lg-6
-        %legend Event Pricing
+        %legend Ticket Pricing
         = f.label :adult_ticket_price, 'Adult Ticket Price ($)'
         = f.number_field :adult_ticket_price, class: 'input-small', required: true,
           min: 0
@@ -84,14 +84,6 @@
           Maximum number of adult tickets allowed per ticket request?
           %p.muted Leave blank for no limit
         = f.number_field :max_adult_tickets_per_request, class: 'input-mini', min: 1
-
-        = f.label :early_arrival_price, 'Early Arrival Price($)'
-        = f.number_field :early_arrival_price, class: 'input-small', required: true,
-          min: 0
-
-        = f.label :late_departure_price, 'Late Departure Price($)'
-        = f.number_field :late_departure_price, class: 'input-small', required: true,
-          min: 0
 
         = f.label :kid_ticket_price do
           Kid Ticket Price ($)
@@ -103,25 +95,15 @@
           %p.muted Leave blank for no limit
         = f.number_field :max_kid_tickets_per_request, class: 'input-mini', min: 1
 
-        = f.label :max_cabin_requests do
-          Maximum number of cabins that can be requested in total
-          %p.muted
-            Once more than this number of cabins is requested, subsequent ticket
-            requesters will not have the option to request cabins. You'll probably
-            want to set this value to be a little bit higher than the actual number
-            of cabins at your site, and then manually email the few individuals who
-            requested a cabin but won't get one. Leave blank for no limit (probably
-            not a good idea).
-        = f.number_field :max_cabin_requests, class: 'input-mini', min: 1
+        %legend Event Addons
+        %p.muted
+          Set price > 0 to include the addon in the event.
+          Setting the price to 0 removes the item from being sold.
 
-        = f.label :cabin_price do
-          Cabin Price ($)
-          %p.muted Keep blank if there are no cabins or you aren't charging separately for them
-        = f.number_field :cabin_price, class: 'input-small', min: 0
-
-        = f.label :max_cabins_per_request do
-          Maximum number of cabins allowed per ticket request?
-          %p.muted Leave blank for no limit
-        = f.number_field :max_cabins_per_request, class: 'input-mini', min: 1
+        - @event.event_addons.each do |event_addon|
+          = f.fields_for :event_addons, event_addon do |event_addon_form|
+            = event_addon_form.hidden_field :addon_id, value: event_addon.addon_id
+            = event_addon_form.label :name, event_addon.name
+            = event_addon_form.number_field :price, class: 'input-small', min: 0
 
   = f.submit " ▶︎ Update Event", class: 'btn btn-primary btn-large'

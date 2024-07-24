@@ -51,7 +51,9 @@ class Event < ApplicationRecord
                   :photo, :photo_cache, :tickets_require_approval, :require_mailing_address,
                   :require_role, :allow_financial_assistance, :allow_donations,
                   :ticket_sales_start_time, :ticket_sales_end_time,
-                  :ticket_requests_end_time
+                  :ticket_requests_end_time, :event_addons_attributes
+
+  accepts_nested_attributes_for :event_addons
 
   mount_uploader :photo, PhotoUploader
 
@@ -206,8 +208,38 @@ class Event < ApplicationRecord
     [id, slug].join('-') # 1-summer-campout-xii
   end
 
-  def find_all_addons
-    Addon.all
+  def build_event_addons_from_params(build_params)
+    Rails.logger.debug { "build_event_addons_from_params: #{build_params}" }
+
+    build_params.each do |key, value|
+      if Addon.exists?(id: value)
+        self.event_addons.build({event_id: id, addon_id: value["addon_id"], price: value["price"]})
+      end
+    end
+
+    Rails.logger.debug { "build_event_addons_from_params: save: #{event_addons.inspect}" }
+    event_addons
+  end
+
+  # create default event addons from Addons
+  def create_default_event_addons
+    return if event_addons.present?
+
+    build_default_event_addons
+    save
+    Rails.logger.debug { "create_default_event_addons: save: #{event_addons.inspect}" }
+    event_addons
+  end
+
+  def build_default_event_addons
+    return if event_addons.present?
+
+    Addon.order_by_category.each do |addon|
+      self.event_addons.build({event: self, addon: addon}).set_default_values
+    end
+
+    Rails.logger.debug { "build_default_event_addons: #{event_addons.inspect}" }
+    event_addons
   end
 
   private

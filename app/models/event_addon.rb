@@ -24,10 +24,21 @@
 class EventAddon < ApplicationRecord
   belongs_to :addon
   belongs_to :event
+  attr_accessible :id, :event_id, :addon_id, :price, :event, :addon
 
   before_validation :set_default_values
 
+  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
+
   def set_default_values
     self.price ||= addon.default_price
+  end
+
+  def name
+    addon.name
+  end
+
+  def category
+    addon.category
   end
 end
