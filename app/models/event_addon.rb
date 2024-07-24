@@ -34,11 +34,7 @@ class EventAddon < ApplicationRecord
     self.price ||= addon.default_price
   end
 
-  def name
-    addon.name
-  end
+  delegate :name, to: :addon
 
-  def category
-    addon.category
-  end
+  delegate :category, to: :addon
 end

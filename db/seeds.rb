@@ -166,7 +166,7 @@ module FnF
       end
 
       def create_addons
-        return if Addon.count > 0
+        return if Addon.count.positive?
 
         Addon.create category: Addon::CATEGORY_PASS, name: 'Early Arrival', default_price: 20
         Addon.create category: Addon::CATEGORY_PASS, name: 'Late Departure', default_price: 30
@@ -194,7 +194,6 @@ module FnF
       def header(string)
         puts "\n#{format("  %-#{HEADER_WIDTH}.#{HEADER_WIDTH}s".colorize(background: :light_blue), string)}"
       end
-
     end
   end
 

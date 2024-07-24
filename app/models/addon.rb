@@ -39,5 +39,4 @@ class Addon < ApplicationRecord
 
     addons
   end
-
 end

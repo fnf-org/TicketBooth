@@ -209,11 +209,13 @@ class Event < ApplicationRecord
   end
 
   def build_event_addons_from_params(build_params)
+    return if build_params.blank?
+
     Rails.logger.debug { "build_event_addons_from_params: #{build_params}" }
 
-    build_params.each do |key, value|
-      if Addon.exists?(id: value)
-        self.event_addons.build({event_id: id, addon_id: value["addon_id"], price: value["price"]})
+    build_params.each_value do |value|
+      if Addon.exists?(id: value['addon_id'])
+        event_addons.build({ event_id: id, addon_id: value['addon_id'], price: value['price'] })
       end
     end
 
@@ -235,7 +237,7 @@ class Event < ApplicationRecord
     return if event_addons.present?
 
     Addon.order_by_category.each do |addon|
-      self.event_addons.build({event: self, addon: addon}).set_default_values
+      event_addons.build({ event: self, addon: }).set_default_values
     end
 
     Rails.logger.debug { "build_default_event_addons: #{event_addons.inspect}" }
