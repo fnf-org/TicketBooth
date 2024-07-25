@@ -95,12 +95,11 @@
           %p.muted Leave blank for no limit
         = f.number_field :max_kid_tickets_per_request, class: 'input-mini', min: 1
 
-        %legend Event Addons
+        %legend Event Addons and Pricing
         %p.muted
-          Set price > 0 to include the addon in the event.
-          Setting the price to 0 removes the item from being sold.
+          To remove an addon from being sold at an event, set the price to 0.
 
-        - @event.event_addons.each do |event_addon|
+        - @event.sorted_event_addons.each do |event_addon|
           = f.fields_for :event_addons, event_addon do |event_addon_form|
             = event_addon_form.hidden_field :addon_id, value: event_addon.addon_id
             = event_addon_form.label :name, event_addon.name

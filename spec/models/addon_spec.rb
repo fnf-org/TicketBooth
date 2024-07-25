@@ -58,7 +58,8 @@ RSpec.describe Addon do
     subject(:addons) { described_class.find_all_by_category(category) }
 
     let(:category) { Addon::CATEGORY_PASS }
-    let!(:addon) { create(:addon, category:) }
+
+    before { create(:addon, category:) }
 
     context 'when category is known' do
       it { is_expected.to be_a(Array) }

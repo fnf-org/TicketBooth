@@ -374,9 +374,10 @@ RSpec.describe Event do
 
   describe '#build_event_addons_from_params' do
     let(:price) { 314 }
-    let!(:addon) { create(:addon) }
 
     context 'event addon is built for event' do
+      let!(:addon) { create(:addon) }
+
       before do
         event_addons_attributes = { '0'=>{ 'addon_id' => addon.id.to_s, 'price' => price.to_s } }
         event.build_event_addons_from_params(event_addons_attributes)
@@ -396,7 +397,10 @@ RSpec.describe Event do
     end
 
     context 'event addon is not built for event' do
-      let(:event_addons_attributes) { { '0'=>{ 'addon_id' => 999, 'price' => price } } }
+      before do
+        event_addons_attributes = { '0'=>{ 'addon_id' => 999, 'price' => price.to_s } }
+        event.build_event_addons_from_params(event_addons_attributes)
+      end
 
       it 'has an unknown addon id' do
         expect(event.event_addons.size).to eq(0)
@@ -412,9 +416,8 @@ RSpec.describe Event do
     end
 
     context 'event has event addons' do
-      let!(:addon) { create(:addon) }
-
       before do
+        create(:addon)
         event.create_default_event_addons
       end
 
@@ -445,9 +448,8 @@ RSpec.describe Event do
     end
 
     context 'event has event addons' do
-      let!(:addon) { create(:addon) }
-
       before do
+        create(:addon)
         event.build_default_event_addons
       end
 

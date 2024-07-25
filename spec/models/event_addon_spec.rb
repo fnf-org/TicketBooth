@@ -39,11 +39,11 @@ RSpec.describe EventAddon do
         end
       end
 
-      context 'sets price' do
+      context 'when price is set' do
         let(:price) { 314 }
         let(:event_addon) { build(:event_addon, price:) }
 
-        it 'has price set not default price' do
+        it 'has price set' do
           expect(event_addon.price).to eq(price)
         end
       end

@@ -71,6 +71,7 @@ describe EventsController, type: :controller do
     before do
       allow_any_instance_of(described_class).to receive(:params).and_return(ActionController::Parameters.new(event: new_event_params))
     end
+    # rubocop: enable RSpec/AnyInstance
 
     it 'does not have a nil start_time' do
       expect(new_event.start_time).not_to be_nil

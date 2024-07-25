@@ -244,6 +244,10 @@ class Event < ApplicationRecord
     event_addons
   end
 
+  def sorted_event_addons
+    event_addons.sort_by { |e| [e.category, e.name] }
+  end
+
   private
 
   def generate_slug!

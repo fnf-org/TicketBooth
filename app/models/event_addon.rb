@@ -30,11 +30,10 @@ class EventAddon < ApplicationRecord
 
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
+  delegate :name, to: :addon
+  delegate :category, to: :addon
+
   def set_default_values
     self.price ||= addon.default_price
   end
-
-  delegate :name, to: :addon
-
-  delegate :category, to: :addon
 end

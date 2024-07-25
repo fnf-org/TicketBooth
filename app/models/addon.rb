@@ -12,8 +12,8 @@
 #  updated_at    :datetime         not null
 #
 class Addon < ApplicationRecord
-  has_many :event_addons, autosave: true
-  has_many :ticket_request_event_addon, autosave: true
+  has_many :event_addons, autosave: true, dependent: :destroy
+  has_many :ticket_request_event_addon, autosave: true, dependent: :destroy
 
   CATEGORIES = [CATEGORY_PASS = 'pass',
                 CATEGORY_CAMP = 'camp'].freeze

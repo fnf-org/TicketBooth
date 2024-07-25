@@ -30,13 +30,13 @@ RSpec.describe TicketRequestEventAddon, type: :model do
     let(:ticket_request_event_addon) { build(:ticket_request_event_addon) }
 
     describe '#quantity' do
-      context 'valid quantity' do
+      context 'when valid quantity' do
         let(:ticket_request_event_addon) { build(:ticket_request_event_addon, quantity: 2) }
 
         it { is_expected.to be_valid }
       end
 
-      context 'invalid quantity' do
+      context 'when invalid quantity' do
         let(:ticket_request_event_addon) { build(:ticket_request_event_addon, quantity: -1) }
 
         it { is_expected.not_to be_valid }
