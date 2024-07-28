@@ -45,9 +45,7 @@ class Event < ApplicationRecord
   GUEST_LIST_FINAL_WITHIN = 2.days
 
   attr_accessible :name, :start_time, :end_time, :adult_ticket_price,
-                  :early_arrival_price, :late_departure_price,
-                  :kid_ticket_price, :cabin_price, :max_adult_tickets_per_request,
-                  :max_kid_tickets_per_request, :max_cabins_per_request, :max_cabin_requests,
+                  :kid_ticket_price, :max_adult_tickets_per_request, :max_kid_tickets_per_request,
                   :photo, :photo_cache, :tickets_require_approval, :require_mailing_address,
                   :require_role, :allow_financial_assistance, :allow_donations,
                   :ticket_sales_start_time, :ticket_sales_end_time,
@@ -67,11 +65,8 @@ class Event < ApplicationRecord
   validates :end_time, presence: true
   validates :adult_ticket_price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :kid_ticket_price, allow_nil: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :cabin_price, allow_nil: true, numericality: { greater_than_or_equal_to: 0 }
   validates :max_adult_tickets_per_request, allow_nil: true, numericality: { only_integer: true, greater_than: 0 }
   validates :max_kid_tickets_per_request, allow_nil: true, numericality: { only_integer: true, greater_than: 0 }
-  validates :max_cabins_per_request, allow_nil: true, numericality: { only_integer: true, greater_than: 0 }
-  validates :max_cabin_requests, allow_nil: true, numericality: { only_integer: true, greater_than: 0 }
 
   validate :end_time_after_start_time, :sales_end_time_after_start_time, :ensure_prices_set_if_maximum_specified
 
@@ -88,9 +83,7 @@ class Event < ApplicationRecord
     ticket_sales_end_time:         START_DATE_WITH_OFFSET[7.days],
 
     adult_ticket_price:            220,
-    early_arrival_price:           0,
     kid_ticket_price:              0,
-    late_departure_price:          30,
 
     max_adult_tickets_per_request: 6,
     max_kid_tickets_per_request:   4,
@@ -100,11 +93,7 @@ class Event < ApplicationRecord
     allow_donations:               true,
 
     require_mailing_address:       false,
-    require_role:                  true,
-
-    max_cabins_per_request:        nil,
-    max_cabin_requests:            nil,
-    cabin_price:                   nil
+    require_role:                  true
   }.freeze
 
   def admissible_requests
@@ -133,13 +122,6 @@ class Event < ApplicationRecord
     return false if admin?(user)
 
     EventAdmin.create(user_id: user.id, event_id: id)
-  end
-
-  def cabins_available?
-    return false unless cabin_price
-    return true unless max_cabin_requests
-
-    ticket_requests.not_declined.sum(:cabins) < max_cabin_requests
   end
 
   StatusWidget = Struct.new(:name, :css_class)
@@ -285,16 +267,6 @@ class Event < ApplicationRecord
     if max_kid_tickets_per_request && kid_ticket_price.blank?
       errors.add(:max_kid_tickets_per_request,
                  'can be set only if a kid ticket price is set')
-    end
-
-    if max_cabins_per_request && cabin_price.blank?
-      errors.add(:max_cabins_per_request,
-                 'can be set only if a cabin price is set')
-    end
-
-    if max_cabin_requests && cabin_price.blank?
-      errors.add(:max_cabin_requests,
-                 'can be set only if a cabin price is set')
     end
   end
 

@@ -75,7 +75,6 @@ class TicketRequest < ApplicationRecord
         id
         adults
         kids
-        cabins
         needs_assistance
         notes
         status
@@ -95,10 +94,6 @@ class TicketRequest < ApplicationRecord
         zip_code
         country_code
         admin_notes
-        car_camping
-        car_camping_explanation
-        early_arrival_passes
-        late_departure_passes
         guests
       ]
     end
@@ -153,17 +148,15 @@ class TicketRequest < ApplicationRecord
   # Serialize guest emails as an array in a text field.
   serialize :guests, coder: Psych, type: Array
 
-  attr_accessible :user_id, :adults, :kids, :cabins, :needs_assistance,
+  attr_accessible :user_id, :adults, :kids, :needs_assistance,
                   :notes, :status, :special_price, :event_id,
-                  :user_attributes, :user, :donation, :role, :role_explanation,
-                  :car_camping, :car_camping_explanation, :previous_contribution,
+                  :user_attributes, :user, :donation, :role,
+                  :role_explanation, :previous_contribution,
                   :address_line1, :address_line2, :city, :state, :zip_code,
                   :country_code, :admin_notes, :agrees_to_terms,
-                  :early_arrival_passes, :late_departure_passes, :guests,
-                  :ticket_request_event_addons_attributes
+                  :guests, :ticket_request_event_addons_attributes
 
-  normalize_attributes :notes, :role_explanation, :previous_contribution,
-                       :admin_notes, :car_camping_explanation
+  normalize_attributes :notes, :role_explanation, :previous_contribution, :admin_notes
 
   accepts_nested_attributes_for :user
   accepts_nested_attributes_for :ticket_request_event_addons
@@ -175,10 +168,7 @@ class TicketRequest < ApplicationRecord
   validates :status, presence: true, inclusion: { in: STATUSES }
   validates :address_line1, :city, :state, :zip_code, :country_code, presence: { if: -> { event.try(:require_mailing_address) } }
   validates :adults, presence: true, numericality: { only_integer: true, greater_than: 0 }
-  validates :early_arrival_passes, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :late_departure_passes, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :kids, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :cabins, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :role, presence: true, inclusion: { in: ROLES.keys }
   validates :role_explanation, presence: { if: -> { role == ROLE_OTHER } }, length: { maximum: 400 }
   validates :previous_contribution, length: { maximum: 250 }

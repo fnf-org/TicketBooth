@@ -15,7 +15,6 @@
 #  late_departure_price          :decimal(8, 2)    default(0.0)
 #  max_adult_tickets_per_request :integer
 #  max_cabin_requests            :integer
-#  max_cabins_per_request        :integer
 #  max_kid_tickets_per_request   :integer
 #  name                          :string
 #  photo                         :string
@@ -164,37 +163,6 @@ RSpec.describe Event do
         it { is_expected.not_to accept_values_for(:max_kid_tickets_per_request, 10) }
       end
     end
-
-    describe '#max_cabins_per_request' do
-      context 'when cabin_price is set' do
-        subject { build(:event, cabin_price: 10) }
-
-        it { is_expected.to accept_values_for(:max_cabins_per_request, nil, '', 10) }
-        it { is_expected.not_to accept_values_for(:max_cabins_per_request, 0, -1) }
-      end
-
-      context 'when cabin_price is not set' do
-        subject { build(:event, cabin_price: nil) }
-
-        it { is_expected.not_to accept_values_for(:max_cabins_per_request, 10) }
-      end
-    end
-
-    describe '#max_cabin_requests' do
-      context 'when cabin_price is set' do
-        subject { build(:event, cabin_price: 10) }
-
-        it { is_expected.to accept_values_for(:max_cabin_requests, nil, '', 10) }
-        it { is_expected.not_to accept_values_for(:max_cabin_requests, 0, -1) }
-      end
-
-      context 'when cabin_price is not set' do
-        subject { build(:event, cabin_price: nil) }
-
-        it { is_expected.to accept_values_for(:max_cabin_requests, nil, '') }
-        it { is_expected.not_to accept_values_for(:max_cabin_requests, 10) }
-      end
-    end
   end
 
   describe '#admin?' do
@@ -227,47 +195,6 @@ RSpec.describe Event do
       let(:user) { another_event.admins.first }
 
       it { is_expected.to be false }
-    end
-  end
-
-  describe '#cabins_available?' do
-    subject { event.cabins_available? }
-
-    let(:event) { create(:event, cabin_price:, max_cabin_requests:) }
-
-    let(:cabin_price) { nil }
-    let(:max_cabin_requests) { nil }
-
-    context 'when no cabin price is set' do
-      let(:cabin_price) { nil }
-
-      it { is_expected.to be false }
-    end
-
-    context 'when cabin price is set' do
-      let(:cabin_price) { 100 }
-
-      context 'when no maximum specified for the number of cabin requests' do
-        let(:max_cabin_requests) { nil }
-
-        it { is_expected.to be true }
-      end
-
-      context 'when a maximum is specified for the number of cabin requests' do
-        let(:max_cabin_requests) { 10 }
-
-        context 'when there are fewer cabins requested than the maximum' do
-          it { is_expected.to be true }
-        end
-
-        context 'when the number of cabins requested has met or exceeded the maximum' do
-          before do
-            create(:ticket_request, event:, cabins: max_cabin_requests)
-          end
-
-          it { is_expected.to be false }
-        end
-      end
     end
   end
 

@@ -89,14 +89,6 @@ module TicketRequestsHelper
       Kids 12 and under are free. They do need to be registered with name and age on the
       ticket request form. Reach out to tickets@fnf.org if you have any questions.
       HELP
-    when :cabins
-      <<-HELP
-      There are a limited number of wood and tent cabins available.
-      Both the cabins and the tents are the same price. We encourage everyone to
-      bring their own tents and camping gear so that they don't need a cabin.
-      Due to limited availability, we will obviously not be able to grant all
-      requests.
-      HELP
     when :address
       "We'll mail your tickets to this address."
     when :needs_assistance

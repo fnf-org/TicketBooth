@@ -41,6 +41,7 @@ class TicketRequestMailer < ApplicationMailer
 
     @payment_url = new_event_ticket_request_payment_url(@event, @ticket_request, @auth_token)
 
+    # XXX Clean me up and make Event Addons / Ticket Request 
     if @event.eald?
       @extra_params = {}.tap do |params|
         params[:early_arrival_passes] = @ticket_request.early_arrival_passes
