@@ -3,6 +3,11 @@
     %td.text-end.small.p-2.px-4.text-nowrap= "Name"
     %td
       %strong= ticket_request.user.name
+  %tr
+    %td.text-end.small.p-2.px-4.text-nowrap= "Email:"
+    %td
+      %strong
+        = mail_to ticket_request.user.email
 
   %tr
     %td.text-end.small.p-2.px-4.text-nowrap= "Date Requested:"
@@ -50,6 +55,13 @@
               = 'ticket'.pluralize(ticket_request.total_tickets)
 
   %tr
+    %td.text-end.small.p-2.px-4.text-nowrap= "Total Price:"
+    %td
+      %strong
+        %span{ class: ('label label-info' if ticket_request.special_price) }
+          = number_to_currency(ticket_request.price, precision: 0)
+
+  %tr
     %td.text-end.small.p-2.px-4.text-nowrap= "Adult Tickets:"
     %td
       %strong
@@ -65,16 +77,12 @@
   - if ticket_request.ticket_request_event_addons?
     - ticket_request.active_sorted_ticket_request_event_addons.each do |tr_event_addon|
       %tr
-        %td.text-end.small.p-2.px-4.text-nowrap= tr_event_addon.humanized_category + ":"
+        %td.text-end.small.p-2.px-4.text-nowrap
+          = tr_event_addon.humanized_category
+          Addon:
         %td
-          = tr_event_addon.name
-
-  %tr
-    %td.text-end.small.p-2.px-4.text-nowrap= "Total Tickets Price:"
-    %td
-      %strong
-        %span{ class: ('label label-info' if ticket_request.special_price) }
-          = number_to_currency(ticket_request.price, precision: 0)
+          %strong
+            = tr_event_addon.name
 
   - if ticket_request.donation&.positive?
     %tr
@@ -87,12 +95,6 @@
       %td
         %strong
           = number_to_currency(ticket_request.cost, precision: 0)
-
-  %tr
-    %td.text-end.small.p-2.px-4.text-nowrap= "Email:"
-    %td
-      %strong
-        = mail_to ticket_request.user.email
 
   - if event.require_mailing_address
     %tr
