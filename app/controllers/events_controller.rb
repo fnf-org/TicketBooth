@@ -136,13 +136,32 @@ class EventsController < ApplicationController
   end
 
   def permitted_params
-    params.permit(:id, :user_email, :user_id, :_method, :authenticity_token, :commit,
-                  event: [:name, :start_time, :end_time,
-                          :ticket_sales_start_time, :ticket_sales_end_time, :ticket_requests_end_time,
-                          :adult_ticket_price, :kid_ticket_price,
-                          :max_adult_tickets_per_request, :max_kid_tickets_per_request,
-                          :allow_donations, :allow_financial_assistance,
-                          :require_mailing_address, :require_role, :tickets_require_approval,
-                          { event_addons_attributes: %i[id addon_id price] }]).to_hash.with_indifferent_access
+    params.permit(:id,
+                  :user_email,
+                  :user_id,
+                  :_method,
+                  :authenticity_token,
+                  :commit,
+                  event: [
+                    :name,
+                    :start_time,
+                    :end_time,
+                    :ticket_sales_start_time,
+                    :ticket_sales_end_time,
+                    :ticket_requests_end_time,
+                    :adult_ticket_price,
+                    :kid_ticket_price,
+                    :max_adult_tickets_per_request,
+                    :max_kid_tickets_per_request,
+                    :allow_donations,
+                    :allow_financial_assistance,
+                    :require_mailing_address,
+                    :require_role,
+                    :tickets_require_approval,
+                    { event_addons_attributes: [:id, :addon_id, :price] }
+                  ]
+    )
+          .to_hash
+          .with_indifferent_access
   end
 end
