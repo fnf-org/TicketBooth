@@ -134,8 +134,8 @@ CREATE TABLE public.events (
     end_time timestamp without time zone,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    adult_ticket_price numeric(8,2),
-    kid_ticket_price numeric(8,2),
+    adult_ticket_price integer,
+    kid_ticket_price integer,
     max_adult_tickets_per_request integer,
     max_kid_tickets_per_request integer,
     photo character varying,
@@ -890,6 +890,7 @@ ALTER TABLE ONLY public.ticket_request_event_addons
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240728223048'),
 ('20240728211432'),
 ('20240718224717'),
 ('20240710231611'),
