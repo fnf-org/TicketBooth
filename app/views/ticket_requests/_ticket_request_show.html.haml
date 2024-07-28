@@ -111,29 +111,6 @@
           - if ticket_request.role_explanation.present?
             %blockquote= ticket_request.role_explanation
 
-
-  - if event.cabin_price
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Cabins:"
-      %td
-        %strong Cabins:
-        = ticket_request.cabins
-
-  - if ticket_request.previous_contribution.present?
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Contribution(s) last year:"
-      %td
-        %strong
-          = ticket_request.previous_contribution
-
-
-  - if ticket_request.car_camping
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Car Camping Requested because:"
-      %td
-        %strong
-          = ticket_request.car_camping_explanation
-
   - if ticket_request.needs_assistance
     %tr
       %td.text-end.small.p-2.px-4.text-nowrap= "Financial Assistance Requested?:"
@@ -174,22 +151,3 @@
         %h4 Ticket Coordinator Notes:
         %p.small
           = ticket_request.admin_notes
-
-  - if payment && event.eald?
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap
-        Planning to arrive early
-        %br
-        or leave late?
-      %td
-        :ruby
-              extra_params = {}
-              extra_params[:early_arrival_passes] = ticket_request.early_arrival_passes
-              extra_params[:late_departure_passes] = ticket_request.late_departure_passes
-              extra_params[:email] = ticket_request.user.email
-              extra_params[:name] = ticket_request.user.name
-        = link_to 'Early Arrival / Late Departure Passes',
-              new_event_eald_payment_path(event, extra_params),
-              class: 'small',
-              target: '_blank'
-        must be purchased separately!
