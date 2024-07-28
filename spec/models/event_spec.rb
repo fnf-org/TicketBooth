@@ -462,4 +462,18 @@ RSpec.describe Event do
       end
     end
   end
+
+  describe '#active_event_addons' do
+    let!(:event) { create(:event) }
+    let!(:event_addon) { create(:event_addon, event_id: event.id) }
+
+    it 'has a price not 0' do
+      expect(event_addon.price).to_not eq(0)
+    end
+
+    it 'finds one active event' do
+      expect(event.active_event_addons.count).to eq(1)
+    end
+
+  end
 end

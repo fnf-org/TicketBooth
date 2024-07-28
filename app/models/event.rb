@@ -248,6 +248,11 @@ class Event < ApplicationRecord
     event_addons.sort_by { |e| [e.category, e.name] }
   end
 
+  # find all where price is 0, sort by category and name
+  def active_event_addons
+    event_addons.where('price > ?', 0)
+  end
+
   private
 
   def generate_slug!
