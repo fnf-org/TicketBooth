@@ -286,21 +286,23 @@ class TicketRequest < ApplicationRecord
 
     total = adults * event.adult_ticket_price
 
-    if event.kid_ticket_price
-      custom_price = event.price_rules.map do |price_rule|
-        price_rule.calc_price(self)
-      end.compact.min
+    total += (kids * event.kid_ticket_price) if event.kid_ticket_price.present?
 
-      total += custom_price || (kids * event.kid_ticket_price)
-    end
-
-    total += cabins * event.cabin_price if event.cabin_price
+    # calculate addons price
+    total += calculate_tr_event_addons_price
 
     total
   end
 
-  def event_addons_price
-    # sum of all ticket_request_addons, calculate quantity * price
+  def calculate_tr_event_addons_price
+    return 0 unless ticket_request_event_addons?
+
+    tr_addons_price = 0
+    ticket_request_event_addons.each do |tr_event_addon|
+      tr_addons_price += tr_event_addon.calculate_cost
+    end
+
+    tr_addons_price
   end
 
   def cost
@@ -342,7 +344,7 @@ class TicketRequest < ApplicationRecord
     return if event.blank? || ticket_request_event_addons.present?
 
     event.active_event_addons.each do |event_addon|
-      ticket_request_event_addons.build(event_addon: event_addon).set_default_values
+      ticket_request_event_addons.build(event_addon:).set_default_values
     end
 
     Rails.logger.debug { "build_ticket_request_event_addons: #{ticket_request_event_addons.inspect}" }
@@ -364,8 +366,16 @@ class TicketRequest < ApplicationRecord
     ticket_request_event_addons
   end
 
-  def has_ticket_request_event_addons?
-    ticket_request_event_addons.where('quantity > ?', 0).count > 0
+  def active_sorted_ticket_request_event_addons
+    ticket_request_event_addons.where('quantity > ?', 0).sort_by { |e| [e.category, e.name] }
+  end
+
+  def ticket_request_event_addons?
+    ticket_request_event_addons.where('quantity > ?', 0).count.positive?
+  end
+
+  def active_ticket_request_event_addons
+    ticket_request_event_addons.where('quantity > ?', 0)
   end
 
   def set_defaults

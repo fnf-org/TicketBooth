@@ -32,9 +32,13 @@ class TicketRequestEventAddon < ApplicationRecord
   delegate :name, to: :event_addon
   delegate :price, to: :event_addon
   delegate :category, to: :event_addon
+  delegate :humanized_category, to: :event_addon
 
   def set_default_values
     self.quantity ||= 0
   end
 
+  def calculate_cost
+    price + quantity
+  end
 end
