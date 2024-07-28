@@ -18,12 +18,21 @@ class Addon < ApplicationRecord
   CATEGORIES = [CATEGORY_PASS = 'pass',
                 CATEGORY_CAMP = 'camp'].freeze
 
+  HUMANIZED_CATEGORIES = {
+    CATEGORY_PASS => 'Passes',
+    CATEGORY_CAMP => 'Camping'
+  }.freeze
+
   validates :category, presence: true, inclusion: { in: CATEGORIES }
   validates :name, presence: true
   validates :default_price, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   def self.categories
     CATEGORIES
+  end
+
+  def humanized_category
+    HUMANIZED_CATEGORIES[category]
   end
 
   def self.order_by_category

@@ -32,6 +32,7 @@ class EventAddon < ApplicationRecord
 
   delegate :name, to: :addon
   delegate :category, to: :addon
+  delegate :humanized_category, to: :addon
 
   def set_default_values
     self.price ||= addon.default_price
