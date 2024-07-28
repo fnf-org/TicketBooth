@@ -10,8 +10,15 @@
     %p Adults Tickets:
     = ticket_request.adults
 
-    %p Kids Tickets:
-    = ticket_request.kids
+    - if ticket_request.kids.present?
+      %p Kids Tickets:
+      = ticket_request.kids
+
+    - if ticket_request.ticket_request_event_addons?
+      %p Event Addon:
+      - ticket_request.active_sorted_ticket_request_event_addons.each do |tr_event_addon|
+        = tr_event_addon.humanized_category
+        = "##{tr_event_addon.name}: #{tr_event_addon.quantity}"
 
   %hr
   %p Amount:

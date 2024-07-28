@@ -87,12 +87,12 @@
 
         = f.label :kid_ticket_price do
           Kid Ticket Price ($)
-          %p.muted Keep blank if you want to sell only adult tickets
+          %p.muted Set blank if you want to sell only adult tickets
         = f.number_field :kid_ticket_price, class: 'input-small', min: 0
 
         = f.label :max_kid_tickets_per_request do
           Maximum number of kid tickets allowed per ticket request?
-          %p.muted Leave blank for no limit
+          %p.muted Set blank for no limit
         = f.number_field :max_kid_tickets_per_request, class: 'input-mini', min: 1
 
         %legend Event Addons and Pricing

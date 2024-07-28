@@ -125,11 +125,7 @@ class TicketRequestsController < ApplicationController
     @ticket_request = TicketRequest.new(tr_params,
                                         user_id: ticket_request_user.id,
                                         event_id: @event.id,
-                                        guests: [])
-
-    # if tr_params[:ticket_request_event_addons_attributes].present?
-    #   @ticket_request.build_ticket_request_event_addons_from_params(tr_params[:ticket_request_event_addons_attributes])
-    # end
+                                        guest_list: ["#{ticket_request_user.name} <#{ticket_request_user.email}>"])
 
     Rails.logger.info("Newly created request: #{@ticket_request.inspect}")
 

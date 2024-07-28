@@ -146,7 +146,7 @@ class Payment < ApplicationRecord
     # check if we have the same cost
     if payment_intent.amount != (amount = calculate_cost)
       self.payment_intent = update_payment_intent_amount(amount)
-      Rails.logger.debug { "retrieve_payment_intent updated payment intent with new amount [#{amount}] => #{payment_intent}}" }
+      Rails.logger.info { "retrieve_payment_intent updated payment intent with new amount [#{amount}] => #{payment_intent}}" }
     end
 
     Rails.logger.debug { "retrieve_payment_intent payment => #{inspect}}" }

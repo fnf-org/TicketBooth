@@ -42,6 +42,7 @@
                 = tooltip_box('Financial Assistance was requested.') do
                   = image_tag('icons/dollar.png', width: 20, class: 'hover-tooltip')
               - if ticket_request.ticket_request_event_addons?
+                -# TODO: use different tool tips here
                 = tooltip_box(ticket_request.active_ticket_request_event_addons_count, title:  "Addons:") do
                   = image_tag('icons/car.png', width: 20, class: 'hover-tooltip')
               - if ticket_request.admin_notes.present?

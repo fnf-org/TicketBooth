@@ -87,7 +87,7 @@
 
             - if !@ticket_request.post_payment? || (@event.admin?(current_user) && is_update)
               %h5 Tickets
-              = f.label :adults, 'Number of adult tickets' + " @ $#{@event.adult_ticket_price.to_i} each"
+              = f.label :adults, 'Number of Adult Tickets' + " @ $#{@event.adult_ticket_price.to_i} each"
               = f.number_field :adults, class: 'input-mini', min: 1, required: true,
                 max: @event.max_adult_tickets_per_request,
                 data: { default_price: @event.adult_ticket_price.to_i }
@@ -117,13 +117,13 @@
                       In order to pay for the ticket(s) you are required to fill out the list of guests (if any) and kids (if any) you are bringing and/or inviting.
 
               %hr
-              %h5 Addons
-
+              %h5 Event Addons
+              -# XXX This needs to be made into select
               - @ticket_request.ticket_request_event_addons.each do |tr_event_addon|
                 = f.fields_for :ticket_request_event_addons, tr_event_addon do |tr_event_addon_form|
                   = tr_event_addon_form.hidden_field :ticket_request_event_addon_id, value: tr_event_addon.id
                   = tr_event_addon_form.hidden_field :event_addon_id, value: tr_event_addon.event_addon_id
-                  = tr_event_addon_form.label :name, tr_event_addon.name
+                  = tr_event_addon_form.label :name, "Number of #{tr_event_addon.name} @ #{tr_event_addon.price}"
                   = tr_event_addon_form.number_field :quantity, class: 'input-small', min: 0
 
               %hr

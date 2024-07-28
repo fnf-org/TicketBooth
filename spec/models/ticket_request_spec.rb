@@ -10,12 +10,17 @@
 #  admin_notes             :string(512)
 #  adults                  :integer          default(1), not null
 #  agrees_to_terms         :boolean
+#  cabins                  :integer          default(0), not null
+#  car_camping             :boolean
+#  car_camping_explanation :string(200)
 #  city                    :string(50)
 #  country_code            :string(4)
 #  deleted_at              :datetime
 #  donation                :decimal(8, 2)    default(0.0)
+#  early_arrival_passes    :integer          default(0), not null
 #  guests                  :text
 #  kids                    :integer          default(0), not null
+#  late_departure_passes   :integer          default(0), not null
 #  needs_assistance        :boolean          default(FALSE), not null
 #  notes                   :string(500)
 #  previous_contribution   :string(250)
@@ -266,21 +271,17 @@ describe TicketRequest do
     let(:adults) { 2 }
     let(:kid_price) { nil }
     let(:kids) { nil }
-    let(:cabin_price) { nil }
-    let(:cabins) { nil }
     let(:special_price) { nil }
     let(:event) do
       build(:event,
             adult_ticket_price: adult_price,
-            kid_ticket_price:   kid_price,
-            cabin_price:)
+            kid_ticket_price:   kid_price)
     end
     let(:ticket_request) do
       build(:ticket_request,
             event:,
             adults:,
             kids:,
-            cabins:,
             special_price:)
     end
 
@@ -297,12 +298,6 @@ describe TicketRequest do
 
     context 'when the ticket request does not include kids' do
       let(:kids) { nil }
-
-      it { is_expected.to eql(adult_price * adults) }
-    end
-
-    context 'when the ticket request does not include cabins' do
-      let(:cabins) { nil }
 
       it { is_expected.to eql(adult_price * adults) }
     end
