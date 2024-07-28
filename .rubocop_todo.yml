@@ -157,6 +157,7 @@ Rails/ReversibleMigration:
     - 'db/migrate/20140605053705_remove_ask_how_many_shifts_from_events.rb'
     - 'db/migrate/20140605060026_add_camping_type_to_ticket_requests.rb'
     - 'db/migrate/20140616030905_change_camping_type_on_ticket_requests.rb'
+    - 'db/migrate/20240728211432_remove_ea_ld.rb'
 
 # Offense count: 3
 # Configuration parameters: ForbiddenMethods, AllowedMethods.

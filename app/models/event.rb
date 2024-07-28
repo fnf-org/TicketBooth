@@ -222,7 +222,7 @@ class Event < ApplicationRecord
   end
 
   def active_event_addons?
-    event_addons.where('price > ?', 0).count > 0
+    event_addons.where('price > ?', 0).count.positive?
   end
 
   def active_sorted_event_addons
