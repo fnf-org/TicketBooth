@@ -44,9 +44,9 @@ class EventsController < ApplicationController
     TimeHelper.normalize_time_attributes(create_params)
 
     @event = Event.new(create_params)
-    if create_params[:event_addons_attributes].present?
-      @event.build_event_addons_from_params(create_params[:event_addons_attributes])
-    end
+    # if create_params[:event_addons_attributes].present?
+    #   @event.build_event_addons_from_params(create_params[:event_addons_attributes])
+    # end
 
     Rails.logger.info("event_create: created event: #{@event.id} event_addons: #{@event.event_addons.inspect}")
 

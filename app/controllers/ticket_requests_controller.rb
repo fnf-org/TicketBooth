@@ -127,9 +127,9 @@ class TicketRequestsController < ApplicationController
                                         event_id: @event.id,
                                         guests: [])
 
-    if tr_params[:ticket_request_event_addons_attributes].present?
-      @ticket_request.build_ticket_request_event_addons_from_params(tr_params[:ticket_request_event_addons_attributes])
-    end
+    # if tr_params[:ticket_request_event_addons_attributes].present?
+    #   @ticket_request.build_ticket_request_event_addons_from_params(tr_params[:ticket_request_event_addons_attributes])
+    # end
 
     Rails.logger.info("Newly created request: #{@ticket_request.inspect}")
 
