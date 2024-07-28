@@ -34,6 +34,8 @@ RSpec.describe EventAddon do
       it { is_expected.to be_valid }
 
       describe '#set_default_values' do
+        let(:event_addon) { build(:event_addon, price: nil) }
+
         it 'has price set to default price' do
           expect(event_addon.set_default_values).to eq(event_addon.addon.default_price)
         end
