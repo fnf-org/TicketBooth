@@ -25,5 +25,16 @@ class TicketRequestEventAddon < ApplicationRecord
   belongs_to :event_addon
   belongs_to :ticket_request
 
+  attr_accessible :id, :event_addon_id, :ticket_request_id, :quantity, :event_addon, :ticket_request
+
   validates :quantity, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  delegate :name, to: :event_addon
+  delegate :price, to: :event_addon
+  delegate :category, to: :event_addon
+
+  def set_default_values
+    self.quantity ||= 0
+  end
+
 end

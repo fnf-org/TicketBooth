@@ -73,11 +73,11 @@ class TicketRequestsController < ApplicationController
 
   def new
     @ticket_request = TicketRequest.new(event_id: @event.id)
-
     unless @event.ticket_requests_open?
       return redirect_to root_path
     end
 
+    # load event addons
     if signed_in?
       @user = current_user
 
@@ -86,6 +86,10 @@ class TicketRequestsController < ApplicationController
         redirect_to event_ticket_request_path(event_id: @event.id, id: existing_request.id)
       end
     end
+
+    # build addons
+    @ticket_request.build_ticket_request_event_addons
+    @ticket_request
   end
 
   def edit
@@ -113,6 +117,8 @@ class TicketRequestsController < ApplicationController
       return render_flash(flash)
     end
 
+    Rails.logger.debug("ticket request create: tr_params: #{tr_params}")
+
     ticket_request_user = current_user
     tr_params[:user_id] = ticket_request_user.id
 
@@ -120,6 +126,10 @@ class TicketRequestsController < ApplicationController
                                         user_id: ticket_request_user.id,
                                         event_id: @event.id,
                                         guests: [])
+
+    if tr_params[:ticket_request_event_addons_attributes].present?
+      @ticket_request.build_ticket_request_event_addons_from_params(tr_params[:ticket_request_event_addons_attributes])
+    end
 
     Rails.logger.info("Newly created request: #{@ticket_request.inspect}")
 
@@ -132,14 +142,17 @@ class TicketRequestsController < ApplicationController
         target: @ticket_request
       ).fire!
 
-      if (@event.tickets_require_approval || @ticket_request.free?) && @ticket_request.total_tickets > 1
+      if @event.tickets_require_approval && @ticket_request.total_tickets > 1
+        Rails.logger.debug("tr approval: #{@ticket_request.inspect}")
         redirect_to event_ticket_request_path(@event, @ticket_request),
                     notice: 'When you know your guest names, please return here and add them below.'
-      elsif !@ticket_request.all_guests_specified?
+      elsif !@ticket_request.all_guests_specified? && @ticket_request.total_tickets > 1
+        Rails.logger.debug("tr NOT all guests specified: #{@ticket_request.inspect}")
         # XXX there is a bug here that flashes this when only 1 ticket being purchased.
         redirect_to edit_event_ticket_request_path(@event, @ticket_request),
                     notice: 'Please enter the guest names before you are able to pay for the ticket.'
-      elsif @ticket_request.approved?
+      elsif !@event.tickets_require_approval || @ticket_request.approved?
+        Rails.logger.debug("tr please pay: #{@ticket_request.inspect}")
         redirect_to event_ticket_request_payments_path(@event, @ticket_request),
                     notice: 'Please pay for your ticket(s).'
       end
@@ -267,7 +280,6 @@ class TicketRequestsController < ApplicationController
         :user_id,
         :adults,
         :kids,
-        :cabins,
         :needs_assistance,
         :notes,
         :special_price,
@@ -276,8 +288,6 @@ class TicketRequestsController < ApplicationController
         :donation,
         :role,
         :role_explanation,
-        :car_camping,
-        :car_camping_explanation,
         :previous_contribution,
         :address_line1,
         :address_line2,
@@ -287,9 +297,8 @@ class TicketRequestsController < ApplicationController
         :country_code,
         :admin_notes,
         :agrees_to_terms,
-        :early_arrival_passes,
-        :late_departure_passes,
-        { guest_list: [] }
+        { guest_list: [] },
+        { ticket_request_event_addons_attributes: [:id, :ticket_request_id, :event_addon_id, :quantity] }
       ]
     )
           .to_hash

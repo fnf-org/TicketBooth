@@ -159,12 +159,14 @@ class TicketRequest < ApplicationRecord
                   :car_camping, :car_camping_explanation, :previous_contribution,
                   :address_line1, :address_line2, :city, :state, :zip_code,
                   :country_code, :admin_notes, :agrees_to_terms,
-                  :early_arrival_passes, :late_departure_passes, :guests
+                  :early_arrival_passes, :late_departure_passes, :guests,
+                  :ticket_request_event_addons_attributes
 
   normalize_attributes :notes, :role_explanation, :previous_contribution,
                        :admin_notes, :car_camping_explanation
 
   accepts_nested_attributes_for :user
+  accepts_nested_attributes_for :ticket_request_event_addons
 
   before_validation :set_defaults
 
@@ -334,6 +336,36 @@ class TicketRequest < ApplicationRecord
 
   def country_name
     ISO3166::Country[country_code]
+  end
+
+  def build_ticket_request_event_addons
+    return if event.blank? || ticket_request_event_addons.present?
+
+    event.active_event_addons.each do |event_addon|
+      ticket_request_event_addons.build(event_addon: event_addon).set_default_values
+    end
+
+    Rails.logger.debug { "build_ticket_request_event_addons: #{ticket_request_event_addons.inspect}" }
+    ticket_request_event_addons
+  end
+
+  def build_ticket_request_event_addons_from_params(build_params)
+    return if build_params.blank?
+
+    Rails.logger.debug { "build_ticket_request_event_addons_from_params: #{build_params}" }
+
+    build_params.each_value do |value|
+      if EventAddon.exists?(id: value['event_addon_id'])
+        ticket_request_event_addons.build({ ticket_request_id: id, event_addon_id: value['event_addon_id'], quantity: value['quantity'] })
+      end
+    end
+
+    Rails.logger.debug { "build_ticket_request_event_addons_from_params: save: #{event_addons.ticket_request_event_addons}" }
+    ticket_request_event_addons
+  end
+
+  def has_ticket_request_event_addons?
+    ticket_request_event_addons.where('quantity > ?', 0).count > 0
   end
 
   def set_defaults
