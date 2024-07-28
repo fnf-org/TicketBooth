@@ -18,38 +18,6 @@
             = ticket_request.status_name
 
   %tr
-    %td.text-end.small.p-2.px-4.text-nowrap= "Adult Tickets:"
-    %td
-      %strong
-        = ticket_request.adults
-
-  - if event.kid_ticket_price
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Kid Tickets:"
-      %td
-        %strong
-          = ticket_request.kids
-
-  %tr
-    %td.text-end.small.p-2.px-4.text-nowrap= "Total Tickets Price:"
-    %td
-      %strong
-        %span{ class: ('label label-info' if ticket_request.special_price) }
-          = number_to_currency(ticket_request.price, precision: 0)
-
-  - if ticket_request.donation&.positive?
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Extra Donation:"
-      %td
-        %strong
-          = number_to_currency(ticket_request.donation, precision: 0)
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Total Amount:"
-      %td
-        %strong
-          = number_to_currency(ticket_request.cost, precision: 0)
-
-  %tr
     %td.text-end.small.p-2.px-4.text-nowrap= "Payment:"
     %td
       %strong
@@ -80,6 +48,45 @@
             Unfortunately, ticket sales are now closed. You can no longer purchase your
             = succeed '.' do
               = 'ticket'.pluralize(ticket_request.total_tickets)
+
+  %tr
+    %td.text-end.small.p-2.px-4.text-nowrap= "Adult Tickets:"
+    %td
+      %strong
+        = ticket_request.adults
+
+  - if event.kid_ticket_price
+    %tr
+      %td.text-end.small.p-2.px-4.text-nowrap= "Kid Tickets:"
+      %td
+        %strong
+          = ticket_request.kids
+
+  - if ticket_request.ticket_request_event_addons?
+    - ticket_request.active_sorted_ticket_request_event_addons.each do |tr_event_addon|
+      %tr
+        %td.text-end.small.p-2.px-4.text-nowrap= tr_event_addon.humanized_category + ":"
+        %td
+          = tr_event_addon.name
+
+  %tr
+    %td.text-end.small.p-2.px-4.text-nowrap= "Total Tickets Price:"
+    %td
+      %strong
+        %span{ class: ('label label-info' if ticket_request.special_price) }
+          = number_to_currency(ticket_request.price, precision: 0)
+
+  - if ticket_request.donation&.positive?
+    %tr
+      %td.text-end.small.p-2.px-4.text-nowrap= "Extra Donation:"
+      %td
+        %strong
+          = number_to_currency(ticket_request.donation, precision: 0)
+    %tr
+      %td.text-end.small.p-2.px-4.text-nowrap= "Total Amount:"
+      %td
+        %strong
+          = number_to_currency(ticket_request.cost, precision: 0)
 
   %tr
     %td.text-end.small.p-2.px-4.text-nowrap= "Email:"
