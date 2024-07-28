@@ -5,11 +5,11 @@
 # Table name: events
 #
 #  id                            :bigint           not null, primary key
-#  adult_ticket_price            :decimal(8, 2)
+#  adult_ticket_price            :integer
 #  allow_donations               :boolean          default(FALSE), not null
 #  allow_financial_assistance    :boolean          default(FALSE), not null
 #  end_time                      :datetime
-#  kid_ticket_price              :decimal(8, 2)
+#  kid_ticket_price              :integer
 #  max_adult_tickets_per_request :integer
 #  max_kid_tickets_per_request   :integer
 #  name                          :string
