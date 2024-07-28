@@ -158,9 +158,8 @@ class EventsController < ApplicationController
                     :require_mailing_address,
                     :require_role,
                     :tickets_require_approval,
-                    { event_addons_attributes: [:id, :addon_id, :price] }
-                  ]
-    )
+                    { event_addons_attributes: %i[id addon_id price] }
+                  ])
           .to_hash
           .with_indifferent_access
   end
