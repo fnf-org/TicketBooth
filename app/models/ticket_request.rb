@@ -271,6 +271,7 @@ class TicketRequest < ApplicationRecord
     end
   end
 
+  # calculate the total price for this ticket request
   def price
     return special_price if special_price
 
