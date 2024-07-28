@@ -284,13 +284,14 @@ class TicketRequest < ApplicationRecord
   def price
     return special_price if special_price
 
-    total = adults * event.adult_ticket_price
-
-    total += (kids * event.kid_ticket_price) if event.kid_ticket_price.present?
-
-    # calculate addons price
+    total = tickets_price
     total += calculate_tr_event_addons_price
+    total
+  end
 
+  def tickets_price
+    total = adults * event.adult_ticket_price
+    total += (kids * event.kid_ticket_price) if event.kid_ticket_price.present?
     total
   end
 

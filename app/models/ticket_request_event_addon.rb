@@ -39,6 +39,6 @@ class TicketRequestEventAddon < ApplicationRecord
   end
 
   def calculate_cost
-    price + quantity
+    price * quantity
   end
 end

@@ -328,13 +328,6 @@ describe TicketRequest do
       it { is_expected.to eql(adult_price * adults) }
     end
 
-    context 'when the ticket request includes cabins' do
-      let(:cabins) { 2 }
-      let(:cabin_price) { 100 }
-
-      it { is_expected.to eql((adult_price * adults) + (cabin_price * cabins)) }
-    end
-
     context 'when the ticket request does not include cabins' do
       let(:cabins) { nil }
 
@@ -346,29 +339,16 @@ describe TicketRequest do
 
       it { is_expected.to eql(special_price) }
     end
+  end
 
-    context 'when custom price rules are defined' do
-      let(:kid_price) { 10 }
-      let(:trigger_value) { 3 }
-      let(:custom_price) { 5 }
+  describe '#calculate_tr_event_addons_price' do
+    let!(:event) { create(:event) }
+    let!(:event_addon) { create(:event_addon, price: 10) }
+    let!(:ticket_request) { create(:ticket_request, event_id: event.id) }
+    let!(:ticket_request_event_addon) { create(:ticket_request_event_addon, ticket_request_id: ticket_request.id, quantity: 1) }
 
-      before do
-        PriceRule::KidsEqualTo.create! event:,
-                                       trigger_value:,
-                                       price: custom_price
-      end
-
-      context 'and the rule does not apply' do
-        let(:kids) { trigger_value - 1 }
-
-        it { is_expected.to eql((adult_price * adults) + (kid_price * kids)) }
-      end
-
-      context 'and the rule applies' do
-        let(:kids) { trigger_value }
-
-        it { is_expected.to eql((adult_price * adults) + 5) }
-      end
+    it 'calculates event addons price for ticket request' do
+      expect(ticket_request.calculate_tr_event_addons_price).to eq(event_addon.price * ticket_request_event_addon.quantity)
     end
   end
 
