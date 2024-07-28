@@ -244,13 +244,24 @@ class Event < ApplicationRecord
     event_addons
   end
 
-  def sorted_event_addons
-    event_addons.sort_by { |e| [e.category, e.name] }
-  end
-
-  # find all where price is 0, sort by category and name
   def active_event_addons
     event_addons.where('price > ?', 0)
+  end
+
+  def active_event_addons?
+    event_addons.where('price > ?', 0).count > 0
+  end
+
+  def active_sorted_event_addons
+    event_addons.where('price > ?', 0).sort_by { |e| [e.category, e.price, e.name] }
+  end
+
+  def sorted_event_addons
+    event_addons.sort_by { |e| [e.category, e.id] }
+  end
+
+  def passes?
+    active_sorted_event_addons
   end
 
   private

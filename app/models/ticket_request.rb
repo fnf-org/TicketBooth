@@ -368,7 +368,7 @@ class TicketRequest < ApplicationRecord
   end
 
   def active_sorted_ticket_request_event_addons
-    ticket_request_event_addons.where('quantity > ?', 0).sort_by { |e| [e.category, e.name] }
+    ticket_request_event_addons.where('quantity > ?', 0).sort_by { |e| [e.category, e.price, e.name] }
   end
 
   def ticket_request_event_addons?
@@ -377,6 +377,10 @@ class TicketRequest < ApplicationRecord
 
   def active_ticket_request_event_addons
     ticket_request_event_addons.where('quantity > ?', 0)
+  end
+
+  def active_ticket_request_event_addons_count
+    active_ticket_request_event_addons.count
   end
 
   def set_defaults

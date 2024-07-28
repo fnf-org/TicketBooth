@@ -21,8 +21,8 @@
           %th.bg-dark-subtle.text-end Tickets
           - if event.kid_ticket_price
             %th.bg-dark-subtle.text-end Kids
-          - if event.cabin_price
-            %th.bg-dark-subtle.text-end Cabins
+          - if event.active_event_addons?
+            %th.bg-dark-subtle.text-end Addons
           %th.bg-dark-subtle.text-end Earn
 
       %tbody.border-2.border-dark-subtle
@@ -37,9 +37,9 @@
           - if event.kid_ticket_price
             %td.text-end.bg-success-subtle
               %span= stats[:completed][:kids]
-          - if event.cabin_price
+          - if event.active_event_addons?
             %td.text-end.bg-success-subtle
-              %span= stats[:completed][:cabins]
+              %span= stats[:completed][:event_addons]
           %td.text-end.bg-success-subtle
             %span
               = number_to_currency(stats[:completed][:raised], precision: 0)
@@ -51,8 +51,8 @@
           %td.text-end.bg-warning= stats[:pending][:adults]
           - if event.kid_ticket_price
             %td.text-end.bg-warning= stats[:pending][:kids]
-          - if event.cabin_price
-            %td.text-end.bg-warning= stats[:pending][:cabins]
+          - if event.active_event_addons?
+            %td.text-end.bg-warning= stats[:pending][:event_addons]
           %td.text-end.bg-warning.fs-6
             = number_to_currency(stats[:pending][:raised], precision: 0)
 
@@ -63,8 +63,8 @@
           %td.text-end.bg-warning-subtle= stats[:awaiting_payment][:adults]
           - if event.kid_ticket_price
             %td.text-end.bg-warning-subtle= stats[:awaiting_payment][:kids]
-          - if event.cabin_price
-            %td.text-end.bg-warning-subtle= stats[:awaiting_payment][:cabins]
+          - if event.active_event_addons?
+            %td.text-end.bg-warning-subtle= stats[:awaiting_payment][:event_addons]
           %td.text-end.bg-warning-subtle.fs-6
             = number_to_currency(stats[:awaiting_payment][:raised], precision: 0)
 
@@ -76,6 +76,6 @@
           %td.bg-dark-subtle.text-end= stats[:total][:adults]
           - if event.kid_ticket_price
             %td.bg-dark-subtle.text-end= stats[:total][:kids]
-          - if event.cabin_price
-            %td.bg-dark-subtle.text-end= stats[:total][:cabins]
+          - if event.active_event_addons?
+            %td.bg-dark-subtle.text-end= stats[:total][:event_addons]
           %td.bg-dark-subtle.text-end.fs-5= number_to_currency(stats[:total][:raised], precision: 0)

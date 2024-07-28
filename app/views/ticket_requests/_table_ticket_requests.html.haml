@@ -13,10 +13,8 @@
           %th.bg-dark-subtle.text-end.optional-medium Tickets
           - if event.kid_ticket_price
             %th.bg-dark-subtle.text-end.optional-medium Kids
-          - if event.cabin_price
-            %th.bg-dark-subtle.text-end.optional-medium Cabins
-          - if event.eald?
-            %th.bg-dark-subtle.text-end.optional-medium EA/LD
+          - if event.active_event_addons?
+            %th.bg-dark-subtle.text-end.optional-medium Addons
           %th.bg-dark-subtle.text-end Total
           %th.bg-dark-subtle.text-end.optional-medium Date Requested
           %th.bg-dark-subtle.text-center Status
@@ -43,8 +41,8 @@
               - if ticket_request.needs_assistance
                 = tooltip_box('Financial Assistance was requested.') do
                   = image_tag('icons/dollar.png', width: 20, class: 'hover-tooltip')
-              - if ticket_request.car_camping
-                = tooltip_box(ticket_request.car_camping_explanation, title:  "Car/RV Request:") do
+              - if ticket_request.ticket_request_event_addons?
+                = tooltip_box(ticket_request.active_ticket_request_event_addons_count, title:  "Addons:") do
                   = image_tag('icons/car.png', width: 20, class: 'hover-tooltip')
               - if ticket_request.admin_notes.present?
                 = tooltip_box(ticket_request.admin_notes, title: "Admin Notes") do
@@ -55,8 +53,8 @@
             - if event.kid_ticket_price
               %td.align-content-center.text-end.optional-medium= ticket_request.kids
 
-            - if event.cabin_price
-              %td.align-content-center.text-end.optional-medium= ticket_request.cabins
+            - if event.active_event_addons?
+              %td.align-content-center.text-end.optional-medium= ticket_request.active_ticket_request_event_addons_count
 
             - if event.eald?
               %td.align-content-center.text-end.optional-medium
