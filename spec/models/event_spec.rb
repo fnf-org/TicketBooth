@@ -139,11 +139,6 @@ RSpec.describe Event do
       it { is_expected.not_to accept_values_for(:kid_ticket_price, -1) }
     end
 
-    describe '#cabin_price' do
-      it { is_expected.to accept_values_for(:cabin_price, nil, '', 0, 50) }
-      it { is_expected.not_to accept_values_for(:cabin_price, -1) }
-    end
-
     describe '#max_adult_tickets_per_request' do
       it { is_expected.to accept_values_for(:max_adult_tickets_per_request, nil, '', 50) }
       it { is_expected.not_to accept_values_for(:max_adult_tickets_per_request, 0, -1) }

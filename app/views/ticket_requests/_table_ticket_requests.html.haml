@@ -56,17 +56,17 @@
             - if event.active_event_addons?
               %td.align-content-center.text-end.optional-medium= ticket_request.active_ticket_request_event_addons_count
 
-            - if event.eald?
-              %td.align-content-center.text-end.optional-medium
-                #{ticket_request.early_arrival_passes} / #{ticket_request.late_departure_passes}
-                -# %br
-                -# - if eald_requested?(ticket_request)
-                -#   - if eald_paid?(ticket_request)
-                -#     ✔︎ EALD Paid
-                -#   - else
-                -#     ✘ Not All EALD Bought
-                -# - else
-                -#   ✘ Not Requested
+            -# - if event.eald?
+            -#   %td.align-content-center.text-end.optional-medium
+            -#     #{ticket_request.early_arrival_passes} / #{ticket_request.late_departure_passes}
+            -#     -# %br
+            -#     -# - if eald_requested?(ticket_request)
+            -#     -#   - if eald_paid?(ticket_request)
+            -#     -#     ✔︎ EALD Paid
+            -#     -#   - else
+            -#     -#     ✘ Not All EALD Bought
+            -#     -# - else
+            -#     -#   ✘ Not Requested
             %td.align-content-center.text-end
               %span{ class: ('label label-info' if ticket_request.special_price) }
                 = number_to_currency(ticket_request.price, precision: 0)

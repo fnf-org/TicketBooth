@@ -136,28 +136,6 @@ describe TicketRequest do
       end
     end
 
-    describe '#cabins' do
-      let(:ticket_request) { build(:ticket_request, cabins:) }
-
-      context 'when not present' do
-        let(:cabins) { nil }
-
-        it { is_expected.to be_valid }
-      end
-
-      context 'when not a number' do
-        let(:cabins) { 'not a number' }
-
-        it { is_expected.not_to be_valid }
-      end
-
-      context 'when a number' do
-        let(:cabins) { 2 }
-
-        it { is_expected.to be_valid }
-      end
-    end
-
     describe '#notes' do
       let(:ticket_request) { build(:ticket_request, notes:) }
 

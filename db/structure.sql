@@ -59,43 +59,6 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
--- Name: eald_payments; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.eald_payments (
-    id bigint NOT NULL,
-    event_id bigint,
-    stripe_charge_id character varying NOT NULL,
-    amount_charged_cents integer NOT NULL,
-    name character varying(255) NOT NULL,
-    email character varying(255) NOT NULL,
-    early_arrival_passes integer DEFAULT 0 NOT NULL,
-    late_departure_passes integer DEFAULT 0 NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: eald_payments_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.eald_payments_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: eald_payments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.eald_payments_id_seq OWNED BY public.eald_payments.id;
-
-
---
 -- Name: event_addons; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -173,11 +136,8 @@ CREATE TABLE public.events (
     updated_at timestamp(6) without time zone NOT NULL,
     adult_ticket_price numeric(8,2),
     kid_ticket_price numeric(8,2),
-    cabin_price numeric(8,2),
     max_adult_tickets_per_request integer,
     max_kid_tickets_per_request integer,
-    max_cabins_per_request integer,
-    max_cabin_requests integer,
     photo character varying,
     tickets_require_approval boolean DEFAULT true NOT NULL,
     require_mailing_address boolean DEFAULT false NOT NULL,
@@ -186,8 +146,6 @@ CREATE TABLE public.events (
     ticket_sales_start_time timestamp without time zone,
     ticket_sales_end_time timestamp without time zone,
     ticket_requests_end_time timestamp without time zone,
-    early_arrival_price numeric(8,2) DEFAULT 0.0,
-    late_departure_price numeric(8,2) DEFAULT 0.0,
     slug text,
     require_role boolean DEFAULT true NOT NULL
 );
@@ -571,13 +529,6 @@ ALTER TABLE ONLY public.addons ALTER COLUMN id SET DEFAULT nextval('public.addon
 
 
 --
--- Name: eald_payments id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.eald_payments ALTER COLUMN id SET DEFAULT nextval('public.eald_payments_id_seq'::regclass);
-
-
---
 -- Name: event_addons id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -675,14 +626,6 @@ ALTER TABLE ONLY public.addons
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
-
-
---
--- Name: eald_payments eald_payments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.eald_payments
-    ADD CONSTRAINT eald_payments_pkey PRIMARY KEY (id);
 
 
 --
@@ -787,13 +730,6 @@ ALTER TABLE ONLY public.time_slots
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
-
-
---
--- Name: index_eald_payments_on_event_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_eald_payments_on_event_id ON public.eald_payments USING btree (event_id);
 
 
 --
@@ -954,6 +890,7 @@ ALTER TABLE ONLY public.ticket_request_event_addons
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240728211432'),
 ('20240718224717'),
 ('20240710231611'),
 ('20240523173316'),

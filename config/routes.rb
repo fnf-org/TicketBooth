@@ -14,19 +14,6 @@ Rails.application.routes.draw do
 
   devise_for :users
 
-  # WTF was this for? --@kig
-  #
-  # event_id = 9
-  #
-  # get('fnf-tickets', controller: :ticket_requests, action: :new, event_id:)
-  # get('fnf_tickets', controller: :ticket_requests, action: :new, event_id:)
-  # get('fnftickets', controller: :ticket_requests, action: :new, event_id:)
-  # get('fnf', controller: :ticket_requests, action: :new, event_id:)
-  # get('FNF', controller: :ticket_requests, action: :new, event_id:)
-  # get('FnF', controller: :ticket_requests, action: :new, event_id:)
-  #
-  # get('eald', controller: :eald_payments, action: :new, event_id:)
-
   resources :emails, only: :index
 
   resources :events do
@@ -71,13 +58,6 @@ Rails.application.routes.draw do
           get :show
           get :other
         end
-      end
-    end
-
-    resources :eald_payments, only: %i[index new create] do
-      collection do
-        get :complete
-        get :download
       end
     end
   end
