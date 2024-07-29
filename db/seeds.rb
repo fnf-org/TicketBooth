@@ -163,7 +163,7 @@ module FnF
       def create_addons
         return if Addon.count.positive?
 
-        Addon.create category: Addon::CATEGORY_PASS, name: 'Early Arrival', default_price: 20
+        Addon.create category: Addon::CATEGORY_PASS, name: 'Early Arrival', default_price: 0
         Addon.create category: Addon::CATEGORY_PASS, name: 'Late Departure', default_price: 30
         Addon.create category: Addon::CATEGORY_CAMP, name: 'Car Camping', default_price: 50
         Addon.create category: Addon::CATEGORY_CAMP, name: 'RV under 20ft', default_price: 100

@@ -102,7 +102,7 @@
         - @event.sorted_event_addons.each do |event_addon|
           = f.fields_for :event_addons, event_addon do |event_addon_form|
             = event_addon_form.hidden_field :addon_id, value: event_addon.addon_id
-            = event_addon_form.label :name, "#{event_addon.humanized_category}: #{event_addon.name} ($)"
+            = event_addon_form.label :name, "#{event_addon.category_and_name}"
             = event_addon_form.number_field :price, class: 'input-small', min: 0
 
   = f.submit " ▶︎ Update Event", class: 'btn btn-primary btn-large'

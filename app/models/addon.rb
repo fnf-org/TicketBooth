@@ -19,7 +19,7 @@ class Addon < ApplicationRecord
                 CATEGORY_CAMP = 'camp'].freeze
 
   HUMANIZED_CATEGORIES = {
-    CATEGORY_PASS => 'Passes',
+    CATEGORY_PASS => 'Event Passes',
     CATEGORY_CAMP => 'Camping Permits'
   }.freeze
 

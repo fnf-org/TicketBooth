@@ -37,4 +37,8 @@ class EventAddon < ApplicationRecord
   def set_default_values
     self.price ||= addon.default_price
   end
+
+  def category_and_name
+    "#{humanized_category}: #{name} ($)"
+  end
 end
