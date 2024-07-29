@@ -387,7 +387,6 @@ CREATE TABLE public.ticket_requests (
     id bigint NOT NULL,
     adults integer DEFAULT 1 NOT NULL,
     kids integer DEFAULT 0 NOT NULL,
-    cabins integer DEFAULT 0 NOT NULL,
     needs_assistance boolean DEFAULT false NOT NULL,
     notes character varying(500),
     status character varying(1) NOT NULL,
@@ -407,11 +406,7 @@ CREATE TABLE public.ticket_requests (
     zip_code character varying(32),
     country_code character varying(4),
     admin_notes character varying(512),
-    car_camping boolean,
-    car_camping_explanation character varying(200),
     agrees_to_terms boolean,
-    early_arrival_passes integer DEFAULT 0 NOT NULL,
-    late_departure_passes integer DEFAULT 0 NOT NULL,
     guests text,
     deleted_at timestamp(6) without time zone
 );
@@ -890,6 +885,7 @@ ALTER TABLE ONLY public.ticket_request_event_addons
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240729210234'),
 ('20240728223048'),
 ('20240728211432'),
 ('20240718224717'),
