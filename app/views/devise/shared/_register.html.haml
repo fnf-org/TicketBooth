@@ -1,4 +1,4 @@
-%h2 Register
+%h2 Register New Account
 
 - http_method = existing ? :put : :post
 = form_for(resource, as: resource_name, url: user_registration_path, html: { method: http_method }, data: { turbo: false } ) do |f|
@@ -49,5 +49,7 @@
         .col-12
           .actions.btn-group-md
             = f.submit "Register", class: 'btn btn-primary btn-lg'
-            = link_to "Go Back &larrhk;".html_safe, :back, class: 'btn btn-warning btn-md'
+            - if controller_name != 'ticket_requests'
+              = link_to "Go Back &larrhk;".html_safe, :back, class: 'btn btn-warning btn-md'
+            %p= link_to "Forgot your password?", new_password_path(resource_name)
 
