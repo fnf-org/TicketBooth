@@ -20,7 +20,7 @@ class Addon < ApplicationRecord
 
   HUMANIZED_CATEGORIES = {
     CATEGORY_PASS => 'Passes',
-    CATEGORY_CAMP => 'Camping'
+    CATEGORY_CAMP => 'Camping Permits'
   }.freeze
 
   validates :category, presence: true, inclusion: { in: CATEGORIES }

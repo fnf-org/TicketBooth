@@ -27,6 +27,11 @@ class TicketRequestEventAddon < ApplicationRecord
 
   attr_accessible :id, :event_addon_id, :ticket_request_id, :quantity, :event_addon, :ticket_request
 
+  PURCHASE_CATEGORIES = {
+    Addon::CATEGORY_PASS => 'Passes',
+    Addon::CATEGORY_CAMP => 'Permits'
+  }.freeze
+
   validates :quantity, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   delegate :name, to: :event_addon
@@ -40,5 +45,13 @@ class TicketRequestEventAddon < ApplicationRecord
 
   def calculate_cost
     price * quantity
+  end
+
+  def purchase_category(category)
+    PURCHASE_CATEGORIES[category]
+  end
+
+  def name_category_price_each
+    "#{name} #{purchase_category(category)} @ #{price} each"
   end
 end

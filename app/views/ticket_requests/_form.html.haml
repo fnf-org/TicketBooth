@@ -123,7 +123,7 @@
                 = f.fields_for :ticket_request_event_addons, tr_event_addon do |tr_event_addon_form|
                   = tr_event_addon_form.hidden_field :ticket_request_event_addon_id, value: tr_event_addon.id
                   = tr_event_addon_form.hidden_field :event_addon_id, value: tr_event_addon.event_addon_id
-                  = tr_event_addon_form.label :name, "Number of #{tr_event_addon.name} @ #{tr_event_addon.price}"
+                  = tr_event_addon_form.label :name, "Number of #{tr_event_addon.name_category_price_each}"
                   = tr_event_addon_form.number_field :quantity, class: 'input-small', min: 0
 
               %hr
@@ -151,7 +151,6 @@
                             I’m requesting financial assistance with purchasing my ticket(s)
                         %td.text-end
                           = tooltip_box help_text_for(:needs_assistance), title: "Financial Assistance"
-
 
                 .control-group
 
