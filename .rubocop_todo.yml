@@ -104,6 +104,9 @@ Rails/BulkChangeTable:
     - 'db/migrate/20140605045004_extract_address_into_multiple_fields.rb'
     - 'db/migrate/20140616030905_change_camping_type_on_ticket_requests.rb'
     - 'db/migrate/20160611234315_add_eald_columns.rb'
+    - 'db/migrate/20240728211432_remove_ea_ld.rb'
+    - 'db/migrate/20240728223048_event_prices_as_integers.rb'
+    - 'db/migrate/20240729210234_ticket_requests_cleanup.rb'
 
 # Offense count: 3
 # Configuration parameters: Include.
