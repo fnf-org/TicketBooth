@@ -361,12 +361,6 @@ class TicketRequest < ApplicationRecord
     ticket_request_event_addons.where('quantity > ?', 0).count.positive?
   end
 
-  def active_ticket_request_event_addons
-    ticket_request_event_addons.where('quantity > ?', 0)
-  end
-
-  delegate :count, to: :active_ticket_request_event_addons, prefix: true
-
   def set_defaults
     self.status = nil if status.blank?
     self.status ||= if event
