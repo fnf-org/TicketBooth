@@ -5,8 +5,8 @@ source 'https://rubygems.org'
 ruby File.read('.ruby-version')
 
 # Use main development branch of Rails
-gem 'rails', '=7.1.3.2'
 gem 'data_migrate'
+gem 'rails', '=7.1.3.2'
 
 # Unclear if we need to require it explicitly
 # gem 'activesupport', '=7.1.3.2'

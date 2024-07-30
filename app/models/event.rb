@@ -253,7 +253,7 @@ class Event < ApplicationRecord
       errors.add(:ticket_sales_end_time, 'must be after start time')
     end
   end
-  
+
   def ensure_require_role_set_default
     attributes[:require_role] = true if attributes[:require_role].nil?
   end
