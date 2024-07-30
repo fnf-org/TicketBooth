@@ -148,6 +148,9 @@ GEM
     cssbundling-rails (1.4.0)
       railties (>= 6.0.0)
     dalli (3.2.8)
+    data_migrate (9.4.0)
+      activerecord (>= 6.1)
+      railties (>= 6.1)
     date (3.3.4)
     debug (1.9.2)
       irb (~> 1.10)
@@ -493,6 +496,7 @@ DEPENDENCIES
   country_select
   cssbundling-rails
   dalli
+  data_migrate
   debug
   devise
   ed25519
