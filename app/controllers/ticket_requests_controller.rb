@@ -124,8 +124,7 @@ class TicketRequestsController < ApplicationController
 
     @ticket_request = TicketRequest.new(tr_params,
                                         user_id: ticket_request_user.id,
-                                        event_id: @event.id,
-                                        guest_list: ["#{ticket_request_user.name} <#{ticket_request_user.email}>"])
+                                        event_id: @event.id)
 
     Rails.logger.info("Newly created request: #{@ticket_request.inspect}")
 
@@ -142,7 +141,7 @@ class TicketRequestsController < ApplicationController
         Rails.logger.debug { "tr approval: #{@ticket_request.inspect}" }
         redirect_to event_ticket_request_path(@event, @ticket_request),
                     notice: 'When you know your guest names, please return here and add them below.'
-      elsif !@ticket_request.all_guests_specified? && @ticket_request.total_tickets > 1
+      elsif !@ticket_request.all_guests_specified?
         Rails.logger.debug { "tr NOT all guests specified: #{@ticket_request.inspect}" }
         # XXX there is a bug here that flashes this when only 1 ticket being purchased.
         redirect_to edit_event_ticket_request_path(@event, @ticket_request),
