@@ -531,7 +531,7 @@ DEPENDENCIES
   rubocop-rails
   rubocop-rails-omakase
   rubocop-rake
-  rubocop-rspec
+  rubocop-rspec (~> 2.29.2)
   simplecov
   stimulus-rails
   stripe (~> 11.3)
