@@ -357,6 +357,11 @@ class TicketRequest < ApplicationRecord
     ticket_request_event_addons.where('quantity > ?', 0).sort_by { |e| [e.category, e.price, e.name] }
   end
 
+  # active_ticket_request_event_addons_count
+  def active_ticket_request_event_addons_count
+    active_sorted_ticket_request_event_addons.count
+  end
+
   def ticket_request_event_addons?
     ticket_request_event_addons.where('quantity > ?', 0).count.positive?
   end
