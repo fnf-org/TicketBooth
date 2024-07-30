@@ -309,14 +309,14 @@ describe TicketRequest do
     end
   end
 
-  describe '#calculate_tr_event_addons_price' do
+  describe '#calculate_addons_price' do
     let!(:event) { create(:event) }
     let!(:event_addon) { create(:event_addon, price: 10) }
     let!(:ticket_request) { create(:ticket_request, event_id: event.id) }
     let!(:ticket_request_event_addon) { create(:ticket_request_event_addon, ticket_request_id: ticket_request.id, quantity: 1) }
 
     it 'calculates event addons price for ticket request' do
-      expect(ticket_request.calculate_tr_event_addons_price).to eq(event_addon.price * ticket_request_event_addon.quantity)
+      expect(ticket_request.calculate_addons_price).to eq(event_addon.price * ticket_request_event_addon.quantity)
     end
   end
 
