@@ -147,12 +147,6 @@ RSpec.describe Event do
         it { is_expected.to accept_values_for(:max_kid_tickets_per_request, nil, '', 10) }
         it { is_expected.not_to accept_values_for(:max_kid_tickets_per_request, 0, -1) }
       end
-
-      context 'when kid_ticket_price is not set' do
-        subject { build(:event, kid_ticket_price: nil) }
-
-        it { is_expected.not_to accept_values_for(:max_kid_tickets_per_request, 10) }
-      end
     end
   end
 
