@@ -39,7 +39,4 @@ class Addon < ApplicationRecord
     order(:category, :id)
   end
 
-  def self.default_addon_params
-    order_by_category.select { |addon| { addon_id: addon.id, price: addon.default_price } }
-  end
 end

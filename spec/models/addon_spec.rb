@@ -53,32 +53,4 @@ RSpec.describe Addon do
       end
     end
   end
-
-  describe '.find_all_by_category' do
-    subject(:addons) { described_class.find_all_by_category(category) }
-
-    let(:category) { Addon::CATEGORY_PASS }
-
-    before { create(:addon, category:) }
-
-    context 'when category is known' do
-      it { is_expected.to be_a(Array) }
-
-      it 'has size of 1' do
-        expect(addons.size).to eq(1)
-      end
-
-      it 'has known category' do
-        expect(addons.first&.category).to eq(category)
-      end
-    end
-
-    context 'when category is unknown' do
-      subject(:addons) { described_class.find_all_by_category('foo') }
-
-      it 'is an empty array' do
-        expect(addons).to be_empty
-      end
-    end
-  end
 end
