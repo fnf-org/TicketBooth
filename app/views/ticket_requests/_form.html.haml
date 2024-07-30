@@ -86,33 +86,18 @@
               = f.hidden_field :guests, value: @user.name_and_email
 
             - if !@ticket_request.post_payment? || (@event.admin?(current_user) && is_update)
-              %hr
-              - if @event.require_role
-                = render partial: 'event_role', locals: { form: f }
-
-              - if signed_in? && @event.admin?(current_user) && is_update
-                .well
-                  = f.label :special_price, 'Total Special Price ($)'
-
-                %p.text-error
-                  Editable by event admins only. Leave blank to use default price.
-                  = f.number_field :special_price, class: 'input-small', min: 0
-
-              = f.label :adults, 'Number of adult tickets' + " @ $#{@event.adult_ticket_price.to_i} each"
+              %h5 Tickets
+              = f.label :adults, 'Number of Adult Tickets' + " @ $#{@event.adult_ticket_price.to_i} each"
               = f.number_field :adults, class: 'input-mini', min: 1, required: true,
                 max: @event.max_adult_tickets_per_request,
                 data: { default_price: @event.adult_ticket_price.to_i }
-
               %br
-
               - if @event.kid_ticket_price.present?
                 %table.w-100.m-0.p-0
                   %tbody.m-0.p-0
                     %tr.align-middle
                       %td.w-90.m-0.p-0.text-start
-                        = f.label :kids do
-                          Number of children (12 and under) you are bringing with you
-                          (not transferable to adults; babes in arms are free)
+                        = f.label :kids, 'Number of Kids (13 and under) Tickets' + " @ $#{@event.kid_ticket_price.to_i} each"
                         = f.number_field :kids, class: 'input-mini', min: 0,
                             max: @event.max_kid_tickets_per_request,
                             data: { default_price: @event.kid_ticket_price.to_i,
@@ -129,6 +114,27 @@
                       Once you submit this ticket request, and it's approved, you'll receive an email stating so. You can also bookmark this URL and return to it at a later date.
                       In order to pay for the ticket(s) you are required to fill out the list of guests (if any) and kids (if any) you are bringing and/or inviting.
 
+              %hr
+              %h5 Event Addons
+              - @ticket_request.ticket_request_event_addons.each do |tr_event_addon|
+                = f.fields_for :ticket_request_event_addons, tr_event_addon do |tr_event_addon_form|
+                  = tr_event_addon_form.hidden_field :ticket_request_event_addon_id, value: tr_event_addon.id
+                  = tr_event_addon_form.hidden_field :event_addon_id, value: tr_event_addon.event_addon_id
+                  = tr_event_addon_form.label :name, "Number of #{tr_event_addon.name_category_price_each}"
+                  = tr_event_addon_form.number_field :quantity, class: 'input-small', min: 0
+
+              %hr
+              - if @event.require_role
+                = render partial: 'event_role', locals: { form: f }
+
+              - if signed_in? && @event.admin?(current_user) && is_update
+                .well
+                  = f.label :special_price, 'Total Special Price ($)'
+
+                %p.text-error
+                  Editable by event admins only. Leave blank to use default price.
+                  = f.number_field :special_price, class: 'input-small', min: 0
+
               .col-lg-6.col-xl-6.col-md-12.col-sm-12
                 .control-group
 
@@ -143,7 +149,6 @@
                         %td.text-end
                           = tooltip_box help_text_for(:needs_assistance), title: "Financial Assistance"
 
-
                 .control-group
 
                 - if @event.allow_donations
@@ -154,7 +159,7 @@
                           = f.label :donation, 'Your Optional Donation:'
                           = f.number_field :donation, class: 'input-mini', min: 0, required: false
                         %td.text-end
-                          = tooltip_box "Your option donation to The California Foundation for The Advancement of Electronic Arts, a 501(c)(3) nonprofit organization, is greatly appreciated and is tax deductible!"
+                          = tooltip_box "Your option donation to The California Foundation for the Advancement of the Electronic Arts, a 501(c)3 nonprofit organization, is greatly appreciated and is tax deductible!"
 
                 .control-group
 

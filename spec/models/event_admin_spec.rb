@@ -14,6 +14,7 @@
 #
 #  index_event_admins_on_event_id_and_user_id  (event_id,user_id) UNIQUE
 #  index_event_admins_on_user_id               (user_id)
+#
 require 'rails_helper'
 
 describe EventAdmin do

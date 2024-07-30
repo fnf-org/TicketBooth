@@ -5,21 +5,18 @@
 # Table name: events
 #
 #  id                            :bigint           not null, primary key
-#  adult_ticket_price            :decimal(8, 2)
+#  adult_ticket_price            :integer
 #  allow_donations               :boolean          default(FALSE), not null
 #  allow_financial_assistance    :boolean          default(FALSE), not null
-#  cabin_price                   :decimal(8, 2)
-#  early_arrival_price           :decimal(8, 2)    default(0.0)
 #  end_time                      :datetime
-#  kid_ticket_price              :decimal(8, 2)
-#  late_departure_price          :decimal(8, 2)    default(0.0)
+#  kid_ticket_price              :integer
 #  max_adult_tickets_per_request :integer
-#  max_cabin_requests            :integer
-#  max_cabins_per_request        :integer
 #  max_kid_tickets_per_request   :integer
 #  name                          :string
 #  photo                         :string
 #  require_mailing_address       :boolean          default(FALSE), not null
+#  require_role                  :boolean          default(TRUE), not null
+#  slug                          :text
 #  start_time                    :datetime
 #  ticket_requests_end_time      :datetime
 #  ticket_sales_end_time         :datetime
@@ -27,6 +24,7 @@
 #  tickets_require_approval      :boolean          default(TRUE), not null
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
+#
 
 require 'rails_helper'
 
@@ -137,11 +135,6 @@ RSpec.describe Event do
       it { is_expected.not_to accept_values_for(:kid_ticket_price, -1) }
     end
 
-    describe '#cabin_price' do
-      it { is_expected.to accept_values_for(:cabin_price, nil, '', 0, 50) }
-      it { is_expected.not_to accept_values_for(:cabin_price, -1) }
-    end
-
     describe '#max_adult_tickets_per_request' do
       it { is_expected.to accept_values_for(:max_adult_tickets_per_request, nil, '', 50) }
       it { is_expected.not_to accept_values_for(:max_adult_tickets_per_request, 0, -1) }
@@ -153,43 +146,6 @@ RSpec.describe Event do
 
         it { is_expected.to accept_values_for(:max_kid_tickets_per_request, nil, '', 10) }
         it { is_expected.not_to accept_values_for(:max_kid_tickets_per_request, 0, -1) }
-      end
-
-      context 'when kid_ticket_price is not set' do
-        subject { build(:event, kid_ticket_price: nil) }
-
-        it { is_expected.not_to accept_values_for(:max_kid_tickets_per_request, 10) }
-      end
-    end
-
-    describe '#max_cabins_per_request' do
-      context 'when cabin_price is set' do
-        subject { build(:event, cabin_price: 10) }
-
-        it { is_expected.to accept_values_for(:max_cabins_per_request, nil, '', 10) }
-        it { is_expected.not_to accept_values_for(:max_cabins_per_request, 0, -1) }
-      end
-
-      context 'when cabin_price is not set' do
-        subject { build(:event, cabin_price: nil) }
-
-        it { is_expected.not_to accept_values_for(:max_cabins_per_request, 10) }
-      end
-    end
-
-    describe '#max_cabin_requests' do
-      context 'when cabin_price is set' do
-        subject { build(:event, cabin_price: 10) }
-
-        it { is_expected.to accept_values_for(:max_cabin_requests, nil, '', 10) }
-        it { is_expected.not_to accept_values_for(:max_cabin_requests, 0, -1) }
-      end
-
-      context 'when cabin_price is not set' do
-        subject { build(:event, cabin_price: nil) }
-
-        it { is_expected.to accept_values_for(:max_cabin_requests, nil, '') }
-        it { is_expected.not_to accept_values_for(:max_cabin_requests, 10) }
       end
     end
   end
@@ -224,47 +180,6 @@ RSpec.describe Event do
       let(:user) { another_event.admins.first }
 
       it { is_expected.to be false }
-    end
-  end
-
-  describe '#cabins_available?' do
-    subject { event.cabins_available? }
-
-    let(:event) { create(:event, cabin_price:, max_cabin_requests:) }
-
-    let(:cabin_price) { nil }
-    let(:max_cabin_requests) { nil }
-
-    context 'when no cabin price is set' do
-      let(:cabin_price) { nil }
-
-      it { is_expected.to be false }
-    end
-
-    context 'when cabin price is set' do
-      let(:cabin_price) { 100 }
-
-      context 'when no maximum specified for the number of cabin requests' do
-        let(:max_cabin_requests) { nil }
-
-        it { is_expected.to be true }
-      end
-
-      context 'when a maximum is specified for the number of cabin requests' do
-        let(:max_cabin_requests) { 10 }
-
-        context 'when there are fewer cabins requested than the maximum' do
-          it { is_expected.to be true }
-        end
-
-        context 'when the number of cabins requested has met or exceeded the maximum' do
-          before do
-            create(:ticket_request, event:, cabins: max_cabin_requests)
-          end
-
-          it { is_expected.to be false }
-        end
-      end
     end
   end
 
@@ -366,6 +281,110 @@ RSpec.describe Event do
           it { is_expected.to be true }
         end
       end
+    end
+  end
+
+  describe '#build_event_addons_from_params' do
+    let(:price) { 314 }
+
+    context 'event addon is built for event' do
+      let!(:addon) { create(:addon) }
+
+      before do
+        event_addons_attributes = { '0'=>{ 'addon_id' => addon.id.to_s, 'price' => price.to_s } }
+        event.build_event_addons_from_params(event_addons_attributes)
+      end
+
+      it 'has 1 event addon' do
+        expect(event.event_addons.size).to eq(1)
+      end
+
+      it 'has price set from params' do
+        expect(event.event_addons.first&.price).to eq(price)
+      end
+
+      it 'has addon id set from params' do
+        expect(event.event_addons.first&.addon_id).to eq(addon.id)
+      end
+    end
+
+    context 'event addon is not built for event' do
+      before do
+        event_addons_attributes = { '0'=>{ 'addon_id' => 999, 'price' => price.to_s } }
+        event.build_event_addons_from_params(event_addons_attributes)
+      end
+
+      it 'has an unknown addon id' do
+        expect(event.event_addons.size).to eq(0)
+      end
+    end
+  end
+
+  describe '#create_default_event_addons' do
+    context 'event has no addons' do
+      it 'event has no addons' do
+        expect(event.event_addons.count).to eq(0)
+      end
+    end
+
+    context 'event has event addons' do
+      before do
+        create(:addon)
+        event.create_default_event_addons
+      end
+
+      it 'creates and persists an EventAddon' do
+        expect(EventAddon.count).to eq(1)
+      end
+
+      it 'creates EventAddon with name' do
+        expect(EventAddon.first&.name).to eq(Addon.first.name)
+      end
+
+      it 'event has event addons for each Addon' do
+        expect(event.event_addons.size).to eq(Addon.count)
+      end
+
+      it 'event has default prices for addons' do
+        event_addon = event.event_addons.first
+        expect(event_addon&.price).to eq(event_addon&.addon&.default_price)
+      end
+    end
+  end
+
+  describe '#load_default_event_addons' do
+    context 'event has no addons' do
+      it 'event has no addons' do
+        expect(event.event_addons.count).to eq(0)
+      end
+    end
+
+    context 'event has event addons' do
+      before do
+        create(:addon)
+        event.build_default_event_addons
+      end
+
+      it 'event has event addons for each Addon' do
+        expect(event.event_addons.size).to eq(Addon.count)
+      end
+
+      it 'event addons are not saved' do
+        expect(event.event_addons.first&.persisted?).to be_falsey
+      end
+    end
+  end
+
+  describe '#active_event_addons' do
+    let!(:event) { create(:event) }
+    let!(:event_addon) { create(:event_addon, event_id: event.id) }
+
+    it 'has a price not 0' do
+      expect(event_addon.price).not_to eq(0)
+    end
+
+    it 'finds one active event' do
+      expect(event.active_event_addons.count).to eq(1)
     end
   end
 end

@@ -18,12 +18,13 @@
               = link_to 'sign in', new_user_session_path
               to your account to review the details
 
-        .card-footer.bg-warning-subtle.p-2
-          %p
-            %strong
-              Please fill out the form to request tickets.
-              %br
-              If your request is approved, you'll receive an email with further instructions.
+          - if @event.tickets_require_approval
+            .card-footer.bg-warning-subtle.p-2
+            %p
+              %strong
+                Please fill out the form to request tickets.
+                %br
+                If your request is approved, you'll receive an email with further instructions.
 
 
     - if @event.ticket_requests_open?

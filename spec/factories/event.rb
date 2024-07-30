@@ -10,19 +10,12 @@ FactoryBot.define do
 
     adult_ticket_price { Random.rand(100..150) }
     kid_ticket_price { Random.rand(40..50) }
-    cabin_price { nil }
     max_adult_tickets_per_request { Random.rand(2..4) }
     max_kid_tickets_per_request { 2 }
-    max_cabins_per_request { nil }
     tickets_require_approval { true }
 
     trait :kids_tickets_available do
       kid_ticket_price { Random.rand(10) }
-    end
-
-    trait :cabins_available do
-      cabin_price { Random.rand(100) }
-      max_cabins_per_request { Random.rand(1...1) }
     end
 
     trait :with_admins do

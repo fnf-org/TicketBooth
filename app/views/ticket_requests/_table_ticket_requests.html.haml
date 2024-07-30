@@ -13,10 +13,8 @@
           %th.bg-dark-subtle.text-end.optional-medium Tickets
           - if event.kid_ticket_price
             %th.bg-dark-subtle.text-end.optional-medium Kids
-          - if event.cabin_price
-            %th.bg-dark-subtle.text-end.optional-medium Cabins
-          - if event.eald?
-            %th.bg-dark-subtle.text-end.optional-medium EA/LD
+          - if event.active_event_addons?
+            %th.bg-dark-subtle.text-end.optional-medium Addons
           %th.bg-dark-subtle.text-end Total
           %th.bg-dark-subtle.text-end.optional-medium Date Requested
           %th.bg-dark-subtle.text-center Status
@@ -43,9 +41,12 @@
               - if ticket_request.needs_assistance
                 = tooltip_box('Financial Assistance was requested.') do
                   = image_tag('icons/dollar.png', width: 20, class: 'hover-tooltip')
-              - if ticket_request.car_camping
-                = tooltip_box(ticket_request.car_camping_explanation, title:  "Car/RV Request:") do
+              - if ticket_request.active_addon_camp_sum
+                = tooltip_box(ticket_request.active_addon_camp_sum, title:  "Camping:") do
                   = image_tag('icons/car.png', width: 20, class: 'hover-tooltip')
+              - if ticket_request.active_addon_pass_sum
+                = tooltip_box(ticket_request.active_addon_pass_sum, title:  "Passes:") do
+                  = image_tag('icons/pass.png', width: 20, class: 'hover-tooltip')
               - if ticket_request.admin_notes.present?
                 = tooltip_box(ticket_request.admin_notes, title: "Admin Notes") do
                   = image_tag('icons/comments-admin.png', width: 20, class: 'hover-tooltip')
@@ -55,20 +56,9 @@
             - if event.kid_ticket_price
               %td.align-content-center.text-end.optional-medium= ticket_request.kids
 
-            - if event.cabin_price
-              %td.align-content-center.text-end.optional-medium= ticket_request.cabins
+            - if event.active_event_addons?
+              %td.align-content-center.text-end.optional-medium= ticket_request.active_addons_sum
 
-            - if event.eald?
-              %td.align-content-center.text-end.optional-medium
-                #{ticket_request.early_arrival_passes} / #{ticket_request.late_departure_passes}
-                -# %br
-                -# - if eald_requested?(ticket_request)
-                -#   - if eald_paid?(ticket_request)
-                -#     ✔︎ EALD Paid
-                -#   - else
-                -#     ✘ Not All EALD Bought
-                -# - else
-                -#   ✘ Not Requested
             %td.align-content-center.text-end
               %span{ class: ('label label-info' if ticket_request.special_price) }
                 = number_to_currency(ticket_request.price, precision: 0)

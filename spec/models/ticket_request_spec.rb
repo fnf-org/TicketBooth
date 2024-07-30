@@ -10,16 +10,12 @@
 #  admin_notes             :string(512)
 #  adults                  :integer          default(1), not null
 #  agrees_to_terms         :boolean
-#  cabins                  :integer          default(0), not null
-#  car_camping             :boolean
-#  car_camping_explanation :string(200)
 #  city                    :string(50)
 #  country_code            :string(4)
+#  deleted_at              :datetime
 #  donation                :decimal(8, 2)    default(0.0)
-#  early_arrival_passes    :integer          default(0), not null
 #  guests                  :text
 #  kids                    :integer          default(0), not null
-#  late_departure_passes   :integer          default(0), not null
 #  needs_assistance        :boolean          default(FALSE), not null
 #  notes                   :string(500)
 #  previous_contribution   :string(250)
@@ -33,6 +29,11 @@
 #  updated_at              :datetime         not null
 #  event_id                :integer          not null
 #  user_id                 :integer          not null
+#
+# Indexes
+#
+#  index_ticket_requests_on_deleted_at  (deleted_at) WHERE (deleted_at IS NULL)
+#
 
 require 'rails_helper'
 
@@ -130,28 +131,6 @@ describe TicketRequest do
 
       context 'when a number' do
         let(:kids) { 2 }
-
-        it { is_expected.to be_valid }
-      end
-    end
-
-    describe '#cabins' do
-      let(:ticket_request) { build(:ticket_request, cabins:) }
-
-      context 'when not present' do
-        let(:cabins) { nil }
-
-        it { is_expected.to be_valid }
-      end
-
-      context 'when not a number' do
-        let(:cabins) { 'not a number' }
-
-        it { is_expected.not_to be_valid }
-      end
-
-      context 'when a number' do
-        let(:cabins) { 2 }
 
         it { is_expected.to be_valid }
       end
@@ -287,21 +266,17 @@ describe TicketRequest do
     let(:adults) { 2 }
     let(:kid_price) { nil }
     let(:kids) { nil }
-    let(:cabin_price) { nil }
-    let(:cabins) { nil }
     let(:special_price) { nil }
     let(:event) do
       build(:event,
             adult_ticket_price: adult_price,
-            kid_ticket_price:   kid_price,
-            cabin_price:)
+            kid_ticket_price:   kid_price)
     end
     let(:ticket_request) do
       build(:ticket_request,
             event:,
             adults:,
             kids:,
-            cabins:,
             special_price:)
     end
 
@@ -322,47 +297,21 @@ describe TicketRequest do
       it { is_expected.to eql(adult_price * adults) }
     end
 
-    context 'when the ticket request includes cabins' do
-      let(:cabins) { 2 }
-      let(:cabin_price) { 100 }
-
-      it { is_expected.to eql((adult_price * adults) + (cabin_price * cabins)) }
-    end
-
-    context 'when the ticket request does not include cabins' do
-      let(:cabins) { nil }
-
-      it { is_expected.to eql(adult_price * adults) }
-    end
-
     context 'when a special price is set' do
       let(:special_price) { BigDecimal(99.99, 10) }
 
       it { is_expected.to eql(special_price) }
     end
+  end
 
-    context 'when custom price rules are defined' do
-      let(:kid_price) { 10 }
-      let(:trigger_value) { 3 }
-      let(:custom_price) { 5 }
+  describe '#calculate_addons_price' do
+    let!(:event) { create(:event) }
+    let!(:event_addon) { create(:event_addon, price: 10) }
+    let!(:ticket_request) { create(:ticket_request, event_id: event.id) }
+    let!(:ticket_request_event_addon) { create(:ticket_request_event_addon, ticket_request_id: ticket_request.id, quantity: 1) }
 
-      before do
-        PriceRule::KidsEqualTo.create! event:,
-                                       trigger_value:,
-                                       price: custom_price
-      end
-
-      context 'and the rule does not apply' do
-        let(:kids) { trigger_value - 1 }
-
-        it { is_expected.to eql((adult_price * adults) + (kid_price * kids)) }
-      end
-
-      context 'and the rule applies' do
-        let(:kids) { trigger_value }
-
-        it { is_expected.to eql((adult_price * adults) + 5) }
-      end
+    it 'calculates event addons price for ticket request' do
+      expect(ticket_request.calculate_addons_price).to eq(event_addon.price * ticket_request_event_addon.quantity)
     end
   end
 

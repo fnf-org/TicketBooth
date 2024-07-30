@@ -4,11 +4,11 @@
 #
 # Table name: payments
 #
-#  id                :integer          not null, primary key
-#  explanation       :string(255)
+#  id                :bigint           not null, primary key
+#  explanation       :string
 #  status            :string(1)        default("N"), not null
-#  created_at        :datetime
-#  updated_at        :datetime
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
 #  stripe_charge_id  :string(255)
 #  stripe_payment_id :string
 #  stripe_refund_id  :string
@@ -146,7 +146,7 @@ class Payment < ApplicationRecord
     # check if we have the same cost
     if payment_intent.amount != (amount = calculate_cost)
       self.payment_intent = update_payment_intent_amount(amount)
-      Rails.logger.debug { "retrieve_payment_intent updated payment intent with new amount [#{amount}] => #{payment_intent}}" }
+      Rails.logger.info { "retrieve_payment_intent updated payment intent with new amount [#{amount}] => #{payment_intent}}" }
     end
 
     Rails.logger.debug { "retrieve_payment_intent payment => #{inspect}}" }

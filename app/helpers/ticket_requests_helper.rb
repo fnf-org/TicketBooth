@@ -40,23 +40,6 @@ module TicketRequestsHelper
     end
   end
 
-  def eald_requested?(ticket_request)
-    ticket_request.early_arrival_passes.positive? ||
-      ticket_request.late_departure_passes.positive?
-  end
-
-  # Not perfect, but looks up the email address associated with the request and
-  # checks if enough EA/LD passes have been purchased with that email address to
-  # meet or exceed the originally requested amount in the request.
-  def eald_paid?(ticket_request)
-    eald_payments = EaldPayment.where(event: ticket_request.event,
-                                      email: ticket_request.user.email).to_a
-    ea_passes     = eald_payments.sum(&:early_arrival_passes)
-    ld_passes     = eald_payments.sum(&:late_departure_passes)
-    ea_passes >= ticket_request.early_arrival_passes &&
-      ld_passes >= ticket_request.late_departure_passes
-  end
-
   def price_rules_to_json(event)
     event.price_rules.to_h do |price_rule|
       [price_rule.trigger_value, price_rule.price.to_i]
@@ -86,16 +69,9 @@ module TicketRequestsHelper
       # HACK: This copy is specific for TicketBooth--we'll have to add a
       # customization so that this can be set on a per-event basis
       <<-HELP
-      Kids 12 and under are free. They do need to be registered with name and age on the
-      ticket request form. Reach out to tickets@fnf.org if you have any questions.
-      HELP
-    when :cabins
-      <<-HELP
-      There are a limited number of wood and tent cabins available.
-      Both the cabins and the tents are the same price. We encourage everyone to
-      bring their own tents and camping gear so that they don't need a cabin.
-      Due to limited availability, we will obviously not be able to grant all
-      requests.
+      Babes in arms are free.
+      Kids need to be registered with name and age on the ticket request form.
+      Reach out to tickets@fnf.org if you have any questions.
       HELP
     when :address
       "We'll mail your tickets to this address."

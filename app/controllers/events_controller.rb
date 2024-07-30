@@ -24,20 +24,31 @@ class EventsController < ApplicationController
 
   def new
     @event = Event.new(Event::DEFAULT_ATTRIBUTES)
+    @event.build_default_event_addons
   end
 
   def edit
     params_symbolized_hash[:event]&.each_pair do |key, value|
       @event.send("#{key}=", value) if @event.respond_to?("#{key}=")
     end
+
+    # build default event addons if event does not have persisted addons
+    @event.create_default_event_addons
+
     render
   end
 
   def create
-    create_params = params_symbolized_hash[:event].dup
+    create_params = params_symbolized_hash[:event].dup.with_indifferent_access
+    Rails.logger.info("event_create: create_params: #{create_params}")
     TimeHelper.normalize_time_attributes(create_params)
 
     @event = Event.new(create_params)
+    # if create_params[:event_addons_attributes].present?
+    #   @event.build_event_addons_from_params(create_params[:event_addons_attributes])
+    # end
+
+    Rails.logger.info("event_create: created event: #{@event.id} event_addons: #{@event.event_addons.inspect}")
 
     if @event.save
       redirect_to @event
@@ -50,6 +61,8 @@ class EventsController < ApplicationController
   def update
     update_params = params_symbolized_hash[:event].dup
     TimeHelper.normalize_time_attributes(update_params)
+
+    Rails.logger.info("event_update: #{update_params}")
 
     if @event.update(update_params)
       redirect_to @event, notice: 'The event has been updated.'
@@ -116,41 +129,37 @@ class EventsController < ApplicationController
 
   def set_event
     @event = Event.where(id: permitted_params[:id].to_i).first
+    return if @event.event_addons.present?
+
+    @event.create_default_event_addons
+    Rails.logger.info("event_set: event: #{@event.id} addons.size: #{@event.event_addons.size} event_addons: #{@event.event_addons.inspect}")
   end
 
   def permitted_params
-    params.permit(
-      :id,
-      :user_email,
-      :user_id,
-      :_method,
-      :authenticity_token,
-      :commit,
-      event: %i[
-        start_time
-        end_time
-        ticket_sales_start_time
-        ticket_sales_end_time
-        ticket_requests_end_time
-        adult_ticket_price
-        allow_donations
-        allow_financial_assistance
-        cabin_price
-        early_arrival_price
-        end_time
-        kid_ticket_price
-        late_departure_price
-        max_adult_tickets_per_request
-        max_cabin_requests
-        max_cabins_per_request
-        max_kid_tickets_per_request
-        name
-        require_mailing_address
-        require_role
-        start_time
-        tickets_require_approval
-      ]
-    )
+    params.permit(:id,
+                  :user_email,
+                  :user_id,
+                  :_method,
+                  :authenticity_token,
+                  :commit,
+                  event: [
+                    :name,
+                    :start_time,
+                    :end_time,
+                    :ticket_sales_start_time,
+                    :ticket_sales_end_time,
+                    :ticket_requests_end_time,
+                    :adult_ticket_price,
+                    :kid_ticket_price,
+                    :max_adult_tickets_per_request,
+                    :max_kid_tickets_per_request,
+                    :allow_donations,
+                    :allow_financial_assistance,
+                    :require_mailing_address,
+                    :require_role,
+                    :tickets_require_approval,
+                    { event_addons_attributes: %i[id addon_id price] }
+                  ])
           .to_hash
           .with_indifferent_access
   end

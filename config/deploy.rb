@@ -50,7 +50,7 @@ namespace :deploy do
   before :starting, 'deploy:setup'
 
   namespace(:assets) do
-    before :precompile, 'deploy:migrate'
+    before :precompile, 'deploy:migrate:with_data'
     before :precompile, 'node:install'
     before :precompile, 'node:yarn:install'
 
