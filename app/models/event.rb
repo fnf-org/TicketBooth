@@ -63,7 +63,7 @@ class Event < ApplicationRecord
   validates :max_adult_tickets_per_request, allow_nil: true, numericality: { only_integer: true, greater_than: 0 }
   validates :max_kid_tickets_per_request, allow_nil: true, numericality: { only_integer: true, greater_than: 0 }
 
-  validate :end_time_after_start_time, :sales_end_time_after_start_time, :ensure_prices_set_if_maximum_specified
+  validate :end_time_after_start_time, :sales_end_time_after_start_time
 
   scope :sales_open, -> { where('ticket_sales_start_time < :now', now: Time.current) }
   scope :future_event, -> { where('start_time > :now', now: Time.current) }
@@ -253,14 +253,7 @@ class Event < ApplicationRecord
       errors.add(:ticket_sales_end_time, 'must be after start time')
     end
   end
-
-  def ensure_prices_set_if_maximum_specified
-    if max_kid_tickets_per_request && kid_ticket_price.blank?
-      errors.add(:max_kid_tickets_per_request,
-                 'can be set only if a kid ticket price is set')
-    end
-  end
-
+  
   def ensure_require_role_set_default
     attributes[:require_role] = true if attributes[:require_role].nil?
   end
