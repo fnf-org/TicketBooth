@@ -361,17 +361,12 @@ class TicketRequest < ApplicationRecord
     active_addons.sort_by { |e| [e.category, e.price, e.name] }
   end
 
-  # active_ticket_request_event_addons_count
-  def active_ticket_request_event_addons_count
-    active_sorted_addons.count
-  end
-
   def active_addon_pass_count
-    @addon_pass_count ||= active_addon_by_category(Addon::CATEGORY_PASS).count
+    @active_addon_pass_count ||= active_addon_by_category(Addon::CATEGORY_PASS).count
   end
 
   def active_addon_camp_count
-    @addon_camp_count ||= active_addon_by_category(Addon::CATEGORY_CAMP).count
+    @active_addon_camp_count ||= active_addon_by_category(Addon::CATEGORY_CAMP).count
   end
 
   def active_addon_by_category(category)

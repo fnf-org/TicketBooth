@@ -57,7 +57,7 @@
               %td.align-content-center.text-end.optional-medium= ticket_request.kids
 
             - if event.active_event_addons?
-              %td.align-content-center.text-end.optional-medium= ticket_request.active_ticket_request_event_addons_count
+              %td.align-content-center.text-end.optional-medium= ticket_request.active_addons.count
 
             %td.align-content-center.text-end
               %span{ class: ('label label-info' if ticket_request.special_price) }

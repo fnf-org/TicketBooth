@@ -21,12 +21,12 @@ class TicketRequestsController < ApplicationController
       requests = @ticket_requests.select { |tr| tr.send("#{status}?") }
 
       stats[status] = {
-        requests:       requests.count,
-        adults:         requests.sum(&:adults),
-        kids:           requests.sum(&:kids),
-        addon_passes:   requests.sum(&:active_addon_pass_count),
-        addon_camping:  requests.sum(&:active_addon_camp_count),
-        raised:         requests.sum(&:price)
+        requests:      requests.count,
+        adults:        requests.sum(&:adults),
+        kids:          requests.sum(&:kids),
+        addon_passes:  requests.sum(&:active_addon_pass_count),
+        addon_camping: requests.sum(&:active_addon_camp_count),
+        raised:        requests.sum(&:price)
       }
     end
 
