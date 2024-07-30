@@ -39,13 +39,8 @@ class Addon < ApplicationRecord
     order(:category, :id)
   end
 
-  def self.find_all_by_category(category)
-    addons = []
-
-    where(category:).find_each do |addon|
-      addons << addon
-    end
-
-    addons
+  def self.default_addon_params
+    order_by_category.select { |addon| {addon_id: addon.id, price: addon.default_price }}
   end
+
 end
