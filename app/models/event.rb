@@ -78,10 +78,10 @@ class Event < ApplicationRecord
     ticket_sales_end_time:         START_DATE_WITH_OFFSET[7.days],
 
     adult_ticket_price:            220,
-    kid_ticket_price:              0,
+    kid_ticket_price:              100,
 
     max_adult_tickets_per_request: 6,
-    max_kid_tickets_per_request:   0,
+    max_kid_tickets_per_request:   4,
 
     tickets_require_approval:      true,
     allow_financial_assistance:    true,
@@ -224,6 +224,21 @@ class Event < ApplicationRecord
   def active_event_addons?
     event_addons.where('price > ?', 0).count.positive?
   end
+
+  def active_event_addons_passes?
+    @addons_passes ||= active_event_addons_by_category(Addon::CATEGORY_PASS).count
+  end
+
+  def active_event_addons_camping?
+    @addons_camping ||= active_event_addons_by_category(Addon::CATEGORY_CAMP).count
+  end
+
+  def active_event_addons_by_category(category)
+    event_addons.joins(:addon, :event)
+                .where(event_id: id, 'addon.category' => category)
+                .where('price > ?', 0)
+  end
+
 
   def active_sorted_event_addons
     event_addons.where('price > ?', 0).sort_by { |e| [e.category, e.price, e.name] }

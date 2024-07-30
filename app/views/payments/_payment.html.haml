@@ -16,7 +16,7 @@
 
     - if ticket_request.ticket_request_event_addons?
       %p Event Addon:
-      - ticket_request.active_sorted_ticket_request_event_addons.each do |tr_event_addon|
+      - ticket_request.active_sorted_addons.each do |tr_event_addon|
         = tr_event_addon.humanized_category
         = "##{tr_event_addon.name}: #{tr_event_addon.quantity}"
 

@@ -41,10 +41,12 @@
               - if ticket_request.needs_assistance
                 = tooltip_box('Financial Assistance was requested.') do
                   = image_tag('icons/dollar.png', width: 20, class: 'hover-tooltip')
-              - if ticket_request.ticket_request_event_addons?
-                -# TODO: use different tool tips here
-                = tooltip_box(ticket_request.active_ticket_request_event_addons_count, title:  "Addons:") do
+              - if ticket_request.active_addon_camp_count
+                = tooltip_box(ticket_request.active_addon_camp_count, title:  "Camping:") do
                   = image_tag('icons/car.png', width: 20, class: 'hover-tooltip')
+              - if ticket_request.active_addon_pass_count
+                = tooltip_box(ticket_request.active_addon_pass_count, title:  "Passes:") do
+                  = image_tag('icons/pass.png', width: 20, class: 'hover-tooltip')
               - if ticket_request.admin_notes.present?
                 = tooltip_box(ticket_request.admin_notes, title: "Admin Notes") do
                   = image_tag('icons/comments-admin.png', width: 20, class: 'hover-tooltip')
@@ -57,17 +59,6 @@
             - if event.active_event_addons?
               %td.align-content-center.text-end.optional-medium= ticket_request.active_ticket_request_event_addons_count
 
-            -# - if event.eald?
-            -#   %td.align-content-center.text-end.optional-medium
-            -#     #{ticket_request.early_arrival_passes} / #{ticket_request.late_departure_passes}
-            -#     -# %br
-            -#     -# - if eald_requested?(ticket_request)
-            -#     -#   - if eald_paid?(ticket_request)
-            -#     -#     ✔︎ EALD Paid
-            -#     -#   - else
-            -#     -#     ✘ Not All EALD Bought
-            -#     -# - else
-            -#     -#   ✘ Not Requested
             %td.align-content-center.text-end
               %span{ class: ('label label-info' if ticket_request.special_price) }
                 = number_to_currency(ticket_request.price, precision: 0)

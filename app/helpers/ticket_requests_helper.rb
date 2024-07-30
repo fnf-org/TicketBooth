@@ -69,8 +69,9 @@ module TicketRequestsHelper
       # HACK: This copy is specific for TicketBooth--we'll have to add a
       # customization so that this can be set on a per-event basis
       <<-HELP
-      Kids 12 and under are free. They do need to be registered with name and age on the
-      ticket request form. Reach out to tickets@fnf.org if you have any questions.
+      Babes in arms are free. 
+      Kids need to be registered with name and age on the ticket request form. 
+      Reach out to tickets@fnf.org if you have any questions.
       HELP
     when :address
       "We'll mail your tickets to this address."

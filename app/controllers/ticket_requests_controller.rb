@@ -21,16 +21,17 @@ class TicketRequestsController < ApplicationController
       requests = @ticket_requests.select { |tr| tr.send("#{status}?") }
 
       stats[status] = {
-        requests:     requests.count,
-        adults:       requests.sum(&:adults),
-        kids:         requests.sum(&:kids),
-        event_addons: requests.sum(&:active_ticket_request_event_addons_count),
-        raised:       requests.sum(&:price)
+        requests:       requests.count,
+        adults:         requests.sum(&:adults),
+        kids:           requests.sum(&:kids),
+        addon_passes:   requests.sum(&:active_addon_pass_count),
+        addon_camping:  requests.sum(&:active_addon_camp_count),
+        raised:         requests.sum(&:price)
       }
     end
 
     @stats[:total] ||= Hash.new { |h, k| h[k] = 0 }
-    %i[requests adults kids event_addons raised].each do |measure|
+    %i[requests adults kids addon_passes addon_camping raised].each do |measure|
       %i[pending awaiting_payment completed].each do |status|
         @stats[:total][measure] += @stats[status][measure]
       end

@@ -353,17 +353,33 @@ class TicketRequest < ApplicationRecord
     ticket_request_event_addons
   end
 
-  def active_sorted_ticket_request_event_addons
-    ticket_request_event_addons.where('quantity > ?', 0).sort_by { |e| [e.category, e.price, e.name] }
+  def active_addons
+    ticket_request_event_addons.where('quantity > ?', 0)
+  end
+
+  def active_sorted_addons
+    active_addons.sort_by { |e| [e.category, e.price, e.name] }
   end
 
   # active_ticket_request_event_addons_count
   def active_ticket_request_event_addons_count
-    active_sorted_ticket_request_event_addons.count
+    active_sorted_addons.count
+  end
+
+  def active_addon_pass_count
+    @addon_pass_count ||= active_addon_by_category(Addon::CATEGORY_PASS).count
+  end
+
+  def active_addon_camp_count
+    @addon_camp_count ||= active_addon_by_category(Addon::CATEGORY_CAMP).count
+  end
+
+  def active_addon_by_category(category)
+    active_addons.select { |addon| addon.category == category }
   end
 
   def ticket_request_event_addons?
-    ticket_request_event_addons.where('quantity > ?', 0).count.positive?
+    active_addons.count.positive?
   end
 
   def set_defaults

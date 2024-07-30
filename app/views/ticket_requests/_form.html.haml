@@ -97,9 +97,7 @@
                   %tbody.m-0.p-0
                     %tr.align-middle
                       %td.w-90.m-0.p-0.text-start
-                        = f.label :kids do
-                          Number of children (12 and under) you are bringing with you
-                          (not transferable to adults; babes in arms are free)
+                        = f.label :kids, 'Number of Kids (13 and under) Tickets' + " @ $#{@event.kid_ticket_price.to_i} each"
                         = f.number_field :kids, class: 'input-mini', min: 0,
                             max: @event.max_kid_tickets_per_request,
                             data: { default_price: @event.kid_ticket_price.to_i,

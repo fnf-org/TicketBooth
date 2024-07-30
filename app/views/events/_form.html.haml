@@ -9,10 +9,12 @@
         = f.text_field :name, class: 'event-name', required: true, maxlength: Event::MAX_NAME_LENGTH
 
         = f.label :start_time, 'Start Time'
-        = render partial: 'shared/datetime_field', locals: {form: f, name: "start_time", datetime: (@event.start_time || 1.day.from_now.beginning_of_day) }
+        = render partial: 'shared/datetime_field',
+                 locals: {form: f, name: "start_time", datetime: (@event.start_time || 1.day.from_now.beginning_of_day) }
 
         = f.label :end_time, 'End Time'
-        = render partial: 'shared/datetime_field', locals: {form: f, name: "end_time", datetime: (@event.end_time || 1.day.from_now.beginning_of_day)}
+        = render partial: 'shared/datetime_field',
+                 locals: {form: f, name: "end_time", datetime: (@event.end_time || 1.day.from_now.beginning_of_day)}
 
         .vertical-20
         %fieldset
@@ -21,19 +23,22 @@
             Ticket Sales Opening Time
             %p.muted
               Leave blank to begin selling tickets right away
-          = render partial: 'shared/datetime_field', locals: {form: f, name: "ticket_sales_start_time", datetime: (@event.ticket_sales_start_time) }
+          = render partial: 'shared/datetime_field',
+                   locals: {form: f, name: "ticket_sales_start_time", datetime: (@event.ticket_sales_start_time) }
 
           = f.label :ticket_sales_end_time do
             Ticket Sales Closing Time
             %p.muted
               Leave blank to allow selling tickets up to the end of the event
-          = render partial: 'shared/datetime_field', locals: {form: f, name: "ticket_sales_end_time", datetime: (@event.ticket_sales_end_time) }
+          = render partial: 'shared/datetime_field',
+                   locals: {form: f, name: "ticket_sales_end_time", datetime: (@event.ticket_sales_end_time) }
 
           = f.label :ticket_requests_end_time do
             Ticket Requests Closing Time
             %p.muted
               Leave blank to allow requesting tickets up to the end of the event
-          = render partial: 'shared/datetime_field', locals: {form: f, name: "ticket_requests_end_time", datetime: (@event.ticket_requests_end_time) }
+          = render partial: 'shared/datetime_field',
+                   locals: {form: f, name: "ticket_requests_end_time", datetime: (@event.ticket_requests_end_time) }
 
         %legend Event Configuration
         %fieldset
@@ -77,8 +82,7 @@
       .col-sm-12.col-md-6.col-lg-6
         %legend Ticket Pricing
         = f.label :adult_ticket_price, 'Adult Ticket Price ($)'
-        = f.number_field :adult_ticket_price, class: 'input-small', required: true,
-          min: 0
+        = f.number_field :adult_ticket_price, class: 'input-small', required: true, min: 0
 
         = f.label :max_adult_tickets_per_request do
           Maximum number of adult tickets allowed per ticket request?
@@ -93,7 +97,7 @@
         = f.label :max_kid_tickets_per_request do
           Maximum number of kid tickets allowed per ticket request?
           %p.muted Set blank for no limit
-        = f.number_field :max_kid_tickets_per_request, class: 'input-mini', min: 1
+        = f.number_field :max_kid_tickets_per_request, class: 'input-mini', min: 0
 
         %legend Event Addons and Pricing
         %p.muted
