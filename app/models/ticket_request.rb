@@ -271,7 +271,7 @@ class TicketRequest < ApplicationRecord
     return special_price if special_price
 
     total = tickets_price
-    total += calculate_tr_event_addons_price
+    total += calculate_addons_price
     total
   end
 
@@ -281,7 +281,7 @@ class TicketRequest < ApplicationRecord
     total
   end
 
-  def calculate_tr_event_addons_price
+  def calculate_addons_price
     return 0 unless ticket_request_event_addons?
 
     tr_addons_price = 0
