@@ -7,22 +7,20 @@
   %p Thanks for purchasing your tickets for #{ticket_request.event.name}!
 
   %strong
-    %p Adults Tickets:
-    = ticket_request.adults
+    %p Adults Tickets: #{ticket_request.adults}
 
+  %strong
     - if ticket_request.kids.present?
-      %p Kids Tickets:
-      = ticket_request.kids
+      %p Kids Tickets: #{ticket_request.kids}
 
+  %strong
     - if ticket_request.ticket_request_event_addons?
-      %p Event Addon:
       - ticket_request.active_sorted_addons.each do |tr_event_addon|
-        = tr_event_addon.humanized_category
-        = "##{tr_event_addon.name}: #{tr_event_addon.quantity}"
+        %p #{tr_event_addon.humanized_category}: #{tr_event_addon.quantity} - #{tr_event_addon.name}
 
   %hr
-  %p Amount:
   %strong
+    %p Amount:
     = number_to_currency(payment.dollar_cost)
     - if ticket_request.donation > 0
       (including #{number_to_currency(ticket_request.donation)} donation)

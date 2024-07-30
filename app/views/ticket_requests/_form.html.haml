@@ -116,7 +116,6 @@
 
               %hr
               %h5 Event Addons
-              -# XXX This needs to be made into select
               - @ticket_request.ticket_request_event_addons.each do |tr_event_addon|
                 = f.fields_for :ticket_request_event_addons, tr_event_addon do |tr_event_addon_form|
                   = tr_event_addon_form.hidden_field :ticket_request_event_addon_id, value: tr_event_addon.id
