@@ -59,6 +59,15 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: data_migrations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.data_migrations (
+    version character varying NOT NULL
+);
+
+
+--
 -- Name: event_addons; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -621,6 +630,14 @@ ALTER TABLE ONLY public.addons
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: data_migrations data_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_migrations
+    ADD CONSTRAINT data_migrations_pkey PRIMARY KEY (version);
 
 
 --
