@@ -38,5 +38,4 @@ class Addon < ApplicationRecord
   def self.order_by_category
     order(:category, :id)
   end
-
 end
