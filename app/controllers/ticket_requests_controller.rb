@@ -24,8 +24,8 @@ class TicketRequestsController < ApplicationController
         requests:      requests.count,
         adults:        requests.sum(&:adults),
         kids:          requests.sum(&:kids),
-        addon_passes:  requests.sum(&:active_addon_pass_count),
-        addon_camping: requests.sum(&:active_addon_camp_count),
+        addon_passes:  requests.sum(&:active_addon_pass_sum),
+        addon_camping: requests.sum(&:active_addon_camp_sum),
         raised:        requests.sum(&:price)
       }
     end

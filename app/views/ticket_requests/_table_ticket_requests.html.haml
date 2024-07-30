@@ -41,11 +41,11 @@
               - if ticket_request.needs_assistance
                 = tooltip_box('Financial Assistance was requested.') do
                   = image_tag('icons/dollar.png', width: 20, class: 'hover-tooltip')
-              - if ticket_request.active_addon_camp_count
-                = tooltip_box(ticket_request.active_addon_camp_count, title:  "Camping:") do
+              - if ticket_request.active_addon_camp_sum
+                = tooltip_box(ticket_request.active_addon_camp_sum, title:  "Camping:") do
                   = image_tag('icons/car.png', width: 20, class: 'hover-tooltip')
-              - if ticket_request.active_addon_pass_count
-                = tooltip_box(ticket_request.active_addon_pass_count, title:  "Passes:") do
+              - if ticket_request.active_addon_pass_sum
+                = tooltip_box(ticket_request.active_addon_pass_sum, title:  "Passes:") do
                   = image_tag('icons/pass.png', width: 20, class: 'hover-tooltip')
               - if ticket_request.admin_notes.present?
                 = tooltip_box(ticket_request.admin_notes, title: "Admin Notes") do
@@ -57,7 +57,7 @@
               %td.align-content-center.text-end.optional-medium= ticket_request.kids
 
             - if event.active_event_addons?
-              %td.align-content-center.text-end.optional-medium= ticket_request.active_addons.count
+              %td.align-content-center.text-end.optional-medium= ticket_request.active_addons_sum
 
             %td.align-content-center.text-end
               %span{ class: ('label label-info' if ticket_request.special_price) }
