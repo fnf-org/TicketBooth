@@ -358,7 +358,7 @@ class TicketRequest < ApplicationRecord
   end
 
   def active_addons_sum
-    active_addons.sum { |a| a.quantity }
+    active_addons.sum(&:quantity)
   end
 
   def active_sorted_addons
@@ -374,7 +374,7 @@ class TicketRequest < ApplicationRecord
   end
 
   def active_addon_sum_quantity_by_category(category)
-    active_addons.select { |addon| addon.category == category }.sum { |a| a.quantity }
+    active_addons.select { |addon| addon.category == category }.sum(&:quantity)
   end
 
   def ticket_request_event_addons?
