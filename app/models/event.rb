@@ -225,12 +225,12 @@ class Event < ApplicationRecord
     event_addons.where('price > ?', 0).count.positive?
   end
 
-  def active_event_addons_passes?
-    @active_event_addons_passes ||= active_event_addons_by_category(Addon::CATEGORY_PASS).count
+  def active_event_addons_passes_count
+    active_event_addons_by_category(Addon::CATEGORY_PASS).count
   end
 
-  def active_event_addons_camping?
-    @active_event_addons_camping ||= active_event_addons_by_category(Addon::CATEGORY_CAMP).count
+  def active_event_addons_camping_count
+    active_event_addons_by_category(Addon::CATEGORY_CAMP).count
   end
 
   def active_event_addons_by_category(category)
