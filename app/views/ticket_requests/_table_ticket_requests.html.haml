@@ -41,10 +41,10 @@
               - if ticket_request.needs_assistance
                 = tooltip_box('Financial Assistance was requested.') do
                   = image_tag('icons/dollar.png', width: 20, class: 'hover-tooltip')
-              - if ticket_request.active_addon_camp_sum
+              - if ticket_request.active_addon_camp_sum > 0
                 = tooltip_box(ticket_request.active_addon_camp_sum, title:  "Camping:") do
                   = image_tag('icons/car.png', width: 20, class: 'hover-tooltip')
-              - if ticket_request.active_addon_pass_sum
+              - if ticket_request.active_addon_pass_sum > 0
                 = tooltip_box(ticket_request.active_addon_pass_sum, title:  "Passes:") do
                   = image_tag('icons/pass.png', width: 20, class: 'hover-tooltip')
               - if ticket_request.admin_notes.present?
