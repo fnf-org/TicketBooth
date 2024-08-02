@@ -1,9 +1,8 @@
 
 // Hide navbar text for small screens
 @media (min-width: 0px) and (max-width: 600px) {
-
   body {
-    font-size: 0.9em;
+    font-size: 1em;
 
     td.ticket-user {
       a {
@@ -65,7 +64,8 @@
     }
 
     .container-fluid, .container {
-      margin: 5px 0 !important;
+      margin: 20px !important;
+      padding: 0;
 
       .event-admins {
         a {
@@ -74,9 +74,11 @@
       }
 
       .card {
-        margin-left: 4px;
-        margin-right: 4px;
+        width: 95%;
+        margin-left: 0;
+        margin-right: 0;
         margin-top: 20px !important;
+        overflow-y: scroll;
       }
 
       table.event-summary {
@@ -104,6 +106,13 @@
     }
   }
 
+  table#ticket-request-summary {
+    tr {
+      td {
+        font-size: 0.9em !important;
+      }
+    }
+  }
   small.nowrap {
     white-space: normal;
   }

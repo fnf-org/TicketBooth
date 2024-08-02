@@ -46,6 +46,7 @@ module FnF
         create_site_admins
         create_users
         create_events
+        create_addons
         self.ran = true
       end
 
@@ -134,15 +135,10 @@ module FnF
             adult_ticket_price: Faker::Commerce.price(range: 100...200),
             allow_donations: true,
             allow_financial_assistance: true,
-            cabin_price: Faker::Commerce.price(range: 150..300),
-            early_arrival_price: 25.00,
             end_time: start_time + 3.days,
             require_mailing_address: true,
             kid_ticket_price: Faker::Commerce.price(range: 50...100),
-            late_departure_price: Faker::Commerce.price(range: 15...25),
             max_adult_tickets_per_request: 4,
-            max_cabin_requests: 2,
-            max_cabins_per_request: 1,
             max_kid_tickets_per_request: 4,
             start_time:,
             venue: Faker::Address.street_address,
@@ -162,6 +158,19 @@ module FnF
 
           print_event(event)
         end
+      end
+
+      def create_addons
+        return if Addon.count.positive?
+
+        puts 'Creating Addons'
+        Addon.create category: Addon::CATEGORY_PASS, name: 'Early Arrival', default_price: 0
+        Addon.create category: Addon::CATEGORY_PASS, name: 'Late Departure', default_price: 30
+        Addon.create category: Addon::CATEGORY_CAMP, name: 'Car Camping', default_price: 50
+        Addon.create category: Addon::CATEGORY_CAMP, name: 'RV under 20ft', default_price: 100
+        Addon.create category: Addon::CATEGORY_CAMP, name: 'RV under 25ft', default_price: 125
+        Addon.create category: Addon::CATEGORY_CAMP, name: 'RV over 25ft', default_price: 150
+        puts "Created #{Addons.count} Addons"
       end
 
       def print_event(event)

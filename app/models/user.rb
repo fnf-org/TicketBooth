@@ -4,30 +4,30 @@
 #
 # Table name: users
 #
-#  id                     :integer          not null, primary key
+#  id                     :bigint           not null, primary key
 #  authentication_token   :string(64)
 #  confirmation_sent_at   :datetime
-#  confirmation_token     :string(255)
+#  confirmation_token     :string
 #  confirmed_at           :datetime
 #  current_sign_in_at     :datetime
-#  current_sign_in_ip     :string(255)
-#  email                  :string(255)      not null
-#  encrypted_password     :string(255)      not null
+#  current_sign_in_ip     :string
+#  email                  :string           not null
+#  encrypted_password     :string           not null
 #  failed_attempts        :integer          default(0)
 #  first                  :text
 #  last                   :text
 #  last_sign_in_at        :datetime
-#  last_sign_in_ip        :string(255)
+#  last_sign_in_ip        :string
 #  locked_at              :datetime
 #  name                   :string(70)       not null
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
-#  reset_password_token   :string(255)
+#  reset_password_token   :string
 #  sign_in_count          :integer          default(0)
-#  unconfirmed_email      :string(255)
-#  unlock_token           :string(255)
-#  created_at             :datetime
-#  updated_at             :datetime
+#  unconfirmed_email      :string
+#  unlock_token           :string
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #
 # Indexes
 #

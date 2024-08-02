@@ -44,7 +44,7 @@ export default class TicketsRequestController extends Controller {
           evt.preventDefault();
         });
 
-    $('#ticket_request_adults, #ticket_request_kids, #ticket_request_cabins, #ticket_request_early_arrival_passes, #ticket_request_late_departure_passes')
+    $('#ticket_request_adults, #ticket_request_kids')
         .on('change keyup mouseup', function (evt) {
           const numberField = $(this),
               priceDisplay = numberField.find('+ .inline-price'),

@@ -41,17 +41,6 @@ class TicketRequestMailer < ApplicationMailer
 
     @payment_url = new_event_ticket_request_payment_url(@event, @ticket_request, @auth_token)
 
-    if @event.eald?
-      @extra_params = {}.tap do |params|
-        params[:early_arrival_passes] = @ticket_request.early_arrival_passes
-        params[:late_departure_passes] = @ticket_request.late_departure_passes
-        params[:email] = @ticket_request.user.email
-        params[:name] = @ticket_request.user.name
-      end
-
-      @eald_url = new_event_eald_payment_path(@event, @extra_params)
-    end
-
     # Return if the authentication token is blank
     return if @auth_token.blank?
 

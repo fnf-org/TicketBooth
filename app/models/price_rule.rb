@@ -4,13 +4,13 @@
 #
 # Table name: price_rules
 #
-#  id            :integer          not null, primary key
+#  id            :bigint           not null, primary key
 #  price         :decimal(8, 2)
 #  trigger_value :integer
-#  type          :string(255)
-#  created_at    :datetime
-#  updated_at    :datetime
-#  event_id      :integer
+#  type          :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  event_id      :bigint
 #
 # Indexes
 #

@@ -12,10 +12,26 @@
     %table.table.table-condensed
       %thead
         %tr
-          %th Name
-          %th Guests
+          %th Ticket Requester
+          %th Their Guests
       %tbody
         - @ticket_requests.each do |ticket_request|
           %tr
-            %td= ticket_request.user.name
-            %td= ticket_request.guests.join(', ')
+            %td
+              - user = "#{ticket_request.user.name} <#{ticket_request.user.email}>"
+              - email = ticket_request.user.email
+              %span= user
+            %td
+              - if ticket_request.guests.empty?
+                %span= "as themselves"
+                %br
+              - else
+                - ticket_request.guests.each do |guest|
+                  - next unless guest.present?
+                  - guest_email = guest.split(/[<>]/).last
+                  - if guest == user || (guest_email.present? && guest_email == email)
+                    %span= "as themselves"
+                    %br
+                  - else
+                    %span= guest
+                    %br

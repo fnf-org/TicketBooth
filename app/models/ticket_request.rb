@@ -4,36 +4,31 @@
 #
 # Table name: ticket_requests
 #
-#  id                      :integer          not null, primary key
-#  address_line1           :string(200)
-#  address_line2           :string(200)
-#  admin_notes             :string(512)
-#  adults                  :integer          default(1), not null
-#  agrees_to_terms         :boolean
-#  cabins                  :integer          default(0), not null
-#  car_camping             :boolean
-#  car_camping_explanation :string(200)
-#  city                    :string(50)
-#  country_code            :string(4)
-#  deleted_at              :datetime
-#  donation                :decimal(8, 2)    default(0.0)
-#  early_arrival_passes    :integer          default(0), not null
-#  guests                  :text
-#  kids                    :integer          default(0), not null
-#  late_departure_passes   :integer          default(0), not null
-#  needs_assistance        :boolean          default(FALSE), not null
-#  notes                   :string(500)
-#  previous_contribution   :string(250)
-#  role                    :string(255)      default("volunteer"), not null
-#  role_explanation        :string(200)
-#  special_price           :decimal(8, 2)
-#  state                   :string(50)
-#  status                  :string(1)        not null
-#  zip_code                :string(32)
-#  created_at              :datetime
-#  updated_at              :datetime
-#  event_id                :integer          not null
-#  user_id                 :integer          not null
+#  id                    :bigint           not null, primary key
+#  address_line1         :string(200)
+#  address_line2         :string(200)
+#  admin_notes           :string(512)
+#  adults                :integer          default(1), not null
+#  agrees_to_terms       :boolean
+#  city                  :string(50)
+#  country_code          :string(4)
+#  deleted_at            :datetime
+#  donation              :decimal(8, 2)    default(0.0)
+#  guests                :text
+#  kids                  :integer          default(0), not null
+#  needs_assistance      :boolean          default(FALSE), not null
+#  notes                 :string(500)
+#  previous_contribution :string(250)
+#  role                  :string           default("volunteer"), not null
+#  role_explanation      :string(200)
+#  special_price         :decimal(8, 2)
+#  state                 :string(50)
+#  status                :string(1)        not null
+#  zip_code              :string(32)
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  event_id              :integer          not null
+#  user_id               :integer          not null
 #
 # Indexes
 #
@@ -75,7 +70,6 @@ class TicketRequest < ApplicationRecord
         id
         adults
         kids
-        cabins
         needs_assistance
         notes
         status
@@ -95,10 +89,6 @@ class TicketRequest < ApplicationRecord
         zip_code
         country_code
         admin_notes
-        car_camping
-        car_camping_explanation
-        early_arrival_passes
-        late_departure_passes
         guests
       ]
     end
@@ -136,7 +126,7 @@ class TicketRequest < ApplicationRecord
 
   ROLES = {
     ROLE_UBER_COORDINATOR => 'Skipper/Board Member',
-    ROLE_COORDINATOR      => 'Lead Coordinator',
+    ROLE_COORDINATOR      => 'Coordinator',
     ROLE_CONTRIBUTOR      => 'Planner',
     ROLE_VOLUNTEER        => 'Volunteer',
     ROLE_OTHER            => 'Other (Art Grantee, a DJ, etc)'
@@ -147,21 +137,24 @@ class TicketRequest < ApplicationRecord
 
   has_one :payment, inverse_of: :ticket_request
 
+  has_many :ticket_request_event_addons, dependent: :destroy
+  has_many :event_addons, through: :ticket_request_event_addons
+
   # Serialize guest emails as an array in a text field.
   serialize :guests, coder: Psych, type: Array
 
-  attr_accessible :user_id, :adults, :kids, :cabins, :needs_assistance,
+  attr_accessible :user_id, :adults, :kids, :needs_assistance,
                   :notes, :status, :special_price, :event_id,
-                  :user_attributes, :user, :donation, :role, :role_explanation,
-                  :car_camping, :car_camping_explanation, :previous_contribution,
+                  :user_attributes, :user, :donation, :role,
+                  :role_explanation, :previous_contribution,
                   :address_line1, :address_line2, :city, :state, :zip_code,
                   :country_code, :admin_notes, :agrees_to_terms,
-                  :early_arrival_passes, :late_departure_passes, :guests
+                  :guests, :ticket_request_event_addons_attributes
 
-  normalize_attributes :notes, :role_explanation, :previous_contribution,
-                       :admin_notes, :car_camping_explanation
+  normalize_attributes :notes, :role_explanation, :previous_contribution, :admin_notes
 
   accepts_nested_attributes_for :user
+  accepts_nested_attributes_for :ticket_request_event_addons
 
   before_validation :set_defaults
 
@@ -170,10 +163,7 @@ class TicketRequest < ApplicationRecord
   validates :status, presence: true, inclusion: { in: STATUSES }
   validates :address_line1, :city, :state, :zip_code, :country_code, presence: { if: -> { event.try(:require_mailing_address) } }
   validates :adults, presence: true, numericality: { only_integer: true, greater_than: 0 }
-  validates :early_arrival_passes, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :late_departure_passes, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :kids, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :cabins, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :role, presence: true, inclusion: { in: ROLES.keys }
   validates :role_explanation, presence: { if: -> { role == ROLE_OTHER } }, length: { maximum: 400 }
   validates :previous_contribution, length: { maximum: 250 }
@@ -194,6 +184,7 @@ class TicketRequest < ApplicationRecord
   # @see https://medium.com/doctolib/how-to-find-fix-and-prevent-n-1-queries-on-rails-6b30d9cfbbaf
   scope :active, -> { where(status: [STATUS_COMPLETED, STATUS_AWAITING_PAYMENT]).includes(:user) }
   scope :everything, -> { includes(:user) }
+  scope :for_guest_list, -> { where(status: [STATUS_COMPLETED, STATUS_AWAITING_PAYMENT, STATUS_PENDING]).includes(:user) }
 
   def can_view?(user)
     self.user == user || event.admin?(user)
@@ -275,22 +266,30 @@ class TicketRequest < ApplicationRecord
     end
   end
 
+  # calculate the total price for this ticket request
   def price
     return special_price if special_price
 
+    total = tickets_price
+    total += calculate_addons_price
+    total
+  end
+
+  def tickets_price
     total = adults * event.adult_ticket_price
+    total += (kids * event.kid_ticket_price) if event.kid_ticket_price.present?
+    total
+  end
 
-    if event.kid_ticket_price
-      custom_price = event.price_rules.map do |price_rule|
-        price_rule.calc_price(self)
-      end.compact.min
+  def calculate_addons_price
+    return 0 unless ticket_request_event_addons?
 
-      total += custom_price || (kids * event.kid_ticket_price)
+    tr_addons_price = 0
+    ticket_request_event_addons.each do |tr_event_addon|
+      tr_addons_price += tr_event_addon.calculate_cost
     end
 
-    total += cabins * event.cabin_price if event.cabin_price
-
-    total
+    tr_addons_price
   end
 
   def cost
@@ -326,6 +325,60 @@ class TicketRequest < ApplicationRecord
 
   def country_name
     ISO3166::Country[country_code]
+  end
+
+  def build_ticket_request_event_addons
+    return if event.blank? || ticket_request_event_addons.present?
+
+    event.active_event_addons.each do |event_addon|
+      ticket_request_event_addons.build(event_addon:).set_default_values
+    end
+
+    Rails.logger.debug { "build_ticket_request_event_addons: #{ticket_request_event_addons.inspect}" }
+    ticket_request_event_addons
+  end
+
+  def build_ticket_request_event_addons_from_params(build_params)
+    return if build_params.blank?
+
+    Rails.logger.debug { "build_ticket_request_event_addons_from_params: #{build_params}" }
+
+    build_params.each_value do |value|
+      if EventAddon.exists?(id: value['event_addon_id'])
+        ticket_request_event_addons.build({ ticket_request_id: id, event_addon_id: value['event_addon_id'], quantity: value['quantity'] })
+      end
+    end
+
+    Rails.logger.debug { "build_ticket_request_event_addons_from_params: save: #{event_addons.ticket_request_event_addons}" }
+    ticket_request_event_addons
+  end
+
+  def active_addons
+    ticket_request_event_addons.where('quantity > ?', 0)
+  end
+
+  def active_addons_sum
+    active_addons.sum(&:quantity)
+  end
+
+  def active_sorted_addons
+    active_addons.sort_by { |e| [e.category, e.price, e.name] }
+  end
+
+  def active_addon_pass_sum
+    active_addon_sum_quantity_by_category(Addon::CATEGORY_PASS)
+  end
+
+  def active_addon_camp_sum
+    active_addon_sum_quantity_by_category(Addon::CATEGORY_CAMP)
+  end
+
+  def active_addon_sum_quantity_by_category(category)
+    active_addons.select { |addon| addon.category == category }.sum(&:quantity)
+  end
+
+  def ticket_request_event_addons?
+    active_addons.count.positive?
   end
 
   def set_defaults

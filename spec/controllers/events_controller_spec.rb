@@ -71,6 +71,7 @@ describe EventsController, type: :controller do
     before do
       allow_any_instance_of(described_class).to receive(:params).and_return(ActionController::Parameters.new(event: new_event_params))
     end
+    # rubocop: enable RSpec/AnyInstance
 
     it 'does not have a nil start_time' do
       expect(new_event.start_time).not_to be_nil
@@ -80,38 +81,8 @@ describe EventsController, type: :controller do
       expect(new_event.start_time.to_datetime).to be_a(DateTime)
     end
 
-    # rubocop: enable RSpec/AnyInstance
-
-    describe '#permitted_params' do
-      subject(:permitted_keys) { permitted_event_keys }
-
-      let(:permitted_event_params) { described_class.new.send(:permitted_params)[:event].to_h.symbolize_keys }
-      let(:expected_keys) do
-        %i[
-          adult_ticket_price
-          allow_donations
-          allow_financial_assistance
-          cabin_price
-          early_arrival_price
-          end_time
-          kid_ticket_price
-          late_departure_price
-          max_adult_tickets_per_request
-          max_cabin_requests
-          max_cabins_per_request
-          max_kid_tickets_per_request
-          name
-          require_mailing_address
-          start_time
-          ticket_requests_end_time
-          ticket_sales_end_time
-          ticket_sales_start_time
-          tickets_require_approval
-        ]
-      end
-      let(:permitted_event_keys) { permitted_event_params.keys.sort }
-
-      it { expect(permitted_keys).to eql(expected_keys) }
+    it 'has require_role set to true' do
+      expect(new_event.require_role).to be_truthy
     end
 
     context 'when the user is not signed in' do
