@@ -49,8 +49,9 @@
                 .row
                   .col-lg-6.col-xl-6.col-md-12.col-sm-12
 
+                    -# TODO: this is wacky
                     - list_finalized = (@event.start_time - Time.current) < ::Event::GUEST_LIST_FINAL_WITHIN
-                    - if list_finalized
+                    - if @event.tickets_require_approval && list_finalized
                       %span.text-error
                         Guest list has already been finalized. If you need to update your guests, please email
                         = mail_to 'tickets@fnf.org'
