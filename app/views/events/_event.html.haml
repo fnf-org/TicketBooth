@@ -1,0 +1,21 @@
+- status_widget = event.status
+
+%tr
+  %td.p-1.align-content-center
+    .span.me-1
+      = link_to event, class: "text-nowrap btn btn-#{status_widget.css_class} btn-sm btn-event-name" do
+        = event.name.truncate(35, separator: /\s/)
+  %td.p-1.optional.align-content-center.mx-4.text-nowrap
+    %span{class: "text-#{status_widget.css_class}"}= status_widget.name
+  %td.p-1.text-end.optional.align-content-center
+    = number_with_delimiter(event.ticket_requests.count)
+  %td.p-1.text-end.align-content-center
+    = number_with_delimiter(event.ticket_requests.sum(&:guest_count))
+  %td.p-1.text-end.optional.align-content-center
+    = number_to_currency(event.ticket_requests.completed.sum(&:cost))
+  %td.p-1.text-end.optional.align-content-center
+    = number_to_currency(event.ticket_requests.awaiting_payment.sum(&:cost))
+  %td.text-nowrap.small.align-content-center.event-dates.optional-small
+    = TimeHelper.for_display(event.start_time.localtime)
+    %br
+    = TimeHelper.for_display(event.end_time.localtime)

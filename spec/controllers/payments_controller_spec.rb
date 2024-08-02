@@ -37,7 +37,7 @@ describe PaymentsController, type: :controller do
   end
 
   describe 'GET #show' do
-    subject { get :show, params: { id: payment.id, event_id: ticket_request.event.id, ticket_request_id: ticket_request.id } }
+    subject { get :show, params: { id: payment.id, event_id: ticket_request.event.to_param, ticket_request_id: ticket_request.id } }
 
     context 'when payment exists' do
       it { is_expected.to have_http_status(:ok) }

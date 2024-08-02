@@ -270,7 +270,7 @@ describe TicketRequest do
     let(:event) do
       build(:event,
             adult_ticket_price: adult_price,
-            kid_ticket_price:   kid_price)
+            kid_ticket_price: kid_price)
     end
     let(:ticket_request) do
       build(:ticket_request,
@@ -312,6 +312,13 @@ describe TicketRequest do
 
     it 'calculates event addons price for ticket request' do
       expect(ticket_request.calculate_addons_price).to eq(event_addon.price * ticket_request_event_addon.quantity)
+    end
+
+    describe '#active_addon_sum_quantity_by_category' do
+      it 'camping and pass category' do
+        expect(ticket_request.active_addon_sum_quantity_by_category(Addon::CATEGORY_PASS)).to eq(1)
+        expect(ticket_request.active_addon_sum_quantity_by_category(Addon::CATEGORY_CAMP)).to eq(0)
+      end
     end
   end
 

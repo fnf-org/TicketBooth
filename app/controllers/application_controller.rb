@@ -33,13 +33,22 @@ class ApplicationController < ActionController::Base
 
   def set_event
     event_id = permitted_params[:event_id].to_i
-    Rails.logger.debug { "#set_event() => event_id = #{event_id}, params[:event_id] => #{permitted_params[:event_id]}" }
+    event_slug = permitted_params[:event_id].delete("#{event_id}-")
 
-    @event = Event.where(id: event_id).first
-    if @event.nil?
-      flash.now[:error] = "Event with id #{event_id} was not found."
+    Rails.logger.debug { "#set_event() => event_id = #{event_id}, event_slug = #{event_slug} params[:event_id] => #{permitted_params[:event_id]}" }
+
+    event_not_found = lambda do |eid, flash|
+      flash.now[:error] = "Event with id #{eid} was not found."
       raise ArgumentError, flash.now[:error]
     end
+
+    @event = Event.where(id: event_id).first
+
+    if @event.slug != event_slug
+      Rails.logger.warn("Event slug mismatch: [#{event_slug}] != [#{@event&.slug}]")
+    end
+
+    event_not_found[event_id, flash] if @event.nil?
   end
 
   def ticket_request_id
