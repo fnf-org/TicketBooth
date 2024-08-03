@@ -37,8 +37,6 @@ class Event < ApplicationRecord
 
   MAX_NAME_LENGTH = 100
 
-  GUEST_LIST_FINAL_WITHIN = 2.days
-
   attr_accessible :name, :start_time, :end_time, :adult_ticket_price,
                   :kid_ticket_price, :max_adult_tickets_per_request, :max_kid_tickets_per_request,
                   :photo, :photo_cache, :tickets_require_approval, :require_mailing_address,
