@@ -4,31 +4,31 @@
 #
 # Table name: ticket_requests
 #
-#  id                      :bigint           not null, primary key
-#  address_line1           :string(200)
-#  address_line2           :string(200)
-#  admin_notes             :string(512)
-#  adults                  :integer          default(1), not null
-#  agrees_to_terms         :boolean
-#  city                    :string(50)
-#  country_code            :string(4)
-#  deleted_at              :datetime
-#  donation                :decimal(8, 2)    default(0.0)
-#  guests                  :text
-#  kids                    :integer          default(0), not null
-#  needs_assistance        :boolean          default(FALSE), not null
-#  notes                   :string(500)
-#  previous_contribution   :string(250)
-#  role                    :string           default("volunteer"), not null
-#  role_explanation        :string(200)
-#  special_price           :decimal(8, 2)
-#  state                   :string(50)
-#  status                  :string(1)        not null
-#  zip_code                :string(32)
-#  created_at              :datetime         not null
-#  updated_at              :datetime         not null
-#  event_id                :integer          not null
-#  user_id                 :integer          not null
+#  id                    :bigint           not null, primary key
+#  address_line1         :string(200)
+#  address_line2         :string(200)
+#  admin_notes           :string(512)
+#  adults                :integer          default(1), not null
+#  agrees_to_terms       :boolean
+#  city                  :string(50)
+#  country_code          :string(4)
+#  deleted_at            :datetime
+#  donation              :decimal(8, 2)    default(0.0)
+#  guests                :text
+#  kids                  :integer          default(0), not null
+#  needs_assistance      :boolean          default(FALSE), not null
+#  notes                 :string(500)
+#  previous_contribution :string(250)
+#  role                  :string           default("volunteer"), not null
+#  role_explanation      :string(200)
+#  special_price         :decimal(8, 2)
+#  state                 :string(50)
+#  status                :string(1)        not null
+#  zip_code              :string(32)
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  event_id              :integer          not null
+#  user_id               :integer          not null
 #
 # Indexes
 #
@@ -319,6 +319,46 @@ describe TicketRequest do
         expect(ticket_request.active_addon_sum_quantity_by_category(Addon::CATEGORY_PASS)).to eq(1)
         expect(ticket_request.active_addon_sum_quantity_by_category(Addon::CATEGORY_CAMP)).to eq(0)
       end
+    end
+  end
+
+  describe '#active_addons' do
+    let!(:event) { create(:event) }
+    let!(:event_addon) { create(:event_addon, price: 10) }
+    let!(:ticket_request) { create(:ticket_request, event_id: event.id) }
+    let!(:ticket_request_event_addon) do
+      create(:ticket_request_event_addon, event_addon_id: event_addon.id, ticket_request_id: ticket_request.id, quantity: 1)
+    end
+
+    it 'returns an active record association' do
+      expect(ticket_request.active_addons).to be_a(ActiveRecord::AssociationRelation)
+    end
+
+    it 'finds one active addon for ticket request' do
+      expect(ticket_request.active_addons.count).to eq(1)
+    end
+
+    it 'finds no active addons after update setting quantity to 0' do
+      ticket_request_event_addon.update(quantity: 0)
+      expect(ticket_request.active_addons.count).to eq(0)
+    end
+  end
+
+  describe '#active_addons_sum' do
+    let!(:event) { create(:event) }
+    let!(:event_addon) { create(:event_addon, price: 10) }
+    let!(:ticket_request) { create(:ticket_request, event_id: event.id) }
+    let!(:ticket_request_event_addon) do
+      create(:ticket_request_event_addon, event_addon_id: event_addon.id, ticket_request_id: ticket_request.id, quantity: 1)
+    end
+
+    it 'gets total active addons for ticket request' do
+      expect(ticket_request.active_addons_sum).to eq(1)
+    end
+
+    it 'gets 2 addons for ticket request after update of quantity' do
+      ticket_request_event_addon.update(quantity: 2)
+      expect(ticket_request.active_addons_sum).to eq(2)
     end
   end
 
