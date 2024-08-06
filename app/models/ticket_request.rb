@@ -135,7 +135,7 @@ class TicketRequest < ApplicationRecord
   belongs_to :user, inverse_of: :ticket_requests
   belongs_to :event, inverse_of: :ticket_requests
 
-  has_one :payment, inverse_of: :ticket_request
+  has_one :payment, inverse_of: :ticket_request, dependent: :destroy
 
   has_many :ticket_request_event_addons, dependent: :destroy
   has_many :event_addons, through: :ticket_request_event_addons
@@ -239,20 +239,26 @@ class TicketRequest < ApplicationRecord
     update status: STATUS_REFUNDED
   end
 
+  # payment received or refunded?? XXX not sure why refunded too.
+  # XXX ? || payment.refunded?)
   def payment_received?
-    payment&.received? || payment&.refunded?
+    payment&.status_received?
+  end
+
+  def payment_refunded?
+    payment&.status_refunded?
   end
 
   def can_be_cancelled?(by_user:)
-    user.id == by_user&.id && !payment_received?
+    user.id == by_user&.id && !payment_received? && !payment_refunded?
   end
 
   def refund
     if refunded?
-      errors.add(:base, 'Cannot refund a ticket that has already been refunded')
+      errors.add(:base, 'Ticket has already been refunded')
       return false
-    elsif !completed? || !payment&.refundable?
-      errors.add(:base, 'Cannot refund a ticket that has not been purchased')
+    elsif !completed? || !payment&.received?
+      errors.add(:base, 'Ticket has not been purchased')
       return false
     end
 
