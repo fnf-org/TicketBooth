@@ -6,7 +6,8 @@ class PaymentsController < ApplicationController
   before_action :set_event
   before_action :set_ticket_request
   before_action :set_payment
-  before_action :validate_payment, except: [:confirm]
+  before_action :initialize_payment, except: %i[show confirm other]
+  before_action :validate_payment, except: %i[confirm]
 
   def show
     Rails.logger.debug { "#show() => @ticket_request = #{@ticket_request&.inspect} params: #{params}" }
@@ -15,16 +16,12 @@ class PaymentsController < ApplicationController
 
   def new
     Rails.logger.debug { "#new() => @ticket_request = #{@ticket_request&.inspect}" }
-    initialize_payment
   end
 
   # Creates new Payment
   # Create Payment Intent and save PaymentIntentId in Payment
   def create
     Rails.logger.debug { "#create() => @ticket_request = #{@ticket_request&.inspect} params: #{params}" }
-
-    # init the payment, user from ticket request
-    initialize_payment
 
     # check to see if we have an existing stripe payment intent. retrieve or save
     @payment.retrieve_or_save_payment_intent
@@ -65,7 +62,6 @@ class PaymentsController < ApplicationController
   # init and mark the payment as completed.
   # Annotate that manual was set
   def manual_confirmation
-    initialize_payment
     @payment.update(explanation: 'manual confirm')
     @payment.reload
     Rails.logger.info("#manual_confirm() => @payment #{@payment.inspect}")
@@ -78,9 +74,13 @@ class PaymentsController < ApplicationController
   end
 
   # handle other forms of payment than credit card / stripe
+  # set payment provider and cancel the Stripe PaymentIntent
   def sent
-    initialize_payment
-    @payment.update(explanation: permitted_params[:explanation], status: Payment::STATUS_IN_PROGRESS)
+    # set explanation, provider, status.
+    @payment.update(explanation: permitted_params[:explanation],
+                    status: :in_progress,
+                    provider: :other)
+    @payment.cancel_payment_intent
     @payment.reload
 
     Rails.logger.info("#sent() => @payment #{@payment.inspect}")
@@ -93,6 +93,7 @@ class PaymentsController < ApplicationController
 
   def mark_payment_completed
     Payment.transaction do
+      # if we have a payment explanation, mark as other. else mark received
       @payment.mark_received
       @payment.ticket_request.mark_complete
       @payment.reload
@@ -125,16 +126,6 @@ class PaymentsController < ApplicationController
       @payment = Payment.find(permitted_params[:id])
     else
       true
-    end
-  end
-
-  # initialize payment and save stripe payment intent
-  def save_payment_intent
-    initialize_payment
-    return redirect_to root_path unless @payment.present? && @payment.can_view?(current_user)
-
-    @payment.save_with_payment_intent.tap do |result|
-      flash.now[:error] = @payment.errors.full_messages.to_sentence unless result
     end
   end
 
@@ -186,7 +177,7 @@ class PaymentsController < ApplicationController
     # has to have a stripe payment id and payment must not already be received
     unless @payment.stripe_payment?
       Rails.logger.error("Invalid payment confirmation id: #{@payment.id} missing stripe_payment_id")
-      return root_path, alert: 'This payment request is missing the stripe payment.'
+      return root_path, alert: 'This payment request is not a valid stripe payment.'
     end
 
     nil
@@ -199,6 +190,7 @@ class PaymentsController < ApplicationController
       :ticket_request_id,
       :stripe_payment_id,
       :payment_intent,
+      :provider,
       :explanation,
       payment: %i[
         ticket_request
