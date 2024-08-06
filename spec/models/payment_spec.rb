@@ -146,7 +146,7 @@ describe Payment do
 
       it 'has payment intent canceled_at set' do
         payment.cancel_payment_intent
-        expect(payment.payment_intent['canceled_at']).to_not be_nil
+        expect(payment.payment_intent['canceled_at']).not_to be_nil
       end
     end
 
@@ -247,20 +247,5 @@ describe Payment do
         end
       end
     end
-
-    # describe '#refund_payment' do
-    #   subject { payment.refund_payment }
-    #
-    #   before { payment.save_with_payment_intent }
-    #
-    #   let(:amount) { 1000 }
-    #   let(:payment) { build(:payment) }
-    #
-    #   context 'when payment received' do
-    #     before { payment.mark_received }
-    #
-    #     it { is_expected.to be_truthy }
-    #   end
-    # end
   end
 end

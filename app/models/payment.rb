@@ -149,7 +149,7 @@ class Payment < ApplicationRecord
     return unless stripe_payment? && status_in_progress?
 
     Rails.logger.info "cancel_payment_intent: #{id} provider: #{provider} stripe_payment_id: #{stripe_payment_id} status: #{status}"
-    response = Stripe::PaymentIntent.cancel(stripe_payment_id, {cancellation_reason: 'requested_by_customer'})
+    response = Stripe::PaymentIntent.cancel(stripe_payment_id, { cancellation_reason: 'requested_by_customer' })
     self.payment_intent = response if response.present?
   end
 
@@ -218,7 +218,7 @@ class Payment < ApplicationRecord
   # XXX test
   # @deprecated method for converting old status
   def convert_old_status!
-    @matrix ||= {'N' => 'new', 'P' => 'in progress', 'R' => 'received', 'F' => 'refunded'}
+    @matrix ||= { 'N' => 'new', 'P' => 'in progress', 'R' => 'received', 'F' => 'refunded' }
     self.status = @matrix[old_status]
     save!
   end
