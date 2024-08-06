@@ -62,7 +62,8 @@ class PaymentsController < ApplicationController
   # init and mark the payment as completed.
   # Annotate that manual was set
   def manual_confirmation
-    @payment.update(explanation: 'manual confirm')
+    @payment.cancel_payment_intent
+    @payment.update(explanation: 'manual confirm', provider: :other)
     @payment.reload
     Rails.logger.info("#manual_confirm() => @payment #{@payment.inspect}")
     mark_payment_completed
