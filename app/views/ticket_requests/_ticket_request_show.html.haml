@@ -34,11 +34,11 @@
           Free
       - else
         - if event.ticket_sales_open?
-          - if ticket_request.payment.present? && ticket_request.payment.explanation.present?
-            %strong.span.bg-warning Paying with #{ticket_request.payment.explanation}
+          - if !ticket_request.payment&.provider_stripe? && ticket_request.payment&.explanation?
+            %strong.span.bg-warning Paying with: #{ticket_request.payment.explanation}
           - else
             - if ticket_request.all_guests_specified?
-              - if ticket_request.awaiting_payment?
+              - if ticket_request.approved?
                 = link_to 'Buy Tickets', new_event_ticket_request_payment_path(event, ticket_request), class: 'btn btn-primary m-0'
               - else
                 = "Waiting on ticket approval"
