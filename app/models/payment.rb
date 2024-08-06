@@ -28,18 +28,21 @@ class Payment < ApplicationRecord
   enum :provider, { stripe: 'stripe', cash: 'cash', other: 'other' }, prefix: true
   enum :status, { new: 'new', in_progress: 'in_progress', received: 'received', refunded: 'refunded' }, prefix: true
 
+  # in case of destroy, clean up any open payment intent
+  before_destroy :cancel_payment_intent
+
   belongs_to :ticket_request
 
   attr_accessible :ticket_request_id, :ticket_request_attributes,
                   :status, :provider, :stripe_payment_id, :explanation
 
+  # stripe payment objects
+  attr_accessor   :payment_intent, :refund
+
   accepts_nested_attributes_for :ticket_request,
                                 reject_if: :modifying_forbidden_attributes?
 
   validates :ticket_request, uniqueness: { message: 'ticket request has already been paid' }
-
-  # stripe payment objects
-  attr_accessor :payment_intent, :refund
 
   delegate :can_view?, to: :ticket_request
 
@@ -143,7 +146,7 @@ class Payment < ApplicationRecord
   # XXX need to test
   # cancel Stripe PaymentIntent if is in progress
   def cancel_payment_intent
-    return if !stripe_payment? || !status_in_progress?
+    return unless stripe_payment? && status_in_progress?
 
     Rails.logger.info "cancel_payment_intent: #{id} provider: #{provider} stripe_payment_id: #{stripe_payment_id} status: #{status}"
     response = Stripe::PaymentIntent.cancel(stripe_payment_id, {cancellation_reason: 'requested_by_customer'})
@@ -151,6 +154,7 @@ class Payment < ApplicationRecord
   end
 
   # https://docs.stripe.com/api/refunds
+  # refund strip payment only
   # reasons duplicate, fraudulent, or requested_by_customer
   def refund_payment(reason: 'requested_by_customer')
     return false unless received?
@@ -208,7 +212,7 @@ class Payment < ApplicationRecord
   end
 
   def refundable?
-    received? && !refunded?
+    received?
   end
 
   # XXX test

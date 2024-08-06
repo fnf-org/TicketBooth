@@ -144,9 +144,16 @@ describe Payment do
         expect(payment.cancel_payment_intent).to be_a(Stripe::PaymentIntent)
       end
 
-      it 'has the canceled_at set' do
+      it 'has payment intent canceled_at set' do
         payment.cancel_payment_intent
         expect(payment.payment_intent['canceled_at']).to_not be_nil
+      end
+    end
+
+    describe 'invalid payment state' do
+      it 'does not cancel if stripe_payment_id not present' do
+        payment.stripe_payment_id = nil
+        expect(payment.cancel_payment_intent).to be_nil
       end
 
       it 'does not cancel if status not in progress' do
