@@ -6,7 +6,9 @@
 #
 #  id                :bigint           not null, primary key
 #  explanation       :string
-#  status            :string(1)        default("N"), not null
+#  old_status        :string(1)        default("N"), not null
+#  provider          :enum             default("stripe"), not null
+#  status            :enum             default("new"), not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  stripe_charge_id  :string(255)
@@ -19,42 +21,29 @@
 #  index_payments_on_stripe_payment_id  (stripe_payment_id)
 #
 
-# @description Payment record from Stripe
+# @description Payment record from Provider
 # @deprecated stripe_charge_id
+
 class Payment < ApplicationRecord
-  include PaymentsHelper
-
-  # TOOD: Change to Enum
-  STATUSES = [
-    STATUS_NEW         = 'N',
-    STATUS_IN_PROGRESS = 'P',
-    STATUS_RECEIVED    = 'R',
-    STATUS_REFUNDED    = 'F' # canceled, refunded
-  ].freeze
-
-  STATUS_NAMES = {
-    'N' => 'New',
-    'P' => 'In Progress',
-    'R' => 'Received',
-    'F' => 'Refunded'
-  }.freeze
+  enum :provider, { stripe: 'stripe', cash: 'cash', other: 'other' }, prefix: true
+  enum :status, { new: 'new', in_progress: 'in_progress', received: 'received', refunded: 'refunded' }, prefix: true
 
   belongs_to :ticket_request
 
   attr_accessible :ticket_request_id, :ticket_request_attributes,
-                  :status, :stripe_payment_id, :explanation
+                  :status, :provider, :stripe_payment_id, :explanation
 
   accepts_nested_attributes_for :ticket_request,
                                 reject_if: :modifying_forbidden_attributes?
 
   validates :ticket_request, uniqueness: { message: 'ticket request has already been paid' }
-  validates :status, presence: true, inclusion: { in: STATUSES }
 
   # stripe payment objects
   attr_accessor :payment_intent, :refund
 
-  # Create new Payment
-  # Create Stripe PaymentIntent
+  delegate :can_view?, to: :ticket_request
+
+  # Create new Payment with Stripe PaymentIntent
   # Set status Payment
   def save_with_payment_intent
     # only save 1 payment intent
@@ -65,7 +54,6 @@ class Payment < ApplicationRecord
 
     # calculate cost from Ticket Request
     cost = calculate_cost
-
     Rails.logger.debug { "save_with_payment_intent: cost => #{cost}}" }
 
     begin
@@ -78,8 +66,9 @@ class Payment < ApplicationRecord
       false
     end
 
-    # payment is in progress, not completed
-    self.status = STATUS_IN_PROGRESS
+    # stripe payment is in progress
+    self.provider = :stripe unless provider_stripe?
+    self.status   = :in_progress unless status_in_progress?
 
     save
     payment_intent
@@ -103,9 +92,8 @@ class Payment < ApplicationRecord
 
   # Calculate ticket cost from ticket request in cents
   def calculate_cost
-    cost             = ticket_request.cost
-    amount_to_charge = cost + extra_amount_to_charge(cost)
-    (amount_to_charge * 100).to_i
+    cost  = ticket_request.cost
+    (cost * 100).to_i
   end
 
   def dollar_cost
@@ -139,7 +127,7 @@ class Payment < ApplicationRecord
   end
 
   def retrieve_payment_intent
-    return unless stripe_payment_id
+    return unless stripe_payment?
 
     self.payment_intent = Stripe::PaymentIntent.retrieve(stripe_payment_id)
 
@@ -150,6 +138,16 @@ class Payment < ApplicationRecord
     end
 
     Rails.logger.debug { "retrieve_payment_intent payment => #{inspect}}" }
+  end
+
+  # XXX need to test
+  # cancel Stripe PaymentIntent if is in progress
+  def cancel_payment_intent
+    return if !stripe_payment? || !status_in_progress?
+
+    Rails.logger.info "cancel_payment_intent: #{id} provider: #{provider} stripe_payment_id: #{stripe_payment_id} status: #{status}"
+    response = Stripe::PaymentIntent.cancel(stripe_payment_id, {cancellation_reason: 'requested_by_customer'})
+    self.payment_intent = response if response.present?
   end
 
   # https://docs.stripe.com/api/refunds
@@ -166,7 +164,7 @@ class Payment < ApplicationRecord
                                                               ticket_request_id:      ticket_request.id,
                                                               ticket_request_user_id: ticket_request.user_id } })
       self.stripe_refund_id = refund.id
-      self.status = STATUS_REFUNDED
+      self.status = :refunded
       Rails.logger.info { "refund_payment success stripe_refund_id [#{stripe_refund_id}] status [#{status}]" }
       log_refund(refund)
       save!
@@ -181,48 +179,47 @@ class Payment < ApplicationRecord
   end
 
   def payment_in_progress?
-    payment_intent.present? && status == STATUS_IN_PROGRESS
+    payment_intent.present? && status_in_progress?
   end
 
   def status_name
-    STATUS_NAMES[status]
+    status.humanize
   end
 
   # Manually mark that a payment was received.
   def mark_received
-    update status: STATUS_RECEIVED
+    status_received!
   end
 
-  delegate :can_view?, to: :ticket_request
-
   def in_progress?
-    status == STATUS_IN_PROGRESS
+    status_in_progress?
   end
 
   def stripe_payment?
-    stripe_payment_id.present?
+    provider_stripe? && stripe_payment_id.present?
   end
 
   def received?
-    stripe_payment? && status == STATUS_RECEIVED
+    stripe_payment? && status_received?
   end
 
   def refunded?
-    status == STATUS_REFUNDED && stripe_refund_id.present?
+    stripe_payment? && status_refunded?
   end
 
   def refundable?
     received? && !refunded?
   end
 
-  private
-
-  def log_payment
-    Rails.logger.info "Payment => id: #{id.colorize(:yellow)}, " \
-                      "status: #{status.colorize(:green)}, " \
-                      "user: #{ticket_request.user.email.colorize(:blue)}, " \
-                      "amount: #{intent_amount}"
+  # XXX test
+  # @deprecated method for converting old status
+  def convert_old_status!
+    @matrix ||= {'N' => 'new', 'P' => 'in progress', 'R' => 'received', 'F' => 'refunded'}
+    self.status = @matrix[old_status]
+    save!
   end
+
+  private
 
   def log_intent(payment_intent)
     intent_amount = '$%.2f'.colorize(:red) % (payment_intent['amount'].to_i / 100.0)
