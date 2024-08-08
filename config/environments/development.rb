@@ -2,6 +2,9 @@
 
 require 'active_support/core_ext/integer/time'
 
+BULLET_ENABLED = ENV.fetch('BULLET_ENABLED', false)
+require 'bullet' if BULLET_ENABLED
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -24,8 +27,6 @@ Rails.application.configure do
   if Rails.root.join('tmp/caching-dev.txt').exist?
     config.action_controller.perform_caching               = true
     config.action_controller.enable_fragment_cache_logging = true
-
-    config.cache_store                = :memory_store
     config.public_file_server.headers = { 'Cache-Control' => "public, max-age=#{2.days.to_i}" }
   else
     config.action_controller.perform_caching = false
@@ -115,4 +116,25 @@ Rails.application.configure do
     secret_api_key:      Rails.application.credentials.development.dig(:stripe, :secret_api_key),
     publishable_api_key: Rails.application.credentials.development.dig(:stripe, :publishable_api_key)
   }
+
+  if BULLET_ENABLED
+    config.after_initialize do
+      Bullet.enable = true
+      Bullet.alert = true
+      Bullet.bullet_logger = true
+      Bullet.console = true
+      Bullet.add_footer = true
+
+      Bullet.skip_html_injection = false
+
+      Bullet.sentry = false
+      Bullet.rails_logger = true
+      Bullet.honeybadger = false
+      Bullet.bugsnag = false
+      Bullet.appsignal = false
+      Bullet.airbrake = false
+      Bullet.rollbar = false
+      # Bullet.slack = { webhook_url: 'http://some.slack.url', channel: '#default', username: 'notifier' }
+    end
+  end
 end

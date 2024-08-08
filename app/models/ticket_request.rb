@@ -101,11 +101,11 @@ class TicketRequest < ApplicationRecord
   include ActiveModel::Validations::Callbacks
 
   STATUSES = [
-    STATUS_PENDING          = 'P',
+    STATUS_PENDING = 'P',
     STATUS_AWAITING_PAYMENT = 'A',
-    STATUS_DECLINED         = 'D',
-    STATUS_COMPLETED        = 'C',
-    STATUS_REFUNDED         = 'R'
+    STATUS_DECLINED = 'D',
+    STATUS_COMPLETED = 'C',
+    STATUS_REFUNDED = 'R'
   ].freeze
 
   STATUS_NAMES = {
@@ -133,7 +133,7 @@ class TicketRequest < ApplicationRecord
   }.freeze
 
   belongs_to :user, inverse_of: :ticket_requests
-  belongs_to :event, inverse_of: :ticket_requests
+  belongs_to :event, inverse_of: :ticket_requests, touch: true
 
   has_one :payment, inverse_of: :ticket_request
 
@@ -268,11 +268,7 @@ class TicketRequest < ApplicationRecord
 
   # calculate the total price for this ticket request
   def price
-    return special_price if special_price
-
-    total = tickets_price
-    total += calculate_addons_price
-    total
+    @price ||= special_price.presence || (tickets_price + calculate_addons_price)
   end
 
   def tickets_price
@@ -282,14 +278,17 @@ class TicketRequest < ApplicationRecord
   end
 
   def calculate_addons_price
-    return 0 unless ticket_request_event_addons?
+    @calculate_addons_price ||=
+      if ticket_request_event_addons?
+        tr_addons_price = 0
+        ticket_request_event_addons.each do |tr_event_addon|
+          tr_addons_price += tr_event_addon.calculate_cost
+        end
 
-    tr_addons_price = 0
-    ticket_request_event_addons.each do |tr_event_addon|
-      tr_addons_price += tr_event_addon.calculate_cost
-    end
-
-    tr_addons_price
+        tr_addons_price
+      else
+        0
+      end
   end
 
   def cost
@@ -354,27 +353,28 @@ class TicketRequest < ApplicationRecord
   end
 
   def active_addons
-    ticket_request_event_addons.where('quantity > ?', 0)
+    @active_addons ||= ticket_request_event_addons.where('quantity > ?', 0)
   end
 
   def active_addons_sum
-    active_addons.sum(&:quantity)
+    @active_addons_sum ||= active_addons.sum(&:quantity)
   end
 
   def active_sorted_addons
-    active_addons.sort_by { |e| [e.category, e.price, e.name] }
+    @active_sorted_addons ||= active_addons.sort_by { |e| [e.category, e.price, e.name] }
   end
 
   def active_addon_pass_sum
-    active_addon_sum_quantity_by_category(Addon::CATEGORY_PASS)
+    @active_addon_pass_sum ||= active_addon_sum_quantity_by_category(Addon::CATEGORY_PASS)
   end
 
   def active_addon_camp_sum
-    active_addon_sum_quantity_by_category(Addon::CATEGORY_CAMP)
+    @active_addon_camp_sum ||= active_addon_sum_quantity_by_category(Addon::CATEGORY_CAMP)
   end
 
   def active_addon_sum_quantity_by_category(category)
-    active_addons.select { |addon| addon.category == category }.sum(&:quantity)
+    @active_addon_sum_quantity_by_category ||= {}
+    @active_addon_sum_quantity_by_category[category] ||= active_addons.select { |addon| addon.category == category }.sum(&:quantity)
   end
 
   def ticket_request_event_addons?
