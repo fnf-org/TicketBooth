@@ -60,7 +60,7 @@
                     - adult_guests.times do |guest_id|
                       - default_value = guest_id == 0 ? @ticket_request.user.name_and_email : ''
                       = f.label "Guest #{guest_id + 1}"
-                      = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests[0...adult_guests])[guest_id] || default_value, style: 'width: 80%'
+                      = f.text_field :guest_list, multiple: true, value: Array(@ticket_request.guests[0...adult_guests])[guest_id] || default_value, style: 'width: 80%'
 
                   - if @ticket_request.kids.positive?
                     .col-lg-6.col-xl-6.col-md-12.col-sm-12
@@ -73,7 +73,7 @@
                       - kid_guests = @ticket_request.kids
                       - kid_guests.times do |guest_id|
                         = f.label "Kid Guest #{guest_id + 1}"
-                        = f.text_field :guest_list, readonly: list_finalized, multiple: true, value: Array(@ticket_request.guests[(adult_guests)..total_guests])[guest_id], style: 'width: 80%'
+                        = f.text_field :guest_list, multiple: true, value: Array(@ticket_request.guests[(adult_guests)..total_guests])[guest_id], style: 'width: 80%'
             - else
               -# on create, set user into guests list
               = f.hidden_field :guests, value: @user.name_and_email
