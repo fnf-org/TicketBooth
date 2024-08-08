@@ -130,7 +130,7 @@ describe TicketRequestsController, type: :controller do
   end
 
   describe 'POST #create' do
-    let(:event) { create(:event, tickets_require_approval: true) }
+    let(:event) { create(:event, tickets_require_approval: true, slug: 'created-event') }
 
     let(:ticket_request_params) { build(:ticket_request, event:).as_json }
 

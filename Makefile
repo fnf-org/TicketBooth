@@ -42,7 +42,7 @@ reset:		## Complete reset of the databases and runs the rspec and rubocop
 		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Creating local databases...$(clear)\n"
 		@bundle exec rake db:create:all
 		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Migrating development...$(clear)\n"
-		@bundle exec rake db:migrate
+		@bundle exec rake db:migrate:with_data
 		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Seeding development...$(clear)\n"
 		@bundle exec rake db:seed
 		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Cloning to test DB...$(clear)\n"
@@ -84,7 +84,7 @@ db-create:  	node_modules ## Create if necessary, migrate and seed the database
 		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Creating Database:    [$(DEV_DB)]$(clear)\n"
 		@bin/rails db:create
 		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Migrating Databases:  [$(DEV_DB)]$(clear)\n"
-		@bin/rails db:migrate
+		@bin/rails db:migrate:with_data
 		@printf "\n$(bg_purple)  👉  $(purple)$(clear)  $(yellow)Seeding dev database: [$(DEV_DB)]$(clear)\n"
 		@bin/rails db:seed
 
@@ -109,7 +109,7 @@ dev:          	gems node_modules db-create foreman ## Start the development envi
 
 
 ci: 		## Run all tests and linters as if on CI
-		bin/rails db:migrate
+		bin/rails db:migrate:with_data
 		bin/rails db:test:prepare
 		bundle exec rspec
 		bundle exec rubocop

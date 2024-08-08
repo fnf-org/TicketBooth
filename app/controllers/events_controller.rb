@@ -10,9 +10,9 @@ class EventsController < ApplicationController
 
   def index
     if current_user.site_admin?
-      @events = Event.order(start_time: :desc)
+      @events = Event.includes(:ticket_requests).order(start_time: :desc)
     elsif current_user.event_admin?
-      @events = current_user.events_administrated.order(:start_time)
+      @events = current_user.events_administrated.includes(:ticket_requests).order(:start_time)
     else
       redirect_to :root
     end

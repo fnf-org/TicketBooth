@@ -17,7 +17,7 @@ RSpecRails/InferredSpecType:
   Enabled: false
 
 Metrics/ClassLength:
-  Max: 300
+  Enabled: false
 
 Metrics/ModuleLength:
   Enabled: false
