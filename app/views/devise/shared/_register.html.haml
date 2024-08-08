@@ -33,7 +33,7 @@
     - if existing
       .row
         .col-md-6.col-sm-12
-          %strong= "Your current password is required in order to make any changes to your account"
+          %strong= "Your current password is required make changes to your account"
           %strong
             = f.label :current_password
           = f.password_field :current_password, autocomplete: "current-password", required: true
@@ -45,12 +45,11 @@
             = f.submit "Update", class: 'btn btn-primary btn-large w-1'
 
     - unless existing
-
       .row
         .col-12
           .actions.btn-group-md
             = f.submit "Register", class: 'btn btn-primary btn-lg'
-            - if controller_name != 'ticket_requests'
-              = link_to "Go Back &larrhk;".html_safe, :back, class: 'btn btn-warning btn-md'
-            %p= link_to "Forgot your password?", new_password_path(resource_name)
+
+    - if controller_name != 'ticket_requests'
+      = link_to "Go Back &larrhk;".html_safe, :back, class: 'btn btn-warning btn-md'
 
