@@ -9,6 +9,29 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: payment_provider; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.payment_provider AS ENUM (
+    'stripe',
+    'cash',
+    'other'
+);
+
+
+--
+-- Name: payment_status; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.payment_status AS ENUM (
+    'new',
+    'in_progress',
+    'received',
+    'refunded'
+);
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -220,12 +243,14 @@ CREATE TABLE public.payments (
     id bigint NOT NULL,
     ticket_request_id integer NOT NULL,
     stripe_charge_id character varying(255),
-    status character varying(1) DEFAULT 'N'::character varying NOT NULL,
+    old_status character varying(1) DEFAULT 'N'::character varying NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     explanation character varying,
     stripe_payment_id character varying,
-    stripe_refund_id character varying
+    stripe_refund_id character varying,
+    provider public.payment_provider DEFAULT 'stripe'::public.payment_provider NOT NULL,
+    status public.payment_status DEFAULT 'new'::public.payment_status NOT NULL
 );
 
 
@@ -902,6 +927,7 @@ ALTER TABLE ONLY public.ticket_request_event_addons
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240806011401'),
 ('20240729210234'),
 ('20240728223048'),
 ('20240728211432'),

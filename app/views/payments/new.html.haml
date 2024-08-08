@@ -9,24 +9,24 @@
           %h4
             Hi, #{@user.first_name}
 
-        - if @event.tickets_require_approval
           .card-body.bg-success-subtle
             %table.w-100
               %thead
-                %tr
-                  %th
-                    Your request for
-                    %strong
-                      = @ticket_request.adults
-                      = 'ticket'.pluralize(@ticket_request.total_tickets)
-                    has been approved!
+                - if @event.tickets_require_approval
+                  %tr
+                    %th
+                      Your request for
+                      %strong
+                        = @ticket_request.adults
+                        = 'ticket'.pluralize(@ticket_request.total_tickets)
+                      has been approved!
 
               %tbody
                 %tr
                   %td.w-100{colspan: 2}
                     %hr.w-100
                 %tr
-                  %td= "Total Price for Tickets:"
+                  %td= "Total Price:"
                   %td.text-end
                     %strong
                       %span{ class: ('label label-info' if @ticket_request.special_price) }
@@ -59,7 +59,6 @@
               = link_to 'I am not paying via credit card',
                 other_event_ticket_request_payment_path(@event, @ticket_request)
 
-        - else
           .card-body.bg-success
           %p.lead.text-success
             You're almost done! All that's left is to purchase your

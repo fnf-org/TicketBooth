@@ -68,9 +68,12 @@
 
             %td.align-content-center.text-center.ticket-status
               %span.p-2.rounded.small.bi-credit-card.text-black{ class: text_class_for_status(ticket_request) }
-                = text_for_status ticket_request
-                - if ticket_request.payment && !ticket_request.payment.received?
+                - if !ticket_request.payment.provider_stripe?
+                  = "#{text_for_status ticket_request} - #{ticket_request.payment.provider.humanize}"
                   %i.icon-comment.hover-tooltip{ title: ticket_request.payment.explanation }
+                - else
+                  = text_for_status ticket_request
+
 
             %td.align-content-end.text-end
               - if event.tickets_require_approval && ticket_request.pending?
@@ -106,7 +109,7 @@
                       data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s already approved request?" } do
                       ✘ Decline
 
-              - elsif ticket_request.payment && ticket_request.awaiting_payment? && !ticket_request.payment_received?
+              - elsif ticket_request.payment.present? && ticket_request.awaiting_payment?
                 .btn-group.pull-right
                   = button_to manual_confirmation_event_ticket_request_payments_path(event, ticket_request),
                     method: :post,
@@ -114,11 +117,10 @@
                     Mark as Received
                     %i.icon-ok
 
-              - elsif ticket_request.payment_received? && !ticket_request.refunded?
+              - elsif ticket_request.payment&.received?
                 .btn-group.pull-right
                   = button_to refund_event_ticket_request_path(event, ticket_request),
                     method: :post,
                     class: 'btn btn-danger btn-sm text-nowrap',
                     data: { confirm: "Are you sure you want to refund #{ticket_request.user.name}'s payment?'" } do
                     ↩︎ Refund
-

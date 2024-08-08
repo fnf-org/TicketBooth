@@ -111,6 +111,7 @@ Rails/BulkChangeTable:
     - 'db/migrate/20240728211432_remove_ea_ld.rb'
     - 'db/migrate/20240728223048_event_prices_as_integers.rb'
     - 'db/migrate/20240729210234_ticket_requests_cleanup.rb'
+    - 'db/migrate/20240806011401_payment_provider.rb'
 
 # Offense count: 3
 # Configuration parameters: Include.

@@ -188,8 +188,8 @@ class TicketRequestsController < ApplicationController
       return render_flash(flash)
     end
 
-    if @ticket_request.payment_received?
-      flash.now[:error] = 'Can not delete request when payment has been received. It must be refunded instead.'
+    if @ticket_request.payment_received? || @ticket_request.payment_refunded?
+      flash.now[:error] = 'Can not delete ticket request when payment has been received or refunded'
       return render_flash(flash)
     end
 

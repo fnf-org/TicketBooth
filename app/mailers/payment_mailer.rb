@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class PaymentMailer < ApplicationMailer
-  include PaymentsHelper
-
   def payment_received(payment)
     self.payment = payment
 
