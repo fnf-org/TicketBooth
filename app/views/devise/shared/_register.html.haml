@@ -1,10 +1,11 @@
-%h2 Register New Account
 
 - http_method = existing ? :put : :post
 = form_for(resource, as: resource_name, url: user_registration_path, html: { method: http_method }, data: { turbo: false } ) do |f|
   = hidden_field_tag :authenticity_token, form_authenticity_token
 
   = render "devise/shared/error_messages", resource: resource
+  - unless existing
+    %h2 Register New Account
 
   .container-fluid
     .row
@@ -24,18 +25,18 @@
         - if defined?(redirect_to)
           = hidden_field_tag :redirect_to, redirect_to
 
+    %br
+    %hr
     = render partial: 'devise/registrations/change_password', locals: { existing: existing, f: f }
     %br
     %hr
     - if existing
       .row
         .col-md-6.col-sm-12
-          %p.lead
-            We need your current password to confirm your changes
+          %strong= "Your current password is required make changes to your account"
           %strong
             = f.label :current_password
-            %br
-          = f.password_field :current_password, autocomplete: "current-password"
+          = f.password_field :current_password, autocomplete: "current-password", required: true
 
 
       .row
@@ -44,12 +45,11 @@
             = f.submit "Update", class: 'btn btn-primary btn-large w-1'
 
     - unless existing
-
       .row
         .col-12
           .actions.btn-group-md
             = f.submit "Register", class: 'btn btn-primary btn-lg'
-            - if controller_name != 'ticket_requests'
-              = link_to "Go Back &larrhk;".html_safe, :back, class: 'btn btn-warning btn-md'
-            %p= link_to "Forgot your password?", new_password_path(resource_name)
+
+    - if controller_name != 'ticket_requests'
+      = link_to "Go Back &larrhk;".html_safe, :back, class: 'btn btn-warning btn-md'
 

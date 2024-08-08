@@ -7,7 +7,7 @@
       - if signed_in? && @user.present?
         %h4 Ticket Request for #{@user.name}
       - else
-        %h5 Please sign-in or register to request tickets.
+        %h5 Please log-in or register to request tickets
 
     .card-body
       = render 'shared/form_errors', resource: @ticket_request

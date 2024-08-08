@@ -52,6 +52,6 @@ class TicketRequestEventAddon < ApplicationRecord
   end
 
   def name_category_price_each
-    "#{name} #{purchase_category(category)} @ #{price} each"
+    "#{name} #{purchase_category(category)} @ $#{price} each"
   end
 end
