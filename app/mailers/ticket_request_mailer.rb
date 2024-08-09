@@ -26,6 +26,24 @@ class TicketRequestMailer < ApplicationMailer
          subject: "#{@event.name} ticket request confirmation" # The subject of the email
   end
 
+  # The `request_confirmed` method is used to send an email when a ticket request is confirmed without approval.
+  # It sets the ticket request and then sends an email to the user who made the request.
+  #
+  # @param ticket_request [TicketRequest] The ticket request that has been confirmed
+  # @return [Mail::Message] The email that has been prepared to be sent.
+  def request_confirmed(ticket_request)
+    # Set the ticket request
+    self.ticket_request = ticket_request
+
+    @ticket_request_url = event_ticket_request_url(event_id: @event.id, id: @ticket_request.id)
+
+    # Prepare the email to be sent
+    mail to: to_email, # The recipient of the email
+         from: from_email, # The sender of the email
+         reply_to: reply_to_email, # The email address that will receive replies
+         subject: "#{@event.name} ticket confirmation" # The subject of the email
+  end
+
   # The `request_approved` method is used to send an email when a ticket request is approved.
   # It sets the ticket request, generates an authentication token for the user, and then sends an email to the user.
   #
@@ -69,6 +87,10 @@ class TicketRequestMailer < ApplicationMailer
 
     def ticket_request(event)
       request_received(event.ticket_request).deliver_now
+    end
+
+    def ticket_request_confirmed(event)
+      request_confirmed(event.ticket_request).deliver_now
     end
 
     def ticket_request_approved(event)
