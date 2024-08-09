@@ -144,7 +144,6 @@ class TicketRequestsController < ApplicationController
                     notice: 'When you know your guest names, please return here and add them below.'
       elsif !@ticket_request.all_guests_specified?
         Rails.logger.debug { "tr NOT all guests specified: #{@ticket_request.inspect}" }
-        # XXX there is a bug here that flashes this when only 1 ticket being purchased.
         redirect_to edit_event_ticket_request_path(@event, @ticket_request),
                     notice: 'Please enter the guest names before you are able to pay for the ticket.'
       elsif !@event.tickets_require_approval || @ticket_request.approved?

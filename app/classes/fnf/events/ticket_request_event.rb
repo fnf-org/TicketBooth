@@ -10,6 +10,7 @@ module FnF
 
       def initialize(user: nil, target: nil)
         super
+        Rails.logger.info("TicketRequestEvent: target: #{target}")
         self.ticket_request = target
       end
     end

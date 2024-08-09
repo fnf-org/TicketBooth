@@ -1,0 +1,28 @@
+%p
+  Hi #{@ticket_request.user.first_name},
+%p
+  Your
+  = 'ticket'.pluralize(@ticket_request.total_tickets)
+  for
+  %b #{@event.name}
+  is confirmed!
+
+  #{@ticket_request.total_tickets} total tickets (including kids).
+
+%p<>
+  - if @ticket_request.free?
+    You're good to go!
+  - else
+    If you still need to pay, you can now
+    = succeed '.' do
+      = link_to @payment_url do
+        purchase your
+        = 'ticket'.pluralize(@ticket_request.total_tickets)
+
+  You can view the status of your ticket at any time by visiting
+  = link_to 'this page', @ticket_request_url
+
+%p
+  Thanks,
+  %br
+  The FnF Ticket Team
