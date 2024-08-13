@@ -129,4 +129,4 @@ group :test do
   gem 'timeout'
 end
 
-gem 'paranoia', '~> 2.6'
+gem 'paranoia', '~> 3.0'
