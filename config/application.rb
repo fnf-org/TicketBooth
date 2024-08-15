@@ -86,5 +86,7 @@ module TicketBooth
       min_threads: 1,
       max_threads: 3,
       idletime:    30.seconds
+
+    config.cache_store = :mem_cache_store, '127.0.0.1:11211', { pool: { size: 10 } }
   end
 end

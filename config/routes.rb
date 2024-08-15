@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop: disable Metrics/BlockLength
 Rails.application.routes.draw do
   root 'home#index'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -73,4 +72,3 @@ Rails.application.routes.draw do
   get '/tickets/request/:event_id', to: 'ticket_requests#new', as: :tickets_request
   get '/attend/:event_id', to: 'ticket_requests#new', as: :attend_event
 end
-# rubocop: enable Metrics/BlockLength

@@ -101,6 +101,7 @@ end
 
 group :development do
   gem 'asciidoctor'
+  gem 'bullet', require: false
   # gem 'rack-mini-profiler'
   gem 'better_errors'
   gem 'binding_of_caller'

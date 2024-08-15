@@ -10,9 +10,9 @@ class EventsController < ApplicationController
 
   def index
     if current_user.site_admin?
-      @events = Event.order(start_time: :desc)
+      @events = Event.includes(:ticket_requests).order(start_time: :desc)
     elsif current_user.event_admin?
-      @events = current_user.events_administrated.order(:start_time)
+      @events = current_user.events_administrated.includes(:ticket_requests).order(:start_time)
     else
       redirect_to :root
     end
@@ -44,10 +44,6 @@ class EventsController < ApplicationController
     TimeHelper.normalize_time_attributes(create_params)
 
     @event = Event.new(create_params)
-    # if create_params[:event_addons_attributes].present?
-    #   @event.build_event_addons_from_params(create_params[:event_addons_attributes])
-    # end
-
     Rails.logger.info("event_create: created event: #{@event.id} event_addons: #{@event.event_addons.inspect}")
 
     if @event.save
