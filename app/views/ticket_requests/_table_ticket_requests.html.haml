@@ -68,9 +68,10 @@
 
             %td.align-content-center.text-center.ticket-status
               %span.p-2.rounded.small.bi-credit-card.text-black{ class: text_class_for_status(ticket_request) }
-                - if !ticket_request.payment.provider_stripe?
+                - if ticket_request.payment.present? && !ticket_request.payment.provider_stripe?
                   = "#{text_for_status ticket_request} - #{ticket_request.payment.provider.humanize}"
-                  %i.icon-comment.hover-tooltip{ title: ticket_request.payment.explanation }
+                  = tooltip_box(ticket_request.payment.explanation, title:  "Method:") do
+                    = image_tag('icons/comments-user.png', width: 20, class: 'hover-tooltip')
                 - else
                   = text_for_status ticket_request
 

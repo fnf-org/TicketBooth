@@ -36,6 +36,15 @@ describe TicketRequestsController, type: :controller do
 
       it { is_expected.to have_http_status(:ok) }
     end
+
+    context 'when payments exist' do
+      let(:viewer) { create(:site_admin).user }
+      let(:payment1) { create(:payment, status: :in_progress, stripe_payment_id: 'pi_3PF4524ofUrW5ZY40NeGThOz', ticket_request: ticket_requests[0]) }
+      let(:payment2) { create(:payment, status: :received, stripe_payment_id: 'pi_3PF4524ofUrW5ZY40NeGThOz', ticket_request: ticket_requests[1]) }
+      let(:payment3) { create(:payment, status: :refunded, stripe_payment_id: 'pi_3PF4524ofUrW5ZY40NeGThOz', ticket_request: ticket_requests[2]) }
+
+      it { is_expected.to have_http_status(:ok) }
+    end
   end
 
   describe 'GET #show' do

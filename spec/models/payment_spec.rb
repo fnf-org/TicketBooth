@@ -61,12 +61,30 @@ describe Payment do
 
     describe 'provider' do
       context 'with stripe' do
-        let(:payment) { build(:payment) }
+        let(:payment) { build(:payment, provider: 'stripe') }
 
         it { is_expected.to be_valid }
 
         it 'has provider of stripe' do
           expect(payment.provider).to eq('stripe')
+        end
+
+        it 'has prefix predicate for stripe' do
+          expect(payment).to be_provider_stripe
+        end
+      end
+
+      context 'with other provider' do
+        let(:payment) { build(:payment, provider: 'other') }
+
+        it { is_expected.to be_valid }
+
+        it 'has provider of other' do
+          expect(payment.provider).to eq('other')
+        end
+
+        it 'has prefix predicate for other' do
+          expect(payment).to be_provider_other
         end
       end
 
