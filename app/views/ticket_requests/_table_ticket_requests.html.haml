@@ -29,6 +29,7 @@
               = link_to event_ticket_request_path(event, ticket_request) do
                 = ticket_request.user.name
 
+            -# If we role is required for the event, add the column for role
             - if event.require_role
               %td.muted.align-content-center.optional-medium
                 = TicketRequest::ROLES[ticket_request.role]
@@ -123,5 +124,5 @@
                   = button_to refund_event_ticket_request_path(event, ticket_request),
                     method: :post,
                     class: 'btn btn-danger btn-sm text-nowrap',
-                    data: { confirm: "Are you sure you want to refund #{ticket_request.user.name}'s payment?'" } do
+                    data: { "turbo-confirm": "Are you sure you want to refund #{ticket_request.user.name}'s payment?'" } do
                     ↩︎ Refund

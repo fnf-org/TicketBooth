@@ -239,8 +239,6 @@ class TicketRequest < ApplicationRecord
     update status: STATUS_REFUNDED
   end
 
-  # payment received or refunded?? XXX not sure why refunded too.
-  # XXX ? || payment.refunded?)
   def payment_received?
     payment&.status_received?
   end
