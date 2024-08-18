@@ -59,14 +59,19 @@ class PaymentsController < ApplicationController
     mark_payment_completed
   end
 
-  # init and mark the payment as completed.
+  # human has marked the payment as confirmed received and completed.
   # Annotate that manual was set
   def manual_confirmation
+    # cancel any stripe payment intent, so there is no orphaned intent
     @payment.cancel_payment_intent
-    @payment.update(explanation: 'manual confirm', provider: :other)
-    @payment.reload
-    Rails.logger.info("#manual_confirm() => @payment #{@payment.inspect}")
+
+    # update payment with explanation.
+    @payment.update(explanation: 'humanly marked received', provider: :other)
+
+    # mark payment and ticket request completed
     mark_payment_completed
+    Rails.logger.info("#manual_confirmation() => @payment #{@payment.inspect}")
+
     redirect_to event_ticket_requests_path(@event, @ticket_request)
   end
 

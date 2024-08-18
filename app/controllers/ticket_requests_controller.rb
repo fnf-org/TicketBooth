@@ -182,19 +182,13 @@ class TicketRequestsController < ApplicationController
   def destroy
     Rails.logger.error("destroy# params: #{permitted_params}".colorize(:yellow))
 
-    unless @event.admin?(current_user) || current_user == @ticket_request.user
-      Rails.logger.error("ATTEMPT TO DELETE TICKET REQUEST #{@ticket_request} by #{current_user}".colorize(:red))
-      flash.now[:error] = 'You do not have sufficient privileges to delete this request.'
-      return render_flash(flash)
-    end
-
-    if @ticket_request.payment_received? || @ticket_request.payment_refunded?
-      flash.now[:error] = 'Can not delete ticket request when payment has been received or refunded'
+    unless @event.admin?(current_user) || @ticket_request.can_be_cancelled?(by_user: current_user)
+      Rails.logger.warn("Failed to delete ticket request #{@ticket_request} status: #{@ticket_request.status_name} by #{current_user}".colorize(:red))
+      flash.now[:error] = 'You do not have permission to delete this ticket'
       return render_flash(flash)
     end
 
     @ticket_request.destroy! if @ticket_request&.persisted?
-
     redirect_to new_event_ticket_request_path(@event), notice: 'Ticket Request was successfully cancelled.'
   end
 
