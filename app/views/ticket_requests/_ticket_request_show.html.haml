@@ -26,7 +26,7 @@
     %td.text-end.small.p-2.px-4.text-nowrap= "Payment:"
     %td
       %strong
-      - if ticket_request.payment_received?
+      - if ticket_request.payment_received? || ticket_request.payment_refunded?
         %strong.span.p-2.rounded{ class: text_class_for_status(ticket_request) }
           = ticket_request.payment.status_name
       - elsif ticket_request.free?
@@ -124,7 +124,7 @@
       %td.text-end.small.p-2.px-4.text-nowrap= "Financial Assistance Requested?:"
       %td
         %strong.bg-warning
-          Yes, financial assistance is requested.
+          Yes, assistance requested.
 
 
   - if ticket_request.notes.present?
@@ -156,6 +156,6 @@
     %tr
       %td.text-end.small.p-2.px-4.text-nowrap= "Notes:"
       %td
-        %h4 Ticket Coordinator Notes:
+        %strong Ticket Coordinator Notes:
         %p.small
           = ticket_request.admin_notes
