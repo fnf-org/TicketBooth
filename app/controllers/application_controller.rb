@@ -60,7 +60,7 @@ class ApplicationController < ActionController::Base
 
     # check if ticket request exists
     @ticket_request = TicketRequest.find_by(id: ticket_request_id)
-    unless @ticket_request.present?
+    if @ticket_request.blank?
       Rails.logger.info { "#set_ticket_request() => unknown ticket_request_id: #{ticket_request_id}" }
       return redirect_to root_path
     end
