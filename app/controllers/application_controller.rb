@@ -43,8 +43,7 @@ class ApplicationController < ActionController::Base
     end
 
     @event = Event.where(id: event_id).first
-
-    if @event.slug != event_slug
+    if @event&.slug != event_slug
       Rails.logger.warn("Event slug mismatch: [#{event_slug}] != [#{@event&.slug}]")
     end
 
@@ -59,7 +58,13 @@ class ApplicationController < ActionController::Base
     Rails.logger.debug { "#set_ticket_request() => ticket_request_id = #{ticket_request_id}" }
     return unless ticket_request_id
 
-    @ticket_request = TicketRequest.find(ticket_request_id)
+    # check if ticket request exists
+    @ticket_request = TicketRequest.find_by(id: ticket_request_id)
+    unless @ticket_request.present?
+      Rails.logger.info { "#set_ticket_request() => unknown ticket_request_id: #{ticket_request_id}" }
+      return redirect_to root_path
+    end
+
     Rails.logger.debug { "#set_ticket_request() => @ticket_request = #{@ticket_request&.inspect}" }
 
     redirect_to @event unless @ticket_request.event == @event
