@@ -97,10 +97,11 @@
                       class: 'btn btn-danger btn-sm text-nowrap' do
                       ↩︎ Revert
                   - elsif !ticket_request.completed?
-                    = button_to resend_approval_event_ticket_request_path(event, ticket_request),
-                      method: :post,
-                      class: 'btn btn-primary btn-sm text-nowrap' do
-                      ↺ Re-Approve
+                    - if event.tickets_require_approval
+                      = button_to resend_approval_event_ticket_request_path(event, ticket_request),
+                        method: :post,
+                        class: 'btn btn-primary btn-sm text-nowrap' do
+                        ↺ Re-Approve
                     = button_to manual_confirmation_event_ticket_request_payments_path(event, ticket_request),
                       method: :post,
                       class: 'btn btn-success btn-sm text-nowrap' do
