@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
     Rails.logger.debug { "#set_event() permitted params: #{permitted_params.inspect}" }
 
     event_id = permitted_params[:event_id].to_i
-    event_slug = permitted_params[:event_id].sub("#{event_id}-",'')
+    event_slug = permitted_params[:event_id].sub("#{event_id}-", '')
 
     Rails.logger.debug { "#set_event() => event_id = #{event_id}, event_slug = #{event_slug} params[:event_id] => #{permitted_params[:event_id]}" }
 
