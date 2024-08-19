@@ -66,7 +66,7 @@ class PaymentsController < ApplicationController
     @payment.cancel_payment_intent
 
     # update payment with explanation.
-    @payment.update(explanation: 'humanly marked received', provider: :other)
+    @payment.update(explanation: 'Marked Received', provider: :other)
 
     # mark payment and ticket request completed
     mark_payment_completed
