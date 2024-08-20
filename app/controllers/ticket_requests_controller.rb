@@ -24,14 +24,15 @@ class TicketRequestsController < ApplicationController
         requests:      requests.count,
         adults:        requests.sum(&:adults),
         kids:          requests.sum(&:kids),
+        donations:     requests.sum(&:donation),
         addon_passes:  requests.sum(&:active_addon_pass_sum),
         addon_camping: requests.sum(&:active_addon_camp_sum),
-        raised:        requests.sum(&:price)
+        raised:        requests.sum(&:cost)
       }
     end
 
     @stats[:total] ||= Hash.new { |h, k| h[k] = 0 }
-    %i[requests adults kids addon_passes addon_camping raised].each do |measure|
+    %i[requests adults kids donations addon_passes addon_camping raised].each do |measure|
       %i[pending awaiting_payment completed].each do |status|
         @stats[:total][measure] += @stats[status][measure]
       end

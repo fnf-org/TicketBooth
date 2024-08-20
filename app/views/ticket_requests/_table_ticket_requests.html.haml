@@ -13,8 +13,8 @@
           %th.bg-dark-subtle.text-end.optional-medium Tickets
           - if event.kid_ticket_price
             %th.bg-dark-subtle.text-end.optional-medium Kids
-          - if event.active_event_addons?
-            %th.bg-dark-subtle.text-end.optional-medium Addons
+          - if event.allow_donations
+            %th.bg-dark-subtle.text-end.optional-medium Donation
           %th.bg-dark-subtle.text-end Total
           %th.bg-dark-subtle.text-end.optional-medium Date Requested
           %th.bg-dark-subtle.text-center Status
@@ -57,14 +57,15 @@
             - if event.kid_ticket_price
               %td.align-content-center.text-end.optional-medium= ticket_request.kids
 
-            - if event.active_event_addons?
-              %td.align-content-center.text-end.optional-medium= ticket_request.active_addons_sum
+            - if event.allow_donations
+              %td.align-content-center.text-end
+                = number_to_currency(ticket_request.donation, precision: 0)
 
             %td.align-content-center.text-end
               %span{ class: ('label label-info' if ticket_request.special_price) }
-                = number_to_currency(ticket_request.price, precision: 0)
+                = number_to_currency(ticket_request.cost, precision: 0)
 
-            %td.align-content-center.text-end.optional-medium.text-nowrap.small
+            %td.align-content-center.text-end
               = ticket_request.created_at.to_date
 
             %td.align-content-center.text-center.ticket-status
