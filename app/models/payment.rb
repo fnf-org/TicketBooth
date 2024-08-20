@@ -214,7 +214,6 @@ class Payment < ApplicationRecord
     received?
   end
 
-  # XXX test
   # @deprecated method for converting old status
   def convert_old_status!
     @matrix ||= { 'N' => 'new', 'P' => 'in progress', 'R' => 'received', 'F' => 'refunded' }

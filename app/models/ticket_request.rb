@@ -135,7 +135,7 @@ class TicketRequest < ApplicationRecord
   belongs_to :user, inverse_of: :ticket_requests
   belongs_to :event, inverse_of: :ticket_requests, touch: true
 
-  has_one :payment, inverse_of: :ticket_request, dependent: :destroy
+  has_one :payment, inverse_of: :ticket_request
 
   has_many :ticket_request_event_addons, dependent: :destroy
   has_many :event_addons, through: :ticket_request_event_addons
