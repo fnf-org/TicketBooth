@@ -6,7 +6,7 @@ class HomeController < ApplicationController
     most_recent_event = live_events&.first
 
     error_message = 'No currently live events exist that have tickets on sale.'
-    Rails.logger.debug("home: user: #{current_user} event: #{most_recent_event}")
+    Rails.logger.debug { "home: user: #{current_user} event: #{most_recent_event}" }
 
     if most_recent_event.present?
       error_message = 'Please reach out to event coordinator to obtain the ticket request link.'
