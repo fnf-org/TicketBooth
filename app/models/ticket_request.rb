@@ -240,25 +240,29 @@ class TicketRequest < ApplicationRecord
   end
 
   def payment_received?
-    payment&.received? || payment&.refunded?
+    payment&.status_received?
+  end
+
+  def payment_refunded?
+    payment&.status_refunded?
   end
 
   def can_be_cancelled?(by_user:)
-    user.id == by_user&.id && !payment_received?
+    user.id == by_user&.id && !payment_received? && !payment_refunded?
   end
 
   def refund
     if refunded?
-      errors.add(:base, 'Cannot refund a ticket that has already been refunded')
+      errors.add(:base, 'Ticket has already been refunded')
       return false
-    elsif !completed? || !payment&.refundable?
-      errors.add(:base, 'Cannot refund a ticket that has not been purchased')
+    elsif !completed? || !payment&.received?
+      errors.add(:base, 'Ticket has not been purchased')
       return false
     end
 
     # issue refund for payment
     Rails.logger.info { "ticket_request [#{id}] payment [#{payment.id}] refunding [#{payment.stripe_payment_id}]" }
-    if payment.refund_payment
+    if payment.refund_stripe_payment
       mark_refunded
     else
       Rails.logger.error { "ticket_request failed to refund [#{payment.stripe_payment_id}] #{errors&.error_messages&.join('; ')}" }

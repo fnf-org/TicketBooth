@@ -24,14 +24,15 @@ class TicketRequestsController < ApplicationController
         requests:      requests.count,
         adults:        requests.sum(&:adults),
         kids:          requests.sum(&:kids),
+        donations:     requests.sum(&:donation),
         addon_passes:  requests.sum(&:active_addon_pass_sum),
         addon_camping: requests.sum(&:active_addon_camp_sum),
-        raised:        requests.sum(&:price)
+        raised:        requests.sum(&:cost)
       }
     end
 
     @stats[:total] ||= Hash.new { |h, k| h[k] = 0 }
-    %i[requests adults kids addon_passes addon_camping raised].each do |measure|
+    %i[requests adults kids donations addon_passes addon_camping raised].each do |measure|
       %i[pending awaiting_payment completed].each do |status|
         @stats[:total][measure] += @stats[status][measure]
       end
@@ -182,19 +183,13 @@ class TicketRequestsController < ApplicationController
   def destroy
     Rails.logger.error("destroy# params: #{permitted_params}".colorize(:yellow))
 
-    unless @event.admin?(current_user) || current_user == @ticket_request.user
-      Rails.logger.error("ATTEMPT TO DELETE TICKET REQUEST #{@ticket_request} by #{current_user}".colorize(:red))
-      flash.now[:error] = 'You do not have sufficient privileges to delete this request.'
-      return render_flash(flash)
-    end
-
-    if @ticket_request.payment_received?
-      flash.now[:error] = 'Can not delete request when payment has been received. It must be refunded instead.'
+    unless @event.admin?(current_user) || @ticket_request.can_be_cancelled?(by_user: current_user)
+      Rails.logger.warn("Failed to delete ticket request #{@ticket_request} status: #{@ticket_request.status_name} by #{current_user}".colorize(:red))
+      flash.now[:error] = 'You do not have permission to delete this ticket'
       return render_flash(flash)
     end
 
     @ticket_request.destroy! if @ticket_request&.persisted?
-
     redirect_to new_event_ticket_request_path(@event), notice: 'Ticket Request was successfully cancelled.'
   end
 

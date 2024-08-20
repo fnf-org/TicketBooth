@@ -6,7 +6,7 @@ describe PaymentsController, type: :controller do
   let(:event) { create(:event, max_adult_tickets_per_request: 1) }
   let(:user) { create(:user) }
   let(:ticket_request) { create(:ticket_request, event:, user:, kids: 0) }
-  let(:payment) { create(:payment, status: Payment::STATUS_IN_PROGRESS, stripe_payment_id: 'pi_3PF4524ofUrW5ZY40NeGThOz', ticket_request:) }
+  let(:payment) { create(:payment, status: :in_progress, stripe_payment_id: 'pi_3PF4524ofUrW5ZY40NeGThOz', ticket_request:) }
 
   before { sign_in user if user }
 
@@ -18,19 +18,19 @@ describe PaymentsController, type: :controller do
     end
 
     context 'when payment status new' do
-      let(:payment) { create(:payment, status: Payment::STATUS_NEW, stripe_payment_id: 'pi_3PF4524ofUrW5ZY40NeGThOz', ticket_request:) }
+      let(:payment) { create(:payment, status: :new, stripe_payment_id: 'pi_3PF4524ofUrW5ZY40NeGThOz', ticket_request:) }
 
       it { is_expected.to have_http_status(:redirect) }
     end
 
     context 'when payment status received' do
-      let(:payment) { create(:payment, status: Payment::STATUS_RECEIVED, stripe_payment_id: 'pi_3PF4524ofUrW5ZY40NeGThOz', ticket_request:) }
+      let(:payment) { create(:payment, status: :received, stripe_payment_id: 'pi_3PF4524ofUrW5ZY40NeGThOz', ticket_request:) }
 
       it { is_expected.to have_http_status(:redirect) }
     end
 
     context 'when no stripe payment exists' do
-      let(:payment) { create(:payment, status: Payment::STATUS_RECEIVED, stripe_payment_id: nil, ticket_request:) }
+      let(:payment) { create(:payment, status: :received, stripe_payment_id: nil, ticket_request:) }
 
       it { is_expected.to have_http_status(:redirect) }
     end

@@ -62,17 +62,22 @@
             - if @event.admin?(current_user) || !@ticket_request.post_payment?
               = link_to edit_event_ticket_request_path(@event, @ticket_request), class: 'btn btn-primary btn-round btn-sm mx-0 fs-6' do
                 Edit Ticket Request
-            - else
+            - elsif !@ticket_request.refunded?
               = link_to edit_event_ticket_request_path(@event, @ticket_request), class: 'btn btn-primary btn-round btn-sm mx-0 fs-6' do
                 Edit Guests
-
             - if signed_in? && @ticket_request.can_be_cancelled?(by_user: current_user)
-              = button_to " ✘ Cancel Ticket Request", event_ticket_request_path(@event, @ticket_request), class: 'btn btn-warning btn-mdsm', method: :delete, data: { "turbo-confirm": "Are you sure you want to delete this ticket request?" }
+              = button_to " ✘ Cancel Ticket Request", event_ticket_request_path(@event, @ticket_request), class: 'btn btn-warning btn-mdsm', method: :delete, data: { "turbo-confirm": "Are you sure you want to delete this ticket?" }
+        .col-4.text-end
+          .btn-group
+            - if @event.admin?(current_user)
+              = link_to event_ticket_requests_path(@event), class: 'btn btn-secondary btn-sm btn-round fs-6' do
+                All Ticket Requests
+              - if @ticket_request.refunded?
+                = button_to " ✘ Delete Refunded!", event_ticket_request_path(@event, @ticket_request), class: 'btn btn-danger btn-mdsm', method: :delete, data: { "turbo-confirm": "Are you sure you want to delete this already REFUNDED ticket?" }
+              - if @ticket_request.completed? && !@ticket_request.payment&.provider_stripe?
+                = button_to " ✘ Delete!", event_ticket_request_path(@event, @ticket_request), class: 'btn btn-danger btn-mdsm', method: :delete, data: { "turbo-confirm": "Are you sure you want to delete this already RECEIVED ticket?" }
 
-        - if @event.admin?(current_user)
-          .col-4.text-end
-            = link_to event_ticket_requests_path(@event), class: 'btn btn-secondary btn-sm btn-round fs-6' do
-              All Ticket Requests
+
 
 
 
