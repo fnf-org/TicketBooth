@@ -18,7 +18,7 @@
           %th.bg-dark-subtle.text-end Total
           %th.bg-dark-subtle.text-end.optional-medium Date Requested
           %th.bg-dark-subtle.text-center Status
-          %th.bg-dark-subtle.text-end Payment
+          %th.bg-dark-subtle.text-center Payment
 
 
       %tbody.border-dark-subtle.border-2
@@ -58,7 +58,7 @@
               %td.align-content-center.text-end.optional-medium= ticket_request.kids
 
             - if event.allow_donations
-              %td.align-content-center.text-end
+              %td.align-content-center.text-end.optional-medium
                 = number_to_currency(ticket_request.donation, precision: 0)
 
             %td.align-content-center.text-end
