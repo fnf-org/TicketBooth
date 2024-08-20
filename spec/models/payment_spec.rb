@@ -6,7 +6,9 @@
 #
 #  id                :bigint           not null, primary key
 #  explanation       :string
-#  status            :string(1)        default("N"), not null
+#  old_status        :string(1)        default("N"), not null
+#  provider          :enum             default("stripe"), not null
+#  status            :enum             default("new"), not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  stripe_charge_id  :string(255)
@@ -43,21 +45,55 @@ describe Payment do
 
     describe '#status' do
       context 'when in progress' do
-        let(:payment) { build(:payment, status: Payment::STATUS_IN_PROGRESS) }
+        let(:payment) { build(:payment, status: 'in_progress') }
 
         it { is_expected.to be_valid }
       end
 
       context 'when unknown status' do
-        let(:payment) { build(:payment, status: 'nope') }
+        let(:payment) { build(:payment) }
 
-        it { is_expected.not_to be_valid }
+        it 'is not valid to set to unknown status' do
+          expect { payment.status = 'nope' }.to raise_error(ArgumentError)
+        end
+      end
+    end
+
+    describe 'provider' do
+      context 'with stripe' do
+        let(:payment) { build(:payment, provider: 'stripe') }
+
+        it { is_expected.to be_valid }
+
+        it 'has provider of stripe' do
+          expect(payment.provider).to eq('stripe')
+        end
+
+        it 'has prefix predicate for stripe' do
+          expect(payment).to be_provider_stripe
+        end
       end
 
-      context 'when not present' do
-        let(:payment) { build(:payment, status: nil) }
+      context 'with other provider' do
+        let(:payment) { build(:payment, provider: 'other') }
 
-        it { is_expected.not_to be_valid }
+        it { is_expected.to be_valid }
+
+        it 'has provider of other' do
+          expect(payment.provider).to eq('other')
+        end
+
+        it 'has prefix predicate for other' do
+          expect(payment).to be_provider_other
+        end
+      end
+
+      context 'when unknown provider' do
+        let(:payment) { build(:payment) }
+
+        it 'is not valid to set to unknown provider' do
+          expect { payment.provider = 'nope' }.to raise_error(ArgumentError)
+        end
       end
     end
   end
@@ -91,7 +127,7 @@ describe Payment do
     it { is_expected.to be_a(Stripe::PaymentIntent) }
 
     it 'changes the payment status' do
-      expect { payment_intent }.to(change(payment, :status).to(Payment::STATUS_IN_PROGRESS))
+      expect { payment_intent }.to(change(payment, :status).to('in_progress'))
     end
   end
 
@@ -108,6 +144,44 @@ describe Payment do
     describe 'stripe failure' do
       it 'raises Stripe error when amount < 50 cents' do
         expect { payment.create_payment_intent(1) }.to raise_error(Stripe::InvalidRequestError)
+      end
+    end
+  end
+
+  describe '#cancel_payment_intent' do
+    let(:amount) { 1000 }
+    let(:payment) { build(:payment, provider: :stripe, status: :in_progress) }
+
+    before do
+      payment_intent = payment.create_payment_intent(amount)
+      payment.stripe_payment_id = payment_intent.id
+    end
+
+    describe 'cancel valid payment intent' do
+      it 'returns a PaymentIntent' do
+        expect(payment.cancel_payment_intent).to be_a(Stripe::PaymentIntent)
+      end
+
+      it 'has payment intent canceled_at set' do
+        payment.cancel_payment_intent
+        expect(payment.payment_intent['canceled_at']).not_to be_nil
+      end
+    end
+
+    describe 'invalid payment state' do
+      it 'does not cancel if stripe_payment_id not present' do
+        payment.stripe_payment_id = nil
+        expect(payment.cancel_payment_intent).to be_nil
+      end
+
+      it 'does not cancel if status not in progress' do
+        payment.status_refunded!
+        expect(payment.cancel_payment_intent).to be_nil
+      end
+
+      it 'does not cancel if not stripe payment' do
+        payment.provider_cash!
+        expect(payment.cancel_payment_intent).to be_nil
       end
     end
   end
@@ -131,7 +205,7 @@ describe Payment do
     it { is_expected.to be_a(Stripe::PaymentIntent) }
 
     it 'changes payment status' do
-      expect { payment_intent }.to(change(payment, :status).to(Payment::STATUS_IN_PROGRESS))
+      expect { payment_intent }.to(change(payment, :status).to('in_progress'))
     end
 
     context 'when stripe payment exists' do
@@ -159,12 +233,12 @@ describe Payment do
     describe '#refunded?' do
       subject { payment.refunded? }
 
-      let(:payment) { build(:payment, status: Payment::STATUS_REFUNDED, stripe_refund_id: 'refundId') }
+      let(:payment) { build(:payment, status: 'refunded', stripe_refund_id: 'refundId') }
 
       it { is_expected.to be_truthy }
 
       context 'when payment not refunded' do
-        let(:payment) { build(:payment, status: Payment::STATUS_RECEIVED) }
+        let(:payment) { build(:payment, status: 'received') }
 
         it { is_expected.to be_falsey }
       end
@@ -173,12 +247,12 @@ describe Payment do
     describe '#refundable?' do
       subject { payment.refundable? }
 
-      let(:payment) { build(:payment, status: Payment::STATUS_RECEIVED, stripe_refund_id: nil) }
+      let(:payment) { build(:payment, status: 'received', stripe_refund_id: nil) }
 
       it { is_expected.to be_truthy }
 
       context 'when payment already refunded' do
-        let(:payment) { build(:payment, status: Payment::STATUS_REFUNDED, stripe_refund_id: 'refundId') }
+        let(:payment) { build(:payment, status: 'refunded', stripe_refund_id: 'refundId') }
 
         it { is_expected.to be_falsey }
       end
@@ -191,20 +265,5 @@ describe Payment do
         end
       end
     end
-
-    # describe '#refund_payment' do
-    #   subject { payment.refund_payment }
-    #
-    #   before { payment.save_with_payment_intent }
-    #
-    #   let(:amount) { 1000 }
-    #   let(:payment) { build(:payment) }
-    #
-    #   context 'when payment received' do
-    #     before { payment.mark_received }
-    #
-    #     it { is_expected.to be_truthy }
-    #   end
-    # end
   end
 end
