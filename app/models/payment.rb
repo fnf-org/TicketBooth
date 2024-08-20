@@ -143,7 +143,6 @@ class Payment < ApplicationRecord
     Rails.logger.debug { "retrieve_payment_intent payment => #{inspect}}" }
   end
 
-  # XXX need to test
   # cancel Stripe PaymentIntent if is in progress
   def cancel_payment_intent
     return unless stripe_payment? && status_in_progress?
@@ -154,13 +153,13 @@ class Payment < ApplicationRecord
   end
 
   # https://docs.stripe.com/api/refunds
-  # refund strip payment only
+  # refund Stripe payment
   # reasons duplicate, fraudulent, or requested_by_customer
-  def refund_payment(reason: 'requested_by_customer')
+  def refund_stripe_payment(reason: 'requested_by_customer')
     return false unless received?
 
     begin
-      Rails.logger.info "refund_payment: #{id} stripe_payment_id: #{stripe_payment_id} status: #{status}"
+      Rails.logger.info "refund_stripe_payment: #{id} stripe_payment_id: #{stripe_payment_id} status: #{status}"
       self.refund = Stripe::Refund.create({ payment_intent: stripe_payment_id,
                                             reason:,
                                             metadata:       { event_id:               ticket_request.event.id,
@@ -169,11 +168,11 @@ class Payment < ApplicationRecord
                                                               ticket_request_user_id: ticket_request.user_id } })
       self.stripe_refund_id = refund.id
       self.status = :refunded
-      Rails.logger.info { "refund_payment success stripe_refund_id [#{stripe_refund_id}] status [#{status}]" }
+      Rails.logger.info { "refund_stripe_payment success stripe_refund_id [#{stripe_refund_id}] status [#{status}]" }
       log_refund(refund)
       save!
     rescue Stripe::StripeError => e
-      Rails.logger.error { "refund_payment Stripe::Refund.create failed [#{stripe_payment_id}]: #{e}" }
+      Rails.logger.error { "refund_stripe_payment Stripe::Refund.create failed [#{stripe_payment_id}]: #{e}" }
       errors.add :base, e.message
       false
     rescue StandardError => e

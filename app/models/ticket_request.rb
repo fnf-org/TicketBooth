@@ -262,7 +262,7 @@ class TicketRequest < ApplicationRecord
 
     # issue refund for payment
     Rails.logger.info { "ticket_request [#{id}] payment [#{payment.id}] refunding [#{payment.stripe_payment_id}]" }
-    if payment.refund_payment
+    if payment.refund_stripe_payment
       mark_refunded
     else
       Rails.logger.error { "ticket_request failed to refund [#{payment.stripe_payment_id}] #{errors&.error_messages&.join('; ')}" }
