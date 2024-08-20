@@ -12,7 +12,7 @@
   %tr
     %td.text-end.small.p-2.px-4.text-nowrap= "Date Requested:"
     %td
-      %strong=  ticket_request.created_at.localtime.to_formatted_s(:friendly)
+      %strong=  ticket_request.created_at.localtime.to_fs(:db)
 
   - if event.tickets_require_approval
     %tr
@@ -55,7 +55,7 @@
               = 'ticket'.pluralize(ticket_request.total_tickets)
 
   %tr
-    %td.text-end.small.p-2.px-4.text-nowrap= "Total Price:"
+    %td.text-end.small.p-2.px-4.text-nowrap= "Total Ticket Price:"
     %td
       %strong
         %span{ class: ('label label-info' if ticket_request.special_price) }
