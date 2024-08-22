@@ -16,11 +16,13 @@
       %thead.border-dark-subtle.border-2
 
         %tr
-          %th.text-nowrap.bg-dark-subtle.text-left Ticket Status
+          %th.text-nowrap.bg-dark-subtle.text-left Tickets Status
           %th.bg-dark-subtle.text-end.optional-medium Requests
           %th.bg-dark-subtle.text-end Tickets
           - if event.kid_ticket_price
-            %th.bg-dark-subtle.text-end Kids
+            %th.bg-dark-subtle.text-end Kids Tix
+          - if event.allow_donations
+            %th.bg-dark-subtle.text-end Donations
           - if event.active_event_addons_passes_count > 0
             %th.bg-dark-subtle.text-end
               =Addon::HUMANIZED_CATEGORIES[Addon::CATEGORY_PASS]
@@ -41,6 +43,10 @@
           - if event.kid_ticket_price
             %td.text-end.bg-success-subtle
               %span= stats[:completed][:kids]
+          - if event.allow_donations
+            %td.text-end.bg-success-subtle
+              %span
+                = number_to_currency(stats[:completed][:donations], precision: 0)
           - if event.active_event_addons_passes_count > 0
             %td.text-end.bg-success-subtle
               %span= stats[:completed][:addon_passes]
@@ -58,6 +64,9 @@
           %td.text-end.bg-warning= stats[:pending][:adults]
           - if event.kid_ticket_price
             %td.text-end.bg-warning= stats[:pending][:kids]
+          - if event.allow_donations
+            %td.text-end.bg-warning
+              = number_to_currency(stats[:pending][:donations], precision: 0)
           - if event.active_event_addons_passes_count > 0
             %td.text-end.bg-warning= stats[:pending][:addon_passes]
           - if event.active_event_addons_camping_count > 0
@@ -72,6 +81,9 @@
           %td.text-end.bg-warning-subtle= stats[:awaiting_payment][:adults]
           - if event.kid_ticket_price
             %td.text-end.bg-warning-subtle= stats[:awaiting_payment][:kids]
+          - if event.allow_donations
+            %td.text-end.bg-warning-subtle
+              = number_to_currency(stats[:awaiting_payment][:donations], precision: 0)
           - if event.active_event_addons_passes_count > 0
             %td.text-end.bg-warning-subtle= stats[:awaiting_payment][:addon_passes]
           - if event.active_event_addons_camping_count > 0
@@ -87,6 +99,8 @@
           %td.bg-dark-subtle.text-end= stats[:total][:adults]
           - if event.kid_ticket_price
             %td.bg-dark-subtle.text-end= stats[:total][:kids]
+          - if event.allow_donations
+            %td.bg-dark-subtle.text-end= number_to_currency(stats[:total][:donations], precision: 0)
           - if event.active_event_addons_passes_count > 0
             %td.bg-dark-subtle.text-end= stats[:total][:addon_passes]
           - if event.active_event_addons_camping_count > 0

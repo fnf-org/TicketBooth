@@ -13,12 +13,12 @@
           %th.bg-dark-subtle.text-end.optional-medium Tickets
           - if event.kid_ticket_price
             %th.bg-dark-subtle.text-end.optional-medium Kids
-          - if event.active_event_addons?
-            %th.bg-dark-subtle.text-end.optional-medium Addons
+          - if event.allow_donations
+            %th.bg-dark-subtle.text-end.optional-medium Donation
           %th.bg-dark-subtle.text-end Total
           %th.bg-dark-subtle.text-end.optional-medium Date Requested
           %th.bg-dark-subtle.text-center Status
-          %th.bg-dark-subtle.text-end Payment
+          %th.bg-dark-subtle.text-center Payment
 
 
       %tbody.border-dark-subtle.border-2
@@ -29,6 +29,7 @@
               = link_to event_ticket_request_path(event, ticket_request) do
                 = ticket_request.user.name
 
+            -# If we role is required for the event, add the column for role
             - if event.require_role
               %td.muted.align-content-center.optional-medium
                 = TicketRequest::ROLES[ticket_request.role]
@@ -56,69 +57,60 @@
             - if event.kid_ticket_price
               %td.align-content-center.text-end.optional-medium= ticket_request.kids
 
-            - if event.active_event_addons?
-              %td.align-content-center.text-end.optional-medium= ticket_request.active_addons_sum
+            - if event.allow_donations
+              %td.align-content-center.text-end.optional-medium
+                = number_to_currency(ticket_request.donation, precision: 0)
 
             %td.align-content-center.text-end
               %span{ class: ('label label-info' if ticket_request.special_price) }
-                = number_to_currency(ticket_request.price, precision: 0)
+                = number_to_currency(ticket_request.cost, precision: 0)
 
-            %td.align-content-center.text-end.optional-medium.text-nowrap.small
+            %td.align-content-center.text-end
               = ticket_request.created_at.to_date
 
             %td.align-content-center.text-center.ticket-status
               %span.p-2.rounded.small.bi-credit-card.text-black{ class: text_class_for_status(ticket_request) }
-                = text_for_status ticket_request
-                - if ticket_request.payment && !ticket_request.payment.received?
-                  %i.icon-comment.hover-tooltip{ title: ticket_request.payment.explanation }
+                - if ticket_request.payment.present? && !ticket_request.payment.provider_stripe?
+                  = "#{text_for_status ticket_request} - #{ticket_request.payment.provider.humanize}"
+                  = tooltip_box(ticket_request.payment.explanation, title:  "Method:") do
+                    = image_tag('icons/comments-user.png', width: 20, class: 'hover-tooltip')
+                - else
+                  = text_for_status ticket_request
 
-            %td.align-content-end.text-end
-              - if event.tickets_require_approval && ticket_request.pending?
-                .btn-group
-                  = button_to approve_event_ticket_request_path(event, ticket_request),
-                    method: :post,
-                    class: 'btn btn-primary btn-sm text-nowrap' do
-                    ✔︎ Approve
-                  = button_to decline_event_ticket_request_path(event, ticket_request),
-                    method: :post,
-                    class: 'btn btn-danger btn-sm text-nowrap',
-                    data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s request?" } do
-                    ✘ Decline
-              - elsif !ticket_request.payment
-                .btn-group
-                  - if ticket_request.declined?
-                    = button_to revert_to_pending_event_ticket_request_path(event, ticket_request),
-                      method: :post,
-                      class: 'btn btn-danger btn-sm text-nowrap' do
-                      ↩︎ Revert
-                  - elsif !ticket_request.completed?
-                    = button_to resend_approval_event_ticket_request_path(event, ticket_request),
+
+            %td.align-content-end.text-center
+              - if ticket_request.pending?
+                - if event.tickets_require_approval
+                  .btn-group
+                    = button_to approve_event_ticket_request_path(event, ticket_request),
                       method: :post,
                       class: 'btn btn-primary btn-sm text-nowrap' do
-                      ↺ Re-Approve
-                    = button_to manual_confirmation_event_ticket_request_payments_path(event, ticket_request),
-                      method: :post,
-                      class: 'btn btn-success btn-sm text-nowrap' do
-                      ＄ Received
+                      ✔︎ Approve
                     = button_to decline_event_ticket_request_path(event, ticket_request),
                       method: :post,
                       class: 'btn btn-danger btn-sm text-nowrap',
-                      data: { confirm: "Are you sure you want to decline #{ticket_request.user.name}'s already approved request?" } do
+                      data: { "turbo-confirm": "Are you sure you want to decline #{ticket_request.user.name}'s request?" } do
                       ✘ Decline
-
-              - elsif ticket_request.payment && ticket_request.awaiting_payment? && !ticket_request.payment_received?
-                .btn-group.pull-right
+              .btn-group
+                - if ticket_request.awaiting_payment?
                   = button_to manual_confirmation_event_ticket_request_payments_path(event, ticket_request),
                     method: :post,
-                    class: 'btn btn-primary btn-sm ' do
-                    Mark as Received
-                    %i.icon-ok
-
-              - elsif ticket_request.payment_received? && !ticket_request.refunded?
-                .btn-group.pull-right
+                    class: 'btn btn-success btn-sm text-nowrap' do
+                    Mark Received
+                  = button_to decline_event_ticket_request_path(event, ticket_request),
+                    method: :post,
+                    class: 'btn btn-danger btn-sm text-nowrap',
+                    data: { "turbo-confirm": "Are you sure you want to decline #{ticket_request.user.name}'s already approved request?" } do
+                    ✘ Decline
+                - if ticket_request.declined?
+                  - button_text = event.tickets_require_approval ? '↩︎ Re-Approve' : '↩︎ Revert'
+                  = button_to revert_to_pending_event_ticket_request_path(event, ticket_request),
+                    method: :post,
+                    class: 'btn btn-danger btn-sm text-nowrap' do
+                    = button_text
+                - if ticket_request.completed? && ticket_request.payment&.received?
                   = button_to refund_event_ticket_request_path(event, ticket_request),
                     method: :post,
                     class: 'btn btn-danger btn-sm text-nowrap',
-                    data: { confirm: "Are you sure you want to refund #{ticket_request.user.name}'s payment?'" } do
+                    data: { "turbo-confirm": "Are you sure you want to refund #{ticket_request.user.name}'s payment?'" } do
                     ↩︎ Refund
-
