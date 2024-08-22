@@ -2,8 +2,13 @@
   Hi #{@ticket_request.user.first_name},
 
 %p
-  We have received your ticket request for #{@event.name} for
-  #{@ticket_request.total_tickets} total tickets (including kids).
+  We have received your ticket request for #{@event.name}
+  %br
+  Total Tickets: #{@ticket_request.total_tickets}
+  - if @ticket_request.ticket_request_event_addons?
+    - @ticket_request.active_sorted_addons.each do |tr_event_addon|
+      %br
+      = tr_event_addon.humanized_category + ': ' "#{tr_event_addon.quantity} - #{tr_event_addon.name}"
 
 %p
   If your request is approved, we will send you confirmation of the approved

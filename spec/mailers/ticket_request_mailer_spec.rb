@@ -11,7 +11,19 @@ describe TicketRequestMailer do
   describe '#request_received' do
     subject(:mail) { described_class.request_received(ticket_request) }
 
-    its(:subject) { is_expected.to eql "#{event.name} ticket request confirmation" }
+    its(:subject) { is_expected.to eql "#{event.name} ticket request received!" }
+
+    its(:to) { is_expected.to eql [user.email] }
+
+    its('body.encoded') { is_expected.to match(user.first_name) }
+
+    its('body.encoded') { is_expected.to match(event.name) }
+  end
+
+  describe '#request_confirmed' do
+    subject(:mail) { described_class.request_confirmed(ticket_request) }
+
+    its(:subject) { is_expected.to eql "#{event.name} ticket confirmation!" }
 
     its(:to) { is_expected.to eql [user.email] }
 
@@ -42,7 +54,7 @@ describe TicketRequestMailer do
     context 'when the ticket request is not free' do
       let(:price) { 10 }
 
-      its(:body) { is_expected.to match('purchase') }
+      its(:body) { is_expected.to match('buy') }
     end
   end
 end

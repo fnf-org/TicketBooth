@@ -152,67 +152,65 @@ describe TicketRequestsController, type: :controller do
       }
     end
 
-    describe 'without Ventable callbacks', :ventable_disabled do
-      describe 'ticket_request_params' do
-        subject { ticket_request_params }
+    describe 'ticket_request_params' do
+      subject { ticket_request_params }
 
-        it { is_expected.to be_a(Hash) }
-        it { is_expected.to include('event_id' => event.id) }
-        it { is_expected.not_to include('ticket_request' => ['status']) }
-      end
+      it { is_expected.to be_a(Hash) }
+      it { is_expected.to include('event_id' => event.id) }
+      it { is_expected.not_to include('ticket_request' => ['status']) }
+    end
 
-      context 'when event ticket sales are closed' do
-        let(:viewer) { create(:user) }
+    context 'when event ticket sales are closed' do
+      let(:viewer) { create(:user) }
 
-        it 'has no error message before the request' do
-          Timecop.freeze(event.end_time + 1.hour) do
-            make_request[]
-            expect(response).to redirect_to(attend_event_path(event))
-            expect(flash.now[:error]).to_not be_nil
-          end
+      it 'has no error message before the request' do
+        Timecop.freeze(event.end_time + 1.hour) do
+          make_request[]
+          expect(response).to redirect_to(attend_event_path(event))
+          expect(flash.now[:error]).to_not be_nil
         end
       end
+    end
 
-      context 'when viewer already signed in' do
-        subject { make_request.call }
+    context 'when viewer already signed in' do
+      subject { make_request.call }
 
-        let(:viewer) { user }
+      let(:viewer) { user }
 
-        before { TicketRequest.where(user_id: viewer.id).destroy_all }
+      before { TicketRequest.where(user_id: viewer.id).destroy_all }
 
-        describe '#create HTTP status' do
-          it { succeeds }
+      describe '#create HTTP status' do
+        it { succeeds }
 
-          it 'has no errors' do
-            expect(flash[:error]).to be_nil
-          end
-        end
-
-        describe 'database state' do
-          subject(:response) { make_request[] }
-
-          it 'creates a ticket request' do
-            expect { subject }.to(change(TicketRequest, :count))
-          end
-
-          it 'assigned the ticket request to the viewer' do
-            expect { subject }.to change { viewer.ticket_requests.count }.by(1)
-          end
+        it 'has no errors' do
+          expect(flash[:error]).to be_nil
         end
       end
 
-      context 'when viewer is not signed in' do
-        before { make_request.call }
+      describe 'database state' do
+        subject(:response) { make_request[] }
 
-        let(:viewer) { nil }
-
-        it { expect(response).to have_http_status(:redirect) }
-
-        it { expect(flash.now[:error]).to be_nil }
-
-        it 'not log the user in' do
-          expect(controller.current_user).to be_nil
+        it 'creates a ticket request' do
+          expect { subject }.to(change(TicketRequest, :count))
         end
+
+        it 'assigned the ticket request to the viewer' do
+          expect { subject }.to change { viewer.ticket_requests.count }.by(1)
+        end
+      end
+    end
+
+    context 'when viewer is not signed in' do
+      before { make_request.call }
+
+      let(:viewer) { nil }
+
+      it { expect(response).to have_http_status(:redirect) }
+
+      it { expect(flash.now[:error]).to be_nil }
+
+      it 'not log the user in' do
+        expect(controller.current_user).to be_nil
       end
     end
   end

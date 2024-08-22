@@ -239,6 +239,10 @@ class TicketRequest < ApplicationRecord
     update status: STATUS_REFUNDED
   end
 
+  def mark_declined
+    update status: STATUS_DECLINED
+  end
+
   def payment_received?
     payment&.status_received?
   end

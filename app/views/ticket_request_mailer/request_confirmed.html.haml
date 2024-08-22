@@ -1,28 +1,37 @@
 %p
   Hi #{@ticket_request.user.first_name},
+
 %p
   Your
   = 'ticket'.pluralize(@ticket_request.total_tickets)
   for
   %b #{@event.name}
-  is confirmed!
+  - @ticket_request.total_tickets > 1 ? ' are ' : ' is '
+  confirmed!
 
-  #{@ticket_request.total_tickets} total tickets (including kids).
+%p
+  Total Tickets: #{@ticket_request.total_tickets}
+- if @ticket_request.ticket_request_event_addons?
+  - @ticket_request.active_sorted_addons.each do |tr_event_addon|
+    = "#{tr_event_addon.name}: #{tr_event_addon.quantity}"
+    %br
 
-%p<>
+%p
   - if @ticket_request.free?
     You're good to go!
   - else
-    If you still need to pay, you can now
-    = succeed '.' do
-      = link_to @payment_url do
-        purchase your
-        = 'ticket'.pluralize(@ticket_request.total_tickets)
+    If you have not yet paid, please
+    = link_to @payment_url do
+      buy your tickets now!
 
-  You can view the status of your ticket at any time by visiting
+%p
+  With love ❤️,
+  %br
+  Your FnF Ticket Team
+
+%p
+  P.S. You can view the status of your request at any time by visiting
   = link_to 'this page', @ticket_request_url
 
 %p
-  Thanks,
-  %br
-  The FnF Ticket Team
+  = Time.now

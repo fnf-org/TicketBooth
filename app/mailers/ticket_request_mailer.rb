@@ -23,7 +23,7 @@ class TicketRequestMailer < ApplicationMailer
     mail to: to_email, # The recipient of the email
          from: from_email, # The sender of the email
          reply_to: reply_to_email, # The email address that will receive replies
-         subject: "#{@event.name} ticket request confirmation" # The subject of the email
+         subject: "#{@event.name} ticket request received!" # The subject of the email
   end
 
   # The `request_confirmed` method is used to send an email when a ticket request is confirmed without approval.
@@ -35,13 +35,24 @@ class TicketRequestMailer < ApplicationMailer
     # Set the ticket request
     self.ticket_request = ticket_request
 
+    # Generate an authentication token for the user
+    @auth_token = ticket_request&.user&.generate_auth_token!
+
+    # Return if the authentication token is blank
+    if @auth_token.blank?
+      Rails.logger.warn { "request_confirmed: no auth token for user: #{@ticket_request.inspect}" }
+      return
+    end
+
+    @payment_url = new_event_ticket_request_payment_url(@event, @ticket_request, @auth_token)
     @ticket_request_url = event_ticket_request_url(event_id: @event.id, id: @ticket_request.id)
+    Rails.logger.debug { "request_confirmed: payment_url: #{@payment_url} ticket_request_url: #{@ticket_request_url}" }
 
     # Prepare the email to be sent
     mail to: to_email, # The recipient of the email
          from: from_email, # The sender of the email
          reply_to: reply_to_email, # The email address that will receive replies
-         subject: "#{@event.name} ticket confirmation" # The subject of the email
+         subject: "#{@event.name} ticket confirmation!" # The subject of the email
   end
 
   # The `request_approved` method is used to send an email when a ticket request is approved.
@@ -57,16 +68,32 @@ class TicketRequestMailer < ApplicationMailer
     # Generate an authentication token for the user
     @auth_token = ticket_request&.user&.generate_auth_token!
 
-    @payment_url = new_event_ticket_request_payment_url(@event, @ticket_request, @auth_token)
-
     # Return if the authentication token is blank
     return if @auth_token.blank?
+
+    @payment_url = new_event_ticket_request_payment_url(@event, @ticket_request, @auth_token)
+    @ticket_request_url = event_ticket_request_url(event_id: @event.id, id: @ticket_request.id)
 
     # Prepare the email to be sent
     mail to: to_email, # The recipient of the email
          from: from_email, # The sender of the email
          reply_to: reply_to_email, # The email address that will ¬receive replies
          subject: "Your #{@event.name} ticket request has been approved!" # The subject of the email
+  end
+
+  # The `request_denied` method is used to send an email when a ticket request is denied for reasons.
+  # @param ticket_request [TicketRequest] The ticket request that has been denied.
+  #
+  # @return [Mail::Message, nil] The email that has been prepared to be sent, or nil if the authentication token is blank.
+  def request_denied(ticket_request)
+    # Set the ticket request
+    self.ticket_request = ticket_request
+
+    # Prepare the email to be sent
+    mail to: to_email, # The recipient of the email
+         from: from_email, # The sender of the email
+         reply_to: reply_to_email, # The email address that will ¬receive replies
+         subject: "Your #{@event.name} ticket request" # The subject of the email
   end
 
   private
@@ -86,19 +113,19 @@ class TicketRequestMailer < ApplicationMailer
     end
 
     def ticket_request(event)
-      request_received(event.ticket_request).deliver_now
+      request_received(event.ticket_request).deliver_later
     end
 
     def ticket_request_confirmed(event)
-      request_confirmed(event.ticket_request).deliver_now
+      request_confirmed(event.ticket_request).deliver_later
     end
 
     def ticket_request_approved(event)
-      request_approved(event.ticket_request).deliver_now
+      request_approved(event.ticket_request).deliver_later
     end
 
-    def ticket_request_declined(_)
-      # Not yet implemented
+    def ticket_request_declined(event)
+      request_denied(event.ticket_request).deliver_later
     end
   end
 end
