@@ -134,24 +134,25 @@ class TicketRequestsController < ApplicationController
       @ticket_request.save!
       Rails.logger.info("Saved Ticket Request, ID = #{@ticket_request.id}")
 
-      FnF::Events::TicketRequestEvent.new(
-        user:   ticket_request_user,
-        target: @ticket_request
-      ).fire!
+      if @event.tickets_require_approval
+        TicketRequestMailer.request_received(@ticket_request).deliver_later
 
-      if @event.tickets_require_approval && @ticket_request.total_tickets > 1
         Rails.logger.debug { "tr approval: #{@ticket_request.inspect}" }
         redirect_to event_ticket_request_path(@event, @ticket_request),
                     notice: 'When you know your guest names, please return here and add them below.'
-      elsif !@ticket_request.all_guests_specified?
-        Rails.logger.debug { "tr NOT all guests specified: #{@ticket_request.inspect}" }
-        # XXX there is a bug here that flashes this when only 1 ticket being purchased.
-        redirect_to edit_event_ticket_request_path(@event, @ticket_request),
-                    notice: 'Please enter the guest names before you are able to pay for the ticket.'
-      elsif !@event.tickets_require_approval || @ticket_request.approved?
-        Rails.logger.debug { "tr please pay: #{@ticket_request.inspect}" }
-        redirect_to event_ticket_request_payments_path(@event, @ticket_request),
-                    notice: 'Please pay for your ticket(s).'
+      else
+        TicketRequestMailer.request_confirmed(@ticket_request).deliver_later
+
+        if !@ticket_request.all_guests_specified?
+          Rails.logger.debug { "tr NOT all guests specified: #{@ticket_request.inspect}" }
+          redirect_to edit_event_ticket_request_path(@event, @ticket_request),
+                      notice: 'Please enter the guest names before you are able to pay for the ticket.'
+
+        elsif @ticket_request.approved?
+          Rails.logger.debug { "tr please pay: #{@ticket_request.inspect}" }
+          redirect_to event_ticket_request_payments_path(@event, @ticket_request),
+                      notice: 'Please pay for your ticket(s).'
+        end
       end
     rescue StandardError => e
       Rails.logger.error("Error Processing Ticket Send Request: #{e.message}\n\n#{@ticket_request.errors.full_messages.join(', ')}")
@@ -194,11 +195,10 @@ class TicketRequestsController < ApplicationController
   end
 
   def approve
+    # update approved
     if @ticket_request.approve
-      ::FnF::Events::TicketRequestApprovedEvent.new(
-        user:   current_user,
-        target: @ticket_request
-      ).fire!
+      TicketRequestMailer.request_approved(@ticket_request).deliver_later
+
       redirect_to event_ticket_requests_path(@event),
                   notice: "#{@ticket_request.user.name}'s request was approved"
     else
@@ -208,11 +208,9 @@ class TicketRequestsController < ApplicationController
   end
 
   def decline
-    if @ticket_request.update(status: TicketRequest::STATUS_DECLINED)
-      ::FnF::Events::TicketRequestDeclinedEvent.new(
-        user:   current_user,
-        target: @ticket_request
-      ).fire!
+    if @ticket_request.mark_declined
+      TicketRequestMailer.request_denied(@ticket_request).deliver_later
+
       redirect_to event_ticket_requests_path(@event),
                   error: "#{@ticket_request.user.name}'s request was declined"
     else

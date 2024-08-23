@@ -1,21 +1,26 @@
 %p
   Hi #{@ticket_request.user.first_name},
+
 %p
   Your ticket request for
   %b #{@event.name}
   has been approved!
 
-%p<>
+%p
   - if @ticket_request.free?
     You're good to go!
   - else
-    You can now
-    = succeed '.' do
-      = link_to @payment_url do
-        purchase your
-        = 'ticket'.pluralize(@ticket_request.total_tickets)
+    You can
+    = link_to @payment_url do
+      buy your
+      = 'ticket'.pluralize(@ticket_request.total_tickets)
+      now!
 
 %p
-  Thanks,
+  With love ❤️,
   %br
-  The FnF Ticket Team
+  Your FnF Ticket Team
+
+%p
+  P.S. You can view the status of your request at any time by visiting
+  = link_to 'this page', @ticket_request_url

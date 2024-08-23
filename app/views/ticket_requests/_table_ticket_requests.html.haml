@@ -8,17 +8,17 @@
         %tr
           %th.bg-dark-subtle Name
           - if event.require_role
-            %th.bg-dark-subtle.optional-medium Role
+            %th.bg-dark-subtle Role
           %th.bg-dark-subtle Notes
-          %th.bg-dark-subtle.text-end.optional-medium Tickets
+          %th.bg-dark-subtle.text-end Tickets
           - if event.kid_ticket_price
-            %th.bg-dark-subtle.text-end.optional-medium Kids
+            %th.bg-dark-subtle.text-end Kids
           - if event.allow_donations
-            %th.bg-dark-subtle.text-end.optional-medium Donation
+            %th.bg-dark-subtle.text-end Donation
           %th.bg-dark-subtle.text-end Total
-          %th.bg-dark-subtle.text-end.optional-medium Date Requested
+          %th.bg-dark-subtle.text-end Date Requested
           %th.bg-dark-subtle.text-center Status
-          %th.bg-dark-subtle.text-center Payment
+          %th.bg-dark-subtle.text-center Payments
 
 
       %tbody.border-dark-subtle.border-2
@@ -31,7 +31,7 @@
 
             -# If we role is required for the event, add the column for role
             - if event.require_role
-              %td.muted.align-content-center.optional-medium
+              %td.muted.align-content-center
                 = TicketRequest::ROLES[ticket_request.role]
                 %i.icon-comment.hover-tooltip{ title: ticket_request.role_explanation }
 
@@ -52,13 +52,13 @@
                 = tooltip_box(ticket_request.admin_notes, title: "Admin Notes") do
                   = image_tag('icons/comments-admin.png', width: 20, class: 'hover-tooltip')
 
-            %td.align-content-center.text-end.optional-medium= ticket_request.adults
+            %td.align-content-center.text-end= ticket_request.adults
 
             - if event.kid_ticket_price
-              %td.align-content-center.text-end.optional-medium= ticket_request.kids
+              %td.align-content-center.text-end= ticket_request.kids
 
             - if event.allow_donations
-              %td.align-content-center.text-end.optional-medium
+              %td.align-content-center.text-end
                 = number_to_currency(ticket_request.donation, precision: 0)
 
             %td.align-content-center.text-end
