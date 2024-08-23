@@ -17,7 +17,7 @@
 
         %tr
           %th.text-nowrap.bg-dark-subtle.text-left Tickets Status
-          %th.bg-dark-subtle.text-end.optional-medium Requests
+          %th.bg-dark-subtle.text-end Requests
           %th.bg-dark-subtle.text-end Tickets
           - if event.kid_ticket_price
             %th.bg-dark-subtle.text-end Kids Tix
@@ -36,7 +36,7 @@
         %tr.fs-6
           %td.bg-success-subtle
             %span.text-nowrap Paid
-          %td.text-end.bg-success-subtle.optional-medium
+          %td.text-end.bg-success-subtle
             %span= stats[:completed][:requests]
           %td.text-end.bg-success-subtle
             %span= stats[:completed][:adults]
@@ -60,7 +60,7 @@
         %tr.fs-6
           %td.text-nowrap.bg-warning
             Pending Approval
-          %td.text-end.bg-warning.optional-medium= stats[:pending][:requests]
+          %td.text-end.bg-warning= stats[:pending][:requests]
           %td.text-end.bg-warning= stats[:pending][:adults]
           - if event.kid_ticket_price
             %td.text-end.bg-warning= stats[:pending][:kids]
@@ -77,7 +77,7 @@
         %tr.fs-6
           %td.text-nowrap.bg-warning-subtle
             Awaiting Payment
-          %td.text-end.bg-warning-subtle.optional-medium= stats[:awaiting_payment][:requests]
+          %td.text-end.bg-warning-subtle= stats[:awaiting_payment][:requests]
           %td.text-end.bg-warning-subtle= stats[:awaiting_payment][:adults]
           - if event.kid_ticket_price
             %td.text-end.bg-warning-subtle= stats[:awaiting_payment][:kids]
@@ -95,7 +95,7 @@
           %td.bg-dark-subtle.text-start
             %strong
               Total
-          %td.bg-dark-subtle.text-end.optional-medium= stats[:total][:requests]
+          %td.bg-dark-subtle.text-end= stats[:total][:requests]
           %td.bg-dark-subtle.text-end= stats[:total][:adults]
           - if event.kid_ticket_price
             %td.bg-dark-subtle.text-end= stats[:total][:kids]
