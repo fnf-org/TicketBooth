@@ -8,6 +8,7 @@
         %h4 Ticket Request for #{@user.name}
       - else
         %h5 Please log-in or register to request tickets
+        = mail_to 'ticket-support@fnf.org', 'Ticket Booth Support', subject: 'Ticket Booth Support'
 
     .card-body
       = render 'shared/form_errors', resource: @ticket_request

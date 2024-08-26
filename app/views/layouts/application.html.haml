@@ -54,4 +54,7 @@
             | Rails #{Rails.version}
             | Ruby #{RUBY_VERSION}
             | #{Rails.env.to_s.capitalize} Env
+            |
+            = mail_to 'ticket-support@fnf.org', 'Ticket Booth Support', subject: 'Ticket Booth Support'
+
 

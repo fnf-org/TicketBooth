@@ -16,7 +16,7 @@
           - if event.allow_donations
             %th.bg-dark-subtle.text-end Donation
           %th.bg-dark-subtle.text-end Total
-          %th.bg-dark-subtle.text-end Date Requested
+          %th.bg-dark-subtle.text-center Date
           %th.bg-dark-subtle.text-center Status
           %th.bg-dark-subtle.text-center Payments
 
@@ -65,7 +65,7 @@
               %span{ class: ('label label-info' if ticket_request.special_price) }
                 = number_to_currency(ticket_request.cost, precision: 0)
 
-            %td.align-content-center.text-end
+            %td.align-content-center.text-sm-start
               = ticket_request.created_at.to_date
 
             %td.align-content-center.text-center.ticket-status
