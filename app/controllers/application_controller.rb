@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_event
-    Rails.logger.debug { "#set_event() permitted params: #{permitted_params.inspect}" }
+    Rails.logger.info { "#set_event() permitted params: #{permitted_params.inspect}" }
 
     event_id = permitted_params[:event_id].to_i
     event_slug = permitted_params[:event_id].sub("#{event_id}-", '')
@@ -113,7 +113,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user_from_token!
-    Rails.logger.debug { "#authenticate_user_from_token!() => params #{params}" }
+    Rails.logger.debug { "#authenticate_user_from_token!() params: #{params.inspect}" }
 
     if params[:user_id].present?
       user_id = convert_int_param_safely(params[:user_id])

@@ -47,6 +47,17 @@ describe User do
     expect(build(:user)).to be_valid
   end
 
+  describe 'login' do
+    let(:user) { build(:user) }
+
+
+    describe 'failed_attempts' do
+      it 'has no failed attempts' do
+        expect(user.failed_attempts).to eq(0)
+      end
+    end
+  end
+
   describe 'validation' do
     describe '#first and #last' do
       subject(:user) { build(:user, first:, last:) }

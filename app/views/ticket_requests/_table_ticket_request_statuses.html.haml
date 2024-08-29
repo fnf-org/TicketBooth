@@ -3,14 +3,17 @@
   .card-header.bg-primary-subtle
     .btn-group.fs-5
       = button_to download_event_ticket_requests_path(event, type: "active"),
+                  method: :get,
                   class: 'btn btn-warning btn-sm text-nowrap' do
         Download CSV of Approved ▼
 
       = button_to download_event_ticket_requests_path(event, type: "all"),
+                  method: :get,
                   class: 'btn btn-warning btn-sm text-nowrap' do
         Download CSV of All ▼
 
       = button_to payment_reminder_event_ticket_requests_path(event),
+                  method: :get,
                   class: 'btn btn-warning btn-sm text-nowrap' do
         Payment Reminder for All Unpaid
 
