@@ -113,8 +113,17 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user_from_token!
-    user_id = params[:user_id].presence
-    user    = user_id ? User.find_by(id: user_id) : nil
+    Rails.logger.debug { "#authenticate_user_from_token!() => params #{params}" }
+
+    if params[:user_id].present?
+      user_id = convert_int_param_safely(params[:user_id])
+      user = User.find_by_id(user_id)
+      Rails.logger.debug { "#authenticate_user_from_token!() user_id: #{user_id} user #{user}" }
+
+    elsif params[:user_token].present?
+      user = User.find_by(authentication_token: params[:user_token])
+      Rails.logger.debug { "#authenticate_user_from_token!() user_token: #{params[:user_token]} user #{user}" }
+    end
 
     if user && Devise.secure_compare(user.authentication_token, params[:user_token])
       user.update_attribute(:authentication_token, nil) # One-time use
@@ -154,6 +163,14 @@ class ApplicationController < ActionController::Base
       format.turbo_stream do
         render turbo_stream: [turbo_stream.replace(:flash, partial: 'shared/flash', locals: { flash: })]
       end
+    end
+  end
+
+  def convert_int_param_safely(str)
+    begin
+      Integer(str)
+    rescue
+      nil
     end
   end
 end

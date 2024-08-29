@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PaymentsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:new]
 
   before_action :set_event
   before_action :set_ticket_request
@@ -15,6 +15,11 @@ class PaymentsController < ApplicationController
   end
 
   def new
+    unless signed_in?
+      Rails.logger.debug { "#new() => user not signed in @ticket_request = #{@ticket_request&.inspect}" }
+      redirect_to attend_event_path(@event)
+    end
+
     Rails.logger.debug { "#new() => @ticket_request = #{@ticket_request&.inspect}" }
   end
 
@@ -46,7 +51,7 @@ class PaymentsController < ApplicationController
     end
   end
 
-  # create new payment and stripe payment intent using existing payment
+  # confirm stripe payment using existing payment intent
   def confirm
     redirect_path, options = validate_payment_confirmation
     if redirect_path

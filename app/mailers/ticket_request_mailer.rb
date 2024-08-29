@@ -96,6 +96,35 @@ class TicketRequestMailer < ApplicationMailer
          subject: "Your #{@event.name} ticket request" # The subject of the email
   end
 
+  # The `payment_reminder` method is used to send an email to all ticket requests awaiting payment
+  #
+  # @param ticket_request [TicketRequest] The ticket request that has been confirmed
+  # @return [Mail::Message] The email that has been prepared to be sent.
+  def payment_reminder(ticket_request)
+    # Set the ticket request
+    self.ticket_request = ticket_request
+
+    # Generate an authentication token for the user
+    @auth_token = ticket_request.user.generate_auth_token!
+    Rails.logger.debug { "payment_reminder: ticket_request: #{ticket_request.inspect} user: #{ticket_request.user.id} auth_token: #{@auth_token}" }
+
+    # Return if the authentication token is blank
+    if @auth_token.blank?
+      Rails.logger.warn { "payment_reminder: no auth token for user: #{@ticket_request.inspect}" }
+      return
+    end
+
+    @payment_url = new_event_ticket_request_payment_url(event_id: @event.id, ticket_request_id: @ticket_request.id, user_token: @auth_token)
+    @ticket_request_url = event_ticket_request_url(event_id: @event.id, id: @ticket_request.id)
+    Rails.logger.debug { "payment_reminder: ticket_request_id: #{ticket_request.id} payment_url: #{@payment_url} ticket_request_url: #{@ticket_request_url}" }
+
+    # Prepare the email to be sent
+    mail to: to_email, # The recipient of the email
+         from: from_email, # The sender of the email
+         reply_to: reply_to_email, # The email address that will receive replies
+         subject: "#{@event.name} buy your tickets now!" # The subject of the email
+  end
+
   private
 
   def ticket_request=(ticket_request)
