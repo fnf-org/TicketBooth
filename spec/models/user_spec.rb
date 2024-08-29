@@ -50,7 +50,6 @@ describe User do
   describe 'login' do
     let(:user) { build(:user) }
 
-
     describe 'failed_attempts' do
       it 'has no failed attempts' do
         expect(user.failed_attempts).to eq(0)

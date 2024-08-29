@@ -117,7 +117,7 @@ class ApplicationController < ActionController::Base
 
     if params[:user_id].present?
       user_id = convert_int_param_safely(params[:user_id])
-      user = User.find_by_id(user_id)
+      user = User.find_by(id: user_id)
       Rails.logger.debug { "#authenticate_user_from_token!() user_id: #{user_id} user #{user}" }
 
     elsif params[:user_token].present?
@@ -167,10 +167,8 @@ class ApplicationController < ActionController::Base
   end
 
   def convert_int_param_safely(str)
-    begin
-      Integer(str)
-    rescue
-      nil
-    end
+    Integer(str)
+  rescue StandardError
+    nil
   end
 end

@@ -116,7 +116,7 @@ class TicketRequestMailer < ApplicationMailer
 
     @payment_url = new_event_ticket_request_payment_url(event_id: @event.id, ticket_request_id: @ticket_request.id, user_token: @auth_token)
     @ticket_request_url = event_ticket_request_url(event_id: @event.id, id: @ticket_request.id)
-    Rails.logger.debug { "payment_reminder: ticket_request_id: #{ticket_request.id} payment_url: #{@payment_url} ticket_request_url: #{@ticket_request_url}" }
+    Rails.logger.debug { "payment_reminder: payment_url: #{@payment_url} ticket_request_url: #{@ticket_request_url}" }
 
     # Prepare the email to be sent
     mail to: to_email, # The recipient of the email
