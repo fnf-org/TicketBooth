@@ -473,21 +473,20 @@ describe TicketRequest do
   end
 
   describe '#generate_user_auth_token!' do
-    let(:user) { create(:user) }
-    let(:ticket_request) { create(:ticket_request, user: user) }
-
     subject { ticket_request.generate_user_auth_token! }
+
+    let(:user) { create(:user) }
+    let(:ticket_request) { create(:ticket_request, user:) }
 
     it { is_expected.to be_a(String) }
 
-    it 'should return a user auth token' do
+    it 'returns a user auth token' do
       expect(ticket_request.generate_user_auth_token!).to be_a(String)
     end
 
-    it 'should set the token into the user' do
+    it 'sets the token into the user' do
       expect(token = ticket_request.generate_user_auth_token!).to be_present
       expect(ticket_request.user.authentication_token).to eq(token)
     end
-
   end
 end

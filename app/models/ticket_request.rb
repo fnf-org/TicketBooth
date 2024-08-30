@@ -390,10 +390,9 @@ class TicketRequest < ApplicationRecord
   end
 
   def generate_user_auth_token!
-    unless user.blank?
-      token = user.generate_auth_token!
-      token
-    end
+    return if user.blank?
+
+    user.generate_auth_token!
   end
 
   def set_defaults
