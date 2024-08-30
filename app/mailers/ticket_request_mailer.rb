@@ -36,7 +36,7 @@ class TicketRequestMailer < ApplicationMailer
     self.ticket_request = ticket_request
 
     # Generate an authentication token for the user
-    @auth_token = ticket_request&.user&.generate_auth_token!
+    @auth_token = ticket_request.generate_user_auth_token!
 
     # Return if the authentication token is blank
     if @auth_token.blank?
@@ -44,7 +44,7 @@ class TicketRequestMailer < ApplicationMailer
       return
     end
 
-    @payment_url = new_event_ticket_request_payment_url(@event, @ticket_request, @auth_token)
+    @payment_url = new_event_ticket_request_payment_url(event_id: @event.id, ticket_request_id: @ticket_request.id, user_token: @auth_token)
     @ticket_request_url = event_ticket_request_url(event_id: @event.id, id: @ticket_request.id)
     Rails.logger.debug { "request_confirmed: payment_url: #{@payment_url} ticket_request_url: #{@ticket_request_url}" }
 
@@ -66,12 +66,12 @@ class TicketRequestMailer < ApplicationMailer
     self.ticket_request = ticket_request
 
     # Generate an authentication token for the user
-    @auth_token = ticket_request&.user&.generate_auth_token!
+    @auth_token = ticket_request.generate_user_auth_token!
 
     # Return if the authentication token is blank
     return if @auth_token.blank?
 
-    @payment_url = new_event_ticket_request_payment_url(@event, @ticket_request, @auth_token)
+    @payment_url = new_event_ticket_request_payment_url(event_id: @event.id, ticket_request_id: @ticket_request.id, user_token: @auth_token)
     @ticket_request_url = event_ticket_request_url(event_id: @event.id, id: @ticket_request.id)
 
     # Prepare the email to be sent
@@ -105,7 +105,7 @@ class TicketRequestMailer < ApplicationMailer
     self.ticket_request = ticket_request
 
     # Generate an authentication token for the user
-    @auth_token = ticket_request.user.generate_auth_token!
+    @auth_token = ticket_request.generate_user_auth_token!
     Rails.logger.debug { "payment_reminder: ticket_request: #{ticket_request.inspect} user: #{ticket_request.user.id} auth_token: #{@auth_token}" }
 
     # Return if the authentication token is blank
