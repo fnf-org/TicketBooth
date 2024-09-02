@@ -158,7 +158,7 @@ class PaymentsController < ApplicationController
     end
 
     unless @ticket_request.owner?(current_user)
-      Rails.logger.debug { "PaymentsController: ticket_request #{@ticket_request.id} user: #{@ticket_request.user} NOT OWNER current_user: #{current_user.inspect}" }
+      Rails.logger.debug { "PaymentsController: ticket_request #{@ticket_request.id} user owner NOT current user #{current_user.inspect}" }
       return redirect_to root_path,
                          alert: 'You are not authorized to make payments for this ticket request.'
     end
