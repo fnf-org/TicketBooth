@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PaymentsController < ApplicationController
-  before_action :authenticate_user!, except: [:new]
+  before_action :authenticate_user!
 
   before_action :set_event
   before_action :set_ticket_request

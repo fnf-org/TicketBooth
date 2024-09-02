@@ -32,12 +32,10 @@ class ApplicationController < ActionController::Base
   end
 
   def set_event
-    Rails.logger.info { "#set_event() permitted params: #{permitted_params.inspect}" }
+    Rails.logger.debug { "#set_event() permitted params: #{permitted_params.inspect}" }
 
     event_id = permitted_params[:event_id].to_i
-    event_slug = permitted_params[:event_id].sub("#{event_id}-", '')
-
-    Rails.logger.debug { "#set_event() => event_id = #{event_id}, event_slug = #{event_slug} params[:event_id] => #{permitted_params[:event_id]}" }
+    Rails.logger.debug { "#set_event() => event_id = #{event_id}, params[:event_id] => #{permitted_params[:event_id]}" }
 
     event_not_found = lambda do |eid, flash|
       flash.now[:error] = "Event with id #{eid} was not found."
@@ -45,10 +43,6 @@ class ApplicationController < ActionController::Base
     end
 
     @event = Event.where(id: event_id).first
-    if @event&.slug != event_slug
-      Rails.logger.warn("Event slug mismatch: [#{event_slug}] != [#{@event&.slug}]")
-    end
-
     event_not_found[event_id, flash] if @event.nil?
   end
 
