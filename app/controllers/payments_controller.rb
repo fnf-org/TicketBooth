@@ -169,6 +169,11 @@ class PaymentsController < ApplicationController
                          alert: 'You must fill out all your guests before you can purchase a ticket.'
     end
 
+    if @ticket_request.completed?
+      Rails.logger.debug { "PaymentsController: ticket_request completed: #{@ticket_request&.inspect}" }
+      redirect_to event_ticket_request_path(@event, @ticket_request)
+    end
+
     Rails.logger.debug { "PaymentsController: valid payment #{@payment&.inspect}" }
     true
   end
