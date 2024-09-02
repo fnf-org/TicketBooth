@@ -861,6 +861,13 @@ CREATE INDEX index_time_slots_on_job_id ON public.time_slots USING btree (job_id
 
 
 --
+-- Name: index_users_on_authentication_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_authentication_token ON public.users USING btree (authentication_token);
+
+
+--
 -- Name: index_users_on_confirmation_token; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -927,6 +934,7 @@ ALTER TABLE ONLY public.ticket_request_event_addons
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240902171200'),
 ('20240806011401'),
 ('20240729210234'),
 ('20240728223048'),

@@ -7,7 +7,7 @@ require 'csv'
 class TicketRequestsController < ApplicationController
   before_action :authenticate_user!, except: %i[create new]
   before_action :set_event
-  before_action :set_ticket_request, except: %i[create index download]
+  before_action :set_ticket_request, except: %i[create index download payment_reminder]
   before_action :require_event_admin, except: %i[create new show edit update destroy]
 
   def index
@@ -60,6 +60,22 @@ class TicketRequestsController < ApplicationController
     render_flash(flash)
   end
 
+  def payment_reminder
+    counter = 0
+    @event.ticket_requests.where(status: TicketRequest::STATUS_AWAITING_PAYMENT).find_each do |ticket_request|
+      if ticket_request.price.positive?
+        Rails.logger.debug { "payment_reminder: sending reminder for ticket request: #{ticket_request.inspect}" }
+        TicketRequestMailer.payment_reminder(ticket_request).deliver_later
+        counter += 1
+      end
+    end
+
+    Rails.logger.debug { "payment_reminder: counter: #{counter}" }
+
+    redirect_to event_ticket_requests_path(@event),
+                notice: "Reminder emails sent to #{counter} ticket requesters!"
+  end
+
   def show
     return redirect_to root_path unless @ticket_request.can_view?(current_user)
 
@@ -105,7 +121,7 @@ class TicketRequestsController < ApplicationController
 
   def create
     unless signed_in?
-      Rails.logger.error('#create: not signed in!'.colorize(:yellow))
+      Rails.logger.error { '#create: not signed in!'.colorize(:yellow) }
       return redirect_to attend_event_path(@event)
     end
 

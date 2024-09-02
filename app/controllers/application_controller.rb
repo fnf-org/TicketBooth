@@ -35,9 +35,7 @@ class ApplicationController < ActionController::Base
     Rails.logger.debug { "#set_event() permitted params: #{permitted_params.inspect}" }
 
     event_id = permitted_params[:event_id].to_i
-    event_slug = permitted_params[:event_id].sub("#{event_id}-", '')
-
-    Rails.logger.debug { "#set_event() => event_id = #{event_id}, event_slug = #{event_slug} params[:event_id] => #{permitted_params[:event_id]}" }
+    Rails.logger.debug { "#set_event() => event_id = #{event_id}, params[:event_id] => #{permitted_params[:event_id]}" }
 
     event_not_found = lambda do |eid, flash|
       flash.now[:error] = "Event with id #{eid} was not found."
@@ -45,10 +43,6 @@ class ApplicationController < ActionController::Base
     end
 
     @event = Event.where(id: event_id).first
-    if @event&.slug != event_slug
-      Rails.logger.warn("Event slug mismatch: [#{event_slug}] != [#{@event&.slug}]")
-    end
-
     event_not_found[event_id, flash] if @event.nil?
   end
 
@@ -113,11 +107,19 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user_from_token!
-    user_id = params[:user_id].presence
-    user    = user_id ? User.find_by(id: user_id) : nil
+    Rails.logger.debug { "#authenticate_user_from_token!() params: #{params.inspect}" }
+
+    if params[:user_id].present?
+      user_id = convert_int_param_safely(params[:user_id])
+      user = User.find_by(id: user_id)
+      Rails.logger.debug { "#authenticate_user_from_token!() user_id: #{user_id} user #{user}" }
+
+    elsif params[:user_token].present?
+      user = User.find_by(authentication_token: params[:user_token])
+      Rails.logger.debug { "#authenticate_user_from_token!() user_token: #{params[:user_token]} user #{user}" }
+    end
 
     if user && Devise.secure_compare(user.authentication_token, params[:user_token])
-      user.update_attribute(:authentication_token, nil) # One-time use
       sign_in user
     end
   end
@@ -155,5 +157,11 @@ class ApplicationController < ActionController::Base
         render turbo_stream: [turbo_stream.replace(:flash, partial: 'shared/flash', locals: { flash: })]
       end
     end
+  end
+
+  def convert_int_param_safely(str)
+    Integer(str)
+  rescue StandardError
+    nil
   end
 end

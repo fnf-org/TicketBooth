@@ -389,6 +389,12 @@ class TicketRequest < ApplicationRecord
     active_addons.count.positive?
   end
 
+  def generate_user_auth_token!
+    return if user.blank?
+
+    user.generate_auth_token!
+  end
+
   def set_defaults
     self.status = nil if status.blank?
     self.status ||= if event

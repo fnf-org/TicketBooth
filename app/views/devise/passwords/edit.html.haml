@@ -6,14 +6,14 @@
     %br
     %strong= "New Password"
     %small.fst-italic.text-nowrap
-      = "  (#{@minimum_password_length} characters minimum)"
-    %p= f.password_field :password, autofocus: true, autocomplete: "new-password"
+      = "  (6 characters minimum)"
+    %p= f.password_field :password, autofocus: true, autocomplete: "new-password", required: true, min_length: 6
   .field
     %br
     %strong= "New Password Confirmation"
     %small.fst-italic.text-nowrap
-      = "  (#{@minimum_password_length} characters minimum)"
-    %p= f.password_field :password_confirmation, autocomplete: "new-password", required: true
+      = "  (6 characters minimum)"
+    %p= f.password_field :password_confirmation, autocomplete: "new-password", required: true, min_length: 6
   .actions
     = f.submit "Change my password", class: 'btn btn-primary btn-large'
 = render "devise/shared/links"

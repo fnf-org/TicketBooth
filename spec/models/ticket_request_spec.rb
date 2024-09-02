@@ -471,4 +471,22 @@ describe TicketRequest do
       it { is_expected.to start_with %w[name email id adults kids] }
     end
   end
+
+  describe '#generate_user_auth_token!' do
+    subject { ticket_request.generate_user_auth_token! }
+
+    let(:user) { create(:user) }
+    let(:ticket_request) { create(:ticket_request, user:) }
+
+    it { is_expected.to be_a(String) }
+
+    it 'returns a user auth token' do
+      expect(ticket_request.generate_user_auth_token!).to be_a(String)
+    end
+
+    it 'sets the token into the user' do
+      expect(token = ticket_request.generate_user_auth_token!).to be_present
+      expect(ticket_request.user.authentication_token).to eq(token)
+    end
+  end
 end

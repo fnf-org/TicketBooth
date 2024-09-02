@@ -15,6 +15,11 @@ class PaymentsController < ApplicationController
   end
 
   def new
+    unless signed_in?
+      Rails.logger.debug { "#new() => user not signed in @ticket_request = #{@ticket_request&.inspect}" }
+      redirect_to attend_event_path(@event)
+    end
+
     Rails.logger.debug { "#new() => @ticket_request = #{@ticket_request&.inspect}" }
   end
 
@@ -46,7 +51,7 @@ class PaymentsController < ApplicationController
     end
   end
 
-  # create new payment and stripe payment intent using existing payment
+  # confirm stripe payment using existing payment intent
   def confirm
     redirect_path, options = validate_payment_confirmation
     if redirect_path
@@ -145,7 +150,7 @@ class PaymentsController < ApplicationController
 
   # @description Redirect the user if the payment can not be applied to the ticket request
   def validate_payment
-    Rails.logger.debug { "PaymentsController: validate_payment @ticket_request #{@ticket_request&.inspect}" }
+    Rails.logger.debug { "PaymentsController: validate_payment #{@ticket_request&.inspect}" }
 
     unless @event.ticket_sales_open?
       return redirect_to event_path(@event),
@@ -153,7 +158,7 @@ class PaymentsController < ApplicationController
     end
 
     unless @ticket_request.owner?(current_user)
-      Rails.logger.debug { "PaymentsController: @ticket_request #{@ticket_request.id} NOT OWNER current_user: #{@user&.inspect}" }
+      Rails.logger.debug { "PaymentsController: ticket_request #{@ticket_request.id} user owner NOT current user #{current_user.inspect}" }
       return redirect_to root_path,
                          alert: 'You are not authorized to make payments for this ticket request.'
     end
@@ -162,6 +167,11 @@ class PaymentsController < ApplicationController
       Rails.logger.debug { "PaymentsController: @ticket_request guests not specified: #{@ticket_request&.inspect}" }
       return redirect_to edit_event_ticket_request_path(@event, @ticket_request),
                          alert: 'You must fill out all your guests before you can purchase a ticket.'
+    end
+
+    if @ticket_request.completed?
+      Rails.logger.debug { "PaymentsController: ticket_request completed: #{@ticket_request&.inspect}" }
+      redirect_to event_ticket_request_path(@event, @ticket_request)
     end
 
     Rails.logger.debug { "PaymentsController: valid payment #{@payment&.inspect}" }
