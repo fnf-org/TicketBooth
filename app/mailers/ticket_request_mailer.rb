@@ -37,6 +37,7 @@ class TicketRequestMailer < ApplicationMailer
 
     # Generate an authentication token for the user
     @auth_token = ticket_request.generate_user_auth_token!
+    Rails.logger.debug { "request_confirmed: auth_token: #{@auth_token} ticket_request user: #{ticket_request.user.inspect}" }
 
     # Return if the authentication token is blank
     if @auth_token.blank?

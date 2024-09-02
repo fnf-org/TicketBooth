@@ -150,7 +150,7 @@ class PaymentsController < ApplicationController
 
   # @description Redirect the user if the payment can not be applied to the ticket request
   def validate_payment
-    Rails.logger.debug { "PaymentsController: validate_payment @ticket_request #{@ticket_request&.inspect}" }
+    Rails.logger.debug { "PaymentsController: validate_payment #{@ticket_request&.inspect}" }
 
     unless @event.ticket_sales_open?
       return redirect_to event_path(@event),
@@ -158,7 +158,7 @@ class PaymentsController < ApplicationController
     end
 
     unless @ticket_request.owner?(current_user)
-      Rails.logger.debug { "PaymentsController: @ticket_request #{@ticket_request.id} NOT OWNER current_user: #{@user&.inspect}" }
+      Rails.logger.debug { "PaymentsController: ticket_request #{@ticket_request.id} user: #{@ticket_request.user} NOT OWNER current_user: #{current_user.inspect}" }
       return redirect_to root_path,
                          alert: 'You are not authorized to make payments for this ticket request.'
     end

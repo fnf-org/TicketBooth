@@ -126,7 +126,6 @@ class ApplicationController < ActionController::Base
     end
 
     if user && Devise.secure_compare(user.authentication_token, params[:user_token])
-      user.update_attribute(:authentication_token, nil) # One-time use
       sign_in user
     end
   end
