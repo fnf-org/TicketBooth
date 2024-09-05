@@ -117,7 +117,39 @@ class EventsController < ApplicationController
               type: 'text/csv')
   end
 
+  def active_addons_passes
+    active_addons
+  end
+  def active_addons_camping
+    active_addons
+  end
+
   private
+
+  def active_addons
+    @ticket_requests = TicketRequest
+                         .includes(:event, :payment, :user)
+                         .where(event_id: @event)
+                         .order('created_at DESC')
+                         .to_a
+
+    @stats = %i[pending awaiting_payment completed].each_with_object({}) do |status, stats|
+      requests = @ticket_requests.select { |tr| tr.send("#{status}?") }
+
+      stats[status] = {
+        requests:      requests.count,
+        addon_passes:  requests.sum(&:active_addon_pass_sum),
+        addon_camping: requests.sum(&:active_addon_camp_sum)
+      }
+    end
+
+    @stats[:total] ||= Hash.new { |h, k| h[k] = 0 }
+    %i[requests addon_passes addon_camping].each do |measure|
+      %i[pending awaiting_payment completed].each do |status|
+        @stats[:total][measure] += @stats[status][measure]
+      end
+    end
+  end
 
   def params_symbolized_hash
     @params_symbolized_hash ||= permitted_params.to_h.tap(&:symbolize_keys!)

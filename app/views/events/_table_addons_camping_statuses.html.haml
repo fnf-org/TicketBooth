@@ -1,0 +1,47 @@
+.card
+  .card-body
+    .vertical-20
+
+    %table.table.border-dark-subtle.border-2.overflow-scroll.w-100.shadow-lg#camping-permits-summary
+
+      %thead.border-dark-subtle.border-2
+
+        %tr
+          %th.text-nowrap.bg-dark-subtle.text-left Tickets Status
+          %th.bg-dark-subtle.text-center Requests
+          - if event.active_event_addons_camping_count > 0
+            %th.bg-dark-subtle.text-center
+              =Addon::HUMANIZED_CATEGORIES[Addon::CATEGORY_CAMP]
+
+      %tbody.border-2.border-dark-subtle
+
+        %tr.fs-6
+          %td.bg-success-subtle
+            %span.text-nowrap Paid
+          %td.text-center.bg-success-subtle
+            %span= stats[:completed][:requests]
+          - if event.active_event_addons_camping_count > 0
+            %td.text-center.bg-success-subtle
+              %span= stats[:completed][:addon_camping]
+
+        %tr.fs-6
+          %td.text-nowrap.bg-warning
+            Pending Approval
+          %td.text-center.bg-warning= stats[:pending][:requests]
+          - if event.active_event_addons_camping_count > 0
+            %td.text-center.bg-warning= stats[:pending][:addon_camping]
+
+        %tr.fs-6
+          %td.text-nowrap.bg-warning-subtle
+            Awaiting Payment
+          %td.text-center.bg-warning-subtle= stats[:awaiting_payment][:requests]
+          - if event.active_event_addons_camping_count > 0
+            %td.text-center.bg-warning-subtle= stats[:awaiting_payment][:addon_camping]
+
+        %tr.muted.border-1.border-dark-subtle.fs-6
+          %td.bg-dark-subtle.text-start
+            %strong
+              Total
+          %td.bg-dark-subtle.text-center= stats[:total][:requests]
+          - if event.active_event_addons_camping_count > 0
+            %td.bg-dark-subtle.text-center= stats[:total][:addon_camping]

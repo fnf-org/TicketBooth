@@ -1,0 +1,3 @@
+= render partial: 'shared/nav_event', locals: { event: @event, active_tab: { event_passes: 'active' } }
+= render partial: 'table_addons_passes_statuses', locals: { event: @event, stats: @stats }
+= render partial: 'table_event_passes', locals: { event: @event, ticket_requests: @ticket_requests }
