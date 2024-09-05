@@ -120,6 +120,7 @@ class EventsController < ApplicationController
   def active_addons_passes
     active_addons
   end
+
   def active_addons_camping
     active_addons
   end
@@ -128,10 +129,10 @@ class EventsController < ApplicationController
 
   def active_addons
     @ticket_requests = TicketRequest
-                         .includes(:event, :payment, :user)
-                         .where(event_id: @event)
-                         .order('created_at DESC')
-                         .to_a
+                       .includes(:event, :payment, :user)
+                       .where(event_id: @event)
+                       .order('created_at DESC')
+                       .to_a
 
     @stats = %i[pending awaiting_payment completed].each_with_object({}) do |status, stats|
       requests = @ticket_requests.select { |tr| tr.send("#{status}?") }
