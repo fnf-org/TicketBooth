@@ -8,34 +8,40 @@
 
         %tr
           %th.text-nowrap.bg-dark-subtle.text-left Payment Status
-          - if event.active_event_addons_passes_count > 0
-            %th.bg-dark-subtle.text-center
-              =Addon::HUMANIZED_CATEGORIES[Addon::CATEGORY_PASS]
+          %th.bg-dark-subtle.text-center
+            =Addon::HUMANIZED_CATEGORIES[Addon::CATEGORY_PASS]
+          %th.bg-dark-subtle.text-end Earn
 
       %tbody.border-2.border-dark-subtle
 
         %tr.fs-6
           %td.bg-success-subtle
             %span.text-nowrap Paid
-          - if event.active_event_addons_passes_count > 0
-            %td.text-center.bg-success-subtle
-              %span= stats[:completed][:addon_passes]
+          %td.text-center.bg-success-subtle
+            %span= stats[:completed][:addon_passes]
+          %td.text-end.bg-success-subtle
+            %span
+              = number_to_currency(stats[:completed][:pass_raised], precision: 0)
 
         %tr.fs-6
           %td.text-nowrap.bg-warning
             Pending Approval
-          - if event.active_event_addons_passes_count > 0
-            %td.text-center.bg-warning= stats[:pending][:addon_passes]
+          %td.text-center.bg-warning= stats[:pending][:addon_passes]
+          %td.text-end.bg-warning.fs-6
+            = number_to_currency(stats[:pending][:pass_raised], precision: 0)
 
         %tr.fs-6
           %td.text-nowrap.bg-warning-subtle
             Awaiting Payment
-          - if event.active_event_addons_passes_count > 0
-            %td.text-center.bg-warning-subtle= stats[:awaiting_payment][:addon_passes]
+          %td.text-center.bg-warning-subtle= stats[:awaiting_payment][:addon_passes]
+          %td.text-end.bg-warning-subtle.fs-6
+            = number_to_currency(stats[:awaiting_payment][:pass_raised], precision: 0)
 
         %tr.muted.border-1.border-dark-subtle.fs-6
           %td.bg-dark-subtle.text-start
             %strong
               Total
-          - if event.active_event_addons_passes_count > 0
-            %td.bg-dark-subtle.text-center= stats[:total][:addon_passes]
+          %td.bg-dark-subtle.text-center= stats[:total][:addon_passes]
+
+          %td.bg-dark-subtle.text-end.fs-6
+            = number_to_currency(stats[:total][:pass_raised], precision: 0)

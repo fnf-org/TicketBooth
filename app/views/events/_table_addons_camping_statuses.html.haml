@@ -7,11 +7,10 @@
       %thead.border-dark-subtle.border-2
 
         %tr
-          %th.text-nowrap.bg-dark-subtle.text-left Tickets Status
-          %th.bg-dark-subtle.text-center Requests
-          - if event.active_event_addons_camping_count > 0
-            %th.bg-dark-subtle.text-center
-              =Addon::HUMANIZED_CATEGORIES[Addon::CATEGORY_CAMP]
+          %th.text-nowrap.bg-dark-subtle.text-left Payment Status
+          %th.bg-dark-subtle.text-center
+            =Addon::HUMANIZED_CATEGORIES[Addon::CATEGORY_CAMP]
+          %th.bg-dark-subtle.text-end Earn
 
       %tbody.border-2.border-dark-subtle
 
@@ -19,29 +18,29 @@
           %td.bg-success-subtle
             %span.text-nowrap Paid
           %td.text-center.bg-success-subtle
-            %span= stats[:completed][:requests]
-          - if event.active_event_addons_camping_count > 0
-            %td.text-center.bg-success-subtle
-              %span= stats[:completed][:addon_camping]
+            %span= stats[:completed][:addon_camping]
+          %td.text-end.bg-success-subtle
+            %span
+              = number_to_currency(stats[:completed][:camp_raised], precision: 0)
 
         %tr.fs-6
           %td.text-nowrap.bg-warning
             Pending Approval
-          %td.text-center.bg-warning= stats[:pending][:requests]
-          - if event.active_event_addons_camping_count > 0
-            %td.text-center.bg-warning= stats[:pending][:addon_camping]
+          %td.text-center.bg-warning= stats[:pending][:addon_camping]
+          %td.text-end.bg-warning.fs-6
+            = number_to_currency(stats[:pending][:camp_raised], precision: 0)
 
         %tr.fs-6
           %td.text-nowrap.bg-warning-subtle
             Awaiting Payment
-          %td.text-center.bg-warning-subtle= stats[:awaiting_payment][:requests]
-          - if event.active_event_addons_camping_count > 0
-            %td.text-center.bg-warning-subtle= stats[:awaiting_payment][:addon_camping]
+          %td.text-center.bg-warning-subtle= stats[:awaiting_payment][:addon_camping]
+          %td.text-end.bg-warning-subtle.fs-6
+            = number_to_currency(stats[:awaiting_payment][:camp_raised], precision: 0)
 
         %tr.muted.border-1.border-dark-subtle.fs-6
           %td.bg-dark-subtle.text-start
             %strong
               Total
-          %td.bg-dark-subtle.text-center= stats[:total][:requests]
-          - if event.active_event_addons_camping_count > 0
-            %td.bg-dark-subtle.text-center= stats[:total][:addon_camping]
+          %td.bg-dark-subtle.text-center= stats[:total][:addon_camping]
+          %td.bg-dark-subtle.text-end.fs-6
+            = number_to_currency(stats[:total][:camp_raised], precision: 0)
