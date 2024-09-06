@@ -138,10 +138,10 @@ class EventsController < ApplicationController
       requests = @ticket_requests.select { |tr| tr.send("#{status}?") }
 
       stats[status] = {
-        addon_passes:   requests.sum(&:active_addon_pass_sum),
-        addon_camping:  requests.sum(&:active_addon_camp_sum),
-        pass_raised:    requests.sum(&:active_addon_pass_sum_price),
-        camp_raised:    requests.sum(&:active_addon_camp_sum_price)
+        addon_passes:  requests.sum(&:active_addon_pass_sum),
+        addon_camping: requests.sum(&:active_addon_camp_sum),
+        pass_raised:   requests.sum(&:active_addon_pass_sum_price),
+        camp_raised:   requests.sum(&:active_addon_camp_sum_price)
       }
     end
 
