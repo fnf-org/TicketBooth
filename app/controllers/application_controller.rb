@@ -39,7 +39,7 @@ class ApplicationController < ActionController::Base
 
     event_not_found = lambda do |eid, flash|
       flash.now[:error] = "Event with id #{eid} was not found."
-      return redirect_to root_path
+      redirect_to root_path
     end
 
     @event = Event.where(id: event_id).first
