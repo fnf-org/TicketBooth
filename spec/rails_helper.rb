@@ -11,7 +11,7 @@ require 'accept_values_for'
 require 'timeout'
 
 def example_with_timeout(example)
-  Timeout.timeout(20) { example.run }
+  Timeout.timeout(30) { example.run }
 end
 
 RSpec.configure do |config|

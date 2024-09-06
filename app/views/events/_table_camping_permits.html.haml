@@ -1,0 +1,38 @@
+
+.card
+  .card-body.overflow-x-scroll
+    %table.table.border-dark-subtle.border-2.shadow-lg
+      %thead.border-dark-subtle.border-2
+        %tr
+          %th.bg-dark-subtle Name
+          - if event.require_role
+            %th.bg-dark-subtle Role
+          %th.bg-dark-subtle.text-center Type
+          %th.bg-dark-subtle.text-center Count
+          %th.bg-dark-subtle.text-center Date
+          %th.bg-dark-subtle.text-center Status
+
+      %tbody.border-dark-subtle.border-2
+        - ticket_requests.each do |ticket_request|
+          - next unless ticket_request.active_addon_camp_sum > 0
+          %tr{ class: "ticket-request-row" }
+            %td.align-content-center.ticket-user
+              = link_to event_ticket_request_path(event, ticket_request) do
+                = ticket_request.user.name
+
+            - if event.require_role
+              %td.muted.align-content-center
+                = TicketRequest::ROLES[ticket_request.role]
+
+            - ticket_request.active_sorted_addons_by_category(Addon::CATEGORY_CAMP).each do |tr_event_addon|
+              %td.align-content-center.text-center
+                = "#{tr_event_addon.name}"
+              %td.align-content-center.text-center
+                = "#{tr_event_addon.quantity}"
+
+            %td.align-content-center.text-center
+              = ticket_request.created_at.to_date
+
+            %td.align-content-center.text-center.ticket-status
+              %span.p-2.rounded.small.bi-credit-card.text-black{ class: text_class_for_status(ticket_request) }
+                = text_for_status ticket_request

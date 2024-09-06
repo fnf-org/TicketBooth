@@ -31,14 +31,13 @@
         = link_to event_ticket_requests_path(event), class: "nav-link #{active_tab[:ticket_requests]}" do
           Ticket Requests
 
-      -# XXX Re-enable me when ready
-      -# %li.nav-item
-      -#   = link_to event_ticket_requests_path(event), class: "nav-link #{active_tab[:passes]}" do
-      -#     Event Passes
+      %li.nav-item
+        = link_to active_addons_passes_event_path(event), class: "nav-link #{active_tab[:event_passes]}" do
+          Event Passes
 
-      -# %li.nav-item
-      -#   = link_to event_ticket_requests_path(event), class: "nav-link #{active_tab[:passes]}" do
-      -#     Camping Permits
+      %li.nav-item
+        = link_to active_addons_camping_event_path(event), class: "nav-link #{active_tab[:camping_permits]}" do
+          Camping Permits
 
 
       %li.nav-item

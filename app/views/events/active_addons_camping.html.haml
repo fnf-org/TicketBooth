@@ -1,0 +1,3 @@
+= render partial: 'shared/nav_event', locals: { event: @event, active_tab: { camping_permits: 'active' } }
+= render partial: 'table_addons_camping_statuses', locals: { event: @event, stats: @stats }
+= render partial: 'table_camping_permits', locals: { event: @event, ticket_requests: @ticket_requests }

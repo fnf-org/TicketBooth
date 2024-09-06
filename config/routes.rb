@@ -21,6 +21,8 @@ Rails.application.routes.draw do
       post :remove_admin
       get :guest_list
       get :download_guest_list
+      get :active_addons_passes
+      get :active_addons_camping
     end
 
     resources :jobs do
