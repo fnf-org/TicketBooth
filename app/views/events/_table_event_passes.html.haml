@@ -15,24 +15,24 @@
       %tbody.border-dark-subtle.border-2
         - ticket_requests.each do |ticket_request|
           - next unless ticket_request.active_addon_pass_sum > 0
-          %tr{ class: "ticket-request-row" }
-            %td.align-content-center.ticket-user
-              = link_to event_ticket_request_path(event, ticket_request) do
-                = ticket_request.user.name
+          - ticket_request.active_sorted_addons_by_category(Addon::CATEGORY_PASS).each do |tr_event_addon|
+            %tr{ class: "ticket-request-row" }
+              %td.align-content-center.ticket-user
+                = link_to event_ticket_request_path(event, ticket_request) do
+                  = ticket_request.user.name
 
-            - if event.require_role
-              %td.muted.align-content-center
-                = TicketRequest::ROLES[ticket_request.role]
+              - if event.require_role
+                %td.muted.align-content-center
+                  = TicketRequest::ROLES[ticket_request.role]
 
-            - ticket_request.active_sorted_addons_by_category(Addon::CATEGORY_PASS).each do |tr_event_addon|
               %td.align-content-center.text-center
                 = "#{tr_event_addon.name}"
               %td.align-content-center.text-center
                 = "#{tr_event_addon.quantity}"
 
-            %td.align-content-center.text-center
-              = ticket_request.created_at.to_date
+              %td.align-content-center.text-center
+                = ticket_request.created_at.to_date
 
-            %td.align-content-center.text-center.ticket-status
-              %span.p-2.rounded.small.bi-credit-card.text-black{ class: text_class_for_status(ticket_request) }
-                = text_for_status ticket_request
+              %td.align-content-center.text-center.ticket-status
+                %span.p-2.rounded.small.bi-credit-card.text-black{ class: text_class_for_status(ticket_request) }
+                  = text_for_status ticket_request
