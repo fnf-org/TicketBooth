@@ -138,6 +138,7 @@ class ApplicationController < ActionController::Base
     when 'notice' then :blue
     when 'error', 'alert' then :red
     when 'warning' then :yellow
+    else :green
     end
   end
 
