@@ -373,7 +373,8 @@ class TicketRequest < ApplicationRecord
   end
 
   def active_sorted_addons_by_category(category)
-    @active_sorted_addons_by_category ||= active_addons.select { |addon| addon.category == category }.sort_by { |e| [e.price, e.name] }
+    @active_sorted_addons_by_category ||= {}
+    @active_sorted_addons_by_category[category] ||= active_addons.select { |addon| addon.category == category }.sort_by { |e| [e.price, e.name] }
   end
 
   def active_addon_pass_sum

@@ -14,9 +14,8 @@ module FnF
         'Guest/Kids Name',
         'Guests Email/Kids Age',
         'Role',
-        'EA',
-        'Arrival Time',
-        'RV Payment Status'
+        'Event Passes',
+        'Camping Permits'
       ].freeze
 
       GuestRow = Struct.new(:ticket_request_id,
@@ -25,9 +24,8 @@ module FnF
                             :guest_name,
                             :guest_email,
                             :role,
-                            :ea,
-                            :arrival_time,
-                            :rv_payment_status)
+                            :event_passes,
+                            :camping_permits)
 
       def initialize(event)
         self.event  = event
@@ -53,6 +51,9 @@ module FnF
           event.admissible_requests.each do |tr|
             requester = [tr.status_name, tr.user.name]
 
+            passes = tr.active_sorted_addons_by_category(Addon::CATEGORY_PASS).map { |a| "#{a.name}: #{a.quantity}" }
+            permits = tr.active_sorted_addons_by_category(Addon::CATEGORY_CAMP).map { |a| "#{a.name}: #{a.quantity}" }
+
             tr.guests.each do |guest|
               guest_name, guest_email = case guest
                                         when /, \d+$/
@@ -66,15 +67,13 @@ module FnF
                                         else
                                           [guest, '']
                                         end
-
               row = GuestRow.new(tr.id,
                                  *requester,
                                  guest_name,
                                  guest_email,
                                  tr.role,
-                                 '',
-                                 '',
-                                 '')
+                                 passes.to_sentence,
+                                 permits.to_sentence)
 
               guest_list << row.to_a
             end
