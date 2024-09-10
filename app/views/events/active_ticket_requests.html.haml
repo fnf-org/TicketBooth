@@ -1,0 +1,17 @@
+= render partial: 'shared/nav_event', locals: { event: @event, active_tab: { email_ticket_holders: 'active' } }
+
+.card
+  .card-body
+    - @tr_count = @ticket_requests.count
+    = render '/events/email_form', resource: @event, count: @tr_count
+    %table.table.table-condensed
+      %thead
+        %tr
+          %th Ticket Requesters (#{@tr_count})
+      %tbody
+        - @ticket_requests.each do |ticket_request|
+          %tr
+            %td
+              - user = "#{ticket_request.user.name} <#{ticket_request.user.email}>"
+              = link_to event_ticket_request_path(@event, ticket_request) do
+                %span= user

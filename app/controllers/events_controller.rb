@@ -112,7 +112,7 @@ class EventsController < ApplicationController
   end
 
   # all active guests (completed, awaiting payment)
-  def active_guest_list
+  def active_ticket_requests
     @ticket_requests = @event.ticket_requests.active
   end
 
@@ -122,23 +122,6 @@ class EventsController < ApplicationController
               type: 'text/csv')
   end
 
-  def email_all_active
-    Rails.logger.debug { "email_all_active: params: #{params.inspect}" }
-    Rails.logger.debug { "email_all_active: subject: #{params[:subject]}" }
-    Rails.logger.debug { "email_all_active: message: #{params[:message]}" }
-
-    counter = 0
-    # @event.ticket_requests.active.find_each do |ticket_request|
-    #   Rails.logger.debug { "email_all_active: sending reminder for ticket request: #{ticket_request.inspect}" }
-    #   # TicketRequestMailer.payment_reminder(ticket_request).deliver_later
-    #   counter += 1
-    # end
-
-    Rails.logger.debug { "email_all_active: counter: #{counter}" }
-
-    redirect_to event_ticket_requests_path(@event),
-                notice: "Emails sent to #{counter} ticket holders!"
-  end
 
   def active_addons_passes
     active_addons

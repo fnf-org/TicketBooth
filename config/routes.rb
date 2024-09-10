@@ -20,8 +20,7 @@ Rails.application.routes.draw do
       post :add_admin
       post :remove_admin
       get :guest_list
-      get :active_guest_list
-      post :email_all_active
+      get :active_ticket_requests
       get :download_guest_list
       get :active_addons_passes
       get :active_addons_camping
@@ -37,6 +36,7 @@ Rails.application.routes.draw do
       collection do
         get :download
         get :payment_reminder
+        get :email_ticket_holders
       end
 
       member do

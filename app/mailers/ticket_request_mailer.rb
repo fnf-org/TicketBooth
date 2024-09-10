@@ -126,6 +126,37 @@ class TicketRequestMailer < ApplicationMailer
          subject: "#{@event.name} buy your tickets now!" # The subject of the email
   end
 
+  # The `email_ticket_holder` method is used to send an email to ticket holders
+  #
+  # @param ticket_request [TicketRequest] The ticket request that has been confirmed
+  # @param subject [String] email subject line
+  # @param body [String] email message body
+  # @return [Mail::Message] The email that has been prepared to be sent.
+  def email_ticket_holder(ticket_request, subject, body)
+    self.ticket_request = ticket_request
+    @body = body.to_s.html_safe
+
+    if @ticket_request.awaiting_payment?
+      # Return if the authentication token is blank
+      if (@auth_token = @ticket_request.generate_user_auth_token!).blank?
+        Rails.logger.warn { "email_ticket_holder: no auth token for user: #{@ticket_request.inspect}" }
+        return
+      end
+
+      @payment_url = new_event_ticket_request_payment_url(event_id: @event.id, ticket_request_id: @ticket_request.id, user_token: @auth_token)
+    end
+
+    Rails.logger.debug { "email_ticket_holder: ticket_request: #{ticket_request.inspect} user: #{ticket_request.user.id}" }
+    @ticket_request_url = event_ticket_request_url(event_id: @event.id, id: @ticket_request.id)
+
+    mail to: to_email, # The recipient of the email
+         from: from_email, # The sender of the email
+         reply_to: reply_to_email, # The email address that will receive replies
+         content_type: "text/html",
+         subject: subject # The subject of the email
+
+  end
+
   private
 
   def ticket_request=(ticket_request)
