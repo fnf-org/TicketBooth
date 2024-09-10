@@ -111,10 +111,33 @@ class EventsController < ApplicationController
     @ticket_requests = @event.admissible_requests
   end
 
+  # all active guests (completed, awaiting payment)
+  def active_guest_list
+    @ticket_requests = @event.ticket_requests.active
+  end
+
   def download_guest_list
     send_file(FnF::Services::GuestListCSV.new(@event).csv,
               filename: "#{@event.name} Guest List.csv".gsub(/\s+/, '-'),
               type: 'text/csv')
+  end
+
+  def email_all_active
+    Rails.logger.debug { "email_all_active: params: #{params.inspect}" }
+    Rails.logger.debug { "email_all_active: subject: #{params[:subject]}" }
+    Rails.logger.debug { "email_all_active: message: #{params[:message]}" }
+
+    counter = 0
+    # @event.ticket_requests.active.find_each do |ticket_request|
+    #   Rails.logger.debug { "email_all_active: sending reminder for ticket request: #{ticket_request.inspect}" }
+    #   # TicketRequestMailer.payment_reminder(ticket_request).deliver_later
+    #   counter += 1
+    # end
+
+    Rails.logger.debug { "email_all_active: counter: #{counter}" }
+
+    redirect_to event_ticket_requests_path(@event),
+                notice: "Emails sent to #{counter} ticket holders!"
   end
 
   def active_addons_passes

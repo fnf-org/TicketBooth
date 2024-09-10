@@ -1,14 +1,9 @@
-= render partial: 'shared/nav_event', locals: { event: @event, active_tab: { guest_list: 'active' } }
+= render partial: 'shared/nav_event', locals: { event: @event, active_tab: { active_guest_list: 'active' } }
 
 .card
-  .card-header.bg-primary-subtle
-    .btn-group.mx-4
-      = link_to download_guest_list_event_path(@event),
-        class: 'btn btn-warning ',
-        title: 'Download CSV of the guest list' do
-        %i.icon-th-list
-        Download CSV ▼
   .card-body
+    = render '/events/email_form', resource: @event
+
     %table.table.table-condensed
       %thead
         %tr

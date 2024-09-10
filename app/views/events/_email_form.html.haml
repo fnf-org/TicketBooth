@@ -1,0 +1,14 @@
+= form_with url: email_all_active_event_path(event_id: @event.id), method: :post, data: { event: @event, turbo: true, controller: 'flatpickr', target: '_blank' } do |f|
+  .container-fluid
+    .card-header.bg-primary-subtle
+      %legend Email All Ticket Holders
+      %hr
+
+      %h6 Subject
+      = f.text_field :subject, maxlength: 80, class: 'form-control', required: true
+      %hr
+      %h6 Email Message
+      = f.text_area :message, rows: 30, cols: 80, class: 'form-control', required: true
+
+      = f.submit "▶︎ Send Emails", class: 'btn btn-primary btn-large',
+                 id: 'submit-email', data: { disable_with: 'Submitting...' }
