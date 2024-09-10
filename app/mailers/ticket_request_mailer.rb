@@ -152,9 +152,8 @@ class TicketRequestMailer < ApplicationMailer
     mail to: to_email, # The recipient of the email
          from: from_email, # The sender of the email
          reply_to: reply_to_email, # The email address that will receive replies
-         content_type: "text/html",
-         subject: subject # The subject of the email
-
+         content_type: 'text/html',
+         subject: # The subject of the email
   end
 
   private

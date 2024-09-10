@@ -17,6 +17,6 @@ As such, we depend upon the energy and vision of members and guests to make our 
 Please (re)acquaint yourself with The FnF Way, https://cfaea.net/the-fnf-way/,<br>
 and get involved with helping make the event happen!
 "
-    TicketRequestMailer.with(ticket_request: ticket_request).email_ticket_holder(ticket_request, subject, body)
+    TicketRequestMailer.with(ticket_request:).email_ticket_holder(ticket_request, subject, body)
   end
 end

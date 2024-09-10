@@ -122,7 +122,6 @@ class EventsController < ApplicationController
               type: 'text/csv')
   end
 
-
   def active_addons_passes
     active_addons
   end
