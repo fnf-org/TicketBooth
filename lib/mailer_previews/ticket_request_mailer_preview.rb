@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TicketRequestMailerPreview < ActionMailer::Preview
   def email_ticket_holder
     ticket_request = TicketRequest.last

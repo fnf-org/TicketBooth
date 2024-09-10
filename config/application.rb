@@ -89,6 +89,6 @@ module TicketBooth
 
     config.cache_store = :mem_cache_store, '127.0.0.1:11211', { pool: { size: 10 } }
 
-    config.action_mailer.preview_paths << "#{Rails.root.join('lib/mailer_previews')}"
+    config.action_mailer.preview_paths << Rails.root.join('lib/mailer_previews').to_s
   end
 end
