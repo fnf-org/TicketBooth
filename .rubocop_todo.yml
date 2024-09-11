@@ -153,6 +153,10 @@ Rails/NotNullColumn:
     - 'db/migrate/20130226221916_add_user_to_ticket_request.rb'
     - 'db/migrate/20130311213508_add_event_id_to_ticket_request.rb'
 
+Rails/OutputSafety:
+  Exclude:
+    - 'app/mailers/ticket_request_mailer.rb'
+
 # Offense count: 22
 # Configuration parameters: Include.
 # Include: db/**/*.rb
