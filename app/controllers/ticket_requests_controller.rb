@@ -270,13 +270,11 @@ class TicketRequestsController < ApplicationController
     subject = params[:subject].strip
     body = params[:body].strip
     counter = 0
-    limit = 1
 
     @event.ticket_requests.active.find_each do |ticket_request|
       Rails.logger.debug { "email_ticket_holders: sending reminder for ticket request: #{ticket_request.inspect}" }
       TicketRequestMailer.email_ticket_holder(ticket_request, subject, body).deliver_later
       counter += 1
-      break if counter >= limit
     end
 
     Rails.logger.debug { "email_ticket_holders: counter: #{counter}" }
