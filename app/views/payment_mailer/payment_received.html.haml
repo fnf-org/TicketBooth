@@ -4,7 +4,25 @@
   Got ticket questions or think something is wrong with your order? We are still
   here for you, drop us a line at
   = succeed '.' do
-    = mail_to 'tickets@fnf.org'
+    = mail_to 'ticket-support@fnf.org'
+
+%p
+
+  We care deeply about the health, safety, and comfort of attendees at our events and members
+  of our community. To help achieve this, we ask all of our members and guests to read,
+  understand, and share with each guest our
+  %b=link_to 'Code of Conduct', 'https://fnf.page.link/coc', target: '_blank', onclick: "popupWindow('https://fnf.page.link/coc', 'Code of Conduct', window, 800, 900); return false;"
+
+%p
+  We are a community driven by volunteerism in the service of the community. As such, we depend upon the energy
+  and vision of members and guests to make our events happen!
+  %br
+  Please (re)acquaint yourself with
+  %b=link_to 'The FnF Way', 'https://fnf.events/the-fnf-way/', target: '_blank', onclick: "popupWindow('https://fnf.events/the-fnf-way/', 'The FnF Way', window, 700, 900); return false;"
+  and get involved with helping make the event happen!
+  %br
+  %b=link_to 'Volunteer Signups', 'https://signup.app.fnf.org/'
+  %p
 
 %p
   Friends and Family reminds you to
@@ -43,3 +61,5 @@
   So soon!
   %br
   Your #{@event.name} Ticketing Team
+  = succeed '.' do
+    = mail_to 'ticket-support@fnf.org'

@@ -10,7 +10,7 @@
           = event.name
       .col-sm-12.col-md-12.col-lg-5.col-xl-3.text-end
         %h5.d-inline.block.align-baseline.text-nowrap
-          =  event.starting.to_date.strftime('%A, %B %d, %Y')
+          = event.starting.to_date.strftime('%A, %B %d, %Y')
 
   .card-body.p-0.pt-3.pb-0.border-bottom-0.border-2
     %ul.nav.nav-tabs.p-4.pb-0.mb-3.event-tabs
@@ -41,8 +41,10 @@
           = link_to active_addons_camping_event_path(event), class: "nav-link #{active_tab[:camping_permits]}" do
             Camping Permits
 
-
       %li.nav-item
         = link_to guest_list_event_path(event), class: "nav-link #{active_tab[:guest_list]}" do
           Guest List
 
+      %li.nav-item
+        = link_to active_ticket_requests_event_path(event), class: "nav-link #{active_tab[:email_ticket_holders]}" do
+          Email Ticket Holders

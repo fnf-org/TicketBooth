@@ -111,6 +111,11 @@ class EventsController < ApplicationController
     @ticket_requests = @event.admissible_requests
   end
 
+  # all active guests (completed, awaiting payment)
+  def active_ticket_requests
+    @ticket_requests = @event.ticket_requests.active
+  end
+
   def download_guest_list
     send_file(FnF::Services::GuestListCSV.new(@event).csv,
               filename: "#{@event.name} Guest List.csv".gsub(/\s+/, '-'),

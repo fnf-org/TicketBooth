@@ -20,7 +20,8 @@
             %td
               - user = "#{ticket_request.user.name} <#{ticket_request.user.email}>"
               - email = ticket_request.user.email
-              %span= user
+              = link_to event_ticket_request_path(@event, ticket_request) do
+                %span= user
             %td
               - if ticket_request.guests.empty?
                 %span= "as themselves"

@@ -7,7 +7,7 @@ require 'csv'
 class TicketRequestsController < ApplicationController
   before_action :authenticate_user!, except: %i[create new]
   before_action :set_event
-  before_action :set_ticket_request, except: %i[create index download payment_reminder]
+  before_action :set_ticket_request, except: %i[create index download payment_reminder email_ticket_holders]
   before_action :require_event_admin, except: %i[create new show edit update destroy]
 
   def index
@@ -58,22 +58,6 @@ class TicketRequestsController < ApplicationController
   rescue StandardError => e
     flash.now[:error] = "Error creating CSV file: #{e.message}"
     render_flash(flash)
-  end
-
-  def payment_reminder
-    counter = 0
-    @event.ticket_requests.where(status: TicketRequest::STATUS_AWAITING_PAYMENT).find_each do |ticket_request|
-      if ticket_request.price.positive?
-        Rails.logger.debug { "payment_reminder: sending reminder for ticket request: #{ticket_request.inspect}" }
-        TicketRequestMailer.payment_reminder(ticket_request).deliver_later
-        counter += 1
-      end
-    end
-
-    Rails.logger.debug { "payment_reminder: counter: #{counter}" }
-
-    redirect_to event_ticket_requests_path(@event),
-                notice: "Reminder emails sent to #{counter} ticket requesters!"
   end
 
   def show
@@ -262,6 +246,41 @@ class TicketRequestsController < ApplicationController
       redirect_to event_ticket_request_path(@event, @ticket_request),
                   alert: @ticket_request.errors.full_messages.join('. ')
     end
+  end
+
+  def payment_reminder
+    counter = 0
+    @event.ticket_requests.awaiting_payment.find_each do |ticket_request|
+      if ticket_request.price.positive?
+        Rails.logger.debug { "payment_reminder: sending reminder for ticket request: #{ticket_request.inspect}" }
+        TicketRequestMailer.payment_reminder(ticket_request).deliver_later
+        counter += 1
+      end
+    end
+
+    Rails.logger.debug { "payment_reminder: counter: #{counter}" }
+
+    redirect_to event_ticket_requests_path(@event),
+                notice: "Reminder emails sent to #{counter} ticket requesters!"
+  end
+
+  def email_ticket_holders
+    Rails.logger.debug { "email_ticket_holders: params: #{params.inspect}" }
+
+    subject = params[:subject].strip
+    body = params[:body].strip
+    counter = 0
+
+    @event.ticket_requests.active.find_each do |ticket_request|
+      Rails.logger.debug { "email_ticket_holders: sending reminder for ticket request: #{ticket_request.inspect}" }
+      TicketRequestMailer.email_ticket_holder(ticket_request, subject, body).deliver_later
+      counter += 1
+    end
+
+    Rails.logger.debug { "email_ticket_holders: counter: #{counter}" }
+
+    redirect_to event_ticket_requests_path(@event),
+                notice: "Emails sent to #{counter} ticket holders!"
   end
 
   private
