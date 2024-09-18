@@ -98,18 +98,6 @@ export default class TicketsRequestController extends Controller {
           roleExplanationField.toggleClass('hidden', role === 'volunteer');
         });
 
-    $('input[name="ticket_request[car_camping]"]')
-        .on('change', function (evt) {
-          const carCampingChkbx = $(this),
-              carCamping = carCampingChkbx.is(':checked'),
-              carCampingExplanationField = $('textarea[name="ticket_request[car_camping_explanation]"]');
-
-          carCampingExplanationField.toggleClass('hidden', !carCamping);
-
-          // Don't require explanation if not requesting anything
-          carCampingExplanationField.attr('required', carCamping);
-        });
-
     $('input[name="ticket_request[agrees_to_terms]"]')
         .on('change', function (evt) {
           const agreesChkbx = $(this),

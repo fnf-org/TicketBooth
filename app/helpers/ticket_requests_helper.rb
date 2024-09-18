@@ -1,15 +1,6 @@
 # frozen_string_literal: true
 
 module TicketRequestsHelper
-  def class_for_table_row(ticket_request)
-    case ticket_request.status
-    when 'P'
-      'bg-warning'
-    when 'A'
-      ticket_request.payment ? 'bg-info' : 'bg-success'
-    end
-  end
-
   def text_class_for_status(ticket_request)
     case ticket_request.status
     when 'P'

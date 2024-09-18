@@ -43,11 +43,11 @@
       %td.px-2
         %span.price
           = number_to_currency(@event.kid_ticket_price)
-      - if @event.max_kid_tickets_per_request.present?
-        %span.muted (Maximum #{@event.max_adult_tickets_per_request} tickets)
-      - else
-        %span.muted
-          (Unlimited tickets)
+        - if @event.max_kid_tickets_per_request.present?
+          %span.muted (Maximum #{@event.max_kid_tickets_per_request} tickets)
+        - else
+          %span.muted
+            (Unlimited tickets)
 
   - if @event.active_event_addons?
     %span.muted

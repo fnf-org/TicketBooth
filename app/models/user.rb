@@ -43,9 +43,9 @@ require 'securerandom'
 class User < ApplicationRecord
   # @see https://dev.to/kevinluo201/introduction-to-devise-modules-and-enable-all-of-them-4p25
   DEVISE_MODULES = %i[
+    registerable
     confirmable
     database_authenticatable
-    registerable
     lockable
     recoverable
     rememberable
@@ -68,7 +68,6 @@ class User < ApplicationRecord
 
   MAX_NAME_LENGTH     = 40
   MAX_EMAIL_LENGTH    = 80 # Based on RFC 3696; see http://isemail.info/about
-  MAX_PASSWORD_LENGTH = 40
 
   before_validation :canonize_full_name!
 
