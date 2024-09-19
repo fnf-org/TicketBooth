@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/rubyjs/mini_racer
+  revision: 4f552cf0b92df23336dde7ac6baf4500f8e157e2
+  specs:
+    mini_racer (0.17.0.pre4)
+      libv8-node (~> 22.7.0.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -226,8 +233,6 @@ GEM
     mime-types-data (3.2024.0903)
     mini_magick (5.0.1)
     mini_mime (1.1.5)
-    mini_racer (0.15.0)
-      libv8-node (~> 22.7.0.1)
     minitest (5.25.1)
     msgpack (1.7.2)
     multi_json (1.15.0)
@@ -503,7 +508,7 @@ DEPENDENCIES
   lograge
   logstash-event
   mini_magick
-  mini_racer
+  mini_racer!
   newrelic_rpm
   paranoia (~> 2.6)
   pg

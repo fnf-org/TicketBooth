@@ -77,7 +77,7 @@ gem 'carrierwave'
 gem 'dalli'
 gem 'devise'
 gem 'mini_magick'
-gem 'mini_racer'
+gem 'mini_racer', git: 'https://github.com/rubyjs/mini_racer', platforms: :ruby
 gem 'protected_attributes_continued'
 gem 'psych'
 gem 'rake'
