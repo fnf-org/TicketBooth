@@ -18,5 +18,5 @@ production:
   port: <%= ENV.fetch('TICKETING_DB_PORT', '5432') %>
   username: <%= ENV.fetch('TICKETING_DB_USER', 'fnf') %>
   password: <%= ENV.fetch('TICKETING_DB_PASS', '') %>
-  database: <%= ENV.fetch('TICKETING_DB_NAME', 'ticketing_app_production') %>
+  database: <%= ENV.fetch('TICKETING_DB_NAME', 'ticketing_app_development') %>
   pool: 10

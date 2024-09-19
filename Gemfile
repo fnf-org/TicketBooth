@@ -6,7 +6,7 @@ ruby File.read('.ruby-version')
 
 # Use main development branch of Rails
 gem 'data_migrate'
-gem 'rails', '=7.1.3.4'
+gem 'rails', '~> 7'
 
 # Unclear if we need to require it explicitly
 # gem 'activesupport', '=7.1.3.2'
@@ -32,10 +32,10 @@ gem 'cssbundling-rails'
 gem 'jbuilder'
 
 # Redis
-gem 'redis', '>= 4.0.1'
+gem 'redis' # , '>= 4.0.1'
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt' # , '~> 3.1.7'
 
 # Report APM info to NewRelic
 gem 'newrelic_rpm'
