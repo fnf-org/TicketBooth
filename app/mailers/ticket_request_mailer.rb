@@ -110,7 +110,6 @@ class TicketRequestMailer < ApplicationMailer
     @auth_token = ticket_request.generate_user_auth_token!
     Rails.logger.debug { "payment_reminder: #{ticket_request.inspect} auth_token: #{@auth_token}" }
 
-
     # Return if the authentication token is blank
     if @auth_token.blank?
       Rails.logger.warn { "payment_reminder: no auth token for user: #{@ticket_request.inspect}" }
