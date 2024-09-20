@@ -1,10 +1,3 @@
-GIT
-  remote: https://github.com/rubyjs/mini_racer
-  revision: 4f552cf0b92df23336dde7ac6baf4500f8e157e2
-  specs:
-    mini_racer (0.17.0.pre4)
-      libv8-node (~> 22.7.0.4)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -207,12 +200,6 @@ GEM
       railties (>= 6.0.0)
     json (2.7.2)
     language_server-protocol (3.17.0.3)
-    libv8-node (22.7.0.4)
-    libv8-node (22.7.0.4-aarch64-linux)
-    libv8-node (22.7.0.4-arm64-darwin)
-    libv8-node (22.7.0.4-x86_64-darwin)
-    libv8-node (22.7.0.4-x86_64-linux)
-    libv8-node (22.7.0.4-x86_64-linux-musl)
     lograge (0.14.0)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -508,7 +495,6 @@ DEPENDENCIES
   lograge
   logstash-event
   mini_magick
-  mini_racer!
   newrelic_rpm
   paranoia (~> 2.6)
   pg
