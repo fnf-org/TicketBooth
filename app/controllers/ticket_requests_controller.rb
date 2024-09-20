@@ -252,7 +252,7 @@ class TicketRequestsController < ApplicationController
     counter = 0
     @event.ticket_requests.awaiting_payment.find_each do |ticket_request|
       if ticket_request.price.positive?
-        Rails.logger.debug { "payment_reminder: sending reminder for ticket request: #{ticket_request.inspect}" }
+        Rails.logger.info { "payment_reminder: sending reminder for ticket request: #{ticket_request.id}" }
         TicketRequestMailer.payment_reminder(ticket_request).deliver_later
         counter += 1
       end
@@ -272,7 +272,7 @@ class TicketRequestsController < ApplicationController
     counter = 0
 
     @event.ticket_requests.active.find_each do |ticket_request|
-      Rails.logger.debug { "email_ticket_holders: sending reminder for ticket request: #{ticket_request.inspect}" }
+      Rails.logger.info { "email_ticket_holders: sending email to: #{ticket_request.id}, subject: #{subject}" }
       TicketRequestMailer.email_ticket_holder(ticket_request, subject, body).deliver_later
       counter += 1
     end
