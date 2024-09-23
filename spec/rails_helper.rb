@@ -8,11 +8,6 @@ require File.expand_path('../config/environment', __dir__)
 
 require 'rspec/rails'
 require 'accept_values_for'
-require 'timeout'
-
-def example_with_timeout(example)
-  Timeout.timeout(30) { example.run }
-end
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
@@ -24,8 +19,6 @@ RSpec.configure do |config|
   config.after :example, :ventable_disabled do
     Ventable.enable
   end
-
-  config.around { |example| example_with_timeout(example) }
 
   config.use_transactional_fixtures = true
 

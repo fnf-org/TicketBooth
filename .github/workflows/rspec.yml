@@ -80,5 +80,5 @@ jobs:
           bin/rails db:test:prepare
 
       - name: "Run Rspec"
-        run: bundle exec rspec --backtrace --force-color --format documentation
+        run: time bundle exec rspec --backtrace --force-color --format documentation
 
