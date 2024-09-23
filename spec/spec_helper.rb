@@ -2,6 +2,9 @@
 
 ENV['RAILS_ENV'] = 'test'
 
+$stdout.sync = true
+$stderr.sync = true
+
 # Enable YJIT if we have it compiled in
 if defined?(RubyVM::YJIT) && RubyVM::YJIT.respond_to?(:enable)
   RubyVM::YJIT.enabled? ? warn('[ 𐄂 ] YJIT is enabled') : warn('[ 𐄂 ] YJIT is disabled')
