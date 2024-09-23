@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
+ENV['RAILS_ENV'] = 'test'
+
 # Enable YJIT if we have it compiled in
 if defined?(RubyVM::YJIT) && RubyVM::YJIT.respond_to?(:enable)
-  RubyVM::YJIT.enable
-  puts '[ ✔ ] YJIT is enabled'
+  RubyVM::YJIT.enabled? ? warn('[ 𐄂 ] YJIT is enabled') : warn('[ 𐄂 ] YJIT is disabled')
+  # uncomment when we determine if the spec failures are due to YJIT
+  # RubyVM::YJIT.enable
+  # puts '[ ✔ ] YJIT is enabled'
 else
   warn '[ 𐄂 ] YJIT is not enabled'
 end
-
-ENV['RAILS_ENV'] = 'test'
 
 require 'simplecov'
 SimpleCov.start 'rails'
