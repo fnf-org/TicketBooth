@@ -22,4 +22,10 @@ RSpec.configure do |config|
   config.expect_with(:rspec) do |c|
     c.syntax = %i[should expect]
   end
+
+  config.around do |example|
+    Timeout.timeout(5) do
+      example.run
+    end
+  end
 end
