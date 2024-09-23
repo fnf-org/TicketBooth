@@ -7,10 +7,8 @@ $stderr.sync = true
 
 # Enable YJIT if we have it compiled in
 if defined?(RubyVM::YJIT) && RubyVM::YJIT.respond_to?(:enable)
-  RubyVM::YJIT.enabled? ? warn('[ 𐄂 ] YJIT is enabled') : warn('[ 𐄂 ] YJIT is disabled')
-  # uncomment when we determine if the spec failures are due to YJIT
-  # RubyVM::YJIT.enable
-  # puts '[ ✔ ] YJIT is enabled'
+  RubyVM::YJIT.enable
+  puts '[ ✔ ] YJIT is enabled'
 else
   warn '[ 𐄂 ] YJIT is not enabled'
 end
@@ -29,7 +27,8 @@ RSpec.configure do |config|
   end
 
   config.around do |example|
-    Timeout.timeout(5) do
+    # 10 seconds should be more than enough for ANY spec
+    Timeout.timeout(ENV.fetch('RSPEC_TIMEOUT', 10).to_i) do
       example.run
     end
   end
