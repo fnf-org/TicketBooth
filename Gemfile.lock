@@ -146,6 +146,7 @@ GEM
     crass (1.0.6)
     cssbundling-rails (1.4.1)
       railties (>= 6.0.0)
+    csv (3.3.0)
     dalli (3.2.8)
     data_migrate (11.0.0)
       activerecord (>= 6.1)
@@ -200,6 +201,7 @@ GEM
       railties (>= 6.0.0)
     json (2.7.2)
     language_server-protocol (3.17.0.3)
+    logger (1.6.1)
     lograge (0.14.0)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -478,6 +480,7 @@ DEPENDENCIES
   colorize
   country_select
   cssbundling-rails
+  csv
   dalli
   data_migrate
   debug
@@ -492,6 +495,7 @@ DEPENDENCIES
   hashie
   jbuilder
   jsbundling-rails
+  logger
   lograge
   logstash-event
   mini_magick

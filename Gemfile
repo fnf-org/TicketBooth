@@ -31,6 +31,10 @@ gem 'cssbundling-rails'
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem 'jbuilder'
 
+# Gems that used to be in Standard Library, but are no longer
+gem 'csv'     # removed from stdlib with ruby 3.4
+gem 'logger'  # removed from stdlib with ruby 3.5
+
 # Redis
 gem 'redis' # , '>= 4.0.1'
 
