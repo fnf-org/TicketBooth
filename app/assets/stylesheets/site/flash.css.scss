@@ -2,12 +2,11 @@
 
 #flash_container {
   background-color: $success-bg-subtle;
-  position: fixed;
+  position: relative;
   z-index: 1000;
   padding: 0;
-  top: 30px;
-  left: 20%;
-  right: 20%;
+  top: 0px;
+  border: 2px solid #222 !important;
   box-shadow: 0px 10px 10px 0 rgba(45, 45, 45, 0.4);
   border-radius: 20px;
 

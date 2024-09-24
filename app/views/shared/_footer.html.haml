@@ -1,0 +1,33 @@
+%div.w-100#footer
+  .card-body.bg-primary-subtle.text-center.small
+    %table#footer-table.w-100.m-0
+      %tbody.w-100.m-0
+        %tr.w-100.m-0
+          %td.w-100.p-2.m-0.align-content-center.text-center.bg-body-secondary{colspan: 2}
+            Crafted with ♡ in San Francisco &mdash;
+            &copy; CFAEA 2010-#{Date.current.strftime('%Y')}
+            All rights reserved.
+        %tr
+          %td.text-end.bg-transparent.w-50 App Version
+          %td.text-start.bg-transparent.w-50.px-2 #{TicketBooth::Application::VERSION}
+        %tr
+          %td.text-end.bg-transparent.w-50 Rails Version
+          %td.text-start.bg-transparent.w-50.px-2 #{Rails.version}
+        %tr
+          %td.text-end.bg-transparent.w-50 Ruby Version
+          %td.text-start.bg-transparent.w-50.px-2 #{RUBY_VERSION}
+        %tr
+          %td.text-end.bg-transparent.w-50 Rails Env
+          %td.text-start.bg-transparent.w-50.px-2 #{Rails.env.to_s.capitalize}
+        %tr
+          %td.text-end.bg-transparent.w-50 Revision
+          %td.text-start.bg-transparent.w-50.px-2
+            %a{href: "https://github.com/fnf-org/TicketBooth/commit/#{TicketBooth::Application::REVISION}", target: "_blank" }
+              = TicketBooth::Application::REVISION
+        %tr
+          %td.text-end.bg-transparent.w-50 Support
+          %td.text-start.bg-transparent.w-50.px-2
+            = mail_to 'ticket-support@fnf.org', 'Ticket Booth Support', subject: 'Ticket Booth Support'
+
+
+

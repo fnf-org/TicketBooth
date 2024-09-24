@@ -2,11 +2,14 @@
 nav.navbar {
   z-index: 100 !important;
   width: 100%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 20px;
-  background-color: rgba(80, 133, 197, 0.58);
+  top: 0px !important;
+  left: 0px !important;
+  position: absolute !important;
+  padding: 0px !important;
+  margin: 0px !important;
+  ackground-color: rgba(80, 133, 197, 0.58);
   border-bottom: 2px solid rgba(6, 74, 124, 0.58);
+
   .navbar-toggler {
     margin-right: 10px;
     margin-top: 10px;
