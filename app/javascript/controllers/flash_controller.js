@@ -5,31 +5,45 @@ import {Controller} from '@hotwired/stimulus'
 
 // Connects to data-controller="flash"
 export default class FlashController extends Controller {
-  static targets = ['flash']
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  connect = () => {
-    this.hideFlash();
+    static targets = ['flash']
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    connect = () => {
+        // .alert only appears if the contents has a message
+        if ($('#flash').html().includes('alert')) {
+            this.showFlash()
+        } else {
+            this.hideFlash()
+        }
 
-    addEventListener('turbo:render', (event) => {
-      this.hideFlash()
-    })
-  }
+        addEventListener('turbo:render', (event) => {
+            this.showFlash()
+        })
+        addEventListener('turbo:frame-render', (event) => {
+            this.showFlash()
+        })
+    }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  hideFlash = () => {
-    setTimeout(function () {
-      $('#flash_container').show().fadeOut('slow')
+    showFlash = () => {
+        $('#flash_container').show('fast')
+        this.hideFlashAfter()
+    }
 
-      setTimeout(function () {
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    hideFlash = () => {
         $("#flash").html('')
-        $('#flash_container').show()
-      }, 500)
-    }, 5000)
-  }
+        $('#flash_container').hide('fast')
+    }
 
-  showError = (error) => {
-    $("#flash").html(error);
-    $('#flash_container').show();
-    this.hideFlash();
-  }
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    hideFlashAfter = (delay = 3000) => {
+        const self = this
+        setTimeout(function () {
+            self.hideFlash()
+        }, delay)
+    }
+
+    showError = (error) => {
+        $("#flash").html(error)
+        this.showFlash()
+    }
 }

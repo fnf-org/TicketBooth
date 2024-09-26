@@ -2,8 +2,12 @@
 // Hide navbar text for small screens
 @media (min-width: 0px) and (max-width: 600px) {
   body {
-    padding: 0px !important;
-    margin: 0px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+
+    .container-fluid, .container {
+      margin-top: 0 !important;
+    }
 
     %nav {
       top: 0px !important;
@@ -73,8 +77,7 @@
     }
 
     .container-fluid, .container {
-      margin: 20px !important;
-      padding: 0;
+      padding: 20px;
 
       .event-admins {
         a {
