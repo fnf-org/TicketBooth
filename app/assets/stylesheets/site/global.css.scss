@@ -1,160 +1,7 @@
-
-
 @import 'bootstrap/scss/bootstrap';
 @import "bootstrap/scss/reboot";
 @import "bootstrap/scss/functions";
 @import "fonts.css.scss";
-
-body {
-  @include dosis-regular;
-}
-
-h1, h2, h3, h4, h5 {
-  @include oswald-thin;
-}
-
-h1 { font-size: 3em; font-weight: 500;  }
-h2 { font-size: 2.7em; font-weight: 400; color: #777 !important;  }
-h3 { font-size: 2.3em; margin: 25px auto; color: #999 !important; }
-h4 { font-size: 2em; margin: 15px auto; }
-h5 { font-size: 1.5em; margin: 25px auto; }
-
-.main-container {
-  padding: 1em 2em;
-  margin-top: 0px !important;
-}
-
-.lead {
-  font-size: 16pt !important;
-}
-
-.container-fluid, .container {
-  margin-top: 0px !important;
-  .card {
-    margin-top: 0px !important;
-  }
-
-  #ticket-request-form {
-    font-size: 1em !important;
-
-    input, label {
-      font-size: 1em;
-    }
-  }
-}
-
-legend {
-  font-family: Oswald, "Bebas Neue", sans-serif;
-  font-size: 20pt;
-  margin: 30px 30px 10px 0px;
-  color: #555 !important;
-  font-weight: 400;
-  border-bottom: 1px solid $body-color-dark !important;
-}
-
-.container {
-  padding-top: 20px;
-}
-
-.clear-right {
-  clear: right;
-}
-
-.muted {
-  font-size: 12pt;
-  color: #888;
-}
-
-.caution {
-  color: $body-color;
-  background-color: $danger-bg-subtle;
-  padding: 9px;
-  border-radius: 5px;
-}
-
-label.strong {
-  font-weight: 500;
-}
-
-strong {
-  font-weight: 600;
-}
-
-.event-row {
-  .card {
-    margin-top: -2px;
-  }
-}
-
-.required-label {
-  &:after {
-    color: #f00;
-    content: '*';
-    font-weight: bold;
-    margin-left: .1em;
-  }
-}
-
-
-.alert {
-  h3 {
-    margin: 0;
-    text-align: center;
-  }
-}
-
-.field-group {
-  position: relative;
-  width: 100%;
-  display: block;
-  border: 1px solid red;
-}
-
-.vertical-20 {
-  display: block;
-  width: 100%;
-  height: 20px;
-}
-
-.nowrap {
-  white-space: nowrap;
-}
-
-dl.dl-horizontal {
-  margin-top: 20px;
-
-  dt {
-    color: rgba(143, 70, 3, 0.75);
-    font-weight: 400;
-    font-size: 15pt;
-  }
-
-  dd {
-    font-weight: 600;
-  }
-}
-
-.help-inline {
-  line-height: 30px;
-  vertical-align: top;
-}
-
-.help-popover {
-  color: #ccc;
-  font-size: 15px;
-  line-height: normal;
-  vertical-align: top;
-
-  &:focus,
-  &:hover {
-    color: #333;
-    text-decoration: none;
-  }
-}
-
-.hidden {
-  display: none;
-}
 
 $footer-height: 60px;
 
@@ -167,38 +14,212 @@ body {
   height: 100%;
   margin-bottom: $footer-height;
   margin-top: 0 !important;
-}
 
-#footer {
-  background-color: #f5f5f5;
-  position: relative;
-  width: 100%;
-  margin: 0;
-  padding: 0px;
+  @include dosis-regular;
 
-  table#footer-table {
+  .container-fluid, .container {
+    margin-top: 0 !important;
+
+    .card {
+      margin-top: 0px !important;
+    }
+
+    #ticket-request-form {
+      font-size: 1em !important;
+
+      input, label {
+        font-size: 1em;
+      }
+    }
+  }
+
+  h1, h2, h3, h4, h5 {
+    @include oswald-thin;
+  }
+
+  h1 {
+    font-size: 3em;
+    font-weight: 500;
+  }
+
+  h2 {
+    font-size: 2.7em;
+    font-weight: 400;
+    color: #777 !important;
+  }
+
+  h3 {
+    font-size: 2.3em;
+    margin: 25px auto;
+    color: #999 !important;
+  }
+
+  h4 {
+    font-size: 2em;
+    margin: 15px auto;
+  }
+
+  h5 {
+    font-size: 1.5em;
+    margin: 25px auto;
+  }
+
+  .main-container {
+    padding: 1em 2em;
+    margin-top: 0px !important;
+  }
+
+  .lead {
+    font-size: 16pt !important;
+  }
+
+
+  legend {
+    font-family: Oswald, "Bebas Neue", sans-serif;
+    font-size: 20pt;
+    margin: 30px 30px 10px 0px;
+    color: #555 !important;
+    font-weight: 400;
+    border-bottom: 1px solid $body-color-dark !important;
+  }
+
+  .container {
+    padding-top: 20px;
+  }
+
+  .clear-right {
+    clear: right;
+  }
+
+  .muted {
+    font-size: 12pt;
+    color: #888;
+  }
+
+  .caution {
+    color: $body-color;
+    background-color: $danger-bg-subtle;
+    padding: 9px;
+    border-radius: 5px;
+  }
+
+  label.strong {
+    font-weight: 500;
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  .event-row {
+    .card {
+      margin-top: -2px;
+    }
+  }
+
+  .required-label {
+    &:after {
+      color: #f00;
+      content: '*';
+      font-weight: bold;
+      margin-left: .1em;
+    }
+  }
+
+
+  .alert {
+    h3 {
+      margin: 0;
+      text-align: center;
+    }
+  }
+
+  .field-group {
+    position: relative;
     width: 100%;
-    tbody {
-      tr {
-        td {
-          height: 12px !important;
-          line-height: 0.9 !important;
-          padding: 0 !important;
-          margin: 0 !important;
+    display: block;
+    border: 1px solid red;
+  }
+
+  .vertical-20 {
+    display: block;
+    width: 100%;
+    height: 20px;
+  }
+
+  .nowrap {
+    white-space: nowrap;
+  }
+
+  dl.dl-horizontal {
+    margin-top: 20px;
+
+    dt {
+      color: rgba(143, 70, 3, 0.75);
+      font-weight: 400;
+      font-size: 15pt;
+    }
+
+    dd {
+      font-weight: 600;
+    }
+  }
+
+  .help-inline {
+    line-height: 30px;
+    vertical-align: top;
+  }
+
+  .help-popover {
+    color: #ccc;
+    font-size: 15px;
+    line-height: normal;
+    vertical-align: top;
+
+    &:focus,
+    &:hover {
+      color: #333;
+      text-decoration: none;
+    }
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  #footer {
+    background-color: #f5f5f5;
+    position: relative;
+    width: 100%;
+    margin: 100px 0 0;
+    padding: 0px;
+
+    table#footer-table {
+      width: 100%;
+
+      tbody {
+        tr {
+          td {
+            height: 12px !important;
+            line-height: 1.3 !important;
+            padding: 4px !important;
+            padding-left: 20px !important;
+            margin: 0 !important;
+          }
         }
       }
     }
   }
-}
 
-#footer-text {
-  margin: 20px 0;
-}
+  #footer-text {
+    margin: 20px 0;
+  }
 
-img.hover-tooltip {
-  cursor: pointer;
-}
+  img.hover-tooltip {
+    cursor: pointer;
+  }
 
-tr.ticket-request-row td {
-  background-color: #eee !important;
+  tr.ticket-request-row td {
+    background-color: #eee !important;
+  }
 }

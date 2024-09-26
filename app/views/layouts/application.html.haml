@@ -34,7 +34,7 @@
         .col-sm-12.col-md-12.col-lg-12.p-0
           = render partial: "shared/nav_main"
 
-    %turbo-frame.m-0#flash_container{"data-controller": "flash", "data-flash-target": "flash"}
+    %turbo-frame#flash_container{"data-controller": "flash", "data-flash-target": "flash"}
       = render "shared/flash"
 
     .container-fluid.main-container.w-100.align-content-center
@@ -42,5 +42,4 @@
         .col-sm-12.col-md-12.col-lg-12
           = yield
 
-    .container-fluid
-      = render partial: "shared/footer"
+    = render partial: "shared/footer"

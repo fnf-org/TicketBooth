@@ -4,10 +4,9 @@ nav.navbar {
   width: 100%;
   top: 0px !important;
   left: 0px !important;
-  position: absolute !important;
   padding: 0px !important;
   margin: 0px !important;
-  ackground-color: rgba(80, 133, 197, 0.58);
+  background-color: rgba(80, 133, 197, 0.58);
   border-bottom: 2px solid rgba(6, 74, 124, 0.58);
 
   .navbar-toggler {
@@ -85,9 +84,7 @@ nav.navbar {
 .container-fluid, .container {
   .navbar {
     .btn, a.btn, a.button-link {
-      background-color: #6a9549 !important;
       border-radius: 10px;
-      border: 1px solid #aa3800;
       color: #fff;
       font-weight: 400;
       margin-left: 0;
