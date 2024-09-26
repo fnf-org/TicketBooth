@@ -4,6 +4,11 @@
   body {
     font-size: 16pt;
 
+    #columns-container {
+      margin: 20px auto;
+      width: 90%;
+    }
+
     td.optional, th.optional {
       display: table-cell !important;
     }
