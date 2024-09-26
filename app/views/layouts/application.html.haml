@@ -29,17 +29,17 @@
     = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
 
   %body.m-0.p-0
-    .container-fluid.main-container.w-100.align-content-center.m-0.p-0
-      .row
-        .col-sm-12.col-md-12.col-lg-12.p-0
-          = render partial: "shared/nav_main"
+    = render partial: "shared/nav_main"
+    -# .container-fluid.main-container.align-content-center.m-0.p-0
+    -#   .row
+    -#     .col-sm-12.col-md-12.col-lg-12.p-0
 
     %turbo-frame#flash_container{"data-controller": "flash", "data-flash-target": "flash"}
       = render "shared/flash"
 
-    .container-fluid.main-container.w-100.align-content-center
+    .container-fluid.main-container.align-content-center
       .row
-        .col-sm-12.col-md-12.col-lg-12
+        .col-12#columns-container
           = yield
 
     = render partial: "shared/footer"

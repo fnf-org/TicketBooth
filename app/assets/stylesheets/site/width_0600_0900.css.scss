@@ -1,6 +1,10 @@
 
 // Hide navbar text for small screens
 @media (min-width: 601px) and (max-width: 900px) {
+  nav.navbar {
+    font-size: 0.8em;
+  }
+
   table {
     tr {
       td.optional, th.optional {
@@ -27,7 +31,16 @@
   }
 
   body {
-    font-size: 14pt;
+    font-size: 10pt !important;
+
+    .btn {
+      font-size: 12pt !important;
+    }
+
+    #columns-container {
+      margin: 20px auto;
+      width: 100%;
+    }
   }
 
   .event-admins {
@@ -42,10 +55,6 @@
 
   .lead {
     font-size: 1.2em !important;
-  }
-
-  #brand-logo img {
-    display: none !important;
   }
 
   .btn, .nav-link {

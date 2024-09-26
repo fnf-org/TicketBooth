@@ -29,16 +29,16 @@ export default class FlashController extends Controller {
     }
 
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    hideFlash = () => {
+    hideFlash = (hideDelay = 'fast') => {
         $("#flash").html('')
-        $('#flash_container').hide('fast')
+        $('#flash_container').hide(hideDelay)
     }
 
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     hideFlashAfter = (delay = 3000) => {
         const self = this
         setTimeout(function () {
-            self.hideFlash()
+            self.hideFlash('slow')
         }, delay)
     }
 
