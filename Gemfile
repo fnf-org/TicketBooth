@@ -100,7 +100,7 @@ group :development, :test do
   gem 'rubocop-rails'
   gem 'rubocop-rails-omakase', require: false
   gem 'rubocop-rake'
-  gem 'rubocop-rspec', '~> 2.29.2'
+  gem 'rubocop-rspec', '~> 3.1.0'
 end
 
 group :development do
