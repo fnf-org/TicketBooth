@@ -1,8 +1,30 @@
-
 // Hide navbar text for small screens
 @media (min-width: 0px) and (max-width: 600px) {
   body {
-    font-size: 1em;
+    #columns-container {
+      margin: 20px auto;
+      width: 100% !important;
+    }
+
+    %ul.navbar-nav {
+      float: right;
+    }
+    .main-container {
+      padding: 0 !important;
+      margin-top: 0 !important;
+      width: 90% !important;
+    }
+
+    .container-fluid, .container {
+      margin-top: 0 !important;
+      padding-left: 0 !important;
+    }
+
+    %nav {
+      top: 0px !important;
+    }
+
+    font-size: 0.9em !important;
 
     td.ticket-user {
       a {
@@ -36,35 +58,35 @@
     }
 
     .btn {
-      font-size: 0.8em !important;
+      font-size: 10pt !important;
     }
+
     h1 {
-      font-size: 30pt;
+      font-size: 20pt;
     }
 
     h2 {
-      font-size: 25pt;
+      font-size: 15pt;
     }
 
     h3 {
-      font-size: 23pt;
+      font-size: 13pt;
       margin: 15px auto;
       text-shadow: 1px 1px 2px #000;
       color: #999 !important;
     }
 
     h4 {
-      font-size: 19pt;
+      font-size: 12pt;
       margin: 10px auto;
     }
 
     h5 {
-      font-size: 16pt;
+      font-size: 11pt;
       margin: 5px auto;
     }
 
     .container-fluid, .container {
-      margin: 20px !important;
       padding: 0;
 
       .event-admins {
@@ -74,10 +96,8 @@
       }
 
       .card {
-        width: 95%;
         margin-left: 0;
         margin-right: 0;
-        margin-top: 20px !important;
         overflow-y: scroll;
       }
 
@@ -97,10 +117,12 @@
       td.optional, th.optional {
         display: none !important;
       }
+
       td.optional-small, th.optional-small {
         display: none !important;
       }
-      td.optional-medium, th.optional-medium  {
+
+      td.optional-medium, th.optional-medium {
         display: none !important;
       }
     }
@@ -115,14 +137,6 @@
   }
   small.nowrap {
     white-space: normal;
-  }
-
-  .main-container {
-    padding: 0;
-  }
-
-  .nav.navbar {
-    padding-left: 0 !important;
   }
 
   #footer {

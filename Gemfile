@@ -6,7 +6,7 @@ ruby File.read('.ruby-version')
 
 # Use main development branch of Rails
 gem 'data_migrate'
-gem 'rails', '~> 7'
+gem 'rails', '=8.0.0.beta1'
 
 # Unclear if we need to require it explicitly
 # gem 'activesupport', '=7.1.3.2'
@@ -100,14 +100,11 @@ group :development, :test do
   gem 'rubocop-rails'
   gem 'rubocop-rails-omakase', require: false
   gem 'rubocop-rake'
-  gem 'rubocop-rspec', '~> 2.29.2'
-  gem 'vcr'
-  gem 'webmock'
+  gem 'rubocop-rspec'
 end
 
 group :development do
   gem 'asciidoctor'
-  gem 'bullet', require: false
   # gem 'rack-mini-profiler'
   gem 'better_errors'
   gem 'binding_of_caller'
@@ -135,4 +132,4 @@ group :test do
   gem 'timeout'
 end
 
-gem 'paranoia', '~> 2.6'
+gem 'paranoia'

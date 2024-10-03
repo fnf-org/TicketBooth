@@ -1,8 +1,6 @@
 .hero-unit
   %h1
-    #{@error_description}
-  - if @error_description.nil?
-    %h2
-      Please ask your administrator to do so if you'd like to party soon.
+    #{@error_description || "Please ask your administrator to do so if you'd like to party soon." }
+  .vertical-20
 
-= render 'shared/marketing'
+  = render 'shared/marketing'

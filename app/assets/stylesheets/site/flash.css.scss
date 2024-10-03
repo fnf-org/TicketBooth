@@ -2,18 +2,25 @@
 
 #flash_container {
   background-color: $success-bg-subtle;
-  position: fixed;
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  right: 40px;
   z-index: 1000;
   padding: 0;
-  top: 30px;
-  left: 20%;
-  right: 20%;
   box-shadow: 0px 10px 10px 0 rgba(45, 45, 45, 0.4);
   border-radius: 20px;
+  min-height: 100px;
+  display: none;
+  z-index: 1500;
 
   #flash {
     position: relative;
     z-index: 2000;
+    min-height: 100px;
+    width: 100%;
+    border-radius: 20px;
+
     h3.flash-header {
       font-size: 25pt !important;
       margin: 25px auto;
@@ -22,9 +29,11 @@
     }
 
     .alert {
-      padding: 15px;
+      padding: 0;
       width: 100%;
       margin: 0;
+      border-radius: 20px;
+      min-height: 100px;
 
       h3 {
         font-size: 16pt;

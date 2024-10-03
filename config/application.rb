@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'boot'
+require_relative '../lib/array.rb'
 
 require 'time'
 require 'etc'
@@ -75,6 +76,8 @@ module TicketBooth
     # This is necessary if your schema can't be completely dumped by the schema dumper,
     # like if you have constraints or database-specific column types
     config.active_record.schema_format = :sql
+
+    config.active_support.to_time_preserves_timezone = :zone
 
     # Puma Configuration
     config.puma = Hashie::Mash.new(config_for(:puma))

@@ -83,6 +83,8 @@ Rails.application.configure do
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
 
+  config.active_job.queue_adapter = :test
+
   config.stripe = {
     secret_api_key:      Rails.application.credentials.test.dig(:stripe, :secret_api_key),
     publishable_api_key: Rails.application.credentials.test.dig(:stripe, :publishable_api_key)

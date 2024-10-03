@@ -2,8 +2,7 @@
 
 require 'active_support/core_ext/integer/time'
 
-BULLET_ENABLED = ENV.fetch('BULLET_ENABLED', false)
-require 'bullet' if BULLET_ENABLED
+BULLET_ENABLED = false
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
