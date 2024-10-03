@@ -44,3 +44,4 @@ newrelic_agent.log
 !/app/assets/builds/.keep
 .terraform.lock.hcl
 **/.terraform/*
+*.bak
