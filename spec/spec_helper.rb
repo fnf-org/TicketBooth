@@ -21,15 +21,18 @@ require 'rspec/its'
 require 'timeout'
 require 'faker'
 
+20.times { puts }; puts "\033[20A"
+
+require_relative 'support/example_helper'
+
+EXAMPLE_TIMEOUT = ENV.fetch('EXAMPLE_TIMEOUT', 20).to_i
+
 RSpec.configure do |config|
   config.expect_with(:rspec) do |c|
     c.syntax = %i[should expect]
   end
 
-  config.around do |example|
-    # 10 seconds should be more than enough for ANY spec
-    Timeout.timeout(ENV.fetch('RSPEC_TIMEOUT', 10).to_i) do
-      example.run
-    end
-  end
+  # Adds timing printing and per-example timeout.
+  ExampleHelper.new(config:, timeout: EXAMPLE_TIMEOUT, max_width: 40).wrap_example!
 end
+

@@ -76,6 +76,8 @@ module TicketBooth
     # like if you have constraints or database-specific column types
     config.active_record.schema_format = :sql
 
+    config.active_support.to_time_preserves_timezone = :zone
+
     # Puma Configuration
     config.puma = Hashie::Mash.new(config_for(:puma))
 
