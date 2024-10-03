@@ -44,4 +44,3 @@ RSpec.configure do |config|
   # Adds timing printing and per-example timeout.
   ExampleHelper.new(config:, timeout: EXAMPLE_TIMEOUT, max_width: 40).wrap_example!
 end
-

@@ -141,6 +141,7 @@ class Payment < ApplicationRecord
     end
 
     Rails.logger.debug { "retrieve_payment_intent payment => #{inspect}}" }
+    self.payment_intent
   end
 
   # cancel Stripe PaymentIntent if is in progress

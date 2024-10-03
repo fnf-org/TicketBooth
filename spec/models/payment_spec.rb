@@ -124,7 +124,9 @@ describe Payment do
 
     let(:payment) { build(:payment) }
 
-    it { is_expected.to be_a(Stripe::PaymentIntent) }
+    it 'saves a valid PaymentIntent', :vcr do
+      expect(payment_intent).to be_a(Stripe::PaymentIntent)
+    end
 
     it 'changes the payment status', :vcr do
       expect { payment_intent }.to(change(payment, :status).to('in_progress'))
@@ -132,13 +134,18 @@ describe Payment do
   end
 
   describe '#create_payment_intent' do
-    subject { payment.create_payment_intent(amount) }
-
     let(:amount) { 1000 }
     let(:payment) { build(:payment) }
 
-    describe 'create payment intent' do
-      it { is_expected.to be_a(Stripe::PaymentIntent) }
+    describe 'create payment intent', :vcr do
+      before do
+        payment_intent = payment.create_payment_intent(amount)
+        payment.stripe_payment_id = payment_intent.id
+      end
+
+      it 'creates a valid PaymentIntent', :vcr do
+        expect(payment.create_payment_intent(amount)).to be_a(Stripe::PaymentIntent)
+      end
     end
 
     describe 'stripe failure' do
@@ -187,13 +194,17 @@ describe Payment do
   end
 
   describe '#retrieve_payment_intent' do
-    subject { payment.create_payment_intent(amount) }
-
     let(:amount) { 1000 }
-    let(:payment_intent) { payment.retrieve_payment_intent }
     let(:payment) { build(:payment) }
 
-    it { is_expected.to be_a(Stripe::PaymentIntent) }
+    before do
+      payment_intent = payment.create_payment_intent(amount)
+      payment.stripe_payment_id = payment_intent.id
+    end
+
+    it 'retrieves a valid payment intent', :vcr do
+      expect(payment.retrieve_payment_intent).to be_a(Stripe::PaymentIntent)
+    end
   end
 
   describe 'retrieve_or_save_payment_intent' do
@@ -202,20 +213,22 @@ describe Payment do
     let(:amount) { 1000 }
     let(:payment) { build(:payment, stripe_payment_id: nil) }
 
-    it { is_expected.to be_a(Stripe::PaymentIntent) }
+    it 'is a valid PaymentIntent', :vcr do
+      expect(payment_intent).to be_a(Stripe::PaymentIntent)
+    end
 
-    it 'changes payment status' do
+    it 'changes payment status', :vcr do
       expect { payment_intent }.to(change(payment, :status).to('in_progress'))
     end
 
     context 'when stripe payment exists' do
       before { payment.save_with_payment_intent }
 
-      it 'does not chanmge stripe payment id when it exists' do
+      it 'does not change stripe payment id when it exists', :vcr do
         expect { payment_intent }.not_to(change(payment, :stripe_payment_id))
       end
 
-      it 'does not change payment intent' do
+      it 'does not change payment intent', :vcr do
         expect { payment_intent }.not_to(change(payment, :payment_intent))
       end
     end

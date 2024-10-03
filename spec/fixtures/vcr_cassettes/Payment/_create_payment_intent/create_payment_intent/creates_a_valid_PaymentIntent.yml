@@ -5,7 +5,7 @@ http_interactions:
     uri: https://api.stripe.com/v1/payment_intents
     body:
       encoding: UTF-8
-      string: amount=1000&currency=usd&automatic_payment_methods[enabled]=true&description=FnF+Spring+Campout+XIII+Tickets&metadata[event_name]=FnF+Spring+Campout+XIII
+      string: amount=1000&currency=usd&automatic_payment_methods[enabled]=true&description=FnF+Fall+Campout+XIII+Tickets&metadata[event_name]=FnF+Fall+Campout+XIII
     headers:
       User-Agent:
       - Stripe/v1 RubyBindings/11.7.0
@@ -31,11 +31,11 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Thu, 03 Oct 2024 22:49:37 GMT
+      - Thu, 03 Oct 2024 22:49:17 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '1651'
+      - '1647'
       Connection:
       - keep-alive
       Access-Control-Allow-Credentials:
@@ -58,15 +58,15 @@ http_interactions:
       Cross-Origin-Opener-Policy-Report-Only:
       - same-origin; report-to="coop"
       Idempotency-Key:
-      - b0f9a2ad-1f50-4565-adb1-445d1d74eadc
+      - a6618aa5-81ef-4b7f-93a3-0aa33dbf47e3
       Original-Request:
-      - req_Ri5zJZCMKpqtO4
+      - req_Bg3VBwnQysz6ad
       Report-To:
       - '{"group":"coop","max_age":8640,"endpoints":[{"url":"https://q.stripe.com/coop-report?s=payins-bapi-srv"}],"include_subdomains":true}'
       Reporting-Endpoints:
       - coop="https://q.stripe.com/coop-report?s=payins-bapi-srv"
       Request-Id:
-      - req_Ri5zJZCMKpqtO4
+      - req_Bg3VBwnQysz6ad
       Stripe-Should-Retry:
       - 'false'
       Stripe-Version:
@@ -87,7 +87,7 @@ http_interactions:
       encoding: UTF-8
       string: |-
         {
-          "id": "pi_3Q5xq14ofUrW5ZY41iFFfXKg",
+          "id": "pi_3Q5xph4ofUrW5ZY407WVBnkk",
           "object": "payment_intent",
           "amount": 1000,
           "amount_capturable": 0,
@@ -104,18 +104,18 @@ http_interactions:
           "canceled_at": null,
           "cancellation_reason": null,
           "capture_method": "automatic_async",
-          "client_secret": "pi_3Q5xq14ofUrW5ZY41iFFfXKg_secret_mU88r6a5G0ICcwHc6JM2Hst2N",
+          "client_secret": "pi_3Q5xph4ofUrW5ZY407WVBnkk_secret_vWSQ078zwFSYJphjnEZEMztDX",
           "confirmation_method": "automatic",
-          "created": 1727995777,
+          "created": 1727995757,
           "currency": "usd",
           "customer": null,
-          "description": "FnF Spring Campout XIII Tickets",
+          "description": "FnF Fall Campout XIII Tickets",
           "invoice": null,
           "last_payment_error": null,
           "latest_charge": null,
           "livemode": false,
           "metadata": {
-            "event_name": "FnF Spring Campout XIII"
+            "event_name": "FnF Fall Campout XIII"
           },
           "next_action": null,
           "on_behalf_of": null,
@@ -153,13 +153,13 @@ http_interactions:
           "transfer_data": null,
           "transfer_group": null
         }
-  recorded_at: Thu, 03 Oct 2024 22:49:37 GMT
+  recorded_at: Thu, 03 Oct 2024 22:49:17 GMT
 - request:
     method: post
-    uri: https://api.stripe.com/v1/payment_intents/pi_3Q5xq14ofUrW5ZY41iFFfXKg/cancel
+    uri: https://api.stripe.com/v1/payment_intents
     body:
       encoding: UTF-8
-      string: cancellation_reason=requested_by_customer
+      string: amount=1000&currency=usd&automatic_payment_methods[enabled]=true&description=FnF+Fall+Campout+XIII+Tickets&metadata[event_name]=FnF+Fall+Campout+XIII
     headers:
       User-Agent:
       - Stripe/v1 RubyBindings/11.7.0
@@ -168,7 +168,7 @@ http_interactions:
       Content-Type:
       - application/x-www-form-urlencoded
       X-Stripe-Client-Telemetry:
-      - '{"last_request_metrics":{"request_id":"req_Ri5zJZCMKpqtO4","request_duration_ms":510}}'
+      - '{"last_request_metrics":{"request_id":"req_Bg3VBwnQysz6ad","request_duration_ms":460}}'
       Stripe-Version:
       - '2024-04-10'
       X-Stripe-Client-User-Agent:
@@ -187,11 +187,11 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Thu, 03 Oct 2024 22:49:38 GMT
+      - Thu, 03 Oct 2024 22:49:17 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '1661'
+      - '1647'
       Connection:
       - keep-alive
       Access-Control-Allow-Credentials:
@@ -208,22 +208,21 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Content-Security-Policy:
-      - report-uri https://q.stripe.com/csp-report?p=v1%2Fpayment_intents%2F%3Aintent%2Fcancel;
-        block-all-mixed-content; default-src 'none'; base-uri 'none'; form-action
-        'none'; frame-ancestors 'none'; img-src 'self'; script-src 'self' 'report-sample';
-        style-src 'self'
+      - report-uri https://q.stripe.com/csp-report?p=v1%2Fpayment_intents; block-all-mixed-content;
+        default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';
+        img-src 'self'; script-src 'self' 'report-sample'; style-src 'self'
       Cross-Origin-Opener-Policy-Report-Only:
       - same-origin; report-to="coop"
       Idempotency-Key:
-      - 294f471b-26f3-48bf-8867-74cfc0d54dfe
+      - 662fbbcb-2ad8-45be-af6a-dbc2560fd86c
       Original-Request:
-      - req_3mjL9gfVqHyAj7
+      - req_YfayfvRVZIJUVN
       Report-To:
       - '{"group":"coop","max_age":8640,"endpoints":[{"url":"https://q.stripe.com/coop-report?s=payins-bapi-srv"}],"include_subdomains":true}'
       Reporting-Endpoints:
       - coop="https://q.stripe.com/coop-report?s=payins-bapi-srv"
       Request-Id:
-      - req_3mjL9gfVqHyAj7
+      - req_YfayfvRVZIJUVN
       Stripe-Should-Retry:
       - 'false'
       Stripe-Version:
@@ -244,7 +243,7 @@ http_interactions:
       encoding: UTF-8
       string: |-
         {
-          "id": "pi_3Q5xq14ofUrW5ZY41iFFfXKg",
+          "id": "pi_3Q5xph4ofUrW5ZY40YPqW8cQ",
           "object": "payment_intent",
           "amount": 1000,
           "amount_capturable": 0,
@@ -258,21 +257,21 @@ http_interactions:
             "allow_redirects": "always",
             "enabled": true
           },
-          "canceled_at": 1727995777,
-          "cancellation_reason": "requested_by_customer",
+          "canceled_at": null,
+          "cancellation_reason": null,
           "capture_method": "automatic_async",
-          "client_secret": "pi_3Q5xq14ofUrW5ZY41iFFfXKg_secret_mU88r6a5G0ICcwHc6JM2Hst2N",
+          "client_secret": "pi_3Q5xph4ofUrW5ZY40YPqW8cQ_secret_FOe3m2nPXiLyrjxM2VLjyMOWY",
           "confirmation_method": "automatic",
-          "created": 1727995777,
+          "created": 1727995757,
           "currency": "usd",
           "customer": null,
-          "description": "FnF Spring Campout XIII Tickets",
+          "description": "FnF Fall Campout XIII Tickets",
           "invoice": null,
           "last_payment_error": null,
           "latest_charge": null,
           "livemode": false,
           "metadata": {
-            "event_name": "FnF Spring Campout XIII"
+            "event_name": "FnF Fall Campout XIII"
           },
           "next_action": null,
           "on_behalf_of": null,
@@ -306,9 +305,9 @@ http_interactions:
           "source": null,
           "statement_descriptor": null,
           "statement_descriptor_suffix": null,
-          "status": "canceled",
+          "status": "requires_payment_method",
           "transfer_data": null,
           "transfer_group": null
         }
-  recorded_at: Thu, 03 Oct 2024 22:49:38 GMT
+  recorded_at: Thu, 03 Oct 2024 22:49:17 GMT
 recorded_with: VCR 6.3.1
