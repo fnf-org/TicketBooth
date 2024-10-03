@@ -79,6 +79,6 @@ jobs:
           bin/rails db:migrate:with_data
           bin/rails db:test:prepare
 
-      - name: "Run Rspec"
+      - name: "Rspec Run"
         run: time bundle exec rspec --backtrace --force-color --format documentation
 
