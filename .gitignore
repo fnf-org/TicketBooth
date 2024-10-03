@@ -1,6 +1,5 @@
 !/.env*.erb
 !/app/assets/builds/.keep
-!/log/.keep
 !/storage/.keep
 !/tmp/.keep
 !/tmp/pids/
@@ -28,7 +27,6 @@
 /config/master.key
 /coverage
 /doc
-/log/*
 /log/*.log
 /node_modules
 /public/assets
