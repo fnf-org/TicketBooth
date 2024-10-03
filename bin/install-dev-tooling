@@ -47,10 +47,10 @@ run "brew update && brew install rbenv ruby-build"
 run "brew install jemalloc rust"
 h2 "Building Ruby... with Jemalloc & YJIT"
 
-set -e
+run.set-all abort-on-error
 
 unset CFLAGS
 export RUBY_CFLAGS="-Wno-error=implicit-function-declaration"
-export RUBY_CONFIGURE_OPTS="--enable-yjit --with-jemalloc" 
-rbenv install $(cat .ruby-version | tr -d '\n')
-bundle install -j 4
+run.set-next show-output-on
+run "RUBY_CONFIGURE_OPTS='--enable-yjit --with-jemalloc' rbenv install -f $(cat .ruby-version | tr -d '\n')"
+run "bundle install -j 4"
