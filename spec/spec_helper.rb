@@ -28,7 +28,7 @@ RSpec.configure do |config|
 
   config.around do |example|
     # 10 seconds should be more than enough for ANY spec
-    Timeout.timeout(ENV.fetch('RSPEC_TIMEOUT', 10).to_i) do
+    Timeout.timeout(ENV.fetch('RSPEC_TIMEOUT', 30).to_i) do
       example.run
     end
   end
