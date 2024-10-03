@@ -126,7 +126,7 @@ describe Payment do
 
     it { is_expected.to be_a(Stripe::PaymentIntent) }
 
-    it 'changes the payment status' do
+    it 'changes the payment status', :vcr do
       expect { payment_intent }.to(change(payment, :status).to('in_progress'))
     end
   end
@@ -142,7 +142,7 @@ describe Payment do
     end
 
     describe 'stripe failure' do
-      it 'raises Stripe error when amount < 50 cents' do
+      it 'raises Stripe error when amount < 50 cents', :vcr do
         expect { payment.create_payment_intent(1) }.to raise_error(Stripe::InvalidRequestError)
       end
     end
@@ -152,17 +152,17 @@ describe Payment do
     let(:amount) { 1000 }
     let(:payment) { build(:payment, provider: :stripe, status: :in_progress) }
 
-    before do
-      payment_intent = payment.create_payment_intent(amount)
-      payment.stripe_payment_id = payment_intent.id
-    end
-
     describe 'cancel valid payment intent' do
-      it 'returns a PaymentIntent' do
+      before do
+        payment_intent = payment.create_payment_intent(amount)
+        payment.stripe_payment_id = payment_intent.id
+      end
+
+      it 'returns a PaymentIntent', :vcr do
         expect(payment.cancel_payment_intent).to be_a(Stripe::PaymentIntent)
       end
 
-      it 'has payment intent canceled_at set' do
+      it 'has payment intent canceled_at set', :vcr do
         payment.cancel_payment_intent
         expect(payment.payment_intent['canceled_at']).not_to be_nil
       end

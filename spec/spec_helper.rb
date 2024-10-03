@@ -20,6 +20,15 @@ require 'rspec'
 require 'rspec/its'
 require 'timeout'
 require 'faker'
+require 'vcr'
+
+VCR.configure do |config|
+  config.cassette_library_dir = "spec/fixtures/vcr_cassettes"
+  config.hook_into :webmock
+  config.ignore_localhost = true
+  config.configure_rspec_metadata!
+  config.filter_sensitive_data("<STRIPE_API_KEY>") { Rails.configuration.stripe[:secret_api_key] }
+end
 
 RSpec.configure do |config|
   config.expect_with(:rspec) do |c|

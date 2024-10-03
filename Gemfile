@@ -101,6 +101,8 @@ group :development, :test do
   gem 'rubocop-rails-omakase', require: false
   gem 'rubocop-rake'
   gem 'rubocop-rspec', '~> 2.29.2'
+  gem 'vcr'
+  gem 'webmock'
 end
 
 group :development do

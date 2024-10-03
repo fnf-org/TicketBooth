@@ -60,7 +60,7 @@ class Payment < ApplicationRecord
     Rails.logger.debug { "save_with_payment_intent: cost => #{cost}}" }
 
     begin
-      # Create new Stripe PaymentIntent
+      # Create new Stripe PaymentIntent (external Stripe API)
       self.payment_intent = create_payment_intent(cost)
       log_intent(payment_intent)
       self.stripe_payment_id = payment_intent.id
