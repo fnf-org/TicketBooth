@@ -190,11 +190,6 @@ class Payment < ApplicationRecord
     status.humanize
   end
 
-  # Manually mark that a payment was received.
-  def mark_received
-    status_received!
-  end
-
   def in_progress?
     status_in_progress?
   end
@@ -220,6 +215,24 @@ class Payment < ApplicationRecord
     @matrix ||= { 'N' => 'new', 'P' => 'in progress', 'R' => 'received', 'F' => 'refunded' }
     self.status = @matrix[old_status]
     save!
+  end
+
+  # Manually mark that a payment was received.
+  def mark_received
+    status_received!
+  end
+
+  # In transaction,
+  # mark payment received and ticket request completed
+  # Send off PaymentMailer for payment received
+  def request_completed
+    mark_received
+    ticket_request.mark_complete
+
+    # Deliver the email asynchronously
+    PaymentMailer.payment_received(self).deliver_later
+
+    self.reload
   end
 
   private
