@@ -103,14 +103,13 @@ class PaymentsController < ApplicationController
   private
 
   def mark_payment_completed
-    begin
-      @payment.request_completed
-      flash.now[:notice] = 'Payment has been received and marked as completed.'
+    @payment.request_completed
+    flash.now[:notice] = 'Payment has been received and marked as completed.'
+
     rescue StandardError => e
       Rails.logger.error("#mark_payment_completed() => error marking payment as received: #{e.message}")
       flash.now[:error] = "ERROR: #{e.message}"
       render_flash(flash)
-    end
   end
 
   def ticket_request_id
