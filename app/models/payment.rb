@@ -222,10 +222,8 @@ class Payment < ApplicationRecord
     status_received!
   end
 
-  # In transaction,
   # mark payment received and ticket request completed
   # Send off PaymentMailer for payment received
-  # @raise
   def request_completed
     Payment.transaction do
       # set payment and ticket request status
