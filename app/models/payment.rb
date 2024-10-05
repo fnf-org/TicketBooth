@@ -225,14 +225,16 @@ class Payment < ApplicationRecord
   # In transaction,
   # mark payment received and ticket request completed
   # Send off PaymentMailer for payment received
+  # @raise
   def request_completed
-    mark_received
-    ticket_request.mark_complete
+    Payment.transaction do
+      # set payment and ticket request status
+      mark_received
+      ticket_request.mark_complete
 
-    # Deliver the email asynchronously
-    PaymentMailer.payment_received(self).deliver_later
-
-    self.reload
+      # Deliver the email asynchronously
+      PaymentMailer.payment_received(self).deliver_later
+    end
   end
 
   private

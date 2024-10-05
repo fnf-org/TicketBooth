@@ -103,7 +103,7 @@ class PaymentsController < ApplicationController
   private
 
   def mark_payment_completed
-    Payment.transaction do
+    begin
       @payment.request_completed
       flash.now[:notice] = 'Payment has been received and marked as completed.'
     rescue StandardError => e
