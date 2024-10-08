@@ -31,7 +31,6 @@ class Event < ApplicationRecord
   has_many :jobs, dependent: :destroy
   has_many :time_slots, through: :jobs
   has_many :ticket_requests, dependent: :destroy
-  has_many :price_rules, dependent: :destroy
   has_many :event_addons, dependent: :destroy
   has_many :addons, through: :event_addons
 
