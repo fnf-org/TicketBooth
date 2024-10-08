@@ -94,8 +94,7 @@
                         = f.label :kids, 'Number of Kids (13 and under) Tickets' + " @ $#{@event.kid_ticket_price.to_i} each"
                         = f.number_field :kids, class: 'input-mini', min: 0,
                             max: @event.max_kid_tickets_per_request,
-                            data: { default_price: @event.kid_ticket_price.to_i,
-                                    custom_prices: price_rules_to_json(@event) }
+                            data: { default_price: @event.kid_ticket_price.to_i }
 
                       %td.w-10.text-end
                         = tooltip_box help_text_for(:kids), title: "Kid Tickets"

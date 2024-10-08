@@ -40,12 +40,6 @@ module TicketRequestsHelper
     end
   end
 
-  def price_rules_to_json(event)
-    event.price_rules.to_h do |price_rule|
-      [price_rule.trigger_value, price_rule.price.to_i]
-    end.to_json
-  end
-
   def help_text_for(sym)
     case sym
     when :email
