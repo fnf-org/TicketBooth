@@ -60,7 +60,7 @@ class Payment < ApplicationRecord
     Rails.logger.debug { "save_with_payment_intent: cost => #{cost}}" }
 
     begin
-      # Create new Stripe PaymentIntent
+      # Create new Stripe PaymentIntent (external Stripe API)
       self.payment_intent = create_payment_intent(cost)
       log_intent(payment_intent)
       self.stripe_payment_id = payment_intent.id
@@ -141,6 +141,7 @@ class Payment < ApplicationRecord
     end
 
     Rails.logger.debug { "retrieve_payment_intent payment => #{inspect}}" }
+    self.payment_intent
   end
 
   # cancel Stripe PaymentIntent if is in progress
@@ -189,11 +190,6 @@ class Payment < ApplicationRecord
     status.humanize
   end
 
-  # Manually mark that a payment was received.
-  def mark_received
-    status_received!
-  end
-
   def in_progress?
     status_in_progress?
   end
@@ -219,6 +215,24 @@ class Payment < ApplicationRecord
     @matrix ||= { 'N' => 'new', 'P' => 'in progress', 'R' => 'received', 'F' => 'refunded' }
     self.status = @matrix[old_status]
     save!
+  end
+
+  # Manually mark that a payment was received.
+  def mark_received
+    status_received!
+  end
+
+  # mark payment received and ticket request completed
+  # Send off PaymentMailer for payment received
+  def request_completed
+    Payment.transaction do
+      # set payment and ticket request status
+      mark_received
+      ticket_request.mark_complete
+
+      # Deliver the email asynchronously
+      PaymentMailer.payment_received(self).deliver_later
+    end
   end
 
   private

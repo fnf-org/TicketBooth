@@ -34,6 +34,13 @@ describe PaymentsController, type: :controller do
 
       it { is_expected.to have_http_status(:redirect) }
     end
+
+    context 'when provider is not stripe' do
+      let(:payment) { create(:payment, provider: :other, status: :received, ticket_request:) }
+
+      it { is_expected.to have_http_status(:redirect) }
+    end
+
   end
 
   describe 'GET #show' do

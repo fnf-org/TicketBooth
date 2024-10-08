@@ -1,0 +1,101 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/payment_intents
+    body:
+      encoding: UTF-8
+      string: amount=1&currency=usd&automatic_payment_methods[enabled]=true&description=FnF+Winter+Campout+XXI+Tickets&metadata[event_name]=FnF+Winter+Campout+XXI
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/11.7.0
+      Authorization:
+      - Bearer <STRIPE_API_KEY>
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_YfayfvRVZIJUVN","request_duration_ms":0}}'
+      Stripe-Version:
+      - '2024-04-10'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"11.7.0","lang":"ruby","lang_version":"3.3.5 p100 (2024-09-03)","platform":"arm64-darwin23","engine":"ruby","publisher":"stripe","uname":"Darwin
+        matt.studio.lan 23.6.0 Darwin Kernel Version 23.6.0: Mon Jul 29 21:14:30 PDT
+        2024; root:xnu-10063.141.2~1/RELEASE_ARM64_T6000 arm64","hostname":"matt.studio.lan"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Thu, 03 Oct 2024 22:49:42 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '309'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET,HEAD,PUT,PATCH,POST,DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, Stripe-Should-Retry, X-Stripe-External-Auth-Required,
+        X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Content-Security-Policy:
+      - report-uri https://q.stripe.com/csp-report?p=v1%2Fpayment_intents; block-all-mixed-content;
+        default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';
+        img-src 'self'; script-src 'self' 'report-sample'; style-src 'self'
+      Cross-Origin-Opener-Policy-Report-Only:
+      - same-origin; report-to="coop"
+      Idempotency-Key:
+      - e673b15e-12fc-4bc0-a9bd-487ee8c810e9
+      Original-Request:
+      - req_QCnqvKobvDTEL3
+      Report-To:
+      - '{"group":"coop","max_age":8640,"endpoints":[{"url":"https://q.stripe.com/coop-report?s=payins-bapi-srv"}],"include_subdomains":true}'
+      Reporting-Endpoints:
+      - coop="https://q.stripe.com/coop-report?s=payins-bapi-srv"
+      Request-Id:
+      - req_QCnqvKobvDTEL3
+      Stripe-Should-Retry:
+      - 'false'
+      Stripe-Version:
+      - '2024-04-10'
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Stripe-Priority-Routing-Enabled:
+      - 'true'
+      X-Stripe-Routing-Context-Priority-Tier:
+      - api-testmode
+      X-Wc:
+      - A
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "error": {
+            "code": "amount_too_small",
+            "doc_url": "https://stripe.com/docs/error-codes/amount-too-small",
+            "message": "Amount must be at least $0.50 usd",
+            "request_log_url": "https://dashboard.stripe.com/test/logs/req_QCnqvKobvDTEL3?t=1727995782",
+            "type": "invalid_request_error"
+          }
+        }
+  recorded_at: Thu, 03 Oct 2024 22:49:42 GMT
+recorded_with: VCR 6.3.1

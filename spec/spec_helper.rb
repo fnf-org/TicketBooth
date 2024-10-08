@@ -20,6 +20,15 @@ require 'rspec'
 require 'rspec/its'
 require 'timeout'
 require 'faker'
+require 'vcr'
+
+VCR.configure do |config|
+  config.cassette_library_dir = "spec/fixtures/vcr_cassettes"
+  config.hook_into :webmock
+  config.ignore_localhost = true
+  config.configure_rspec_metadata!
+  config.filter_sensitive_data("<STRIPE_API_KEY>") { Rails.configuration.stripe[:secret_api_key] }
+end
 
 20.times { puts }; puts "\033[20A"
 
@@ -35,4 +44,3 @@ RSpec.configure do |config|
   # Adds timing printing and per-example timeout.
   ExampleHelper.new(config:, timeout: EXAMPLE_TIMEOUT, max_width: 40).wrap_example!
 end
-

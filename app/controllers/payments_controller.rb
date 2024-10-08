@@ -103,21 +103,13 @@ class PaymentsController < ApplicationController
   private
 
   def mark_payment_completed
-    Payment.transaction do
-      # if we have a payment explanation, mark as other. else mark received
-      @payment.mark_received
-      @payment.ticket_request.mark_complete
-      @payment.reload
+    @payment.request_completed
+    flash.now[:notice] = 'Payment has been received and marked as completed.'
 
-      flash.now[:notice] = 'Payment has been received and marked as completed.'
-
-      # Deliver the email asynchronously
-      PaymentMailer.payment_received(@payment).deliver_later
     rescue StandardError => e
       Rails.logger.error("#mark_payment_completed() => error marking payment as received: #{e.message}")
       flash.now[:error] = "ERROR: #{e.message}"
       render_flash(flash)
-    end
   end
 
   def ticket_request_id
