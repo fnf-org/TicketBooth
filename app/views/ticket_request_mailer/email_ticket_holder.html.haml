@@ -1,25 +1,3 @@
 %p
-  Hi #{@ticket_request.user.first_name},
-
-%p
-  - if @payment_url.present?
-    Your tickets still need to be purchased.
-    = link_to @payment_url do
-      Buy your tickets now!
-%p
 = @body
-
-%p
-  With love ❤️,
-  %br
-  Your FnF Ticket Team
-
-%p
-  - if @payment_url.present?
-    = link_to @payment_url do
-      Buy your tickets now!
-%p
-  You can view the status of your request at any time by visiting
-  = link_to "#{@ticket_request_url}", @ticket_request_url
-
 %p
