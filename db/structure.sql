@@ -274,40 +274,6 @@ ALTER SEQUENCE public.payments_id_seq OWNED BY public.payments.id;
 
 
 --
--- Name: price_rules; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.price_rules (
-    id bigint NOT NULL,
-    type character varying,
-    event_id bigint,
-    price numeric(8,2),
-    trigger_value integer,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: price_rules_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.price_rules_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: price_rules_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.price_rules_id_seq OWNED BY public.price_rules.id;
-
-
---
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -593,13 +559,6 @@ ALTER TABLE ONLY public.payments ALTER COLUMN id SET DEFAULT nextval('public.pay
 
 
 --
--- Name: price_rules id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.price_rules ALTER COLUMN id SET DEFAULT nextval('public.price_rules_id_seq'::regclass);
-
-
---
 -- Name: shifts id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -706,14 +665,6 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- Name: price_rules price_rules_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.price_rules
-    ADD CONSTRAINT price_rules_pkey PRIMARY KEY (id);
-
-
---
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -809,13 +760,6 @@ CREATE INDEX index_jobs_on_event_id ON public.jobs USING btree (event_id);
 --
 
 CREATE INDEX index_payments_on_stripe_payment_id ON public.payments USING btree (stripe_payment_id);
-
-
---
--- Name: index_price_rules_on_event_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_price_rules_on_event_id ON public.price_rules USING btree (event_id);
 
 
 --
@@ -934,6 +878,7 @@ ALTER TABLE ONLY public.ticket_request_event_addons
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20241008220825'),
 ('20240902171200'),
 ('20240806011401'),
 ('20240729210234'),
