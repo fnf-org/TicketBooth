@@ -3,37 +3,35 @@
 class TicketRequestMailerPreview < ActionMailer::Preview
   def email_ticket_holder
     ticket_request = TicketRequest.last
-    subject = 'FnF Fall Classic - Important Information'
-    body = "Friends! Family!
+    subject = 'FnF Fall Classic - Important Information - Thank you!'
+    body = "
+Hi Friends and Family!
 <p>
-The Classic is a week away! Holy carp!
+Thank you all for attending the 2024 FnF Fall Classic! We hope you had tons of fun! I know I did!<p>
+Great music, perfect weather, and you!<br>
+The Classic is one of my favorite events anywhere.<br>
+Thank you for making this happen!
 <p>
-VOLUNTEER!
+1) We have some outstanding payments for Car Camping ($50/car) and Late Departure ($30/person). <br>
+If you have not already done so, please PayPal your balance to <b>paypal@cfaea.org</b>.
 <p>
-FnF is a community driven by volunteerism. Our events are produced entirely by volunteers, for ourselves!<br>
-<b>We can’t throw this event without *your* help!</b> <br>
-Please sign up for a couple of shifts. You’ll get to meet awesome new people and have fun doing it!
+2) Lost and Found is here: https://docs.google.com/spreadsheets/d/1yy4mlnrt4wI5rYLPNau5iOzLSZo3YbuemBF_c59wsN0/edit?usp=sharing
 <p>
-The volunteer signup sheet: https://signup.app.fnf.org
+3) Please join our FnF Slack! It's private and we use it for teams and groups to chat in real-time. https://join.slack.com/t/cfaea/shared_invite/zt-2mrpai15u-k3z3z92gr3y2GfFceGRLuQ
 <p>
-If you are looking for a great way to contribute and want to meet a lot of people along the way, <br>
-consider taking a shift as a Site Coordinator (SkC).
-<p>
-WEBSITE:
-<p>
-We will continue to update The Fall Classic event page with all of the information a raver needs,
-so check back before you go!<br>
-https://fnf.events/2024-fall-classic
-<p>
-Friends and Family reminds you to <b>Leave No Trace!</b>
-<p>
-If you pack it in, you pack it out!<br>
-This means that if the packaging, trash, cans, bottles, came with you, it goes home with you!
-<p>
-“Robot poop” is <b>NOT</b> recyclable. <b>Do not throw any in the trash or recycling!</b>
+4) Please fill out the Fall Classic '24 retrospective questionnaire.
+<br>
+It can be totally anonymous, but if you'd like us to contact you, please include your email. <br>
+There is also a space where you can get us your email if you'd like to volunteer in the future.<br>
+https://forms.gle/gtdZN6WdNMFPctEE9
 <p>
 <p>
-Excited to see all of you there!
+And please forward this email to your guests and invite them to join the FnF Planners group to get more involved. <br>
+We had a lot of wonderful new people!
+<p>
+<p>
+With love and gratitude, <br>
+Bessie, Ethan, Joanna, Matt, Sticky
 "
     TicketRequestMailer.with(ticket_request:).email_ticket_holder(ticket_request, subject, body)
   end
