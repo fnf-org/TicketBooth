@@ -85,7 +85,7 @@ gem 'mini_magick'
 gem 'protected_attributes_continued'
 gem 'psych'
 gem 'rake'
-gem 'stripe', '~> 11.3'
+gem 'stripe', '~> 13.1'
 gem 'ventable', '>= 1.3'
 gem 'yard'
 
