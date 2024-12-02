@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'boot'
-require_relative '../lib/array.rb'
+require_relative '../lib/array'
 
 require 'time'
 require 'etc'

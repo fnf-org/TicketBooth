@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ExampleHelper
   attr_accessor :example_count, :example_timings
   attr_reader :config, :timeout, :max_width, :wrap_on_width
@@ -20,7 +22,6 @@ class ExampleHelper
   def wrap_example!
     this = self
     @config.around do |example|
-
       if this.example_count % this.max_width == 0
         this.example_timings.clear if this.wrap_on_width
         puts if this.wrap_on_width
@@ -32,23 +33,21 @@ class ExampleHelper
   end
 
   def example_with_timeout(example)
-    begin
-      Timeout.timeout(timeout) do
-        t1 = Time.now.to_f
+    Timeout.timeout(timeout) do
+      t1 = Time.now.to_f
 
-        example.run
+      example.run
 
-        t2 = Time.now.to_f
-        duration = ((t2 - t1) * 1000).to_i
-        @example_timings << duration
-        print_timings(duration, example)
-      end
-    rescue Timeout::Error
-      warn "\033[31m"
-      warn "[ 𐄂 ] RSpec Failed with timeout of #{timeout} seconds"
-      warn "      • Example:  #{example.full_description}"
-      warn "      • Location: #{example.location}"
+      t2 = Time.now.to_f
+      duration = ((t2 - t1) * 1000).to_i
+      @example_timings << duration
+      print_timings(duration, example)
     end
+  rescue Timeout::Error
+    warn "\033[31m"
+    warn "[ 𐄂 ] RSpec Failed with timeout of #{timeout} seconds"
+    warn "      • Example:  #{example.full_description}"
+    warn "      • Location: #{example.location}"
   end
 
   def print_timings(duration, example)

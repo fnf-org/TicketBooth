@@ -98,7 +98,7 @@ group :development, :test do
   gem 'relaxed-rubocop'
   gem 'rubocop'
   gem 'rubocop-rails'
-  gem 'rubocop-rails-omakase', require: false
+  gem 'rubocop-rails-omakase'
   gem 'rubocop-rake'
   gem 'rubocop-rspec'
   gem 'vcr'
