@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe TimeHelper do
-  let(:valid_input) { '04/20/2024, 4:20 PM' }
+  let(:valid_input) { '04/20/2024, 4:20 PM -0700' }
 
   describe '.to_flatpickr' do
     let(:date) { DateTime.new(2024, 4, 20, 8, 37, 48, -7) }
@@ -40,7 +40,8 @@ RSpec.describe TimeHelper do
 
   describe '.normalize_time_attributes' do
     let(:test_hash) { { start_time: valid_input } }
-    let(:date_epoch_string) { DateTime.parse('2024-04-20T16:20:00 -0700').to_time.to_i }
+    let(:date_epoch) { '2024-04-20T16:20:00 -0700' }
+    let(:date_epoch_string) { DateTime.parse(date_epoch).to_time.to_i }
 
     describe 'empty arguments' do
       subject { described_class.normalize_time_attributes(input) }
