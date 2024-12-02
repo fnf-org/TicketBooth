@@ -29,7 +29,7 @@ module FnF
                         'unknown'
                       end
         name = "Custom/#{event.class.name.split('::').reject { |n| %w[FnF Events].include?(n) }.join('/')}"
-        name = "#{name}/user-#{event.user.id}-#{event.user.email}" if event.user&.id && event.user&.email
+        name = "#{name}/user-#{event.user.id}-#{event.user.email}" if event.user&.id && event.user.email
         name = "#{name}/#{target_name.downcase}"
         name.gsub(/ */, '-')
       end

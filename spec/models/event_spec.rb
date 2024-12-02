@@ -64,7 +64,7 @@ RSpec.describe Event do
     describe '#starting' do
       subject { event.starting.to_s }
 
-      it { is_expected.to eq "Tuesday, October 1, 2030 @ 05:00 AM" }
+      it { is_expected.to eq 'Tuesday, October 1, 2030 @ 05:00 AM' }
     end
 
     describe '#long_name' do

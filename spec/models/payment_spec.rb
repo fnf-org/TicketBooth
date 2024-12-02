@@ -285,28 +285,28 @@ describe Payment do
     let(:payment) { build(:payment) }
 
     it 'marks the payment status as received' do
-      expect {
+      expect do
         payment.request_completed
-      }.to change { payment.status_received? }.to be_truthy
+      end.to change(payment, :status_received?)
     end
 
     it 'marks the ticket request as complete' do
-      expect {
+      expect do
         payment.request_completed
-      }.to change { payment.ticket_request.completed? }.to be_truthy
+      end.to change { payment.ticket_request.completed? }.to be_truthy
     end
 
     it 'enqueues the PaymentMailer for payment received' do
-      expect {
+      expect do
         payment.request_completed
-      }.to have_enqueued_mail(PaymentMailer, :payment_received).once
+      end.to have_enqueued_mail(PaymentMailer, :payment_received).once
     end
 
     it 'raises error when ticket request fails to mark complete', :vcr do
-      expect {
+      expect do
         payment.ticket_request = nil
         payment.request_completed
-      }.to raise_error(StandardError)
+      end.to raise_error(StandardError)
     end
   end
 end

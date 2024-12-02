@@ -40,7 +40,6 @@ describe PaymentsController, type: :controller do
 
       it { is_expected.to have_http_status(:redirect) }
     end
-
   end
 
   describe 'GET #show' do

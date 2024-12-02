@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-unless Array.new.respond_to?(:avg)
+unless [].respond_to?(:avg)
   class Array
     def avg
-      if all?(Numeric) && size > 0
-        sum.to_f / size.to_f
-      else
-        raise ArgumentError, 'Array must contain only numbers, and have size greater than 0, got ' + inspect
-      end
+      raise ArgumentError, "Array must contain only numbers, and have size greater than 0, got #{inspect}" unless all?(Numeric) && size > 0
+
+      sum / size.to_f
     end
   end
 end

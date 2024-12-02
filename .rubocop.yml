@@ -2,18 +2,14 @@ inherit_from: .rubocop_todo.yml
 
 AllCops:
   NewCops: enable
+  SuggestExtensions: false
 
 require:
-  - rubocop-factory_bot
   - rubocop-rails
   - rubocop-rake
   - rubocop-rspec
-  - rubocop-rspec_rails
 
 Style/IfUnlessModifier:
-  Enabled: false
-
-RSpecRails/InferredSpecType:
   Enabled: false
 
 Metrics/ClassLength:
@@ -31,3 +27,5 @@ Layout/HashAlignment:
   EnforcedLastArgumentHashStyle: ignore_implicit
   EnforcedHashRocketStyle: table
 
+Style/NumericPredicate:
+  Enabled: false
