@@ -58,12 +58,13 @@ RSpec.describe Event do
   end
 
   describe 'event title' do
-    let(:params) { { start_time: TimeHelper.from_flatpickr('10/1/2030, 12:00 PM') } }
+    # Must use UTC timezone to avoid day-light-savings off by one failure
+    let(:params) { { start_time: TimeHelper.from_flatpickr('10/1/2030, 12:00 PM UTC') } }
 
     describe '#starting' do
-      subject { event.starting }
+      subject { event.starting.to_s }
 
-      it { is_expected.to eq 'Tuesday, October 1, 2030 @ 12:00 PM' }
+      it { is_expected.to eq "Tuesday, October 1, 2030 @ 05:00 AM" }
     end
 
     describe '#long_name' do
