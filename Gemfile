@@ -7,6 +7,7 @@ ruby File.read('.ruby-version')
 # Use main development branch of Rails
 gem 'data_migrate'
 gem 'rails', '=8.0.0.beta1'
+gem 'rails-html-sanitizer'
 
 # Unclear if we need to require it explicitly
 # gem 'activesupport', '=7.1.3.2'
@@ -77,7 +78,7 @@ gem 'haml-rails'
 gem 'annotate'
 gem 'attribute_normalizer'
 gem 'awesome_print'
-gem 'carrierwave'
+gem 'carrierwave', '~> 2'
 gem 'dalli'
 gem 'devise'
 gem 'mini_magick'
