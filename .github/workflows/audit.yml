@@ -1,0 +1,28 @@
+# .github/workflows/main.yaml
+name: "TicketBooth CI: Audit"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  main:
+    name: Bundle Audit
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt-get update -yqq
+      - run: sudo apt-get install -yqq netcat libpq-dev
+
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.5'
+          bundler-cache: true
+
+      - name: Bundle Audit
+        run: |
+          gem install bundle-audit -N
+          bundle audit
