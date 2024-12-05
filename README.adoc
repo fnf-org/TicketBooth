@@ -6,16 +6,17 @@
 :icons: font
 :license: MIT
 
-[cols="<h,<h", width="70%"]
+[cols=">h", width="30%"]
 |===
 | Test & Lint Status | Build & Packaging Status
-|https://github.com/fnf-org/TicketBooth/actions/workflows/rspec.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/rspec.yml/badge.svg[TicketBooth CI: RSpec]]
+|
+https://github.com/fnf-org/TicketBooth/actions/workflows/rspec.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/rspec.yml/badge.svg[TicketBooth CI: RSpec]]
 
 https://github.com/fnf-org/TicketBooth/actions/workflows/lint.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/lint.yml/badge.svg[TicketBooth CI: RuboCop]]
 
-| https://github.com/fnf-org/TicketBooth/actions/workflows/deploy.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/deploy.yml/badge.svg[Deploy to Google Cloud]]
+https://github.com/fnf-org/TicketBooth/actions/workflows/audit.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/audit.yml/badge.svg[Bundle Audit]]
 
-https://github.com/fnf-org/TicketBooth/actions/workflows/publish.yml[image:https://github.com/fnf-org/TicketBooth/actions/workflows/publish.yml/badge.svg[Publish Docker Image]]
+|
 
 |===
 
@@ -200,7 +201,7 @@ You can also use the `Makefile`:
 [source,bash]
 ----
 make dev
-# or use the script 
+# or use the script
 bin/dev
 ----
 
