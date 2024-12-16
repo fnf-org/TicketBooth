@@ -149,7 +149,7 @@ GEM
     crass (1.0.6)
     cssbundling-rails (1.4.1)
       railties (>= 6.0.0)
-    csv (3.3.0)
+    csv (3.3.1)
     dalli (3.2.8)
     data_migrate (11.2.0)
       activerecord (>= 6.1)
