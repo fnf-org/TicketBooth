@@ -125,13 +125,12 @@ GEM
     capistrano-slackify (2.10.3)
       capistrano (>= 3.2.0)
       multi_json
-    carrierwave (2.2.6)
-      activemodel (>= 5.0.0)
-      activesupport (>= 5.0.0)
+    carrierwave (3.1.0)
+      activemodel (>= 6.0.0)
+      activesupport (>= 6.0.0)
       addressable (~> 2.6)
       image_processing (~> 1.1)
       marcel (~> 1.0.0)
-      mini_mime (>= 0.1.3)
       ssrf_filter (~> 1.0)
     codecov (0.2.12)
       json
@@ -405,7 +404,7 @@ GEM
     ruby-vips (2.2.2)
       ffi (~> 1.12)
       logger
-    securerandom (0.4.0)
+    securerandom (0.4.1)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -486,7 +485,7 @@ DEPENDENCIES
   capistrano-rake
   capistrano-rbenv
   capistrano-slackify (~> 2.10)
-  carrierwave (~> 2)
+  carrierwave (~> 3)
   codecov
   colorize
   country_select
