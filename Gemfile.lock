@@ -96,7 +96,7 @@ GEM
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
       rouge (>= 1.0.0)
-    bigdecimal (3.1.8)
+    bigdecimal (3.1.9)
     bindex (0.8.1)
     binding_of_caller (1.0.1)
       debug_inspector (>= 1.2.0)
@@ -125,20 +125,19 @@ GEM
     capistrano-slackify (2.10.3)
       capistrano (>= 3.2.0)
       multi_json
-    carrierwave (2.2.6)
-      activemodel (>= 5.0.0)
-      activesupport (>= 5.0.0)
+    carrierwave (3.1.1)
+      activemodel (>= 6.0.0)
+      activesupport (>= 6.0.0)
       addressable (~> 2.6)
       image_processing (~> 1.1)
       marcel (~> 1.0.0)
-      mini_mime (>= 0.1.3)
       ssrf_filter (~> 1.0)
     codecov (0.2.12)
       json
       simplecov
     colorize (1.1.0)
     concurrent-ruby (1.3.4)
-    connection_pool (2.4.1)
+    connection_pool (2.5.0)
     countries (7.0.0)
       unaccent (~> 0.3)
     country_select (10.0.0)
@@ -177,12 +176,12 @@ GEM
       railties (>= 5.0.0)
     faker (3.5.1)
       i18n (>= 1.8.11, < 2)
-    ffi (1.17.0-aarch64-linux-gnu)
-    ffi (1.17.0-arm-linux-gnu)
-    ffi (1.17.0-arm64-darwin)
-    ffi (1.17.0-x86-linux-gnu)
-    ffi (1.17.0-x86_64-darwin)
-    ffi (1.17.0-x86_64-linux-gnu)
+    ffi (1.17.1-aarch64-linux-gnu)
+    ffi (1.17.1-arm-linux-gnu)
+    ffi (1.17.1-arm64-darwin)
+    ffi (1.17.1-x86-linux-gnu)
+    ffi (1.17.1-x86_64-darwin)
+    ffi (1.17.1-x86_64-linux-gnu)
     flatpickr (4.6.13.1)
     foreman (0.88.1)
     globalid (1.2.1)
@@ -405,7 +404,7 @@ GEM
     ruby-vips (2.2.2)
       ffi (~> 1.12)
       logger
-    securerandom (0.4.0)
+    securerandom (0.4.1)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -486,7 +485,7 @@ DEPENDENCIES
   capistrano-rake
   capistrano-rbenv
   capistrano-slackify (~> 2.10)
-  carrierwave (~> 2)
+  carrierwave (~> 3)
   codecov
   colorize
   country_select
