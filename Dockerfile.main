@@ -9,7 +9,6 @@ RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-k
 RUN set -eus; \
     apt-get update -qq; \
     apt-get install -y --no-install-recommends \
-    netcat \
     libpq-dev \
     postgresql-client-16 \
     git-all \
