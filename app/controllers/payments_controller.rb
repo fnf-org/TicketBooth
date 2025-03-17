@@ -3,6 +3,7 @@
 class PaymentsController < ApplicationController
   before_action :authenticate_user!
 
+  before_action :set_stripe_enabled
   before_action :set_event
   before_action :set_ticket_request
   before_action :set_payment
@@ -196,6 +197,11 @@ class PaymentsController < ApplicationController
     end
 
     nil
+  end
+
+  # @description Set the stripe enabled flag which triggers loading of Stripe JS
+  def set_stripe_enabled
+    @stripe_enabled = true
   end
 
   def permitted_params
