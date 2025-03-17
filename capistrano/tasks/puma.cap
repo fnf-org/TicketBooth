@@ -5,6 +5,9 @@ namespace :puma do
   task :start do
     on roles(:app) do |host|
       info "Starting Puma on #{host} (#{host.roles.to_a.join(', ')}):\t#{capture(:uptime)}".colorize(:green)
+      # restart memcached to the clear cache
+      execute 'sudo systemctl restart memcached.service'
+      # start puma
       execute 'sudo systemctl start puma.tickets.service'
       sleep 2
       execute "ps -fu #{fetch(:remote_user)} | grep [p]uma || true"
