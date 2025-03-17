@@ -9,6 +9,14 @@ class PaymentsController < ApplicationController
   before_action :initialize_payment, except: %i[show confirm other]
   before_action :validate_payment, except: %i[confirm]
 
+  def index
+    return if request.post? || request.xhr?
+
+    Rails.logger.error { "#index() => request.get? #{request.get?} (GET not supported error!)" }
+    flash[:error] = 'Invalid request.'
+    redirect_to event_ticket_requests_path(@event, @ticket_request)
+  end
+
   def show
     Rails.logger.debug { "#show() => @ticket_request = #{@ticket_request&.inspect} params: #{params}" }
     self

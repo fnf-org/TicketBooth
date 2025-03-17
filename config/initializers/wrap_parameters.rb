@@ -7,3 +7,11 @@
 ActiveSupport.on_load(:action_controller) do
   wrap_parameters format: [:json]
 end
+
+PARAMS_WRAPPER_MUTEX = Mutex.new
+
+ActionController::ParamsWrapper::Options.class_eval do
+  def synchronize(&)
+    PARAMS_WRAPPER_MUTEX.synchronize(&)
+  end
+end

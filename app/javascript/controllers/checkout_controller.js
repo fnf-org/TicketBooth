@@ -23,7 +23,7 @@ export default class CheckoutController extends Controller {
         const authenticityToken = this.authenticityTokenValue;
         const ticketRequestId = this.ticketRequestIdValue;
         const eventId = this.eventIdValue;
-        const createPaymentUrl = `/events/${eventId}/ticket_requests/${ticketRequestId}/payments`;
+        const createPaymentUrl = `/events/${eventId}/ticket_requests/${ticketRequestId}/payments/create`;
 
         console.log('initializePayment: eventId=' + eventId);
         console.log('initializePayment: ticketRequestId=' + ticketRequestId);
