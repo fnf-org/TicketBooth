@@ -1,4 +1,4 @@
--- vim: set filetsype=sql
+-- vim: ft=pgsql
 -- don't output commands as we run them
 
 -- set how to output numbers (this turns on thousdand separators)
@@ -7,6 +7,8 @@
 \set QUIET 1
 \encoding unicode
 \timing 0
+
+SET standard_conforming_strings = on;
 
 -- Autocomplete keywords (like SELECT) in upper-case, even if you started
 -- typing them in lower case.
