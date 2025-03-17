@@ -6,7 +6,7 @@ ruby File.read('.ruby-version')
 
 # Use main development branch of Rails
 gem 'data_migrate'
-gem 'rails'
+gem 'rails', '8.0.0.1'
 gem 'rails-html-sanitizer'
 
 # Unclear if we need to require it explicitly
