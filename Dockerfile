@@ -1,5 +1,5 @@
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=3.2.3
+ARG RUBY_VERSION=3.4.2
 
 FROM docker.io/ruby:${RUBY_VERSION}-bookworm
 
@@ -35,24 +35,7 @@ WORKDIR /rails
 # @see https://engineering.binti.com/jemalloc-with-ruby-and-docker/
 
 # ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2 \
-ENV NODE_VERSION=20.12.1 \
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ENV NODE_VERSION=20.15.1 \
     YARN_VERSION=latest \
     PATH=/usr/local/node/bin:$PATH
 

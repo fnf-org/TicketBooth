@@ -16,7 +16,7 @@ http_interactions:
       Stripe-Version:
       - '2024-04-10'
       X-Stripe-Client-User-Agent:
-      - '{"bindings_version":"11.7.0","lang":"ruby","lang_version":"3.3.5 p100 (2024-09-03)","platform":"arm64-darwin23","engine":"ruby","publisher":"stripe","uname":"Darwin
+      - '{"bindings_version":"11.7.0","lang":"ruby","lang_version":"3.4.2","platform":"arm64-darwin23","engine":"ruby","publisher":"stripe","uname":"Darwin
         matt.studio.lan 23.6.0 Darwin Kernel Version 23.6.0: Mon Jul 29 21:14:30 PDT
         2024; root:xnu-10063.141.2~1/RELEASE_ARM64_T6000 arm64","hostname":"matt.studio.lan"}'
       Accept-Encoding:
@@ -172,7 +172,7 @@ http_interactions:
       Stripe-Version:
       - '2024-04-10'
       X-Stripe-Client-User-Agent:
-      - '{"bindings_version":"11.7.0","lang":"ruby","lang_version":"3.3.5 p100 (2024-09-03)","platform":"arm64-darwin23","engine":"ruby","publisher":"stripe","uname":"Darwin
+      - '{"bindings_version":"11.7.0","lang":"ruby","lang_version":"3.4.2","platform":"arm64-darwin23","engine":"ruby","publisher":"stripe","uname":"Darwin
         matt.studio.lan 23.6.0 Darwin Kernel Version 23.6.0: Mon Jul 29 21:14:30 PDT
         2024; root:xnu-10063.141.2~1/RELEASE_ARM64_T6000 arm64","hostname":"matt.studio.lan"}'
       Accept-Encoding:
@@ -323,7 +323,7 @@ http_interactions:
       Stripe-Version:
       - '2024-04-10'
       X-Stripe-Client-User-Agent:
-      - '{"bindings_version":"11.7.0","lang":"ruby","lang_version":"3.3.5 p100 (2024-09-03)","platform":"arm64-darwin23","engine":"ruby","publisher":"stripe","uname":"Darwin
+      - '{"bindings_version":"11.7.0","lang":"ruby","lang_version":"3.4.2","platform":"arm64-darwin23","engine":"ruby","publisher":"stripe","uname":"Darwin
         matt.studio.lan 23.6.0 Darwin Kernel Version 23.6.0: Mon Jul 29 21:14:30 PDT
         2024; root:xnu-10063.141.2~1/RELEASE_ARM64_T6000 arm64","hostname":"matt.studio.lan"}'
       Accept-Encoding:

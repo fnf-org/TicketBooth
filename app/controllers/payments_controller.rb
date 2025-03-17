@@ -3,11 +3,20 @@
 class PaymentsController < ApplicationController
   before_action :authenticate_user!
 
+  before_action :set_stripe_enabled
   before_action :set_event
   before_action :set_ticket_request
   before_action :set_payment
   before_action :initialize_payment, except: %i[show confirm other]
   before_action :validate_payment, except: %i[confirm]
+
+  def index
+    return if request.post? || request.xhr?
+
+    Rails.logger.error { "#index() => request.get? #{request.get?} (GET not supported error!)" }
+    flash[:error] = 'Invalid request.'
+    redirect_to event_ticket_requests_path(@event, @ticket_request)
+  end
 
   def show
     Rails.logger.debug { "#show() => @ticket_request = #{@ticket_request&.inspect} params: #{params}" }
@@ -188,6 +197,11 @@ class PaymentsController < ApplicationController
     end
 
     nil
+  end
+
+  # @description Set the stripe enabled flag which triggers loading of Stripe JS
+  def set_stripe_enabled
+    @stripe_enabled = true
   end
 
   def permitted_params

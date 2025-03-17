@@ -4,10 +4,10 @@ AllCops:
   NewCops: enable
   SuggestExtensions: false
 
-require:
+plugins:
   - rubocop-rails
-  - rubocop-rake
   - rubocop-rspec
+  - rubocop-rake
 
 Style/IfUnlessModifier:
   Enabled: false

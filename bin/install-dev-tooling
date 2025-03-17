@@ -28,7 +28,7 @@ export timestamp="$(time.now.db)"
 
 h3bg  "Installing Brew Packages..."
 run.set-all continue-on-error
-run "brew bundle --no-upgrade --no-lock"
+run "brew bundle --no-upgrade"
 run.set-all abort-on-error
 
 if [[ -d ~/.vim && -f ~/.vimrc ]]; then

@@ -13,13 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: sudo apt-get update -yqq
-      - run: sudo apt-get install -yqq netcat libpq-dev
+      - run: sudo apt-get install -yqq libpq-dev
 
       - uses: actions/checkout@v4
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3.5'
+          ruby-version: '3.4.2'
           bundler-cache: true
 
       - name: RuboCop
