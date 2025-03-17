@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# vim: ft=bash
+
+set -ex
+
+bundle install -j 12
+
+# Load SSH ids
+find ~/.ssh -type f -name 'i*' -and -not -name '*.pub' -exec ssh-add {} \; >/dev/null
+
+# Deploy to production
+bundle exec cap production deploy
