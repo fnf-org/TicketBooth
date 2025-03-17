@@ -124,3 +124,7 @@ tag:            ## Tag this main with the .version
 		@/usr/bin/env bash -c "git tag | grep -q '$(TAG)' && { echo 'Tag $(TAG) is already assigned.'; exit 1; } || true"
 		@/usr/bin/env bash -c "if [[ $(BRANCH) != main ]]; then echo 'Must be on the main branch'; else git tag -f '$(TAG)'; git push --tags --force; fi"
 
+
+deploy: 	gems production ## Deploy to Production server with Capistrano
+		bundle exec cap production deploy
+		
