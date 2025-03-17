@@ -1,4 +1,4 @@
-FROM docker.io/ruby:3.2
+FROM docker.io/ruby:3.4
 
 # Needed by Ruby to process UTF8-encoded files
 ENV LANG C.UTF-8
