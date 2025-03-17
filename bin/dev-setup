@@ -23,7 +23,7 @@ fi
 
 h1 "Installing Brew Packages..."
 run.set-all continue-on-error
-run "brew bundle --no-upgrade --no-lock"
+run "brew bundle --no-upgrade"
 run.set-all abort-on-error
 
 run "brew services start postgresql@16"
@@ -44,8 +44,7 @@ export yarn_version=$(cat .yarn-version | tr -d '\n')
 run "curl https://get.volta.sh | bash"
 run "volta install node@lts"
 run "volta install yarn@${yarn_version}"
-run "volta pin node"
-run "volta pin yarn@${yarn_version}"
+run "volta pin node@lts"
 
 command -V direnv >/dev/null && {
   h1 "Setting up direnv..."

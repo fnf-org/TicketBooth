@@ -42,8 +42,9 @@ The deploy is performed via Capistrano:
 ----
 git checkout main
 git pull
-bundle install
-bundle exec cap production deploy
+bin/dev-tooling # installs local dev dependencies
+bin/dev-setup   # installs Ruby, Node, Gems, etc.
+bin/deploy      # actually performs the deployment
 ----
 
 == Development Environment Setup
@@ -61,7 +62,7 @@ We provided a pretty comprehensive VIM configuration with auto-complete, as well
 To install this, run
 
 [source,bash]
-bin/install-dev-tooling
+bin/dev-tooling
 
 After that, your `vim` sessions will have auto-complete enabled, and your `psql -U postgres` sessions will have rich prompt.
 
@@ -71,7 +72,7 @@ You can run the following setup script, but only on OS-X, to attempt a complete 
 
 [source,bash]
 ----
-bin/boot-up
+bin/dev-setup
 ----
 
 This should install all of the Brew dependencies, start PostgreSQL, memcached, and install Ruby, Node, Yarn, Gems and Node packages.
@@ -79,7 +80,7 @@ This should install all of the Brew dependencies, start PostgreSQL, memcached, a
 ==== Starting the Rails Server
 
 [source,bash]
-make dev
+bin/dev-start
 
 This actually starts Foreman via `bundle exec foreman -f Procfile.dev` — this is required to start CSS and JS just-in-time compilcation in addition to the Rails server.
 
@@ -191,18 +192,17 @@ bin/shchk
 
 To start the server post-setup, run the following (NOTE: you must start the server via Foreman, since it also starts `yarn` tasks that monitor and dynamically recompile CSS and JS assets)
 
+
+[source,bash]
+----
+bin/dev-start
+----
+
+Or manually:
+
 [source,bash]
 ----
 bundle exec foreman -f Procfile.dev
-----
-
-You can also use the `Makefile`:
-
-[source,bash]
-----
-make dev
-# or use the script
-bin/dev
 ----
 
 Here is an example:
