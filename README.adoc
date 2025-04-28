@@ -28,6 +28,9 @@ NOTE: Please see the https://github.com/fnf-org/TicketBooth/blob/main/README.pdf
 NOTE: Please see the xref:#acknowledgements[Acknowledgements] at the end of this page.
 ====
 
+https://liberapay.com/kigster/donate[image:https://liberapay.com/assets/widgets/donate.svg[Donate
+using Liberapay]]
+
 == Welcome to the *Ticket Booth*!
 
 The goal of the app is to make ticket and volunteer management for community events easier and automated.
