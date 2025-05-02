@@ -35,7 +35,7 @@ using Liberapay]]
 
 The goal of the app is to make ticket and volunteer management for community events easier and automated.
 
-== Production Deploy, as of 2024
+== Production Deploy, as of 2024 — 2025
 
 To deploy to production site — https://tickets.fnf.events — the deployer's IP address must be white-listed with EC2. Contact Konstantin Gredeskoul to get white-listed.
 
