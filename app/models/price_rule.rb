@@ -4,18 +4,19 @@
 #
 # Table name: price_rules
 #
-#  id            :bigint           not null, primary key
+#  id            :integer          not null, primary key
+#  type          :string
+#  event_id      :integer
 #  price         :decimal(8, 2)
 #  trigger_value :integer
-#  type          :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  event_id      :bigint
 #
 # Indexes
 #
 #  index_price_rules_on_event_id  (event_id)
 #
+
 class PriceRule < ApplicationRecord
   belongs_to :event
 

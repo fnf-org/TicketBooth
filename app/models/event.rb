@@ -220,7 +220,7 @@ class Event < ApplicationRecord
   end
 
   def active_event_addons?
-    active_event_addons.count.positive?
+    active_event_addons.any?
   end
 
   def active_event_addons_passes_count

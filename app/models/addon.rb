@@ -4,13 +4,14 @@
 #
 # Table name: addons
 #
-#  id            :bigint           not null, primary key
+#  id            :integer          not null, primary key
 #  category      :string           not null
-#  default_price :integer          not null
 #  name          :string           not null
+#  default_price :integer          not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #
+
 class Addon < ApplicationRecord
   has_many :event_addons, autosave: true, dependent: :destroy
   has_many :ticket_request_event_addons, autosave: true, dependent: :destroy

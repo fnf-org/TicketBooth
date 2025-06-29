@@ -404,7 +404,7 @@ class TicketRequest < ApplicationRecord
   end
 
   def ticket_request_event_addons?
-    active_addons.count.positive?
+    active_addons.any?
   end
 
   def generate_user_auth_token!

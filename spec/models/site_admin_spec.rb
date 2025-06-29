@@ -4,10 +4,10 @@
 #
 # Table name: site_admins
 #
-#  id         :bigint           not null, primary key
+#  id         :integer          not null, primary key
+#  user_id    :integer          not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  user_id    :integer          not null
 #
 
 require 'rails_helper'
