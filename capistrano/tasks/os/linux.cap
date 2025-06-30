@@ -36,7 +36,6 @@ namespace :linux do
     on roles(:app) do |role_host|
       host = SSHKit::Host.new("#{fetch(:remote_user)}@#{role_host}")
       on host do
-        execute 'sudo apt-get upgrade -y -qqq'
         execute 'sudo apt-get update -qqq'
         execute "sudo apt-get install -y -qqq  #{fetch(:packages).join(' ')}"
       end
