@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# vim: ft=bash
+
+if [[ $* =~ "-h" ]]; then
+  echo -e "
+${txtylw}Backup the Ticketing Production Database into an encrypted 7z archive
+for future reference or disaster recovery.${clr}
+
+${bldgrn}USAGE:${clr}
+  $0
+
+${bldgrn}DESCRIPTION:${clr}
+  The script uses encryption to keep both the archive and the DB password
+  in an encrypted form. When the script runs, it decrypts sensitive
+  configuration, uses it to create a pg dump archive, and then compresses
+  it using 7z with encryption. The 7z password is differrent than the DB
+  password, and can be requested from 1Password (ask Konstantin).
+"
+  exit 0
+fi
+
+source ~/.bashmatic/init.sh
+
+dbname="ticketing_app_production"
+backup_file="backups/$dbname.$(date.now.with-time | tr ' ' '@' | tr -d ':')"
+
+password_7z_encrypted="conf/.backup.password.enc"
+password_7z_decrypted="conf/.backup.password"
+
+password_db_encrypted="conf/.db.password.enc"
+password_db_decrypted="conf/.db.password"
+
+h1bg "Starting Encrypted Backup of the Tickets DB..."
+
+run.set-all abort-on-error
+
+run "rm -f ${password_7z_decrypted} ${password_db_decrypted} "
+
+run "command -V sym >/dev/null || gem install sym -N"
+run "command -V 7z >/dev/null  || ( sudo apt-get update -yqq && sudo apt-get install p7zip-full)"
+
+if [[ -n "${BACKUP_PASSWORD_ENCRYPTION_KEY}" ]]; then
+  run "sym -k BACKUP_PASSWORD_ENCRYPTION_KEY -n ${password_7z_encrypted}"
+  run "sym -k BACKUP_PASSWORD_ENCRYPTION_KEY -n ${password_db_encrypted}"
+
+  if [[ -f "${password_7z_decrypted}" && -f "${password_db_decrypted}" ]] ; then
+    export archive_password="$(cat "${password_7z_decrypted}" | tr -d '\n')"
+    export PGPASSWORD="$(cat "${password_db_decrypted}" | tr -d '\n')"
+  else
+    error "Can't find decrypted file [${password_7z_decrypted}]" \
+          "Or Database password file [${password_db_decrypted}]"
+    exit 1
+  fi
+fi
+
+h2 "Decrypted the Archive Password & DB Password..."
+
+function cleanup() {
+  run "rm -f ${password_7z_decrypted} ${password_db_decrypted} "
+}
+
+trap "cleanup" EXIT
+run "pg_dump -U fnf -h localhost -d $dbname -F c -f $backup_file -v"
+
+if [[ -s ${backup_file} ]]; then
+  success "Backup file was successfully created."
+fi
+
+h4 "Now we just need to compress & encrypt the backup with 7z, please wait..."
+
+7z a -p"${archive_password}" "${backup_file}.7z" "${backup_file}"
+
+[[ -f "${backup_file}.7z" ]] && rm -f "${backup_file}"
+
+cleanup
