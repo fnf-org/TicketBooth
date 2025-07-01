@@ -225,36 +225,42 @@ Delete the directory and/or files for the specs that have changed.
 It is ok to delete all cassettes and regenerate everything.
 This can be done in your local development environment.
 
-VCR is configured in spec/spec_helper.rb
+VCR is configured in `spec/spec_helper.rb`.
 
 You must filter any API keys before you check in cassettes to prevent keys in GitHub
 https://benoittgt.github.io/vcr/#/configuration/filter_sensitive_data
 
 To enable vcr recording on a given spec, add a vcr hook to the spec as follows
 
-    it 'does not change payment intent', :vcr do
-        expect { payment_intent }.not_to(change(payment, :payment_intent))
-    end
+[source,ruby]
+----
+it 'does not change payment intent', :vcr do
+  expect { payment_intent }.not_to(change(payment, :payment_intent))
+end
+----
 
 To turn off VCR HTTP request interception for a given spec or block, add
 
-    VCR.turned_off do
-        make_request "In VCR.turned_off block"
-    end
+[source,ruby]
+----
+VCR.turned_off do
+ make_request "In VCR.turned_off block"
+end
 
-    make_request "Outside of VCR.turned_off block"
+make_request "Outside of VCR.turned_off block"
 
-    VCR.turn_off!
-    make_request "After calling VCR.turn_off!"
+VCR.turn_off!
+make_request "After calling VCR.turn_off!"
 
-    VCR.turned_on do
-        make_request "In VCR.turned_on block"
-    end
+VCR.turned_on do
+  make_request "In VCR.turned_on block"
+end
 
-    VCR.turn_on!
-    make_request "After calling VCR.turn_on!"
+VCR.turn_on!
+make_request "After calling VCR.turn_on!"
+----
 
-https://benoittgt.github.io/vcr/#/cassettes/no_cassette
+For more information please see https://benoittgt.github.io/vcr/#/cassettes/no_cassette
 
 
 To turn off VCR by default for http requests see:
@@ -335,7 +341,6 @@ Yard-generated documentation is available via running:
 $ bundle exec rake doc
 # this will automatically open the index.html
 ----
-
 
 == Acknowledgements
 
