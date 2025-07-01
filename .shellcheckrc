@@ -5,6 +5,7 @@ disable=SC2211
 disable=SC2093
 disable=SC2296
 disable=SC2016
+disable=SC2002
 disable=SC1090
 disable=SC1091
 disable=SC2009

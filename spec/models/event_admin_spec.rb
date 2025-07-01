@@ -4,17 +4,18 @@
 #
 # Table name: event_admins
 #
-#  id         :bigint           not null, primary key
+#  id         :integer          not null, primary key
+#  event_id   :integer
+#  user_id    :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  event_id   :bigint
-#  user_id    :bigint
 #
 # Indexes
 #
 #  index_event_admins_on_event_id_and_user_id  (event_id,user_id) UNIQUE
 #  index_event_admins_on_user_id               (user_id)
 #
+
 require 'rails_helper'
 
 describe EventAdmin do

@@ -113,7 +113,8 @@ class TicketRequestsController < ApplicationController
       return redirect_to attend_event_path(@event), error: @event.errors.messages.values.join('. ')
     end
 
-    tr_params = permitted_params[:ticket_request].to_h || {}
+    tr_params = {}
+    tr_params.merge!(permitted_params[:ticket_request]&.to_h)
     if tr_params.empty?
       flash.now[:error] = 'Please fill out the form below to request tickets.'
       return render_flash(flash)

@@ -4,18 +4,19 @@
 #
 # Table name: time_slots
 #
-#  id         :bigint           not null, primary key
+#  id         :integer          not null, primary key
+#  job_id     :integer          not null
+#  start_time :datetime         not null
 #  end_time   :datetime         not null
 #  slots      :integer          not null
-#  start_time :datetime         not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  job_id     :bigint           not null
 #
 # Indexes
 #
 #  index_time_slots_on_job_id  (job_id)
 #
+
 class TimeSlot < ApplicationRecord
   belongs_to :job
   has_many :shifts, dependent: :destroy

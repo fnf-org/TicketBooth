@@ -26,7 +26,7 @@ run.set-all continue-on-error
 run "brew bundle --no-upgrade"
 run.set-all abort-on-error
 
-run "brew services start postgresql@16"
+run "brew services start postgresql@17"
 run "brew services start memcached"
 
 h1 "Installing Dependencies"

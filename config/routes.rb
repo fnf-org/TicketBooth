@@ -34,9 +34,9 @@ Rails.application.routes.draw do
 
     resources :ticket_requests do
       collection do
-        get :download
-        get :payment_reminder
-        get :email_ticket_holders
+        post :download
+        post :payment_reminder
+        post :email_ticket_holders
       end
 
       member do

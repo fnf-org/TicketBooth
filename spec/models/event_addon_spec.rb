@@ -4,22 +4,17 @@
 #
 # Table name: event_addons
 #
-#  id         :bigint           not null, primary key
+#  id         :integer          not null, primary key
+#  event_id   :integer          not null
+#  addon_id   :integer          not null
 #  price      :integer          not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  addon_id   :bigint           not null
-#  event_id   :bigint           not null
 #
 # Indexes
 #
 #  index_event_addons_on_addon_id  (addon_id)
 #  index_event_addons_on_event_id  (event_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (addon_id => addons.id)
-#  fk_rails_...  (event_id => events.id)
 #
 
 require 'rails_helper'

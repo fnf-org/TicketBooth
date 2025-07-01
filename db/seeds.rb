@@ -123,7 +123,7 @@ module FnF
       def create_events
         header "Events (Total Count: #{Event.count})"
 
-        self.events = Event.all.to_a || []
+        self.events = Event.all.to_a
         (0..event_count).to_a.each do |index|
           start_time = (Time.zone.today + index.months).to_time
 
@@ -149,7 +149,7 @@ module FnF
 
           @events << event unless events.include?(event)
 
-          if event.admins.count.zero?
+          if event.admins.none?
             users.sample(Random.rand(2..4)).each do |u|
               event.make_admin(u)
             end
