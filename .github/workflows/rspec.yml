@@ -52,7 +52,7 @@ jobs:
       - name: "Verify Memcached is running"
         run: echo -e "stats\nquit" | nc localhost 11211  | grep -e "accepting_conns 1" -q
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Restore node_modules
         uses: actions/cache@v4

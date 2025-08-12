@@ -15,7 +15,7 @@ jobs:
       - run: sudo apt-get update -yqq
       - run: sudo apt-get install -yqq libpq-dev
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: ruby/setup-ruby@v1
         with:
