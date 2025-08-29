@@ -39,7 +39,7 @@ jobs:
           fetch-depth: 1
 
       - id: gcpAuth
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: "projects/${{ vars.GCP_PROJECT_ID }}/locations/global/workloadIdentityPools"
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}
