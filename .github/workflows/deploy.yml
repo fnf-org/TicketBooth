@@ -33,7 +33,7 @@ jobs:
       # This step is only required because the Helm chart is in this repo
       - id: checkout
         name: TicketBooth checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && 'main' || github.ref }}
           fetch-depth: 1
