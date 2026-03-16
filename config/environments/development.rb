@@ -97,8 +97,8 @@ Rails.application.configure do
     address:              'smtp.sendgrid.net',
     user_name:            'apikey',
     port:                 587,
-    domain:               Rails.application.credentials.development.sendgrid.domain,
-    password:             Rails.application.credentials.development.sendgrid.api_key,
+    domain:               Rails.application.credentials.development&.sendgrid&.domain,
+    password:             Rails.application.credentials.development&.sendgrid&.api_key,
     authentication:       :plain,
     enable_starttls_auto: true
   }
@@ -112,8 +112,8 @@ Rails.application.configure do
   config.web_console.permissions = '172.16.100.0/24'
 
   config.stripe = {
-    secret_api_key:      Rails.application.credentials.development.dig(:stripe, :secret_api_key),
-    publishable_api_key: Rails.application.credentials.development.dig(:stripe, :publishable_api_key)
+    secret_api_key:      Rails.application.credentials.development&.dig(:stripe, :secret_api_key),
+    publishable_api_key: Rails.application.credentials.development&.dig(:stripe, :publishable_api_key)
   }
 
   if BULLET_ENABLED

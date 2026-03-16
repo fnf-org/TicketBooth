@@ -86,7 +86,7 @@ Rails.application.configure do
   config.active_job.queue_adapter = :test
 
   config.stripe = {
-    secret_api_key:      Rails.application.credentials.test.dig(:stripe, :secret_api_key),
-    publishable_api_key: Rails.application.credentials.test.dig(:stripe, :publishable_api_key)
+    secret_api_key:      Rails.application.credentials.test&.dig(:stripe, :secret_api_key) || 'sk_test_dummy_key_for_vcr',
+    publishable_api_key: Rails.application.credentials.test&.dig(:stripe, :publishable_api_key) || 'pk_test_dummy_key_for_vcr'
   }
 end

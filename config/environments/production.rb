@@ -113,14 +113,14 @@ Rails.application.configure do
     address:              'smtp.sendgrid.net',
     user_name:            'apikey',
     port:                 587,
-    domain:               Rails.application.credentials.development.sendgrid.domain,
-    password:             Rails.application.credentials.development.sendgrid.api_key,
+    domain:               Rails.application.credentials.production&.sendgrid&.domain,
+    password:             Rails.application.credentials.production&.sendgrid&.api_key,
     authentication:       :plain,
     enable_starttls_auto: true
   }
 
   config.stripe = {
-    secret_api_key:      Rails.application.credentials.production.dig(:stripe, :secret_api_key),
-    publishable_api_key: Rails.application.credentials.production.dig(:stripe, :publishable_api_key)
+    secret_api_key:      Rails.application.credentials.production&.dig(:stripe, :secret_api_key),
+    publishable_api_key: Rails.application.credentials.production&.dig(:stripe, :publishable_api_key)
   }
 end
