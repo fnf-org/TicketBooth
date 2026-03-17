@@ -2,14 +2,14 @@
 
 class RemoveDefaultStatusFromTicketRequests < ActiveRecord::Migration[6.0]
   def up
-    execute <<-SQL.squish
+    execute <<~SQL.squish
       ALTER TABLE ticket_requests
           ALTER COLUMN status DROP DEFAULT
     SQL
   end
 
   def down
-    execute <<-SQL.squish
+    execute <<~SQL.squish
       ALTER TABLE ticket_requests
           ALTER COLUMN status SET DEFAULT 'P'
     SQL
