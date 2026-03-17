@@ -82,7 +82,7 @@ GEM
     annotate (2.6.5)
       activerecord (>= 2.3.0)
       rake (>= 0.8.7)
-    asciidoctor (2.0.23)
+    asciidoctor (2.0.26)
     ast (2.4.3)
     attribute_normalizer (1.2.0)
     awesome_print (1.9.2)
