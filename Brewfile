@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
+# Last updated: 2026-03-19
 # vim: ft=ruby
-
-tap 'homebrew/bundle'
-tap 'homebrew/services'
 
 # Build Environment/C/C++
 brew 'autoconf'
@@ -42,7 +40,7 @@ brew 'pcre'
 brew 'pcre'
 brew 'pg_top'
 brew 'pkg-config'
-brew 'postgresql@17'
+brew 'postgresql@18'
 brew 'pstree'
 brew 'pyenv'
 brew 'rbenv'
@@ -53,7 +51,6 @@ brew 'rsync'
 brew 'ruby-build'
 brew 'ruby-completion'
 brew 'shellcheck'
-brew 'stripe/stripe-mock/stripe-mock'
 brew 'tree'
 brew 'vim'
 brew 'watch'
@@ -66,7 +63,13 @@ brew 'zlib'
 brew 'volta'
 brew 'v8'
 
-# k8s
+# Rust tools
+brew 'fd' # replacement for 'find'
+brew 'bat' # replacement for 'cat'
+brew 'delta' # replacement for 'git diff'
+brew 'git-delta' # replacement for 'git diff'
+
+# Docker tools
 brew 'minikube'
 brew 'kubernetes-cli'
 
@@ -101,7 +104,6 @@ cask 'font-monoid'
 cask 'font-monoisome'
 cask 'font-mononoki'
 cask 'font-monoton'
-cask 'font-noto-mono'
 cask 'font-oswald'
 cask 'font-oxygen'
 cask 'font-oxygen-mono'

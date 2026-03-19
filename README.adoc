@@ -35,70 +35,7 @@ using Liberapay]]
 
 The goal of the app is to make ticket and volunteer management for community events easier and automated.
 
-== Production Deploy, as of 2024 — 2025
 
-To deploy to production site — https://tickets.fnf.events — the deployer's IP address must be white-listed with EC2. Contact Konstantin Gredeskoul to get white-listed.
-
-The deploy is performed via Capistrano:
-
-[source,bash]
-----
-git checkout main
-git pull
-bin/dev-tooling # installs local dev dependencies
-bin/dev-setup   # installs Ruby, Node, Gems, etc.
-bin/deploy      # actually performs the deployment
-----
-
-== Development Environment Setup
-
-The following walks through a local setup on OS-X M1.
-
-=== Streamlined Setup
-
-If you installed https://brew.sh[Homebrew] on your laptop, you should be able to boot the app.
-
-==== Optional VIM and PostgreSQL Local Configuration
-
-We provided a pretty comprehensive VIM configuration with auto-complete, as well as the `psql` configuration with a prompt and additional useful macros.
-
-To install this, run
-
-[source,bash]
-bin/dev-tooling
-
-After that, your `vim` sessions will have auto-complete enabled, and your `psql -U postgres` sessions will have rich prompt.
-
-==== Running App Dependencies Installer
-
-You can run the following setup script, but only on OS-X, to attempt a complete set up of the development environment, as well as the installation of the Rubies, Gems and Database:
-
-[source,bash]
-----
-bin/dev-setup
-----
-
-This should install all of the Brew dependencies, start PostgreSQL, memcached, and install Ruby, Node, Yarn, Gems and Node packages.
-
-==== Starting the Rails Server
-
-[source,bash]
-bin/dev-start
-
-This actually starts Foreman via `bundle exec foreman -f Procfile.dev` — this is required to start CSS and JS just-in-time compilcation in addition to the Rails server.
-
-The server will run on port 8080, and in development will hot swap any locally modified files, including CSS and JS.
-
-CAUTION: Running `rails s` is no longer sufficient to start the application.
-
-==== Running Tests and Linters
-
-To verify that your local environment is working, run the following:
-
-[source,bash]
-----
-make ci
-----
 
 This will run DB Migrations, followed by RSpec, Rubocop, and ShellCheck.
 

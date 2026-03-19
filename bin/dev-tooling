@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1091,SC2002,SC2207
 # vim: ft=bash
+#
+# Start with --vim to have your VIM configuration updated and previous backed up.
 
 if [[ $(uname -s) != "Darwin" ]]; then
   echo -e "\e[31;1mERROR: This script is only supported on OS-X.\e[0m"
   exit 1
 fi
 
-echo "Please wait while we install BASH dependencies..."
-
 export BASHMATIC_HOME="${BASHMATIC_HOME:-"${HOME}/.bashmatic"}"
 [[ -z ${BASHMATIC_HOME} ]] && export BASHMATIC_HOME="${HOME}/.bashmatic"
-[[ -d ${BASHMATIC_HOME} ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install -q"
+[[ -d ${BASHMATIC_HOME} ]] || bash -c "$(curl -fsSL https://bashmatic.re1.re); bashmatic-install -q" >/dev/null 2>&1
 [[ -d ${BASHMATIC_HOME} ]] || {
   echo "Can't find Bashmatic, even after attempting an installation."
   echo "Please install Bashmatic with the following command line:"
@@ -26,49 +26,141 @@ output.constrain-screen-width 100
 declare -g timestamp
 export timestamp="$(time.now.db)"
 
-h3bg  "Installing Brew Packages..."
-run.set-all continue-on-error
-run "brew bundle --no-upgrade"
-run.set-all abort-on-error
-
-if [[ -d ~/.vim && -f ~/.vimrc ]]; then
-  h2 "Making a backup of your Current VIM Setup"
-  run "cp -p -v ~/.vimrc ~/.vimrc.${timestamp}"
-fi
-
-h3bg  "Installing custom vim configuration locally..."
-run "cp -f development/config/.vimrc ${HOME}"
-run "cp -f development/config/.vimrc.customizations ${HOME}"
-
-h3bg  "Installing VIM Plugins... Please wait."
-run.set-next show-output-on
-run "vim -E +PlugInstall +qall"
-
-h3bg  "Installing ~/.psqlrc"
-run "mv ~/.psqlrc ~/.psqlrc.${timestamp}"
-run.set-next show-output-on
-run "cp -p -v development/config/.psqlrc* ${HOME}"
-
-export ruby_version="$(cat .ruby-version | tr -d '\n')"
-
-if [[ -z $(rbenv versions | grep "${ruby_version}") ]]; then
-  h3bg  "Installing Ruby"
-
-  run "brew update && brew install rbenv ruby-build"
-  run "brew install jemalloc rust"
-  h2 "Building Ruby... with Jemalloc & YJIT"
-
+function install-brew() {
+  h3bg "Installing Brew Packages..."
+  run.set-all continue-on-error
+  run "brew update-reset"
+  if [[ "$*" =~ --upgrade-brew ]] ; then
+    run "brew bundle --upgrade" 
+  else
+    run "brew bundle --no-upgrade"
+  fi
   run.set-all abort-on-error
 
-  unset CFLAGS
-  export RUBY_CFLAGS="-Wno-error=implicit-function-declaration"
+  run "brew services start postgresql@18"
+  run "brew services start memcached"
+}
+
+function install-vim() {
+  if [[ -d ~/.vim && -f ~/.vimrc ]]; then
+    h2 "Making a backup of your Current VIM Setup"
+    run "cp -p -v ~/.vimrc ~/.vimrc.${timestamp}"
+
+    h3bg "Installing custom vim configuration locally..."
+    run "cp -f development/config/.vimrc ${HOME}"
+    run "cp -f development/config/.vimrc.customizations ${HOME}"
+  fi
+
+  h3bg "Installing VIM Plugins... Please wait."
   run.set-next show-output-on
-  run "RUBY_CONFIGURE_OPTS='--enable-yjit --with-jemalloc' rbenv install -f ${ruby_version}"
-else
-  rbenv local "${ruby_version}"
-  success "Ruby ${ruby_version} was already installed."
-fi
+  run "vim -E +PlugInstall +qall"
+}
 
-run.set-next abort-on-error
-[[ -f Gemfile ]] && run "bundle install -j 4"
+function install-psqlrc() {
+  h3bg "Installing ~/.psqlrc"
+  [[ -f ~/.psqlrc ]] && run "mv ~/.psqlrc ~/.psqlrc.${timestamp}"
+  run.set-next show-output-on
+  run "cp -p -v development/config/.psqlrc* ${HOME}"
+}
 
+function install-bundler-config() {
+  run "mkdir -p .bundle"
+  arch=$(arch)
+  run "cp development/config/config.Darwin.$(arch) .bundle/config"
+  run "bundle install -j 12"
+}
+
+function install-ruby() {
+  export ruby_version="$(cat .ruby-version | tr -d '\n')"
+
+  install-bundler-config
+
+  if [[ -z $(rbenv versions | grep "${ruby_version}") ]]; then
+    h3bg "Installing Ruby version ${ruby_version}"
+
+    run "brew update && brew install rbenv"
+    run "mkdir -p $(rbenv root)/plugins"
+    if [[ ! -d $(rbenv root)/plugins/ruby-build ]]; then
+      run "cd $(rbenv root)/plugins/ruby-build && git pull"
+    else
+      run "git clone https://github.com/rbenv/ruby-build.git $(rbenv root)/plugins/ruby-build"
+    fi
+    run "brew install jemalloc rust"
+  fi
+
+  h2 "Building Ruby... with Jemalloc & YJIT"
+  run.set-all abort-on-error show-output-on
+  run "${BASHMATIC_HOME}/bin/ruby-install ${ruby_version}"
+}
+
+function install-gems() {
+  h3bg "Installing Useful External Gems"
+  run "gem install git-smart foreman ruby-lsp solargraph warp-dir"
+  [[ -f Gemfile ]] && {
+    h3bg "Installing Bundled Gems"
+    run "bundle install -j 4"
+  }
+}
+
+function install-direnv() {
+  command -V direnv >/dev/null && {
+    h1 "Setting up direnv..."
+    eval "$(direnv hook bash)" # this script evaluates within BASH
+    run "direnv allow ."
+  }
+}
+
+function install-node() {
+  export yarn_version=$(cat .yarn-version | tr -d '\n')
+  run "curl https://get.volta.sh | bash"
+  run "volta install node@lts"
+  run "volta install yarn@${yarn_version}"
+  run "volta pin node@lts"
+
+  run "yarn install"
+  run "yarn run build"
+}
+
+function setup-database() {
+  h2 "Ensuring you have the right PG user..."
+
+  run "createuser -U ${USER} -s postgres 2>/dev/null || true"
+
+  h1 "Running Migrations..."
+  run "rails db:create"
+  run "rails db:migrate:with_data"
+  run "rails db:seed"
+  run "rails db:prepare"
+
+  success "Your system should be ready to roll." "Run ${txtgrn}make dev${clr} to start it up."
+}
+
+function usage() {
+  echo -e "${bldblu}USAGE:${clr}"
+  echo -e "  ${bldylw}./bin/$(basename "$0") [--help]  "
+  echo -e "                    [--vim] [--psqlrc] [--upgrade-brew]"
+  echo -e "                    [--skip-node] [--skip-db] [--skip-brew]${clr}\n"
+
+  echo -e "${bldblu}FLAGS:${clr}"
+  echo -e "  --vim    | -v  Install custom VIM configuration (and backup existing)"
+  echo -e "  --psqlrc | -p  Install ~/.psqlrc file configuration (recommended)"
+  echo -e "  --help   | -h  Show this help message"
+  echo -e "  --upgrade-brew Upgrade Brew packages. Otherwise uses locked versions."
+  echo -e "  --skip-db      Do not setup the database or run migrations"
+  echo -e "  --skip-node    Do not install NodeJS or Yarn."
+  exit 0
+}
+
+main() {
+  [[ "$*" =~ --help || "$*" =~ -h ]] && usage
+  [[ "$*" =~ --skip-brew ]] || install-brew
+  [[ "$*" =~ --vim || "$*" =~ -v ]] && install-vim
+  [[ "$*" =~ --psqlrc || "$*" =~ -p ]] && install-psqlrc
+  install-ruby
+  install-gems
+  install-direnv
+  [[ "$*" =~ --skip-node ]] || install-node
+  [[ "$*" =~ --skip-db ]] || setup-database
+}
+
+main "$@"

@@ -136,7 +136,7 @@ class EventsController < ApplicationController
     @ticket_requests = TicketRequest
                        .includes(:event, :payment, :user)
                        .where(event_id: @event)
-                       .order('created_at DESC')
+                       .order(created_at: :desc)
                        .to_a
 
     @stats = %i[pending awaiting_payment completed].each_with_object({}) do |status, stats|

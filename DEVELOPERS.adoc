@@ -26,6 +26,104 @@ you need to do in order to get started.
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ----
 
+== Easy Route
+
+If you are on OS-X, you can use the provided `bin/dev-tooling` script to install the necessary tools and dependencies. The script is generally kept up to date.
+
+It has the following usage:
+
+[source,bash]
+----
+❯ dev-tooling -h
+USAGE:
+  ./bin/dev-tooling [--help]  
+                    [--vim] [--psqlrc] [--upgrade-brew]
+                    [--skip-node] [--skip-db] [--skip-brew]
+
+FLAGS:
+  --vim    | -v  Install custom VIM configuration (and backup existing)
+  --psqlrc | -p  Install ~/.psqlrc file configuration (recommended)
+  --help   | -h  Show this help message
+  --upgrade-brew Upgrade Brew packages. Otherwise uses locked versions.
+  --skip-db      Do not setup the database or run migrations
+  --skip-node    Do not install NodeJS or Yarn.
+----
+
+If you've never used VIM, or you have your personal configuration that's deliberate and intentional, do not use the `--vim` flag. If, however, you are familiar with VIM, but haven't invested into a proper configuration, add `--vim` to the command line to install the custom configuration that got syntax highlighting, auto-complete, and other useful features.
+
+If you've never used the `psql` command and have no intention to, or vice versa, if you have your personal configuration that's deliberate and intentional, do not use the `--psqlrc` flag. If, however, you are familiar with `psql`, but haven't invested into a proper configuration, add `--psqlrc` to the command line to install the custom initialization file that will allow you to load SQL macros with `:m` or `:macros` command, and provides a nice looking prompt that shows you the database you are connected to and the version of PostgreSQL you are using, etc.
+
+The `--upgrade-brew` flag is used to upgrade the Brew packages to the latest versions. If you don't use this flag, the script will use the locked versions of the packages, which might be outdated. But if you do use this flag, you will likely end up with an updated `Brewfile.lock.json` file, which you probably should commit to the repository together (or separately) with your changes.
+
+Running this script should get you:
+
+* Many required, some optional but very useful tools and dependencies installed.
+* VIM configuration installed (if you use it).
+* `psql` initialization file installed (if you use it).
+* Ruby, with version specified in the `.ruby-version` file installed.
+* All the necessary Gems installed, as well as some external gems such as `ruby-lsp` necessary for IDE integration.
+* NodeJS (LTS) installed using Volta, Yarn installed, and the project's dependencies installed.
+* The database created, migrated, and seeded. 
+* The script will also set up `direnv` to automatically load the environment variables from the `.envrc` file.
+
+=== Starting the Dev Server
+
+There are several largely equivalent ways to start the server:
+
+* `make dev` - this will run the server using `foreman -f Procfile.dev`.
+* `foreman -f Procfile.dev` - this will run the server using `foreman -f Procfile.dev` explicitly.
+* `bin/dev-start` - this will run the server using `foreman -f Procfile.dev` as well.
+
+All of the above commands will start the web server on port 8080, and the browser will open the URL automatically.
+
+[IMPORTANT] 
+.Why do we need to use foreman and the Procfile.dev?
+==== 
+Many "vanilla" Rails applications are started with the command `rails s`, which starts the Rails server.
+
+However, we are using advanced CSS/JS pipeline that requires additional processes to be running in order to serve CSS and JS assets properly, and recompile them on the fly as they change. This is the primary reason for using `Procfile.dev` and the commands that use it listed above.
+====
+
+== How to Deploy to Production (2026)
+
+To deploy to production site — https://tickets.fnf.events — the deployer's IP address must be white-listed with EC2. Contact Konstantin Gredeskoul to get white-listed.
+
+The deploy is performed via Capistrano:
+
+[source,bash]
+----
+git checkout main
+git pull
+bundle install -j 12
+# Run this if you haven't yet
+bin/dev-tooling # installs local dev dependencies
+bin/deploy      # actually performs the deployment using Capistrano
+----
+
+==== Running Tests and Linters
+
+To verify that your local environment is working, run the following:
+
+[source,bash]
+----
+bundle exec rspec
+bundle exec rubocop
+bin/shchk
+----
+
+
+[source,bash]
+----
+make ci
+----
+
+
+== Manual Setup
+
+If you are a masochist, you can follow the steps below to set up the environment manually. Good luck with that.
+
+NOTE: The steps below may be outdated. The `bin/dev-tooling` script is the **up-to-date** way to set up the environment.
+
 === Ruby
 
 * You are probably going to need `rbenv` and `ruby-build`:

@@ -19,6 +19,11 @@ ${bldgrn}DESCRIPTION:${clr}
   exit 0
 fi
 
+[[ -f ~/.bashmatic ]] || {
+  curl -fsSL https://bashmatic.re1.re >/tmp/installer
+  chmod 755 /tmp/installer
+  /tmp/installer -q
+}
 source ~/.bashmatic/init.sh
 
 dbname="ticketing_app_production"

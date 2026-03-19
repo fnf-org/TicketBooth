@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'factory_bot_rails'
 require_relative 'spec_helper'
 
 ENV['RAILS_ENV'] = 'test'

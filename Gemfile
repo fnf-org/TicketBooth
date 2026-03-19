@@ -6,7 +6,7 @@ ruby File.read('.ruby-version')
 
 # Use main development branch of Rails
 gem 'data_migrate'
-gem 'rails', '= 8.0.2'
+gem 'rails', '= 8.1.2'
 gem 'rails-html-sanitizer'
 
 # Unclear if we need to require it explicitly
@@ -15,7 +15,7 @@ gem 'rails-html-sanitizer'
 #  Use postgresql as the database for Active Record
 gem 'pg'
 # Use the Puma web server [https://github.com/puma/puma]
-gem 'puma', '>= 6'
+gem 'puma' # , '>= 6'
 gem 'puma-status'
 
 # replace sprockets with propshaft
