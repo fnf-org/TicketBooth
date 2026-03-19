@@ -8,7 +8,7 @@
 :icons: font
 :license: MIT
 
-== Getting Started
+== Getting Started with Coding TicketBooth
 
 If you want to contribute to the TicketBooth codebase, there's a few things
 you need to do in order to get started.
@@ -16,9 +16,7 @@ you need to do in order to get started.
 === Pre-requisites
 
 * Run a Mac or Linux operating system.
-
 * XCode installed (or XCode Dev Tools)
-
 * You probably are going to use https://brew.sh/[Homebrew] for installing package:
 
 [source,bash]
@@ -26,9 +24,84 @@ you need to do in order to get started.
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ----
 
-== Easy Route
+=== Deploying to Production
 
-If you are on OS-X, you can use the provided `bin/dev-tooling` script to install the necessary tools and dependencies. The script is generally kept up to date.
+We front-load this information so that you don't have to go search for it deep in the weeds of this document.
+
+The deploy is performed via Capistrano, to an EC2 server where the app is running. http://kig.re[Konstantin Gredeskoul] maintains the server and owns the deploy process, and generally is the person who deploys the code.
+
+[source,bash]
+----
+# Checkout the repo
+git clone git@github.com:fnf-org/TicketBooth.git
+cd TicketBooth
+# Ensure you are on the main branch (ONLY deploy from the main branch!)
+git checkout main
+# Pull the latest changes
+git pull
+----
+
+If you have not run the bin/dev-tooling script, you must, sorry. It might take a bit of time, but you do need it in order to have the proper ruby, gems and other dependencies installed.
+
+NOTE: See the sections below for much more details about the `dev-tooling` script. We are mentioning it here because it is a prerequisite for deploying to production.
+
+[source,bash]
+----
+bin/dev-tooling --help # read its help message
+bin/dev-tooling # run it
+
+# Ensure the tests and the linters are passing:
+make ci
+----
+
+Once the tests and linters are passing, you can deploy to production:
+
+[source,bash]
+bin/deploy      # actually performs the deployment using Capistrano
+
+If you want to add a version tag to the deployment, you can do so with `make tag` command.
+
+==== Running Tests and Linters
+
+To verify that your local environment is working, run the following:
+
+[source,bash]
+----
+# Run the tests (specs)
+bundle exec rspec
+# Run rubocop linter
+bundle exec rubocop
+# Run shell linter
+bin/shchk
+----
+
+Or you can run everything at once, with the convenient `make ci` command
+
+[source,bash]
+----
+make ci
+----
+
+==== SSH Keys for Deployment 
+
+If your SSH public key has been added to the production server's list of
+authorized keys, you can deploy the latest version of the code to the
+production site using `cap deploy` or `bin/deploy` commands. But before you do this, remember to push your local changes to the `origin` repository with `git push origin main`, as the deploy process can only deploy code from that canonical source.
+
+If you don't have permission to deploy, you can submit a pull request to
+the repository and someone will review your code and merge it if it's good
+to go.
+
+See https://help.github.com/articles/using-pull-requests[Using Pull Requests]
+for more information on this process if you are not familiar.
+
+---
+
+Next, we are going to look at setting up your local dev environment properly, and without haste. Consider the above a compressed narrative of what's about to follow.
+
+== Easy Route to Happiness
+
+If you are on OS-X, you can use the provided `bin/dev-tooling` script to get your environment working with all of the necessary tools and dependencies. The script is generally kept up to date.
 
 It has the following usage:
 
@@ -49,11 +122,8 @@ FLAGS:
   --skip-node    Do not install NodeJS or Yarn.
 ----
 
-If you've never used VIM, or you have your personal configuration that's deliberate and intentional, do not use the `--vim` flag. If, however, you are familiar with VIM, but haven't invested into a proper configuration, add `--vim` to the command line to install the custom configuration that got syntax highlighting, auto-complete, and other useful features.
+In most cases, just running `bin/dev-tooling` should be enough to get you started.
 
-If you've never used the `psql` command and have no intention to, or vice versa, if you have your personal configuration that's deliberate and intentional, do not use the `--psqlrc` flag. If, however, you are familiar with `psql`, but haven't invested into a proper configuration, add `--psqlrc` to the command line to install the custom initialization file that will allow you to load SQL macros with `:m` or `:macros` command, and provides a nice looking prompt that shows you the database you are connected to and the version of PostgreSQL you are using, etc.
-
-The `--upgrade-brew` flag is used to upgrade the Brew packages to the latest versions. If you don't use this flag, the script will use the locked versions of the packages, which might be outdated. But if you do use this flag, you will likely end up with an updated `Brewfile.lock.json` file, which you probably should commit to the repository together (or separately) with your changes.
 
 Running this script should get you:
 
@@ -64,7 +134,31 @@ Running this script should get you:
 * All the necessary Gems installed, as well as some external gems such as `ruby-lsp` necessary for IDE integration.
 * NodeJS (LTS) installed using Volta, Yarn installed, and the project's dependencies installed.
 * The database created, migrated, and seeded. 
-* The script will also set up `direnv` to automatically load the environment variables from the `.envrc` file.
+* The script will also set up `direnv` to automatically load the environment variables from the `.envrc` file. 
+
+And a bunch more stuff that's not listed here, but likely important.
+
+[NOTE] 
+.About using VIM Editor
+==== 
+If you've never used VIM, or you have your personal configuration that's deliberate and intentional, do not use the `--vim` flag. If, however, you are familiar with VIM, but haven't invested into a proper configuration, add `--vim` to the command line to install the custom configuration that got syntax highlighting, auto-complete, and other useful features.
+====
+
+[NOTE] 
+.About using `psql` command
+====
+If you've never used the `psql` command and have no intention to, or vice versa, if you have your personal configuration that's deliberate and intentional, do not use the `--psqlrc` flag. If, however, you are familiar with `psql`, but haven't invested into a proper configuration, add `--psqlrc` to the command line to install the custom initialization file that will allow you to load SQL macros with `:m` or `:macros` command, and provides a nice looking prompt that shows you the database you are connected to and the version of PostgreSQL you are using, etc.
+====
+
+[NOTE] 
+.About using `--upgrade-brew` flag
+====
+The `--upgrade-brew` flag is used to upgrade the Brew packages to the latest versions. If you don't use this flag, the script will use the locked versions of the packages, which might be outdated. But if you do use this flag, you will likely end up with an updated `Brewfile.lock.json` file, which you probably should commit to the repository together (or separately) with your changes.
+====
+
+=== Troubleshooting
+
+If you run into any issues, contact Konstantin Gredeskoul at kig@fnf.org or kigster@gmail.com.
 
 === Starting the Dev Server
 
@@ -84,38 +178,82 @@ Many "vanilla" Rails applications are started with the command `rails s`, which 
 However, we are using advanced CSS/JS pipeline that requires additional processes to be running in order to serve CSS and JS assets properly, and recompile them on the fly as they change. This is the primary reason for using `Procfile.dev` and the commands that use it listed above.
 ====
 
-== How to Deploy to Production (2026)
+=== The State of Production (2026)
 
-To deploy to production site — https://tickets.fnf.events — the deployer's IP address must be white-listed with EC2. Contact Konstantin Gredeskoul to get white-listed.
+The production server is hosted on AWS EC2, and the application is deployed using Capistrano. It is always running generally and so should be available to access here: https://tickets.fnf.events[https://tickets.fnf.events]
 
-The deploy is performed via Capistrano:
+You should be able to login or signup for an account year around, but only when an event is active and open for ticket requests will you be able to actually submit ticket requests.
 
-[source,bash]
+==== Type of Users
+
+There are 3 types of users:
+
+* Site Admin (superuser)
+* Event Admin
+* User (regular user)
+
+Only Site Admins can create new events, and add other users to an Event as Admins. Once an event is created and someone is assigned as an Event Admin, they can edit the event details, set the pricing, and other event-specific settings, and open up the event for ticket request collection.
+
+==== Ticket Requests vs Tickets
+
+Ticket requests are made by FnF community requesting any number of tickets, or addons such as RV camping, or early arrival or late departure passes, etc.
+
+Event admins manually review each ticket request, and can approve or decline them. If approved, the user is then able to purchase for the tickets via a Stripe Integration web form (Stripe Checkout), and once paid, the ticket request contains the information about the number of tickets purchased, and the names. 
+
+To deploy to production site —  — the deployer's IP address must be white-listed with EC2. Contact Konstantin Gredeskoul to get white-listed. 
+
+NOTE: At the moment the architecture of the site is such that we do not yet create the actual individual tickets in the database for each user. This is a TODO item, and may be implemented in the future. 
+
+=== API Testing
+
+HTTP API Specs mock calls to external APIs using a record and replay model with the utility called https://github.com/vcr/vcr[VCR].
+
+Most definitely read through the https://benoittgt.github.io/vcr/#/[VCR documentation] if you are working on any of the API specs.
+
+Some organizational information:
+
+* Cassettes are stored in `spec/fixtures/vcr_cassettes` folder
+* If an API changes due to version, response, etc... you will need to rebuild cassettes for those specs (delete the directory and/or files for the specs that have changed).
+* Delete the directory and/or files for the specs that have changed.
+* It is ok to delete all cassettes and regenerate everything.
+* This can be done in your local development environment.
+* VCR is configured in `spec/spec_helper.rb`.
+
+You must filter any API keys before you check in the cassettes to prevent leaking keys to GitHub (our repo is public!). See the https://benoittgt.github.io/vcr/#/configuration/filter_sensitive_data[Filtering Sensitive Data] section for more information.
+
+To enable vcr recording on a given spec, add a vcr hook to the spec as follows
+
+[source,ruby]
 ----
-git checkout main
-git pull
-bundle install -j 12
-# Run this if you haven't yet
-bin/dev-tooling # installs local dev dependencies
-bin/deploy      # actually performs the deployment using Capistrano
+it 'does not change payment intent', :vcr do
+  expect { payment_intent }.not_to(change(payment, :payment_intent))
+end
 ----
 
-==== Running Tests and Linters
+To turn off VCR HTTP request interception for a given spec or block, add
 
-To verify that your local environment is working, run the following:
+[source,ruby]
+----
+VCR.turned_off do
+ make_request "In VCR.turned_off block"
+end
 
-[source,bash]
-----
-bundle exec rspec
-bundle exec rubocop
-bin/shchk
+make_request "Outside of VCR.turned_off block"
+
+VCR.turn_off!
+make_request "After calling VCR.turn_off!"
+
+VCR.turned_on do
+  make_request "In VCR.turned_on block"
+end
+
+VCR.turn_on!
+make_request "After calling VCR.turn_on!"
 ----
 
+For more information please see the https://benoittgt.github.io/vcr/#/cassettes/no_cassette[No Cassette] section of the VCR documentation.
 
-[source,bash]
-----
-make ci
-----
+To turn off VCR by default for http requests see the https://benoittgt.github.io/vcr/#/configuration/allow_http_connections_when_no_cassette[Allow HTTP Connections When No Cassette] section of the VCR documentation.
 
 
 == Manual Setup
@@ -225,19 +363,3 @@ bundle exec rspec && open coverage/index.html
 To run both the specs and rubocop:
 [source,bash]
 rake
-
-== Deploying
-
-If your SSH public key has been added to the production server's list of
-authorized keys, you can deploy the latest version of the code to the
-production site using `cap deploy`. Before you do this, remember to push
-your local changes to the `origin` repository with `git push origin master`,
-as the deploy process can only deploy code from that canonical source.
-
-If you don't have permission to deploy, you can submit a pull request to
-the repository and someone will review your code and merge it if it's good
-to go.
-
-See https://help.github.com/articles/using-pull-requests[Using Pull Requests]
-for more information on this process if you are not familiar.
-

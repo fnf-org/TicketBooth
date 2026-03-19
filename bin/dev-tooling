@@ -30,8 +30,8 @@ function install-brew() {
   h3bg "Installing Brew Packages..."
   run.set-all continue-on-error
   run "brew update-reset"
-  if [[ "$*" =~ --upgrade-brew ]] ; then
-    run "brew bundle --upgrade" 
+  if [[ "$*" =~ --upgrade-brew ]]; then
+    run "brew bundle --upgrade"
   else
     run "brew bundle --no-upgrade"
   fi
@@ -91,6 +91,7 @@ function install-ruby() {
   h2 "Building Ruby... with Jemalloc & YJIT"
   run.set-all abort-on-error show-output-on
   run "${BASHMATIC_HOME}/bin/ruby-install ${ruby_version}"
+  run "gem update --system -N"
 }
 
 function install-gems() {

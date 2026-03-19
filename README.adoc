@@ -35,176 +35,11 @@ using Liberapay]]
 
 The goal of the app is to make ticket and volunteer management for community events easier and automated.
 
+=== Information For Developers
 
+We have a dedicated document for the folks that might be working on this app, fixing bugs or building new features. We moved all of this info into  xref:DEVELOPERS.pdf[developer setup] document, which helps you get the application running locally.
 
-This will run DB Migrations, followed by RSpec, Rubocop, and ShellCheck.
-
-==== Additional Information
-
-We dedicated a separate document to the xref:DEVELOPERS.pdf[developer setup], which helps you get the application running locally.
-
-Alternatively, keep reading for step-by-step manual instructions.
-
-
-=== Optional Manual Setup
-
-If you prefer to run all the steps manually, then follow the guide below.
-
-==== Manual 1: Services
-
-Please make sure you have PostgreSQL and running locally, or install it via Homebrew:
-
-[source,bash]
-----
-brew install direnv
-
-brew install postgresql@16
-brew services postgresql@16 start
-
-brew install memcached
-brew services memcached start
-----
-
-==== Manual 2: Direnv Setup
-
-Before you can start the Ruby Server, you need to configure `direnv` so that the environment in the file `.envrc` is loaded on OS-X.
-
-To do that follow the instructions for setting direnv on https://direnv.net/docs/hook.html#bash[bash] or https://direnv.net/docs/hook.html#zsh[zsh] depending on what you are running. To find out, run `echo $SHELL`.
-
-After you setup the shell initialization file, restart your terminal or reload the shell configuration.
-
-Once you are back in the project's folder, run:
-
-[source,bash]
-----
-eval "$(direnv hook ${SHELL/*\/})"
-direnv allow .
-----
-
-NOTE: the first line above should be copied to your shell RC (aka "dotfiles").
-
-This will load the environment variables from the `.envrc` file.
-
-==== Manual 3: NodeJS & Votal Setup
-
-Run the following to get Volta Node Manager working:
-
-[source,bash]
-----
-curl https://get.volta.sh | bash
-volta install node@lts
-volta install yarn
-volta pin node yarn
-----
-
-Now your Node & Yarn should be installed.
-
-==== Manual 3: Ruby Setup
-
-[source,bash]
-----
-# install brew from https://brew.sh
-brew bundle 2>/dev/null
-
-# ensure the following packages exist
-brew install rbenv ruby-build direnv volta
-
-eval "$(rbenv init -)"
-
-rbenv install -s $(cat .ruby-version)
-rbenv local $(cat .ruby-version)
-
-bundle install -j 12
-rails db:prepare
-rails db:test:prepare
-
-# Run Specs at the end
-bundle exec rspec
-
-# Run rubocop
-bundle exec rubocop
-
-# Run ShellCheck
-bin/shchk
-----
-
-==== Manual 4: Starting the Server
-
-To start the server post-setup, run the following (NOTE: you must start the server via Foreman, since it also starts `yarn` tasks that monitor and dynamically recompile CSS and JS assets)
-
-
-[source,bash]
-----
-bin/dev-start
-----
-
-Or manually:
-
-[source,bash]
-----
-bundle exec foreman -f Procfile.dev
-----
-
-Here is an example:
-
-image:docs/make-boot.png["Booting with Make"]
-
-=== API Testing
-
-HTTP API Specs use the VCR Gem to mock calls to external APIs using a record and replay model.
-https://github.com/vcr/vcr
-
-Usage: https://benoittgt.github.io/vcr/#/
-
-Cassettes are stored in spec/fixtures/vcr_cassettes
-If an API changes due to version, response, etc... you will need to rebuild cassettes for those specs.
-Delete the directory and/or files for the specs that have changed.
-It is ok to delete all cassettes and regenerate everything.
-This can be done in your local development environment.
-
-VCR is configured in `spec/spec_helper.rb`.
-
-You must filter any API keys before you check in cassettes to prevent keys in GitHub
-https://benoittgt.github.io/vcr/#/configuration/filter_sensitive_data
-
-To enable vcr recording on a given spec, add a vcr hook to the spec as follows
-
-[source,ruby]
-----
-it 'does not change payment intent', :vcr do
-  expect { payment_intent }.not_to(change(payment, :payment_intent))
-end
-----
-
-To turn off VCR HTTP request interception for a given spec or block, add
-
-[source,ruby]
-----
-VCR.turned_off do
- make_request "In VCR.turned_off block"
-end
-
-make_request "Outside of VCR.turned_off block"
-
-VCR.turn_off!
-make_request "After calling VCR.turn_off!"
-
-VCR.turned_on do
-  make_request "In VCR.turned_on block"
-end
-
-VCR.turn_on!
-make_request "After calling VCR.turn_on!"
-----
-
-For more information please see https://benoittgt.github.io/vcr/#/cassettes/no_cassette
-
-
-To turn off VCR by default for http requests see:
-https://benoittgt.github.io/vcr/#/configuration/allow_http_connections_when_no_cassette
-
-
-==== Adding Site Admin
+=== Adding Site Admin
 
 When the database is completely blank, the first step is to create the initial account. Lets say you registered as 'kig@fnf.org':
 
@@ -219,7 +54,7 @@ bin/site-admin add kig@fnf.org
 bin/site-admin remove kig@fnf.org
 ----
 
-==== Generating Music Submissions List
+=== Generating Music Submissions List
 
 The repo contains a convenient script for generating HTML to embed into the Wordpress site, using a CSV generated out of Google Spreadsheet collected using Google Forms.
 
@@ -241,8 +76,9 @@ $ bin/music-submission-links spec/fixtures/chill_sets.csv --simple-css > chill_s
 open chill_set.html
 ----
 
+[WARNING]
 ====
-WARNING: If you add `--simple-css` to the arguments, the generated HTML will include `<head>` element with the https://simplecss.org/[Simple CSS Stylesheet]. Do not use this flag if you plan to paste the output into the WordPress text box. Use this flag if you simply want to verify the resulting HTML in a browser by running `open chill_set.html`.
+ If you add `--simple-css` to the arguments, the generated HTML will include `<head>` element with the https://simplecss.org/[Simple CSS Stylesheet]. Do not use this flag if you plan to paste the output into the WordPress text box. Use this flag if you simply want to verify the resulting HTML in a browser by running `open chill_set.html`.
 ====
 
 To verify that the script is working and generating correct HTML, you might want to install a handy tool called `bat`, eg using Homebrew on Mac OS-X:
