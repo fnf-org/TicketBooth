@@ -50,6 +50,7 @@ namespace :ruby do
         within release_path do
           execute :bash, '-c "echo Current Directory is $(pwd)"'
           execute :bash, "-c 'bundle exec bootsnap precompile --gemfile'"
+          execute :bash, "-c 'bundle config set deployment true'"
         end
       end
     end

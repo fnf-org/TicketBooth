@@ -7,7 +7,7 @@ set :application, 'tickets'
 set :repo_url, 'git@github.com:fnf-org/TicketBooth.git'
 set :slack_url, Rails.application.credentials.production.slack.webhooks.deploy
 
-set :bundle_flags, '--jobs=8 --deployment'
+set :bundle_flags, '--jobs=8'
 set :bundle_without, 'development test'
 set :bundle_env_variables, { nokogiri_use_system_libraries: 1 }
 set :branch, 'main'
