@@ -148,7 +148,8 @@ GEM
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
     csv (3.3.5)
-    dalli (3.2.8)
+    dalli (5.0.2)
+      logger
     data_migrate (11.3.0)
       activerecord (>= 6.1)
       railties (>= 6.1)
