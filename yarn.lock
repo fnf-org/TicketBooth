@@ -168,9 +168,9 @@
     "@rails/actioncable" "^7.0"
 
 "@hotwired/turbo@^8.0.4":
-  version "8.0.4"
-  resolved "https://registry.npmjs.org/@hotwired/turbo/-/turbo-8.0.4.tgz"
-  integrity sha512-mlZEFUZrJnpfj+g/XeCWWuokvQyN68WvM78JM+0jfSFc98wegm259vCbC1zSllcspRwbgXK31ibehCy5PA78/Q==
+  version "8.0.23"
+  resolved "https://registry.yarnpkg.com/@hotwired/turbo/-/turbo-8.0.23.tgz#a6eebc9ab4a5faadae265a4cbec8cfcb5731e77c"
+  integrity sha512-GZ7cijxEZ6Ig71u7rD6LHaRv/wcE/hNsc+nEfiWOkLNqUgLOwo5MNGWOy5ZV9ZUDSiQx1no7YxjTNnT4O6//cQ==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
