@@ -4,26 +4,26 @@
 #
 # Table name: events
 #
-#  id                            :bigint           not null, primary key
-#  adult_ticket_price            :integer
-#  allow_donations               :boolean          default(FALSE), not null
-#  allow_financial_assistance    :boolean          default(FALSE), not null
+#  id                            :integer          not null, primary key
+#  name                          :string
+#  start_time                    :datetime
 #  end_time                      :datetime
+#  created_at                    :datetime         not null
+#  updated_at                    :datetime         not null
+#  adult_ticket_price            :integer
 #  kid_ticket_price              :integer
 #  max_adult_tickets_per_request :integer
 #  max_kid_tickets_per_request   :integer
-#  name                          :string
 #  photo                         :string
-#  require_mailing_address       :boolean          default(FALSE), not null
-#  require_role                  :boolean          default(TRUE), not null
-#  slug                          :text
-#  start_time                    :datetime
-#  ticket_requests_end_time      :datetime
-#  ticket_sales_end_time         :datetime
-#  ticket_sales_start_time       :datetime
 #  tickets_require_approval      :boolean          default(TRUE), not null
-#  created_at                    :datetime         not null
-#  updated_at                    :datetime         not null
+#  require_mailing_address       :boolean          default(FALSE), not null
+#  allow_financial_assistance    :boolean          default(FALSE), not null
+#  allow_donations               :boolean          default(FALSE), not null
+#  ticket_sales_start_time       :datetime
+#  ticket_sales_end_time         :datetime
+#  ticket_requests_end_time      :datetime
+#  slug                          :text
+#  require_role                  :boolean          default(TRUE), not null
 #
 
 require 'rails_helper'

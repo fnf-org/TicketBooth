@@ -11,20 +11,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: pg_stat_statements; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pg_stat_statements WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pg_stat_statements; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION pg_stat_statements IS 'track planning and execution statistics of all SQL statements executed';
-
-
---
 -- Name: payment_provider; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -258,14 +244,14 @@ CREATE TABLE public.payments (
     id bigint NOT NULL,
     ticket_request_id integer NOT NULL,
     stripe_charge_id character varying(255),
-    old_status character varying(1) DEFAULT 'N'::character varying NOT NULL,
+    old_status character varying(1) DEFAULT 'N'::character varying CONSTRAINT payments_status_not_null NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     explanation character varying,
     stripe_payment_id character varying,
     stripe_refund_id character varying,
     provider public.payment_provider DEFAULT 'stripe'::public.payment_provider NOT NULL,
-    status public.payment_status DEFAULT 'new'::public.payment_status NOT NULL
+    status public.payment_status DEFAULT 'new'::public.payment_status CONSTRAINT payments_status_not_null1 NOT NULL
 );
 
 
@@ -436,7 +422,7 @@ CREATE TABLE public.ticket_requests (
     id bigint NOT NULL,
     adults integer DEFAULT 1 NOT NULL,
     kids integer DEFAULT 0 NOT NULL,
-    needs_assistance boolean DEFAULT false NOT NULL,
+    needs_assistance boolean DEFAULT false CONSTRAINT ticket_requests_assistance_not_null NOT NULL,
     notes character varying(500),
     status character varying(1) NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,

@@ -107,6 +107,8 @@ foreman: 	## Start Foreman using Procfile.dev
 
 dev:          	gems node_modules db-create foreman ## Start the development environment, but run yarn install and db-create
 
+start:          foreman ## Start the development environment, but run yarn install and db-create
+
 
 ci: 		## Run all tests and linters as if on CI
 		bin/rails db:migrate:with_data

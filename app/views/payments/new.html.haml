@@ -74,7 +74,7 @@
             = number_to_currency(@ticket_request.cost, precision: 0)
           %p
 
-        .card-body
+        .card-body#payment-form-container
           %div#stripe-form{"data-controller" => "checkout",
                            "data-checkout-site-url-value" => "#{controller.send(:site_url)}",
                            "data-checkout-authenticity-token-value" => "#{controller.send(:form_authenticity_token)}",

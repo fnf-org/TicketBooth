@@ -8,7 +8,7 @@ $stderr.sync = true
 # Enable YJIT if we have it compiled in
 if defined?(RubyVM::YJIT) && RubyVM::YJIT.respond_to?(:enable)
   RubyVM::YJIT.enable
-  puts '[ ✔ ] YJIT is enabled'
+  warn '[ ✔ ] YJIT is enabled'
 else
   warn '[ 𐄂 ] YJIT is not enabled'
 end
@@ -29,9 +29,6 @@ VCR.configure do |config|
   config.configure_rspec_metadata!
   config.filter_sensitive_data('<STRIPE_API_KEY>') { Rails.configuration.stripe[:secret_api_key] }
 end
-
-20.times { puts }
-puts "\033[20A"
 
 require_relative 'support/example_helper'
 

@@ -24,7 +24,7 @@ class ExampleHelper
     @config.around do |example|
       if this.example_count % this.max_width == 0
         this.example_timings.clear if this.wrap_on_width
-        puts if this.wrap_on_width
+        warn if this.wrap_on_width
       end
 
       this.example_count += 1

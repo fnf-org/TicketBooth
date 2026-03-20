@@ -103,7 +103,7 @@ Rails.application.configure do
     enable_starttls_auto: true
   }
 
-  config.hosts = %w[localhost 127.0.0.1 127.0.0.1:3000 127.0.0.1:8080 0.0.0.0:8080]
+  config.hosts = %w[localhost 127.0.0.1 127.0.0.1:3000 127.0.0.1:8080 0.0.0.0:8080 0.0.0.0:9292]
   config.hosts << 'tickets-local.fnf.org:8080'
 
   config.log_tags  = [:request_id]

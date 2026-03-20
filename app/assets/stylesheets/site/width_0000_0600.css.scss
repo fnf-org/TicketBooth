@@ -9,13 +9,15 @@
     %ul.navbar-nav {
       float: right;
     }
+
     .main-container {
       padding: 0 !important;
       margin-top: 0 !important;
       width: 90% !important;
     }
 
-    .container-fluid, .container {
+    .container-fluid,
+    .container {
       margin-top: 0 !important;
       padding-left: 0 !important;
     }
@@ -86,7 +88,8 @@
       margin: 5px auto;
     }
 
-    .container-fluid, .container {
+    .container-fluid,
+    .container {
       padding: 0;
 
       .event-admins {
@@ -114,15 +117,19 @@
 
   table {
     tr {
-      td.optional, th.optional {
+
+      td.optional,
+      th.optional {
         display: none !important;
       }
 
-      td.optional-small, th.optional-small {
+      td.optional-small,
+      th.optional-small {
         display: none !important;
       }
 
-      td.optional-medium, th.optional-medium {
+      td.optional-medium,
+      th.optional-medium {
         display: none !important;
       }
     }
@@ -131,10 +138,11 @@
   table#ticket-request-summary {
     tr {
       td {
-        font-size: 0.9em !important;
+        font-size: 0.875em !important;
       }
     }
   }
+
   small.nowrap {
     white-space: normal;
   }
@@ -143,4 +151,8 @@
     font-size: 0.7em;
   }
 
+  .card-footer {
+    font-size: 0.775em !important;
+    padding-top: 20px !important;
+  }
 }
