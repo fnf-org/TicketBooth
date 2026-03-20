@@ -307,7 +307,7 @@ GEM
       date
       stringio
     public_suffix (7.0.5)
-    puma (6.6.1)
+    puma (7.2.0)
       nio4r (~> 2.0)
     puma-status (1.7)
       net_http_unix (~> 0.2)
@@ -546,7 +546,7 @@ DEPENDENCIES
   propshaft
   protected_attributes_continued
   psych
-  puma (~> 6)
+  puma (~> 7)
   puma-status
   rails (= 8.1.2)
   rails-html-sanitizer
