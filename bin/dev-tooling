@@ -4,6 +4,8 @@
 #
 # Start with --vim to have your VIM configuration updated and previous backed up.
 
+export TICKETS_LOCAL_HOSTNAME="tickets-local.fnf.org"
+
 if [[ $(uname -s) != "Darwin" ]]; then
   echo -e "\e[31;1mERROR: This script is only supported on OS-X.\e[0m"
   exit 1
@@ -92,6 +94,16 @@ function install-ruby() {
   run.set-all abort-on-error show-output-on
   run "${BASHMATIC_HOME}/bin/ruby-install ${ruby_version}"
   run "gem update --system -N"
+
+  local rv="$(ruby --version | awk '{print $2}' | tr -d '\n')"
+  if [[ ${rv} == "${ruby_version}" ]]; then
+    panel-green "Ruby Version ${ruby_version} has been installed successfully." \
+      "Your new Ruby is now as follows:" \
+      "$(ruby --version)"
+  else
+    error "Failed to install Ruby version ${ruby_version}" \
+      "Please check the .ruby-version file and try again."
+  fi
 }
 
 function install-gems() {
@@ -133,7 +145,7 @@ function setup-database() {
   run "rails db:seed"
   run "rails db:prepare"
 
-  success "Your system should be ready to roll." "Run ${txtgrn}make dev${clr} to start it up."
+  panel-green "Your system should be ready to roll." "Run ${txtgrn}make dev${clr} to start it up."
 }
 
 function usage() {
@@ -149,19 +161,60 @@ function usage() {
   echo -e "  --upgrade-brew Upgrade Brew packages. Otherwise uses locked versions."
   echo -e "  --skip-db      Do not setup the database or run migrations"
   echo -e "  --skip-node    Do not install NodeJS or Yarn."
+  echo -e "  --skip-ai      Do not install pgEdge PostgreSQL MCP Server."
   exit 0
+}
+
+# https://github.com/pgEdge/pgedge-postgres-mcp/releases/tag/v1.0.0-beta3-test
+export PGEDGE_POSTGRES_MCP_SERVER_VERSION="1.0.0-beta3-test"
+
+function ai-tooling() {
+  local arch=$(arch)
+  local os=$(uname -s | tr '[:upper:]' '[:lower:]')
+  local local_tar="/tmp/pgedge-postgres-mcp-server.tar.gz"
+  local local_dir="/tmp/pgedge-postgres-mcp-server-${PGEDGE_POSTGRES_MCP_SERVER_VERSION}"
+  local url="https://github.com/pgEdge/pgedge-postgres-mcp/releases/download/v${PGEDGE_POSTGRES_MCP_SERVER_VERSION}/pgedge-postgres-mcp-server_${PGEDGE_POSTGRES_MCP_SERVER_VERSION}_${os}_${arch}.tar.gz"
+  run.set-next show-output-on
+  run "wget -O ${local_tar} ${url}"
+  if [[ -s ${local_tar} ]]; then
+    run "mkdir -p ${local_dir}"
+    run "tar -xzf ${local_tar} -C ${local_dir}"
+    run "cd ${local_dir}"
+    run "mv ${local_dir}/pgedge-postgres-mcp /usr/local/bin"
+    run "chmod +x /usr/local/bin/pgedge-postgres-mcp"
+    panel-green "pgEdge PostgreSQL MCP Server Installed." "Run 'claude' in the project's root folder, then /mcp and /plugins"
+  else
+    error "Failed to download and install pgedge-postgres-mcp-server"
+  fi
+}
+
+function setup-localhost-alias() {
+  # shellcheck disable=SC2015
+  if grep -E -q "^127\.0\.0\.1\s+${TICKETS_LOCAL_HOSTNAME}" /etc/hosts; then
+    panel-green "Localhost alias for ${TICKETS_LOCAL_HOSTNAME} already exists in /etc/hosts"
+  else
+    run "echo '127.0.0.1 ${TICKETS_LOCAL_HOSTNAME}' | sudo tee -a /etc/hosts"
+    panel-green "The alias for ${TICKETS_LOCAL_HOSTNAME} to 127.0.0.1 was added to /etc/hosts." \
+      "Now, you can use http://${TICKETS_LOCAL_HOSTNAME}:8080' locally."
+  fi
 }
 
 main() {
   [[ "$*" =~ --help || "$*" =~ -h ]] && usage
+
   [[ "$*" =~ --skip-brew ]] || install-brew
   [[ "$*" =~ --vim || "$*" =~ -v ]] && install-vim
   [[ "$*" =~ --psqlrc || "$*" =~ -p ]] && install-psqlrc
+
   install-ruby
   install-gems
   install-direnv
+
   [[ "$*" =~ --skip-node ]] || install-node
   [[ "$*" =~ --skip-db ]] || setup-database
+  [[ "$*" =~ --skip-ai ]] || ai-tooling
+
+  setup-localhost-alias
 }
 
 main "$@"

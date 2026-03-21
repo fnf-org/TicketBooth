@@ -178,11 +178,76 @@ Many "vanilla" Rails applications are started with the command `rails s`, which 
 However, we are using advanced CSS/JS pipeline that requires additional processes to be running in order to serve CSS and JS assets properly, and recompile them on the fly as they change. This is the primary reason for using `Procfile.dev` and the commands that use it listed above.
 ====
 
+==== Booting Example
+
+The following is a screen shot from starting the application in March 2026.
+
+image::./docs/tb-dev-start.png[name="Booting the App", width="80%"]
+
+Once the application boots, it will open the URL http://tickets-local.fnf.org:8080[http://tickets-local.fnf.org:8080] in the browser.
+
+After you login, and play around with the site you might see the following in the `log/development.log` file:
+
+image::./docs/tb-dev-log.png[name="Development Log", width="80%"]
+
+== Leveraging Claude and AI Tooling for Development
+
+As of March 2026, we are using Claude Code (claude.ai/code) to help with development. You can read more about how Claude sees this app in the file xref:CLAUDE.md[CLAUDE.md].
+
+If you install Claude Code CLI locally — typically this means running:
+
+[source,bash]
+curl -fsSL https://claude.ai/install.sh | bash
+
+You can then run `claude` command in the project's root folder. If you also successfully completed running `bin/dev-tooling` you should a PostgreSQL MCP server available to you locally. 
+
+=== Starting Claude
+
+[source,bash]
+claude
+
+and once you get Claude's prompt, check out the command `/mcp` and `/plugins`. This will give you a sense of what's available.
+
+==== Plugins
+
+We install a few plugins to help with development.
+
+image::./docs/claude-plugins.png[name="Claude Plugins", width="80%"]
+
+The following plugins are installed:
+
+* activerecord@claude-ruby-marketplace
+* build@motlin-claude-code-plugins
+* chrome-devtools-mcp@chrome-devtools-plugins
+* ci-cd@devops-skills
+* feature-dev@claude-code-plugins
+* frontend-design@claude-code-plugins
+* git@motlin-claude-code-plugins
+* justfile@motlin-claude-code-plugins
+* pr-review-toolkit@claude-code-plugins
+* rspec@claude-ruby-marketplace
+* ruby-skills@ruby-skills
+* security-guidance@claude-code-plugins
+
+==== MCP Servers
+
+We start the PostgreSQL MCP server which is connected to both the development and test databases.
+
+image::./docs/claude-mcp.png[name="Claude MCP", width="80%"]
+
+Installed by `bin/dev-tooling` is the PostgreSQL MCP server, which allows you to use pure English to query the database and ask questions about the code and the data. For example:
+
+image::./docs/claude-using-mcp.png[name="Using MCP to Query the Database", width="80%"]
+
 === The State of Production (2026)
 
 The production server is hosted on AWS EC2, and the application is deployed using Capistrano. It is always running generally and so should be available to access here: https://tickets.fnf.events[https://tickets.fnf.events]
 
-You should be able to login or signup for an account year around, but only when an event is active and open for ticket requests will you be able to actually submit ticket requests.
+You should be able to login or signup for an account year around, but only when an event is active and o
+
+=== Some Notable Business Logic Details
+
+You should also refer to the file xref:CLAUDE.md[CLAUDE.md] for more information about the application how it's structured.
 
 ==== Type of Users
 
