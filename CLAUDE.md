@@ -4,7 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Ticket Booth** is a Ruby on Rails application for managing ticket sales and volunteer coordination for community events. It supports ticket requests, payments via Stripe, event management, and volunteer job coordination.
+**Ticket Booth** is a Ruby on Rails application for managing ticket sales and volunteer coordination for community events. 
+
+The application has three types of users:
+- super-admins have the ability to create new events or clone previous ones
+- event admins are added to each event by a super admin and can admoinister just that event.
+- regular users who may create ticket requests, and once approved purchase them vi a Stripe integration.
 
 ## Architecture
 
@@ -15,7 +20,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **User**: Authentication via Devise with site admin and event admin roles
 - **Payment**: Stripe integration for payment processing
 - **Addon**: Additional purchasable items (passes, camping permits) via EventAddon join model
-- **Job/TimeSlot/Shift**: Volunteer work coordination system
+- **Job/TimeSlot/Shift**: Volunteer work coordination system: currently not in use.
 
 ### Key Features
 
@@ -32,9 +37,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Setup
 
 ```bash
-bin/dev-setup        # Complete environment setup (macOS only)
+bin/dev-tooling      # Complete environment setup (macOS only)
 bin/dev-start        # Start development server (uses Foreman)
-make dev             # Alternative: install deps + start server
 ```
 
 ### Database
@@ -118,3 +122,5 @@ bundle exec cap production deploy
 - relaxed-rubocop configuration  
 - ShellCheck for shell scripts
 - Annotate gem for model schema comments
+
+

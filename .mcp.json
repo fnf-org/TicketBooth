@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "development-db": {
+      "command": "/usr/local/bin/pgedge-postgres-mcp",
+      "env": {
+        "PGHOST": "localhost",
+        "PGPORT": "5432",
+        "PGDATABASE": "ticketing_app_development",
+        "PGUSER": "postgres",
+        "PGPASSWORD": "postgres"
+      }
+    },
+    "test-db": {
+      "command": "/usr/local/bin/pgedge-postgres-mcp",
+      "env": {
+        "PGHOST": "localhost",
+        "PGPORT": "5432",
+        "PGDATABASE": "ticketing_app_test",
+        "PGUSER": "postgres",
+        "PGPASSWORD": "postgres"
+      }
+    }
+  }
+}
