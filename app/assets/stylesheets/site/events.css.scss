@@ -1,44 +1,183 @@
-ul.event-tabs {
-  font-size: 1.1em;
-  margin-top: -20px;
-  margin-bottom: -10px !important;
+// Dropdown (mobile) vs Tabs/Buttons (desktop) toggle
+.event-tabs-dropdown {
+  display: none;
+}
 
-  a.nav-link.active {
-    background-color: $primary-bg-subtle;
+.ticket-actions-wide {
+  display: none;
+}
+
+.ticket-actions-narrow {
+  display: block;
+
+  .dropdown-menu {
+    .dropdown-item {
+      padding: 0.625rem 1rem;
+      font-size: 0.9375rem;
+
+      form {
+        display: block;
+        width: 100%;
+      }
+    }
   }
+}
+
+@media (max-width: 900px) {
+  .event-tabs-dropdown {
+    display: block;
+  }
+
+  ul.event-tabs {
+    display: none !important;
+  }
+
+  .card.event-nav {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+
+    .card-header {
+      background: transparent !important;
+      border: none !important;
+      padding: 0.5rem 0 !important;
+    }
+
+    .card-body {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+    }
+  }
+
+  .event-tabs-dropdown {
+    padding: 0 !important;
+    position: relative;
+    z-index: 50;
+    margin-bottom: 0.5rem;
+
+    .dropdown-menu {
+      z-index: 1050;
+    }
+  }
+}
+
+.event-tabs-dropdown-menu {
+  border: 1px solid $tb-stone-200;
+  border-radius: $border-radius;
+  box-shadow: 0 8px 40px -8px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem 0;
+
+  .dropdown-item {
+    padding: 0.625rem 1rem;
+    font-size: 0.9375rem;
+    @include heading-font;
+    text-transform: uppercase;
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    color: $tb-stone-600;
+    transition: all 0.15s ease;
+
+    i {
+      color: $tb-orange;
+    }
+
+    &:hover {
+      background-color: rgba($tb-orange, 0.06);
+      color: $tb-charcoal;
+    }
+
+    &.active {
+      background-color: rgba($tb-orange, 0.1);
+      color: $tb-orange;
+      font-weight: 700;
+    }
+  }
+}
+
+ul.event-tabs {
+  font-size: 0.9375rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0 !important;
+  border-bottom: none;
+  gap: 0.2rem;
+
+  .nav-link {
+    color: $tb-stone-400;
+    font-weight: 500;
+    border: 1px solid $tb-stone-200;
+    border-bottom: none;
+    border-radius: $border-radius-sm $border-radius-sm 0 0;
+    padding: 0.5rem 1rem;
+    transition: all 0.15s ease;
+    background-color: #fff;
+    @include heading-font;
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+
+    &:hover {
+      color: $tb-stone-700;
+      background-color: $tb-stone-100;
+    }
+
+    &.active {
+      color: $tb-orange !important;
+      background-color: #F5F3F0;
+      border-color: $tb-stone-200;
+      border-bottom: 1px solid #F5F3F0;
+      font-weight: 700;
+      margin-bottom: -1px;
+    }
+  }
+}
+
+// Event name buttons — consistent width, status colors preserved
+.btn-event-name {
+  min-width: 16rem;
+  text-align: left;
+  @include heading-font;
+  font-size: 0.9375rem !important;
+  letter-spacing: 0.01em;
 }
 
 .event-admins {
   margin-left: 0;
-  padding-left: 15px;
+  padding-left: 1rem;
 
   li {
     clear: right;
     list-style-type: none;
+    padding: 0.25rem 0;
   }
 }
 
 .add-admin,
 .remove-admin {
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
 }
 
 img.event-preview {
   max-width: 200px;
   max-height: 200px;
-  margin-left: 20px;
+  margin-left: 1.25rem;
+  border-radius: $border-radius;
 }
 
 table.event-summary {
   td {
     white-space: nowrap;
+    padding: 0.5rem 0.75rem;
   }
 
   td {
     div.event-status {
-      opacity: 0.7 !important;
-      border-radius: 5px;
+      opacity: 0.9 !important;
+      border-radius: 2rem;
       font-weight: 500;
+      font-size: 0.8125rem;
+      padding: 0.2rem 0.75rem;
+      display: inline-block;
     }
   }
 
@@ -48,22 +187,20 @@ table.event-summary {
     display: inline-block;
     text-align: right;
     width: 5em;
-    margin-right: 20px;
+    margin-right: 1.25rem;
+    font-variant-numeric: tabular-nums;
   }
 }
 
 .event-dates {
   font-size: 0.8em;
+  color: $tb-stone-500;
 }
-
 
 td.ticket-user {
   a {
-    line-height: 0.7;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1.1em;
-    color: $link-color-dark;
+    line-height: 1;
+    font-size: 0.9375rem;
     padding: 0;
   }
 }
@@ -72,8 +209,42 @@ td.ticket-user {
   span {
     display: inline-block;
     white-space: nowrap;
-    box-shadow: 2px 2px 2px #555 !important;
+    border-radius: 2rem;
+    padding: 0.15rem 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
   }
+}
+
+// Right-column detail tables — consistent label/value alignment
+.tb-detail-table {
+  table-layout: fixed;
+
+  .tb-label {
+    width: 50%;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    color: $tb-stone-600;
+    vertical-align: middle;
+  }
+
+  .tb-value {
+    width: 50%;
+    vertical-align: middle;
+  }
+}
+
+.status-badge {
+  display: inline-block;
+  white-space: nowrap;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0.35rem 0;
+  padding: 0.4rem 1rem;
+  background-color: #E8B931 !important;
+  color: #3D2E00 !important;
+  border: 1.5px solid #C99A1D;
 }
 
 .row > .card {
@@ -81,14 +252,17 @@ td.ticket-user {
   width: 100%;
   max-width: 100%;
   padding: 0;
+  border: 1px solid $tb-stone-200;
+  box-shadow: 0 8px 40px -8px rgba(0, 0, 0, 0.1), 0 4px 16px -4px rgba(0, 0, 0, 0.05);
 }
 
 .card-header {
-  background-color: $secondary-bg-subtle !important;
+  background-color: $tb-stone-100 !important;
+  border-bottom: 1px solid $tb-stone-200;
 }
 
 .card-body {
-  background-color: $primary-bg-subtle !important;
+  background-color: #F5F3F0 !important;
 }
 
 .card.event-nav {
@@ -97,8 +271,115 @@ td.ticket-user {
 
     .btn-group {
       .btn {
-        font-size: 12pt !important;
+        font-size: 0.875rem !important;
       }
+    }
+  }
+}
+
+// Modern table styling
+.tb-table-card {
+  .card-body {
+    padding: 0 !important;
+    background-color: #fff !important;
+  }
+}
+
+.tb-table {
+  margin-bottom: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.875rem;
+
+  thead {
+    th {
+      background-color: $tb-stone-100;
+      color: $tb-stone-600;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.625rem 0.75rem;
+      border-bottom: 2px solid $tb-stone-200;
+      border-top: none;
+      white-space: nowrap;
+      @include heading-font;
+    }
+  }
+
+  tbody {
+    tr {
+      transition: background-color 0.1s ease;
+
+      &:hover {
+        background-color: rgba($tb-orange, 0.03);
+      }
+
+      td {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid $tb-stone-200;
+        vertical-align: middle;
+        font-variant-numeric: tabular-nums;
+      }
+
+      &:last-child td {
+        border-bottom: none;
+      }
+    }
+  }
+
+  // Status row colors (summary table)
+  tr .bg-success-subtle { background-color: rgba($success, 0.08) !important; }
+  tr .bg-warning { background-color: rgba($warning, 0.15) !important; color: $tb-charcoal !important; }
+  tr .bg-warning-subtle { background-color: rgba($warning, 0.06) !important; }
+  tr .bg-dark-subtle {
+    background-color: $tb-stone-100 !important;
+    font-weight: 600;
+  }
+}
+
+// Wide/Narrow table toggle
+.tb-narrow-only { display: none; }
+.col-narrow { display: none; }
+
+@media (max-width: 768px) {
+  .tb-wide-only { display: none !important; }
+  .tb-narrow-only { display: block !important; }
+  .col-wide { display: none !important; }
+  .col-narrow { display: table-cell !important; }
+}
+
+@media (min-width: 769px) {
+  .col-narrow { display: none !important; }
+  .col-wide { display: table-cell !important; }
+}
+
+// Narrow two-row table styling
+.tb-table-narrow {
+  font-size: 0.8125rem;
+
+  thead th {
+    font-size: 0.6875rem;
+    padding: 0.5rem;
+  }
+
+  tbody {
+    .tr-row1 {
+      td {
+        border-bottom: 1px dotted $tb-stone-300;
+        padding: 0.5rem 0.5rem 0.25rem;
+      }
+    }
+
+    .tr-row2 {
+      td {
+        border-bottom: 3px solid $tb-stone-300;
+        padding: 0.25rem 0.5rem 0.5rem;
+      }
+    }
+
+    .dropdown {
+      form { display: block; width: 100%; }
     }
   }
 }

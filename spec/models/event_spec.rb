@@ -24,6 +24,11 @@
 #  ticket_requests_end_time      :datetime
 #  slug                          :text
 #  require_role                  :boolean          default(TRUE), not null
+#  secret_token                  :string
+#
+# Indexes
+#
+#  index_events_on_secret_token  (secret_token) UNIQUE
 #
 
 require 'rails_helper'
@@ -36,10 +41,35 @@ RSpec.describe Event do
   it { is_expected.to be_valid }
 
   describe '#to_param' do
-    context 'given an event that exists in the database' do
+    context 'given an event with a secret_token' do
       subject(:event) { create(:event, name: 'Summer Campout XII') }
 
-      its(:to_param) { is_expected.to eq "#{event.id}-summer-campout-xii" }
+      it 'uses secret_token-slug format' do
+        expect(event.secret_token).to be_present
+        expect(event.to_param).to eq "#{event.secret_token}-summer-campout-xii"
+      end
+    end
+
+    context 'given an event without a secret_token' do
+      subject(:event) { create(:event, name: 'Summer Campout XII') }
+
+      it 'falls back to id-slug format' do
+        event.update_column(:secret_token, nil)
+        expect(event.to_param).to eq "#{event.id}-summer-campout-xii"
+      end
+    end
+  end
+
+  describe '#generate_secret_token!' do
+    subject(:event) { create(:event) }
+
+    it 'auto-generates an 8-character lowercase alphanumeric token on create' do
+      expect(event.secret_token).to match(/\A[a-z0-9]{8}\z/)
+    end
+
+    it 'generates unique tokens' do
+      tokens = 10.times.map { create(:event).secret_token }
+      expect(tokens.uniq.length).to eq 10
     end
   end
 
@@ -386,6 +416,216 @@ RSpec.describe Event do
 
     it 'finds one active event' do
       expect(event.active_event_addons.count).to eq(1)
+    end
+  end
+
+  describe '#status' do
+    subject { event.status }
+
+    context 'when event is in the past' do
+      let(:event) { build(:event, start_time: 2.weeks.ago, end_time: 1.week.ago) }
+
+      its(:name) { is_expected.to eq 'Past Event' }
+      its(:css_class) { is_expected.to eq 'secondary' }
+    end
+
+    context 'when ticket sales are open' do
+      let(:event) do
+        build(:event,
+              start_time: 1.week.from_now,
+              end_time: 2.weeks.from_now,
+              ticket_sales_start_time: 1.day.ago,
+              ticket_sales_end_time: 1.week.from_now)
+      end
+
+      its(:name) { is_expected.to eq 'On Sale' }
+      its(:css_class) { is_expected.to eq 'success' }
+    end
+
+    context 'when ticket requests are open but sales are not' do
+      let(:event) do
+        build(:event,
+              start_time: 1.week.from_now,
+              end_time: 2.weeks.from_now,
+              ticket_sales_start_time: 1.day.ago,
+              ticket_sales_end_time: nil,
+              ticket_requests_end_time: 1.week.from_now)
+      end
+
+      its(:name) { is_expected.to eq 'On Sale' }
+    end
+
+    context 'when event is in the future with no sales window' do
+      let(:event) do
+        build(:event,
+              start_time: 6.months.from_now,
+              end_time: 6.months.from_now + 1.day,
+              ticket_sales_start_time: 3.months.from_now,
+              ticket_sales_end_time: 5.months.from_now,
+              ticket_requests_end_time: 5.months.from_now)
+      end
+
+      its(:name) { is_expected.to eq 'A Future Event' }
+      its(:css_class) { is_expected.to eq 'warning' }
+    end
+  end
+
+  describe '#ticket_requests_open?' do
+    subject { event.ticket_requests_open? }
+
+    context 'when ticket_requests_end_time has passed' do
+      let(:event) do
+        build(:event,
+              start_time: 1.week.from_now,
+              end_time: 2.weeks.from_now,
+              ticket_requests_end_time: 1.day.ago)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when event has ended' do
+      let(:event) { build(:event, start_time: 2.weeks.ago, end_time: 1.day.ago) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when ticket sales have not started yet' do
+      let(:event) do
+        build(:event,
+              start_time: 1.week.from_now,
+              end_time: 2.weeks.from_now,
+              ticket_sales_start_time: 1.day.from_now)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when tickets are available for request' do
+      let(:event) do
+        build(:event,
+              start_time: 1.week.from_now,
+              end_time: 2.weeks.from_now,
+              ticket_sales_start_time: 1.day.ago,
+              ticket_requests_end_time: 1.week.from_now)
+      end
+
+      it { is_expected.to be true }
+    end
+  end
+
+  describe '#past_event?' do
+    subject { event.past_event? }
+
+    context 'when event has ended' do
+      let(:event) { build(:event, start_time: 2.weeks.ago, end_time: 1.day.ago) }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when event has not ended' do
+      let(:event) { build(:event, start_time: 1.week.from_now, end_time: 2.weeks.from_now) }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#future_event?' do
+    subject { event.future_event? }
+
+    context 'when event has not started' do
+      let(:event) { build(:event, start_time: 1.week.from_now, end_time: 2.weeks.from_now) }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when event has already started' do
+      let(:event) { build(:event, start_time: 1.day.ago, end_time: 1.week.from_now) }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#revenue' do
+    let(:event) { create(:event) }
+
+    context 'when there are no completed ticket requests' do
+      it { expect(event.revenue).to be_empty }
+    end
+
+    context 'when there are completed ticket requests with payments' do
+      let!(:tr) { create(:ticket_request, :completed, event:) }
+      let!(:payment) { create(:payment, ticket_request: tr, status: :received) }
+
+      it 'returns payment objects' do
+        expect(event.revenue).to include(payment)
+      end
+    end
+  end
+
+  describe '#make_admin' do
+    let(:event) { create(:event) }
+    let(:user) { create(:user) }
+
+    context 'when user is not already an admin' do
+      it 'creates an EventAdmin record' do
+        expect { event.make_admin(user) }.to change(EventAdmin, :count).by(1)
+      end
+    end
+
+    context 'when user is already an admin' do
+      before { event.make_admin(user) }
+
+      it 'returns false' do
+        expect(event.make_admin(user)).to be false
+      end
+    end
+
+    context 'when user is a site admin' do
+      let(:user) { create(:user, :site_admin) }
+
+      it 'returns false because site admins are already admins' do
+        expect(event.make_admin(user)).to be false
+      end
+    end
+  end
+
+  describe '#admin_contacts' do
+    subject { event.admin_contacts }
+
+    let(:event) { create(:event, :with_admins) }
+
+    it { is_expected.to be_a(Array) }
+
+    it 'returns name_and_email strings' do
+      expect(subject.first).to match(/<.+@.+>/)
+    end
+  end
+
+  describe '#to_param' do
+    context 'when event is not persisted' do
+      subject { build(:event).to_param }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#admissible_requests' do
+    subject { event.admissible_requests }
+
+    let(:event) { create(:event) }
+
+    let!(:completed_tr) { create(:ticket_request, :completed, event:) }
+    let!(:pending_tr) { create(:ticket_request, :pending, event:) }
+    let!(:awaiting_tr) { create(:ticket_request, :approved, event:) }
+    let!(:declined_tr) { create(:ticket_request, :declined, event:) }
+
+    it 'includes completed, awaiting payment, and pending requests' do
+      expect(subject).to include(completed_tr, pending_tr, awaiting_tr)
+    end
+
+    it 'excludes declined requests' do
+      expect(subject).not_to include(declined_tr)
     end
   end
 end

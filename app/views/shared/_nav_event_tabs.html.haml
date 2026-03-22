@@ -1,7 +1,6 @@
 - active_tab ||= {}
+- active_label = { event_show: event.name, event_edit: "Edit Event", ticket_requests: "Ticket Requests", event_passes: "Event Passes", camping_permits: "Camping Permits", guest_list: "Guest List", email_ticket_holders: "Email Ticket Holders" }.find { |k, _| active_tab[k] == "active" }&.last || event.name
 
--# TODO: when we allow uploading images for the events, we can show it.
--# = image_tag image_path('logos/fnf-transparent.png'), class: 'float-end event-preview'
 .card.event-nav.border-1.pb-0.border-bottom-0
   .card-header.bg-dark-subtle
     .row
@@ -13,6 +12,47 @@
           = event.starting.to_date.strftime('%A, %B %d, %Y')
 
   .card-body.p-0.pt-3.pb-0.border-bottom-0.border-2
+
+    -# Dropdown for small screens
+    .event-tabs-dropdown.p-3
+      .dropdown
+        %button.btn.btn-primary.dropdown-toggle.w-100.text-start{"data-bs-toggle": "dropdown", "aria-expanded": "false", type: "button"}
+          %i.bi.bi-list.me-2
+          = active_label
+        %ul.dropdown-menu.w-100.event-tabs-dropdown-menu
+          - if current_user.site_admin? || current_user.manages_event?(event)
+            %li
+              = link_to event_path(event), class: "dropdown-item #{'active' if active_tab[:event_show] == 'active'}" do
+                %i.bi.bi-calendar-event.me-2
+                = event.name
+          %li
+            = link_to edit_event_path(event), class: "dropdown-item #{'active' if active_tab[:event_edit] == 'active'}" do
+              %i.bi.bi-pencil.me-2
+              Edit Event
+          %li
+            = link_to event_ticket_requests_path(event), class: "dropdown-item #{'active' if active_tab[:ticket_requests] == 'active'}" do
+              %i.bi.bi-ticket-perforated.me-2
+              Ticket Requests
+          - if event.active_event_addons_passes_count > 0
+            %li
+              = link_to active_addons_passes_event_path(event), class: "dropdown-item #{'active' if active_tab[:event_passes] == 'active'}" do
+                %i.bi.bi-pass.me-2
+                Event Passes
+          - if event.active_event_addons_camping_count > 0
+            %li
+              = link_to active_addons_camping_event_path(event), class: "dropdown-item #{'active' if active_tab[:camping_permits] == 'active'}" do
+                %i.bi.bi-tree.me-2
+                Camping Permits
+          %li
+            = link_to guest_list_event_path(event), class: "dropdown-item #{'active' if active_tab[:guest_list] == 'active'}" do
+              %i.bi.bi-people.me-2
+              Guest List
+          %li
+            = link_to active_ticket_requests_event_path(event), class: "dropdown-item #{'active' if active_tab[:email_ticket_holders] == 'active'}" do
+              %i.bi.bi-envelope.me-2
+              Email Ticket Holders
+
+    -# Tabs for wide screens
     %ul.nav.nav-tabs.p-4.pb-0.mb-3.event-tabs
       - if current_user.site_admin? || current_user.manages_event?(event)
         - if active_tab[:event_show] == "active"

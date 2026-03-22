@@ -2,12 +2,12 @@
 
 .container-fluid
   .row
-    .col-sm-12.col-md-12.col-lg-5.col-xl-5
+    .col-sm-12.col-md-12.col-lg-4.col-xl-4
       .card
         .card-header.bg-dark-subtle
           %h4= @event.name
 
-        .card-body.bg-body-secondary
+        .card-body
           - if @event.ticket_requests_open?
             = render partial: "events/event_summary"
 
@@ -19,15 +19,14 @@
               to your account to review the details
 
           - if @event.tickets_require_approval
-            .card-footer.bg-warning-subtle.p-2
-            %p
-              %strong
-                Please fill out the form to request tickets.
-                %br
-                If your request is approved, you'll receive an email with further instructions.
-
+            .mt-3.p-3.bg-warning-subtle.rounded
+              %p.mb-0
+                %strong
+                  Please fill out the form to request tickets.
+                  %br
+                  If your request is approved, you'll receive an email with further instructions.
 
     - if @event.ticket_requests_open?
-      .col-sm-12.col-md-12.col-lg-7.col-xl-7
+      .col-sm-12.col-md-12.col-lg-8.col-xl-8
         = render 'form'
 

@@ -1,6 +1,7 @@
 - button_class="btn btn-primary btn-lg text-nowrap"
 %nav.navbar.navbar-expand-lg.navbar-dark#main_nav
-  .container-fluid
+  #nav-vanta-bg
+  .container-fluid.position-relative
     %a.navbar-brand{ href: root_path, id: "brand-logo" }
       = image_tag "logos/nav-bar-logo.png", size: "80x80", id: "brand-logo-img"
     %button.navbar-toggler{"aria-controls" => "navbarSupportedContent", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-bs-target" => "#navbarSupportedContent", "data-bs-toggle" => "collapse", :type => "button"}
@@ -38,3 +39,27 @@
               %li
                 %a.dropdown-item.fs-6{:href => "https://fnf.events/", target: "_blank"} Friends & Family Site
 
+- unless controller_name == 'home'
+  %script{src: "https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"}
+  %script{src: "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"}
+  :javascript
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof VANTA !== 'undefined') {
+        var wavesConfig = {
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00,
+          scale: 1.00,
+          scaleMobile: 1.00,
+          color: 0x1e1917,
+          shininess: 44.00,
+          waveHeight: 28.00,
+          waveSpeed: 0.85,
+          zoom: 0.65
+        };
+        VANTA.WAVES(Object.assign({el: "#nav-vanta-bg"}, wavesConfig));
+        VANTA.WAVES(Object.assign({el: "#footer-vanta-bg"}, wavesConfig));
+      }
+    });

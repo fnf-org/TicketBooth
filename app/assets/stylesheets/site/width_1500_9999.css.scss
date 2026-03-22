@@ -1,11 +1,7 @@
-
-// Hide navbar text for small screens
 @media (min-width: 1501px) {
   body {
-    font-size: 16pt;
-
     #columns-container {
-      margin: 20px auto;
+      margin: 1.25rem auto;
       width: 90%;
     }
 
@@ -15,7 +11,7 @@
     td.optional-small, th.optional-small {
       display: table-cell !important;
     }
-    td.optional-medium, th.optional-medium  {
+    td.optional-medium, th.optional-medium {
       display: table-cell !important;
     }
   }

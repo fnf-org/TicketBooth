@@ -57,4 +57,49 @@ describe TicketRequestMailer do
       its(:body) { is_expected.to match('buy') }
     end
   end
+
+  describe '#request_denied' do
+    subject(:mail) { described_class.request_denied(ticket_request) }
+
+    its(:subject) { is_expected.to eq "Your #{event.name} ticket request" }
+
+    its(:to) { is_expected.to eq [user.email] }
+
+    its('body.encoded') { is_expected.to match(user.first_name) }
+
+    its('body.encoded') { is_expected.to match(event.name) }
+  end
+
+  describe '#payment_reminder' do
+    subject(:mail) { described_class.payment_reminder(ticket_request) }
+
+    its(:subject) { is_expected.to eq "#{event.name} buy your tickets now!" }
+
+    its(:to) { is_expected.to eq [user.email] }
+
+    its('body.encoded') { is_expected.to match(user.first_name) }
+
+    its('body.encoded') { is_expected.to match(event.name) }
+  end
+
+  describe '#email_ticket_holder' do
+    subject(:mail) { described_class.email_ticket_holder(ticket_request, email_subject, email_body) }
+
+    let(:email_subject) { 'Important Update' }
+    let(:email_body) { '<p>Hello everyone!</p>' }
+
+    its(:subject) { is_expected.to eq 'Important Update' }
+
+    its(:to) { is_expected.to eq [user.email] }
+
+    its('body.encoded') { is_expected.to match('Hello everyone!') }
+
+    context 'when ticket request is awaiting payment' do
+      let(:ticket_request) { create(:ticket_request, :approved, special_price: price) }
+
+      its(:subject) { is_expected.to eq 'Important Update' }
+
+      its(:to) { is_expected.to eq [user.email] }
+    end
+  end
 end

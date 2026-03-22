@@ -296,5 +296,252 @@ describe TicketRequestsController, type: :controller do
       end
     end
   end
+
+  describe 'POST #approve' do
+    subject { post :approve, params: { event_id: event.to_param, id: ticket_request.to_param } }
+
+    let(:ticket_request) { create(:ticket_request, :pending, event:) }
+
+    context 'when viewer is event admin' do
+      let(:viewer) { create(:event_admin, event:).user }
+
+      it { is_expected.to redirect_to(event_ticket_requests_path(event)) }
+
+      it 'changes the ticket request status to awaiting payment' do
+        subject
+        expect(ticket_request.reload).to be_awaiting_payment
+      end
+
+      it 'enqueues approval email' do
+        expect { subject }.to have_enqueued_mail(TicketRequestMailer, :request_approved)
+      end
+    end
+
+    context 'when viewer is a normal user' do
+      let(:viewer) { create(:user) }
+
+      it { is_expected.to have_http_status(:redirect) }
+    end
+
+    context 'when ticket request has zero price (free ticket)' do
+      let(:viewer) { create(:event_admin, event:).user }
+      let(:ticket_request) { create(:ticket_request, :pending, event:, special_price: 0) }
+
+      it 'marks the ticket as completed' do
+        subject
+        expect(ticket_request.reload).to be_completed
+      end
+    end
+  end
+
+  describe 'POST #decline' do
+    subject { post :decline, params: { event_id: event.to_param, id: ticket_request.to_param } }
+
+    let(:ticket_request) { create(:ticket_request, :pending, event:) }
+
+    context 'when viewer is event admin' do
+      let(:viewer) { create(:event_admin, event:).user }
+
+      it { is_expected.to redirect_to(event_ticket_requests_path(event)) }
+
+      it 'changes the ticket request status to declined' do
+        subject
+        expect(ticket_request.reload).to be_declined
+      end
+
+      it 'enqueues denial email' do
+        expect { subject }.to have_enqueued_mail(TicketRequestMailer, :request_denied)
+      end
+    end
+
+    context 'when viewer is not an admin' do
+      let(:viewer) { create(:user) }
+
+      it { is_expected.to have_http_status(:redirect) }
+    end
+  end
+
+  describe 'POST #revert_to_pending' do
+    subject { post :revert_to_pending, params: { event_id: event.to_param, id: ticket_request.to_param } }
+
+    let(:ticket_request) { create(:ticket_request, :declined, event:) }
+
+    context 'when viewer is event admin' do
+      let(:viewer) { create(:event_admin, event:).user }
+
+      it { is_expected.to redirect_to(event_ticket_requests_path(event)) }
+
+      it 'reverts the ticket request to pending' do
+        subject
+        expect(ticket_request.reload).to be_pending
+      end
+    end
+
+    context 'when ticket request is not declined' do
+      let(:viewer) { create(:event_admin, event:).user }
+      let(:ticket_request) { create(:ticket_request, :pending, event:) }
+
+      it 'does not change the status' do
+        subject
+        expect(ticket_request.reload).to be_pending
+      end
+    end
+  end
+
+  describe 'POST #resend_approval' do
+    subject { post :resend_approval, params: { event_id: event.to_param, id: ticket_request.to_param } }
+
+    let(:ticket_request) { create(:ticket_request, :approved, event:) }
+
+    context 'when viewer is event admin and ticket is awaiting payment' do
+      let(:viewer) { create(:event_admin, event:).user }
+
+      it { is_expected.to have_http_status(:ok) }
+
+      it 'enqueues the approval email' do
+        expect { subject }.to have_enqueued_mail(TicketRequestMailer, :request_approved)
+      end
+    end
+
+    context 'when ticket request is not awaiting payment' do
+      let(:viewer) { create(:event_admin, event:).user }
+      let(:ticket_request) { create(:ticket_request, :pending, event:) }
+
+      it { is_expected.to have_http_status(:ok) }
+
+      it 'does not enqueue the approval email' do
+        expect { subject }.not_to have_enqueued_mail(TicketRequestMailer, :request_approved)
+      end
+    end
+  end
+
+  describe 'POST #refund' do
+    subject { post :refund, params: { event_id: event.to_param, id: ticket_request.to_param } }
+
+    let(:ticket_request) { create(:ticket_request, :completed, event:) }
+
+    context 'when viewer is event admin' do
+      let(:viewer) { create(:event_admin, event:).user }
+
+      context 'when ticket has no payment' do
+        it { is_expected.to redirect_to(event_ticket_request_path(event, ticket_request)) }
+
+        it 'adds an error because no payment exists' do
+          subject
+          expect(flash[:alert]).to be_present
+        end
+      end
+    end
+
+    context 'when viewer is not an admin' do
+      let(:viewer) { create(:user) }
+
+      it { is_expected.to have_http_status(:redirect) }
+    end
+  end
+
+  describe 'PATCH #update' do
+    subject do
+      patch :update, params: {
+        event_id:       event.to_param,
+        id:             ticket_request.to_param,
+        ticket_request: { guest_list: new_guests }
+      }
+    end
+
+    let(:ticket_request) { create(:ticket_request, event:, user:) }
+    let(:new_guests) { ['New Guest <new@test.com>'] }
+
+    context 'when viewer is the owner' do
+      let(:viewer) { user }
+
+      it { is_expected.to redirect_to(event_ticket_request_path(event, ticket_request)) }
+
+      it 'updates the guest list' do
+        subject
+        expect(ticket_request.reload.guests).to eq new_guests
+      end
+    end
+
+    context 'when viewer is an event admin' do
+      let(:viewer) { create(:event_admin, event:).user }
+
+      it { is_expected.to redirect_to(event_ticket_request_path(event, ticket_request)) }
+    end
+  end
+
+  describe 'POST #payment_reminder' do
+    subject { post :payment_reminder, params: { event_id: event.to_param } }
+
+    let(:viewer) { create(:event_admin, event:).user }
+
+    context 'when there are ticket requests awaiting payment' do
+      let!(:awaiting_tr) { create(:ticket_request, :approved, event:) }
+
+      it { is_expected.to redirect_to(event_ticket_requests_path(event)) }
+
+      it 'sends payment reminder emails' do
+        expect { subject }.to have_enqueued_mail(TicketRequestMailer, :payment_reminder)
+      end
+    end
+
+    context 'when there are no awaiting payment requests' do
+      it { is_expected.to redirect_to(event_ticket_requests_path(event)) }
+
+      it 'includes count in flash' do
+        subject
+        expect(flash[:notice]).to match(/0 ticket requesters/)
+      end
+    end
+  end
+
+  describe 'POST #email_ticket_holders' do
+    subject do
+      post :email_ticket_holders, params: {
+        event_id: event.to_param,
+        subject:  'Test Subject',
+        body:     'Test body content'
+      }
+    end
+
+    let(:viewer) { create(:event_admin, event:).user }
+
+    context 'when there are active ticket requests' do
+      let!(:completed_tr) { create(:ticket_request, :completed, event:) }
+      let!(:awaiting_tr) { create(:ticket_request, :approved, event:) }
+
+      it { is_expected.to redirect_to(event_ticket_requests_path(event)) }
+
+      it 'sends emails to active ticket holders' do
+        expect { subject }.to have_enqueued_mail(TicketRequestMailer, :email_ticket_holder).exactly(2).times
+      end
+    end
+
+    context 'when there are no active ticket requests' do
+      it { is_expected.to redirect_to(event_ticket_requests_path(event)) }
+
+      it 'reports zero emails sent' do
+        subject
+        expect(flash[:notice]).to match(/0 ticket holders/)
+      end
+    end
+  end
+
+  describe 'POST #download' do
+    subject { post :download, params: { event_id: event.to_param } }
+
+    let(:viewer) { create(:event_admin, event:).user }
+
+    context 'when there are active ticket requests' do
+      let!(:tr) { create(:ticket_request, :approved, event:) }
+
+      it { is_expected.to have_http_status(:ok) }
+
+      it 'returns a CSV file' do
+        subject
+        expect(response.content_type).to include('text/csv')
+      end
+    end
+  end
 end
 # rubocop: enable RSpec

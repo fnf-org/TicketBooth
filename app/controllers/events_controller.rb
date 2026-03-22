@@ -163,11 +163,17 @@ class EventsController < ApplicationController
   end
 
   def set_event
-    @event = Event.where(id: permitted_params[:id].to_i).first
+    param = permitted_params[:id].to_s
+
+    if param.match?(/\A[a-z0-9]{8}-/)
+      @event = Event.find_by(secret_token: param[0, 8])
+    end
+    @event ||= Event.find_by(id: param.to_i) if param.to_i > 0
+
+    return redirect_to(root_path, alert: 'Event not found.') unless @event
     return if @event.event_addons.present?
 
     @event.create_default_event_addons
-    Rails.logger.info("event_set: event: #{@event.id} addons.size: #{@event.event_addons.size} event_addons: #{@event.event_addons.inspect}")
   end
 
   def permitted_params

@@ -3,22 +3,19 @@ ul.shared-user-links, #resetLinks {
   padding-left: 0 !important;
 
   li {
-    margin: 10px auto;
+    margin: 0.5rem auto;
   }
 
   a {
     margin-left: 0;
-    text-decoration: none !important;
-    font-size: 1em;
-    font-weight: 500;
-
+    font-size: 0.9375rem;
   }
 }
 
 .horizontal-links {
   ul.shared-user-links {
     list-style-type: none;
-    margin-top: 40px !important;
+    margin-top: 2rem !important;
     padding-left: 0 !important;
 
     li {
@@ -37,17 +34,22 @@ ul.shared-user-links, #resetLinks {
   .button-links {
     a.button-link, a.ticket-request-link {
       border-width: 0 !important;
-
-      background-color: #ff7800 !important;
+      background-color: $tb-orange !important;
       color: #fff !important;
+      border-radius: $btn-border-radius;
+      padding: 0.5rem 1.25rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
 
       &:focus, &:active, &:hover {
-        color: black !important;
-        background-color: #ffda00 !important;
+        color: #fff !important;
+        background-color: #C44A0A !important;
+        transform: translateY(-1px);
+        box-shadow: $box-shadow-sm;
       }
 
       &:visited {
-        background-color: #ab5507 !important;
+        background-color: $tb-orange !important;
       }
     }
   }

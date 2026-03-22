@@ -488,5 +488,345 @@ describe TicketRequest do
       expect(token = ticket_request.generate_user_auth_token!).to be_present
       expect(ticket_request.user.authentication_token).to eq(token)
     end
+
+    context 'when user is blank' do
+      let(:ticket_request) { build(:ticket_request, user: nil) }
+
+      it 'returns nil' do
+        expect(ticket_request.generate_user_auth_token!).to be_nil
+      end
+    end
+  end
+
+  describe '#status_name' do
+    subject { ticket_request.status_name }
+
+    let(:ticket_request) { build(:ticket_request, :pending) }
+
+    it { is_expected.to eq 'Pending Approval' }
+
+    context 'when awaiting payment' do
+      let(:ticket_request) { build(:ticket_request, :approved) }
+
+      it { is_expected.to eq 'Waiting for Payment' }
+    end
+
+    context 'when completed' do
+      let(:ticket_request) { build(:ticket_request, :completed) }
+
+      it { is_expected.to eq 'Completed' }
+    end
+
+    context 'when declined' do
+      let(:ticket_request) { build(:ticket_request, :declined) }
+
+      it { is_expected.to eq 'Declined' }
+    end
+  end
+
+  describe '#completed?' do
+    subject { ticket_request }
+
+    context 'when status is completed' do
+      let(:ticket_request) { build(:ticket_request, :completed) }
+
+      it { is_expected.to be_completed }
+    end
+
+    context 'when status is pending' do
+      let(:ticket_request) { build(:ticket_request, :pending) }
+
+      it { is_expected.not_to be_completed }
+    end
+  end
+
+  describe '#mark_complete' do
+    let(:ticket_request) { create(:ticket_request, :approved) }
+
+    it 'changes status to completed' do
+      expect { ticket_request.mark_complete }.to change(ticket_request, :completed?).to(true)
+    end
+  end
+
+  describe '#mark_declined' do
+    let(:ticket_request) { create(:ticket_request, :pending) }
+
+    it 'changes status to declined' do
+      expect { ticket_request.mark_declined }.to change(ticket_request, :declined?).to(true)
+    end
+  end
+
+  describe '#mark_refunded' do
+    let(:ticket_request) { create(:ticket_request, :completed) }
+
+    it 'changes status to refunded' do
+      expect { ticket_request.mark_refunded }.to change(ticket_request, :refunded?).to(true)
+    end
+  end
+
+  describe '#refunded?' do
+    subject { ticket_request }
+
+    context 'when status is refunded' do
+      let(:ticket_request) { build(:ticket_request, status: TicketRequest::STATUS_REFUNDED) }
+
+      it { is_expected.to be_refunded }
+    end
+
+    context 'when status is not refunded' do
+      let(:ticket_request) { build(:ticket_request, :completed) }
+
+      it { is_expected.not_to be_refunded }
+    end
+  end
+
+  describe '#post_payment?' do
+    subject { ticket_request.post_payment? }
+
+    context 'when completed' do
+      let(:ticket_request) { build(:ticket_request, :completed) }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when refunded' do
+      let(:ticket_request) { build(:ticket_request, status: TicketRequest::STATUS_REFUNDED) }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when pending' do
+      let(:ticket_request) { build(:ticket_request, :pending) }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#owner?' do
+    let(:requester) { create(:user) }
+    let(:ticket_request) { create(:ticket_request, user: requester) }
+
+    context 'when user is the owner' do
+      subject { ticket_request.owner?(requester) }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when user is an event admin' do
+      subject { ticket_request.owner?(admin) }
+
+      let(:admin) { create(:event_admin, event: ticket_request.event).user }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when user is a random person' do
+      subject { ticket_request.owner?(random) }
+
+      let(:random) { create(:user) }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#can_be_cancelled?' do
+    let(:user) { create(:user) }
+    let(:ticket_request) { create(:ticket_request, user:) }
+
+    context 'when user is the owner and no payment received' do
+      subject { ticket_request.can_be_cancelled?(by_user: user) }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when user is not the owner' do
+      subject { ticket_request.can_be_cancelled?(by_user: other_user) }
+
+      let(:other_user) { create(:user) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user is nil' do
+      subject { ticket_request.can_be_cancelled?(by_user: nil) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when payment has been received' do
+      subject { ticket_request.can_be_cancelled?(by_user: user) }
+
+      let!(:payment) { create(:payment, ticket_request:, status: :received) }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#cost' do
+    subject { ticket_request.cost }
+
+    let(:ticket_request) { build(:ticket_request, adults: 2, kids: 0, donation: 25, special_price: 100) }
+
+    it { is_expected.to eq 125 }
+  end
+
+  describe '#free?' do
+    subject { ticket_request.free? }
+
+    context 'when special_price is zero' do
+      let(:ticket_request) { build(:ticket_request, special_price: 0) }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when price is positive' do
+      let(:ticket_request) { build(:ticket_request) }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#all_guests_specified?' do
+    subject { ticket_request.all_guests_specified? }
+
+    context 'when all guests are specified' do
+      let(:ticket_request) { build(:ticket_request, adults: 1, kids: 0, guests: ['Guest One <g1@test.com>']) }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when guests are missing' do
+      let(:ticket_request) { build(:ticket_request, adults: 3, kids: 0, guests: ['Guest One <g1@test.com>']) }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#payment_received?' do
+    let(:ticket_request) { create(:ticket_request) }
+
+    context 'when no payment exists' do
+      subject { ticket_request.payment_received? }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when payment is received' do
+      subject { ticket_request.payment_received? }
+
+      let!(:payment) { create(:payment, ticket_request:, status: :received) }
+
+      it { is_expected.to be true }
+    end
+  end
+
+  describe '#payment_refunded?' do
+    let(:ticket_request) { create(:ticket_request) }
+
+    context 'when no payment exists' do
+      subject { ticket_request.payment_refunded? }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when payment is refunded' do
+      subject { ticket_request.payment_refunded? }
+
+      let!(:payment) { create(:payment, ticket_request:, status: :refunded) }
+
+      it { is_expected.to be true }
+    end
+  end
+
+  describe '#refund' do
+    let(:ticket_request) { create(:ticket_request, :completed) }
+
+    context 'when ticket is already refunded' do
+      before { ticket_request.update_column(:status, TicketRequest::STATUS_REFUNDED) }
+
+      it 'returns false' do
+        expect(ticket_request.refund).to be false
+      end
+
+      it 'adds an error' do
+        ticket_request.refund
+        expect(ticket_request.errors[:base]).to include('Ticket has already been refunded')
+      end
+    end
+
+    context 'when ticket is not completed' do
+      let(:ticket_request) { create(:ticket_request, :pending) }
+
+      it 'returns false' do
+        expect(ticket_request.refund).to be false
+      end
+
+      it 'adds an error' do
+        ticket_request.refund
+        expect(ticket_request.errors[:base]).to include('Ticket has not been purchased')
+      end
+    end
+
+    context 'when ticket is completed but has no payment' do
+      it 'returns false' do
+        expect(ticket_request.refund).to be false
+      end
+    end
+  end
+
+  describe '#set_defaults' do
+    context 'when event does not require approval' do
+      let(:event) { create(:event, tickets_require_approval: false) }
+      let(:ticket_request) { build(:ticket_request, event:, status: nil) }
+
+      before { ticket_request.valid? }
+
+      it 'sets status to awaiting payment' do
+        expect(ticket_request.status).to eq TicketRequest::STATUS_AWAITING_PAYMENT
+      end
+    end
+
+    context 'when event requires approval' do
+      let(:event) { create(:event, tickets_require_approval: true) }
+      let(:ticket_request) { build(:ticket_request, event:, status: nil) }
+
+      before { ticket_request.valid? }
+
+      it 'sets status to pending' do
+        expect(ticket_request.status).to eq TicketRequest::STATUS_PENDING
+      end
+    end
+
+    context 'when no event is set' do
+      let(:ticket_request) { build(:ticket_request, event: nil, status: nil) }
+
+      before { ticket_request.valid? }
+
+      it 'defaults status to pending' do
+        expect(ticket_request.status).to eq TicketRequest::STATUS_PENDING
+      end
+    end
+
+    context 'guest cleanup' do
+      let(:ticket_request) { build(:ticket_request, guests: ['  Guest One  ', '', nil, '  ']) }
+
+      before { ticket_request.valid? }
+
+      it 'strips whitespace and removes blanks' do
+        expect(ticket_request.guests).to eq ['Guest One']
+      end
+    end
+  end
+
+  describe '#guest_count' do
+    subject(:ticket_request) { build(:ticket_request, adults: 2, kids: 1) }
+
+    its(:guest_count) { is_expected.to eq 3 }
+  end
+
+  describe '#guests_specified' do
+    subject(:ticket_request) { build(:ticket_request, guests: %w[A B]) }
+
+    its(:guests_specified) { is_expected.to eq 2 }
   end
 end

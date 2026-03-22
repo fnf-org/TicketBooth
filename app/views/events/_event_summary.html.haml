@@ -1,60 +1,66 @@
-%table.w-100.event-summary
-  %tr
-    %th{colspan: 2}
-      %h4 Event Summary
-  %tr
-    %td.text-start
-      Event Status
-    %td
-      %div{class: "event-status bg-#{@event.status.css_class} b-0 text-white px-2"}
-        = @event.status.name
-  %tr
-    %td.text-start Start Time
-    %td.px-2= TimeHelper.for_display(@event.start_time.localtime)
-  %tr
-    %td.text-start End Time
-    %td.px-2= TimeHelper.for_display(@event.end_time.localtime)
+%h4.mb-3 Event Summary
 
+.row.g-3
+  .col-6
+    %small.text-muted.d-block Event Status
+    %div{class: "event-status bg-#{@event.status.css_class} text-white px-2 d-inline-block mt-1", style: "border-radius: 2rem;"}
+      = @event.status.name
+  .col-6
+    - if @event.start_time.future?
+      - months_left = ((@event.start_time - Time.current) / 1.month.to_i).floor
+      - if months_left >= 3
+        - time_label = "Plenty"
+        - time_class = "bg-success"
+      - elsif months_left >= 2
+        - time_label = "Getting Close"
+        - time_class = "bg-warning"
+      - else
+        - time_label = "Almost There"
+        - time_class = "bg-danger"
+      %small.text-muted.d-block Time Left
+      %div{class: "#{time_class} text-white px-2 d-inline-block mt-1", style: "border-radius: 2rem;"}
+        = time_label
+    - else
+      %small.text-muted.d-block Start Time
+      %strong= TimeHelper.for_display(@event.start_time.localtime)
+  .col-6
+    %small.text-muted.d-block Start Time
+    %strong= TimeHelper.for_display(@event.start_time.localtime)
+  .col-6
+    %small.text-muted.d-block End Time
+    %strong= TimeHelper.for_display(@event.end_time.localtime)
   - if @event.ticket_sales_start_time
-    %tr
-      %td.text-start Tickets On Sale At
-      %td.px-2= TimeHelper.for_display(@event.ticket_sales_start_time)
-
+    .col-6
+      %small.text-muted.d-block Tickets On Sale At
+      %strong= TimeHelper.for_display(@event.ticket_sales_start_time)
   - if @event.ticket_sales_end_time
-    %tr
-      %td.text-start Tickets Sales Stop At
-      %td.px-2= TimeHelper.for_display(@event.ticket_sales_end_time)
+    .col-6
+      %small.text-muted.d-block Tickets Sales Stop At
+      %strong= TimeHelper.for_display(@event.ticket_sales_end_time)
 
-  %tr
-    %td{colspan: 2}
-      %hr
-      %h4 Ticket and Event Addon Prices
-  %tr
-    %td.text-start Adult Ticket
-    %td.px-2
-      %span.price
-        = number_to_currency(@event.adult_ticket_price)
-      - if @event.max_adult_tickets_per_request
-        %span.muted
-          (Maximum #{@event.max_adult_tickets_per_request} tickets)
+%hr.my-3
+
+%h4.mb-3 Ticket and Event Addon Prices
+
+.row.g-3
+  .col-6
+    %small.text-muted.d-block Adult Ticket
+    %strong= number_to_currency(@event.adult_ticket_price)
+    - if @event.max_adult_tickets_per_request
+      %br
+      %small.text-muted (Max #{@event.max_adult_tickets_per_request} tickets)
   - if @event.kid_ticket_price.present?
-    %tr
-      %td.text-start Kids Ticket
-      %td.px-2
-        %span.price
-          = number_to_currency(@event.kid_ticket_price)
-        - if @event.max_kid_tickets_per_request.present?
-          %span.muted (Maximum #{@event.max_kid_tickets_per_request} tickets)
-        - else
-          %span.muted
-            (Unlimited tickets)
-
+    .col-6
+      %small.text-muted.d-block Kids Ticket
+      %strong= number_to_currency(@event.kid_ticket_price)
+      - if @event.max_kid_tickets_per_request.present?
+        %br
+        %small.text-muted (Max #{@event.max_kid_tickets_per_request} tickets)
+      - else
+        %br
+        %small.text-muted (Unlimited)
   - if @event.active_event_addons?
-    %span.muted
     - @event.active_sorted_event_addons.each do |event_addon|
-      %tr
-        %td.text-start
-          = event_addon.name
-        %td.px-2
-          %span.price
-            = number_to_currency(event_addon.price)
+      .col-6
+        %small.text-muted.d-block= event_addon.name
+        %strong= number_to_currency(event_addon.price)

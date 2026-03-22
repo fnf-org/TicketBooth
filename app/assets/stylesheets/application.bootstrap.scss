@@ -1,33 +1,121 @@
-//*= require_tree .
+// Ticket Booth — Custom Bootstrap Theme
+// ============================================================
+// Design: "Warm Industrial" — rich charcoal + burnt orange accent
+// Fonts: Syne (headings) + DM Sans (body)
+// ============================================================
 
+// -- Custom Palette --
+$tb-orange: #EA5D0C;
+$tb-charcoal: #1C1917;
+$tb-cream: #FAFAF9;
+$tb-teal: #32a83c;
+$tb-blue: #4B8AB7;
+$tb-amber: #D9A106;
+$tb-crimson: #DC2626;
+$tb-sky: #0284C7;
+
+$tb-stone-50: #FAFAF9;
+$tb-stone-100: #F5F5F4;
+$tb-stone-200: #E7E5E4;
+$tb-stone-300: #D6D3D1;
+$tb-stone-400: #A8A29E;
+$tb-stone-500: #78716C;
+$tb-stone-600: #57534E;
+$tb-stone-700: #44403C;
+$tb-stone-800: #292524;
+$tb-stone-900: #1C1917;
+// -- Bootstrap Color Overrides --
+$primary: $tb-orange;
+$secondary: $tb-stone-600;
+$success: $tb-teal;
+$warning: $tb-amber;
+$danger: $tb-crimson;
+$info: $tb-sky;
+$light: $tb-stone-100;
+$dark: $tb-charcoal;
+
+// -- Body --
+$body-bg: #FDFDFC;
+$body-color: $tb-charcoal;
+
+// -- Typography --
+$font-family-sans-serif: "DM Sans", system-ui, -apple-system, sans-serif;
+$headings-font-family: "Syne", system-ui, sans-serif;
+$headings-font-weight: 600;
+$headings-color: $tb-charcoal;
+
+$font-size-base: 1rem;
+$h1-font-size: 2.25rem;
+$h2-font-size: 1.75rem;
+$h3-font-size: 1.5rem;
+$h4-font-size: 1.25rem;
+$h5-font-size: 1.125rem;
+$h6-font-size: 1rem;
+
+// -- Links --
+$link-color: $tb-orange;
+$link-hover-color: #C44A0A;
+$link-decoration: none;
+
+// -- Border Radius --
+$border-radius: 0.625rem;
+$border-radius-sm: 0.375rem;
+$border-radius-lg: 0.75rem;
+
+// -- Cards --
+$card-border-radius: 0.75rem;
+$card-border-color: rgba(0, 0, 0, 0.08);
+$card-cap-bg: $tb-stone-100;
+$card-bg: #FFFFFF;
+
+// -- Buttons --
+$btn-border-radius: 0.5rem;
+$btn-border-radius-sm: 0.375rem;
+$btn-border-radius-lg: 0.625rem;
+$btn-font-weight: 500;
+
+// -- Shadows (wide, blurred, atmospheric) --
+$box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.04);
+$box-shadow-sm: 0 2px 12px -2px rgba(0, 0, 0, 0.08);
+$box-shadow-lg: 0 20px 60px -10px rgba(0, 0, 0, 0.12), 0 8px 24px -6px rgba(0, 0, 0, 0.06);
+
+// -- Forms --
+$input-bg: #FFFFFF;
+$input-border-color: $tb-stone-300;
+$input-focus-border-color: $tb-orange;
+$input-border-radius: 0.5rem;
+
+// -- Focus Highlight (used in site/forms) --
+$bg-focus-input: rgba(234, 88, 12, 0.08);
+
+// -- Navbar --
+$navbar-dark-color: rgba(255, 255, 255, 0.9);
+$navbar-dark-hover-color: #FFFFFF;
+
+// -- Tables --
+$table-hover-bg: rgba(0, 0, 0, 0.03);
+
+// -- Contrast Override --
+// Bootstrap calculates black text for our success green; force white
+$min-contrast-ratio: 3;
+
+// ============================================================
+// Import Bootstrap (variables use !default, so our overrides win)
+// ============================================================
 @import 'bootstrap/scss/bootstrap';
+
+// Bootstrap Icons
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css");
-@import "bootstrap/scss/reboot";
-@import "bootstrap/scss/functions";
-@import "bootstrap/scss/variables";
-@import "bootstrap/scss/mixins";
-@import "bootstrap/scss/variables-dark";
-@import "bootstrap/scss/root";
-@import "bootstrap/scss/type";
 
-// Hide navbar text for small screens
-$font-size-root: 17pt;
-$font-size-sm: 15pt;
+// Font mixins (must be available before site files that use them)
+@import './site/fonts.css.scss';
 
-$bg-focus-input: #fae06d;
-$theme-colors: map-remove($theme-colors, "info", "light", "dark");
-
+// Flatpickr date picker
 @import 'flatpickr/dist/flatpickr';
 @import 'flatpickr/dist/themes/material_orange';
 
-// This file is auto-generated via bin/site-index or
-// via yarn run build:css:index
+// Trix rich text editor
+@import 'trix/dist/trix';
+
+// Site-specific styles (auto-generated via bin/site-index)
 @import './site/_index.css.scss';
-
-@import "bootstrap/scss/popover";
-@import "bootstrap/scss/tooltip";
-
-// .popover{:role => "tooltip"}
-//  .arrow
-//  %h3.popover-header
-//  .popover-body

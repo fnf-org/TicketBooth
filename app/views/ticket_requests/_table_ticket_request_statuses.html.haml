@@ -1,118 +1,114 @@
 
 .card
   .card-header.bg-primary-subtle
-    .btn-group.fs-5
-      = button_to download_event_ticket_requests_path(event, type: "active"),
-                  method: :post, data: { turbo: false },
-                  class: 'btn btn-warning btn-sm text-nowrap' do
-        Download CSV of Approved ▼
 
-      = button_to download_event_ticket_requests_path(event, type: "all"),
-                  method: :post, data: { turbo: false },
-                  class: 'btn btn-warning btn-sm text-nowrap' do
-        Download CSV of All ▼
+    -# Wide screens: button group
+    .ticket-actions-wide
+      .btn-group.fs-5
+        = button_to download_event_ticket_requests_path(event, type: "active"),
+                    method: :post, data: { turbo: false },
+                    class: 'btn btn-warning btn-sm text-nowrap' do
+          Download CSV of Approved ▼
 
-      = button_to payment_reminder_event_ticket_requests_path(event),
-                  method: :post, data: { turbo: false },
-                  onclick: "return confirm('Are you sure you want to email all unpaid ticket requestors?');",
-                  class: 'btn btn-warning btn-sm text-nowrap' do
-        Payment Reminder for All Unpaid
+        = button_to download_event_ticket_requests_path(event, type: "all"),
+                    method: :post, data: { turbo: false },
+                    class: 'btn btn-warning btn-sm text-nowrap' do
+          Download CSV of All ▼
+
+        = button_to payment_reminder_event_ticket_requests_path(event),
+                    method: :post, data: { turbo: false },
+                    onclick: "return confirm('Are you sure you want to email all unpaid ticket requestors?');",
+                    class: 'btn btn-warning btn-sm text-nowrap' do
+          Payment Reminder for All Unpaid
+
+    -# Narrow screens: dropdown
+    .ticket-actions-narrow
+      .dropdown
+        %button.btn.btn-warning.dropdown-toggle.w-100.text-start{"data-bs-toggle": "dropdown", "aria-expanded": "false", type: "button"}
+          %i.bi.bi-gear.me-2
+          Actions
+        %ul.dropdown-menu.w-100
+          %li
+            = button_to download_event_ticket_requests_path(event, type: "active"),
+                        method: :post, data: { turbo: false },
+                        class: 'dropdown-item' do
+              %i.bi.bi-download.me-2
+              Download CSV of Approved
+          %li
+            = button_to download_event_ticket_requests_path(event, type: "all"),
+                        method: :post, data: { turbo: false },
+                        class: 'dropdown-item' do
+              %i.bi.bi-download.me-2
+              Download CSV of All
+          %li
+            = button_to payment_reminder_event_ticket_requests_path(event),
+                        method: :post, data: { turbo: false },
+                        onclick: "return confirm('Are you sure you want to email all unpaid ticket requestors?');",
+                        class: 'dropdown-item' do
+              %i.bi.bi-envelope.me-2
+              Payment Reminder for All Unpaid
 
   .card-body
     .vertical-20
 
-    %table.table.border-dark-subtle.border-2.overflow-scroll.w-100.shadow-lg#ticket-request-summary
+    .table-responsive
+      - has_kids = event.kid_ticket_price.present?
+      - has_donations = event.allow_donations
+      - has_passes = event.active_event_addons_passes_count > 0
+      - has_camping = event.active_event_addons_camping_count > 0
 
-      %thead.border-dark-subtle.border-2
+      %table.table.tb-table#ticket-request-summary
 
-        %tr
-          %th.text-nowrap.bg-dark-subtle.text-left Tickets Status
-          %th.bg-dark-subtle.text-end Requests
-          %th.bg-dark-subtle.text-end Tickets
-          - if event.kid_ticket_price
-            %th.bg-dark-subtle.text-end Kids Tix
-          - if event.allow_donations
-            %th.bg-dark-subtle.text-end Donations
-          - if event.active_event_addons_passes_count > 0
-            %th.bg-dark-subtle.text-end
-              =Addon::HUMANIZED_CATEGORIES[Addon::CATEGORY_PASS]
-          - if event.active_event_addons_camping_count > 0
-            %th.bg-dark-subtle.text-end
-              =Addon::HUMANIZED_CATEGORIES[Addon::CATEGORY_CAMP]
-          %th.bg-dark-subtle.text-end Earn
+        %thead
+          %tr
+            %th.text-nowrap Status
+            -# Wide columns
+            %th.text-end.col-wide Requests
+            %th.text-end.col-wide Tickets
+            - if has_kids
+              %th.text-end.col-wide Kids
+            - if has_donations
+              %th.text-end.col-wide Donations
+            - if has_passes
+              %th.text-end.col-wide= Addon::HUMANIZED_CATEGORIES[Addon::CATEGORY_PASS]
+            - if has_camping
+              %th.text-end.col-wide= Addon::HUMANIZED_CATEGORIES[Addon::CATEGORY_CAMP]
+            -# Narrow combined column
+            %th.text-end.col-narrow Req/Tix/Kids
+            %th.text-end Total
 
-      %tbody.border-2.border-dark-subtle
+        %tbody
+          - [[stats[:completed], 'Paid', 'bg-success-subtle'], [stats[:pending], 'Pending', 'bg-warning'], [stats[:awaiting_payment], 'Awaiting', 'bg-warning-subtle']].each do |s, label, bg|
+            %tr
+              %td{class: bg}= label
+              %td.text-end.col-wide{class: bg}= s[:requests]
+              %td.text-end.col-wide{class: bg}= s[:adults]
+              - if has_kids
+                %td.text-end.col-wide{class: bg}= s[:kids]
+              - if has_donations
+                %td.text-end.col-wide{class: bg}= number_to_currency(s[:donations], precision: 0)
+              - if has_passes
+                %td.text-end.col-wide{class: bg}= s[:addon_passes]
+              - if has_camping
+                %td.text-end.col-wide{class: bg}= s[:addon_camping]
+              %td.text-end.col-narrow{class: bg}= "#{s[:requests]}/#{s[:adults]}/#{s[:kids] || 0}"
+              %td.text-end{class: bg}
+                %strong= number_to_currency(s[:raised], precision: 0)
 
-        %tr.fs-6
-          %td.bg-success-subtle
-            %span.text-nowrap Paid
-          %td.text-end.bg-success-subtle
-            %span= stats[:completed][:requests]
-          %td.text-end.bg-success-subtle
-            %span= stats[:completed][:adults]
-          - if event.kid_ticket_price
-            %td.text-end.bg-success-subtle
-              %span= stats[:completed][:kids]
-          - if event.allow_donations
-            %td.text-end.bg-success-subtle
-              %span
-                = number_to_currency(stats[:completed][:donations], precision: 0)
-          - if event.active_event_addons_passes_count > 0
-            %td.text-end.bg-success-subtle
-              %span= stats[:completed][:addon_passes]
-          - if event.active_event_addons_camping_count > 0
-            %td.text-end.bg-success-subtle
-              %span= stats[:completed][:addon_camping]
-          %td.text-end.bg-success-subtle
-            %span
-              = number_to_currency(stats[:completed][:raised], precision: 0)
-
-        %tr.fs-6
-          %td.text-nowrap.bg-warning
-            Pending Approval
-          %td.text-end.bg-warning= stats[:pending][:requests]
-          %td.text-end.bg-warning= stats[:pending][:adults]
-          - if event.kid_ticket_price
-            %td.text-end.bg-warning= stats[:pending][:kids]
-          - if event.allow_donations
-            %td.text-end.bg-warning
-              = number_to_currency(stats[:pending][:donations], precision: 0)
-          - if event.active_event_addons_passes_count > 0
-            %td.text-end.bg-warning= stats[:pending][:addon_passes]
-          - if event.active_event_addons_camping_count > 0
-            %td.text-end.bg-warning= stats[:pending][:addon_camping]
-          %td.text-end.bg-warning.fs-6
-            = number_to_currency(stats[:pending][:raised], precision: 0)
-
-        %tr.fs-6
-          %td.text-nowrap.bg-warning-subtle
-            Awaiting Payment
-          %td.text-end.bg-warning-subtle= stats[:awaiting_payment][:requests]
-          %td.text-end.bg-warning-subtle= stats[:awaiting_payment][:adults]
-          - if event.kid_ticket_price
-            %td.text-end.bg-warning-subtle= stats[:awaiting_payment][:kids]
-          - if event.allow_donations
-            %td.text-end.bg-warning-subtle
-              = number_to_currency(stats[:awaiting_payment][:donations], precision: 0)
-          - if event.active_event_addons_passes_count > 0
-            %td.text-end.bg-warning-subtle= stats[:awaiting_payment][:addon_passes]
-          - if event.active_event_addons_camping_count > 0
-            %td.text-end.bg-warning-subtle= stats[:awaiting_payment][:addon_camping]
-          %td.text-end.bg-warning-subtle.fs-6
-            = number_to_currency(stats[:awaiting_payment][:raised], precision: 0)
-
-        %tr.muted.border-1.border-dark-subtle.fs-6
-          %td.bg-dark-subtle.text-start
-            %strong
-              Total
-          %td.bg-dark-subtle.text-end= stats[:total][:requests]
-          %td.bg-dark-subtle.text-end= stats[:total][:adults]
-          - if event.kid_ticket_price
-            %td.bg-dark-subtle.text-end= stats[:total][:kids]
-          - if event.allow_donations
-            %td.bg-dark-subtle.text-end= number_to_currency(stats[:total][:donations], precision: 0)
-          - if event.active_event_addons_passes_count > 0
-            %td.bg-dark-subtle.text-end= stats[:total][:addon_passes]
-          - if event.active_event_addons_camping_count > 0
-            %td.bg-dark-subtle.text-end= stats[:total][:addon_camping]
-          %td.bg-dark-subtle.text-end.fs-5= number_to_currency(stats[:total][:raised], precision: 0)
+          %tr
+            %td.bg-dark-subtle
+              %strong Total
+            %td.text-end.col-wide.bg-dark-subtle= stats[:total][:requests]
+            %td.text-end.col-wide.bg-dark-subtle= stats[:total][:adults]
+            - if has_kids
+              %td.text-end.col-wide.bg-dark-subtle= stats[:total][:kids]
+            - if has_donations
+              %td.text-end.col-wide.bg-dark-subtle= number_to_currency(stats[:total][:donations], precision: 0)
+            - if has_passes
+              %td.text-end.col-wide.bg-dark-subtle= stats[:total][:addon_passes]
+            - if has_camping
+              %td.text-end.col-wide.bg-dark-subtle= stats[:total][:addon_camping]
+            %td.text-end.col-narrow.bg-dark-subtle
+              %strong= "#{stats[:total][:requests]}/#{stats[:total][:adults]}/#{stats[:total][:kids] || 0}"
+            %td.text-end.bg-dark-subtle
+              %strong= number_to_currency(stats[:total][:raised], precision: 0)

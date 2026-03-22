@@ -1,44 +1,64 @@
-@mixin oswald-thin {
-  font-family: "Oswald", sans-serif;
-  font-weight: 200;
-  font-style: normal;
-}
+// Font mixins — Syne (headings) + DM Sans (body)
+// Syne: geometric brutalist, edgy, distinctive
+// DM Sans: clean, excellent readability
 
-@mixin oswald-regular {
-  font-family: "Oswald", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
-@mixin oswald-titles {
-  font-family: "Oswald", sans-serif;
-  font-optical-sizing: auto;
+@mixin heading-font {
+  font-family: "Syne", system-ui, sans-serif;
   font-weight: 600;
   font-style: normal;
 }
 
-@mixin dosis-regular {
-  font-family: "Dosis", sans-serif;
+@mixin heading-font-light {
+  font-family: "Syne", system-ui, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@mixin heading-font-bold {
+  font-family: "Syne", system-ui, sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+@mixin heading-font-extra-bold {
+  font-family: "Syne", system-ui, sans-serif;
+  font-weight: 800;
+  font-style: normal;
+}
+
+@mixin body-font {
+  font-family: "DM Sans", system-ui, sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
 }
 
-@mixin dosis-popover {
-  font-family: "Dosis", sans-serif;
+@mixin body-font-medium {
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+@mixin popover-font {
+  font-family: "DM Sans", system-ui, sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
-  color: $dark-text-emphasis;
   font-size: 0.9em;
 }
 
-@mixin dosis-popover-header {
-  font-family: "Oswald", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
+@mixin popover-header-font {
+  font-family: "Syne", system-ui, sans-serif;
+  font-weight: 600;
   font-style: normal;
-  color: $dark-text-emphasis;
   font-size: 1.1em;
 }
 
+// Backward-compatible aliases
+@mixin oswald-thin     { @include heading-font-light; }
+@mixin oswald-regular  { @include heading-font; }
+@mixin oswald-titles   { @include heading-font-bold; }
+@mixin dosis-regular   { @include body-font; }
+@mixin dosis-popover   { @include popover-font; }
+@mixin dosis-popover-header { @include popover-header-font; }

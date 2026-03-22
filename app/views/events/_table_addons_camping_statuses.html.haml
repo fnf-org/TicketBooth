@@ -1,46 +1,24 @@
-.card
+.card.tb-table-card
   .card-body
-    .vertical-20
+    .table-responsive
+      %table.table.tb-table#camping-permits-summary
+        %thead
+          %tr
+            %th.text-nowrap Payment Status
+            %th.text-center= Addon::HUMANIZED_CATEGORIES[Addon::CATEGORY_CAMP]
+            %th.text-end Total
 
-    %table.table.border-dark-subtle.border-2.overflow-scroll.w-100.shadow-lg#camping-permits-summary
+        %tbody
+          - [[stats[:completed], 'Paid', 'bg-success-subtle'], [stats[:pending], 'Pending', 'bg-warning'], [stats[:awaiting_payment], 'Awaiting', 'bg-warning-subtle']].each do |s, label, bg|
+            %tr
+              %td{class: bg}= label
+              %td.text-center{class: bg}= s[:addon_camping]
+              %td.text-end{class: bg}
+                %strong= number_to_currency(s[:camp_raised], precision: 0)
 
-      %thead.border-dark-subtle.border-2
-
-        %tr
-          %th.text-nowrap.bg-dark-subtle.text-left Payment Status
-          %th.bg-dark-subtle.text-center
-            =Addon::HUMANIZED_CATEGORIES[Addon::CATEGORY_CAMP]
-          %th.bg-dark-subtle.text-end Earn
-
-      %tbody.border-2.border-dark-subtle
-
-        %tr.fs-6
-          %td.bg-success-subtle
-            %span.text-nowrap Paid
-          %td.text-center.bg-success-subtle
-            %span= stats[:completed][:addon_camping]
-          %td.text-end.bg-success-subtle
-            %span
-              = number_to_currency(stats[:completed][:camp_raised], precision: 0)
-
-        %tr.fs-6
-          %td.text-nowrap.bg-warning
-            Pending Approval
-          %td.text-center.bg-warning= stats[:pending][:addon_camping]
-          %td.text-end.bg-warning.fs-6
-            = number_to_currency(stats[:pending][:camp_raised], precision: 0)
-
-        %tr.fs-6
-          %td.text-nowrap.bg-warning-subtle
-            Awaiting Payment
-          %td.text-center.bg-warning-subtle= stats[:awaiting_payment][:addon_camping]
-          %td.text-end.bg-warning-subtle.fs-6
-            = number_to_currency(stats[:awaiting_payment][:camp_raised], precision: 0)
-
-        %tr.muted.border-1.border-dark-subtle.fs-6
-          %td.bg-dark-subtle.text-start
-            %strong
-              Total
-          %td.bg-dark-subtle.text-center= stats[:total][:addon_camping]
-          %td.bg-dark-subtle.text-end.fs-6
-            = number_to_currency(stats[:total][:camp_raised], precision: 0)
+          %tr
+            %td.bg-dark-subtle
+              %strong Total
+            %td.text-center.bg-dark-subtle= stats[:total][:addon_camping]
+            %td.text-end.bg-dark-subtle
+              %strong= number_to_currency(stats[:total][:camp_raised], precision: 0)

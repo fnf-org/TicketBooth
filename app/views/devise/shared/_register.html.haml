@@ -1,55 +1,50 @@
-
 - http_method = existing ? :put : :post
-= form_for(resource, as: resource_name, url: user_registration_path, html: { method: http_method }, data: { turbo: false } ) do |f|
-  = hidden_field_tag :authenticity_token, form_authenticity_token
 
-  = render "devise/shared/error_messages", resource: resource
-  - unless existing
-    %h2 Register New Account
+.login-panel-wrapper
+  .login-panel
+    - unless existing
+      %h2.text-center.mb-4 Create Your Account
 
-  .container-fluid
-    .row
-      .col-5
-        = f.label :first, 'First Name'
-        = f.text_field :first, maxlength: User::MAX_NAME_LENGTH, required: true
+    = form_for(resource, as: resource_name, url: user_registration_path, html: { method: http_method }, data: { turbo: false } ) do |f|
+      = hidden_field_tag :authenticity_token, form_authenticity_token
+      = render "devise/shared/error_messages", resource: resource
 
-      .col-7
-        = f.label :last, 'Last Name'
-        = f.text_field :last, maxlength: User::MAX_NAME_LENGTH, required: true
+      .mb-3
+        %label.form-label.fw-bold First Name
+        = f.text_field :first, maxlength: User::MAX_NAME_LENGTH, required: true, class: "form-control form-control-lg inset-field"
 
-    .row
-      .col-8
-        = f.label :email, 'Your Email Address'
-        = f.email_field :email, placeholder: resource.email || resource.unconfirmed_email || 'dj-awesome@gmail.com', maxlength: User::MAX_EMAIL_LENGTH, required: true, autofocus: true, autocomplete: "email", class: "email-field"
+      .mb-3
+        %label.form-label.fw-bold Last Name
+        = f.text_field :last, maxlength: User::MAX_NAME_LENGTH, required: true, class: "form-control form-control-lg inset-field"
 
+      .mb-3
+        %label.form-label.fw-bold Email Address
+        = f.email_field :email, placeholder: resource.email || resource.unconfirmed_email || 'dj-awesome@gmail.com', maxlength: User::MAX_EMAIL_LENGTH, required: true, autofocus: true, autocomplete: "email", class: "form-control form-control-lg inset-field"
         - if defined?(redirect_to)
           = hidden_field_tag :redirect_to, redirect_to
 
-    %br
-    %hr
-    = render partial: 'devise/registrations/change_password', locals: { existing: existing, f: f }
-    %br
-    %hr
-    - if existing
-      .row
-        .col-md-6.col-sm-12
-          %strong= "Your current password is required make changes to your account"
-          %strong
-            = f.label :current_password
-          = f.password_field :current_password, autocomplete: "current-password", required: true
+      %hr.my-3
+      = render partial: 'devise/registrations/change_password', locals: { existing: existing, f: f }
 
+      - if existing
+        %hr.my-3
+        .mb-3
+          %label.form-label.fw-bold Current Password
+          %small.text-muted.d-block.mb-2= t('auth.current_password_required')
+          = f.password_field :current_password, autocomplete: "current-password", required: true, class: "form-control form-control-lg inset-field"
 
-      .row
-        .col-12
-          .actions
-            = f.submit "Update", class: 'btn btn-primary btn-large w-1'
+        .d-flex.justify-content-end.mt-4
+          = f.submit "Update", class: 'btn btn-primary btn-lg'
+
+      - unless existing
+        .d-flex.justify-content-between.align-items-center.mt-4
+          - if controller_name != 'ticket_requests'
+            = link_to "&larrhk; Back".html_safe, :back, class: 'btn btn-secondary btn-md'
+          - else
+            %span
+          = f.submit "Register", class: 'btn btn-primary btn-lg'
 
     - unless existing
-      .row
-        .col-12
-          .actions.btn-group-md
-            = f.submit "Register", class: 'btn btn-primary btn-lg'
-
-    - if controller_name != 'ticket_requests'
-      = link_to "Go Back &larrhk;".html_safe, :back, class: 'btn btn-warning btn-md'
-
+      %hr.my-3
+      .d-flex.justify-content-between.align-items-center
+        = link_to "Already have an account? Log in", new_session_path(resource_name), class: "small"
