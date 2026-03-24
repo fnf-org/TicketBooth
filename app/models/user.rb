@@ -77,6 +77,8 @@ class User < ApplicationRecord
   validates :first, presence: true
   validates :last, presence: true
 
+  validate :password_complexity, if: :password_required?
+
   validates :name, presence: true,
                    length: { maximum: MAX_NAME_LENGTH },
                    format: { with:    /\A\S+\s\S+(\s\S+)*\z/i,
@@ -85,6 +87,15 @@ class User < ApplicationRecord
   validates :email, presence: true,
                     format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i },
                     length: { maximum: MAX_EMAIL_LENGTH }
+
+  PASSWORD_COMPLEXITY_REGEX = /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]).+\z/
+  PASSWORD_INVALIDATION_REGEX = /[!@#$%^&*(),.?":{}|<>]/
+
+  def password_required?
+    password.present? || password_confirmation.present?
+  end
+
+  delegate :present?, to: :password, prefix: true
 
   def first_name
     first
@@ -116,8 +127,6 @@ class User < ApplicationRecord
     token
   end
 
-  private
-
   def canonize_full_name!
     if name && first.nil? && last.nil?
       self.first, self.last = *name.split(/\s+/).map(&:strip)
@@ -125,5 +134,28 @@ class User < ApplicationRecord
       self.name = first if first
       self.name += " #{last}" if name && last
     end
+  end
+
+  private
+
+  def password_complexity
+    return if password.blank?
+
+    unless password.length >= 12
+      errors.add(:password, I18n.t('password.errors.too_short'))
+      return false
+    end
+
+    unless password.match?(PASSWORD_INVALIDATION_REGEX)
+      errors.add(:password, I18n.t('password.errors.missing_special'))
+      return false
+    end
+
+    unless password.match?(PASSWORD_COMPLEXITY_REGEX)
+      errors.add(:password, I18n.t('password.errors.missing_complexity'))
+      return false
+    end
+
+    true
   end
 end

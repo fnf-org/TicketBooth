@@ -1,161 +1,194 @@
-%table.fs-6.w-97
-  %tr
-    %td.text-end.small.p-2.px-4.text-nowrap= "Name"
-    %td
-      %strong= ticket_request.user.name
-  %tr
-    %td.text-end.small.p-2.px-4.text-nowrap= "Email:"
-    %td
-      %strong
-        = mail_to ticket_request.user.email
+.row.g-4
+  -# Left column — core ticket info
+  .col-12.col-xl-6
+    %table.table.tb-table.mb-0
+      %tbody
+        %tr
+          %td.text-end.small.text-muted.text-nowrap Name
+          %td
+            %strong= ticket_request.user.name
+        %tr
+          %td.text-end.small.text-muted.text-nowrap Email
+          %td
+            %strong= mail_to ticket_request.user.email
+        %tr
+          %td.text-end.small.text-muted.text-nowrap Date Requested
+          %td
+            %strong= ticket_request.created_at.localtime.to_fs(:db)
 
-  %tr
-    %td.text-end.small.p-2.px-4.text-nowrap= "Date Requested:"
-    %td
-      %strong=  ticket_request.created_at.localtime.to_fs(:db)
+        - if event.tickets_require_approval
+          %tr
+            %td.text-end.small.text-muted.text-nowrap Status
+            %td
+              %span.status-badge.px-3.py-1{ class: text_class_for_status(ticket_request) }
+                = ticket_request.status_name
 
-  - if event.tickets_require_approval
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Status:"
-      %td
-        %strong
-          %span.p-2.rounded{ class: text_class_for_status(ticket_request) }
-            = ticket_request.status_name
-
-  %tr
-    %td.text-end.small.p-2.px-4.text-nowrap= "Payment:"
-    %td
-      %strong
-      - if ticket_request.payment_received? || ticket_request.payment_refunded?
-        %strong.span.p-2.rounded{ class: text_class_for_status(ticket_request) }
-          = ticket_request.payment.status_name
-      - elsif ticket_request.free?
-        .text-success
-          Free
-      - else
-        - if event.ticket_sales_open?
-          - if !ticket_request.payment&.provider_stripe? && ticket_request.payment&.explanation?
-            %strong.span.bg-warning Paying with: #{ticket_request.payment.explanation}
-          - else
-            - if ticket_request.all_guests_specified?
-              - if ticket_request.approved?
-                = link_to 'Buy Tickets', new_event_ticket_request_payment_path(event, ticket_request), class: 'btn btn-primary m-0'
-              - else
-                = "Waiting on ticket approval"
+        %tr
+          %td.text-end.small.text-muted.text-nowrap Payment
+          %td
+            - if ticket_request.payment_received? || ticket_request.payment_refunded?
+              %span.status-badge.px-3.py-1{ class: text_class_for_status(ticket_request) }
+                = ticket_request.payment.status_name
+            - elsif ticket_request.free?
+              %span.text-success
+                %strong Free
             - else
-              .small
-                You must register all of your guests before you can pay for your ticket.
-              = link_to edit_event_ticket_request_path(event, ticket_request), class: 'btn btn-primary btn-round btn-sm mx-0' do
-                = event.admin?(current_user) ? 'Add Their Guests' : 'Add My Guests'
+              - if event.ticket_sales_open?
+                - if !ticket_request.payment&.provider_stripe? && ticket_request.payment&.explanation?
+                  %span.status-badge.bg-warning.px-3.py-1
+                    Paying with: #{ticket_request.payment.explanation}
+                - else
+                  - if ticket_request.all_guests_specified?
+                    - if ticket_request.approved?
+                      = link_to 'Buy Tickets', new_event_ticket_request_payment_path(event, ticket_request), class: 'btn btn-primary btn-sm'
+                    - else
+                      %em Waiting on ticket approval
+                  - else
+                    .small.text-muted.mb-1
+                      You must register all guests before you can pay.
+                    = link_to edit_event_ticket_request_path(event, ticket_request), class: 'btn btn-primary btn-sm' do
+                      = event.admin?(current_user) ? 'Add Their Guests' : 'Add My Guests'
+              - else
+                %span.status-badge.bg-warning.px-3.py-1
+                  Ticket sales are now closed.
 
-        - else
-          %span.bg-warning
-            Unfortunately, ticket sales are now closed. You can no longer purchase your
-            = succeed '.' do
-              = 'ticket'.pluralize(ticket_request.total_tickets)
+        %tr
+          %td.text-end.small.text-muted.text-nowrap Ticket Price
+          %td
+            %strong
+              %span{ class: ('label label-info' if ticket_request.special_price) }
+                = number_to_currency(ticket_request.price, precision: 0)
+        %tr
+          %td.text-end.small.text-muted.text-nowrap Adult Tickets
+          %td
+            %strong= ticket_request.adults
+        - if event.kid_ticket_price
+          %tr
+            %td.text-end.small.text-muted.text-nowrap Kid Tickets
+            %td
+              %strong= ticket_request.kids
 
-  %tr
-    %td.text-end.small.p-2.px-4.text-nowrap= "Total Ticket Price:"
-    %td
-      %strong
-        %span{ class: ('label label-info' if ticket_request.special_price) }
-          = number_to_currency(ticket_request.price, precision: 0)
+        - if ticket_request.donation&.positive?
+          %tr
+            %td.text-end.small.text-muted.text-nowrap Extra Donation
+            %td
+              %strong= number_to_currency(ticket_request.donation, precision: 0)
+          %tr
+            %td.text-end.small.text-muted.text-nowrap Total Amount
+            %td
+              %strong= number_to_currency(ticket_request.cost, precision: 0)
 
-  %tr
-    %td.text-end.small.p-2.px-4.text-nowrap= "Adult Tickets:"
-    %td
-      %strong
-        = ticket_request.adults
+        - if event.require_mailing_address
+          %tr
+            %td.text-end.small.text-muted.text-nowrap Mailing Address
+            %td
+              %strong
+                %address.mb-0
+                  = ticket_request.address_line1
+                  - if ticket_request.address_line2.present?
+                    %br
+                    = ticket_request.address_line2
+                  %br
+                  #{ticket_request.city}, #{ticket_request.state}, #{ticket_request.zip_code}
+                  %br
+                  = ticket_request.country_name
 
-  - if event.kid_ticket_price
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Kid Tickets:"
-      %td
-        %strong
-          = ticket_request.kids
+        - if event.require_role
+          %tr
+            %td.text-end.small.text-muted.text-nowrap Role
+            %td
+              %strong= TicketRequest::ROLES[ticket_request.role]
+              - if ticket_request.role_explanation.present?
+                %blockquote.small.text-muted.mb-0.mt-1.ps-2{style: "border-left: 2px solid #D6D3D1;"}
+                  = ticket_request.role_explanation
 
-  - if ticket_request.ticket_request_event_addons?
-    - ticket_request.active_sorted_addons.each do |tr_event_addon|
-      %tr
-        %td.text-end.small.p-2.px-4.text-nowrap
-          = tr_event_addon.humanized_category + ':'
-        %td
-          %strong
-            = "#{tr_event_addon.quantity} - #{tr_event_addon.name}"
+        - if ticket_request.notes.present?
+          %tr
+            %td.text-end.small.text-muted.text-nowrap Notes
+            %td
+              %strong= ticket_request.notes
 
-  - if ticket_request.donation&.positive?
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Extra Donation:"
-      %td
-        %strong
-          = number_to_currency(ticket_request.donation, precision: 0)
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Total Amount:"
-      %td
-        %strong
-          = number_to_currency(ticket_request.cost, precision: 0)
+        - if ticket_request.guest_count > 0
+          %tr
+            %td.text-end.small.text-muted.text-nowrap
+              = 'Guest'.pluralize(ticket_request.guest_count)
+            %td
+              - ticket_request.guest_count.times do |guest_id|
+                .text-nowrap.small
+                  = Array(ticket_request.guests)[guest_id] || 'Unspecified'
 
-  - if event.require_mailing_address
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Mailing Address:"
-      %td
-        %strong
-          %address
-            = ticket_request.address_line1
-            - if ticket_request.address_line2.present?
-              %br
-              = ticket_request.address_line2
-            %br
-            #{ticket_request.city}, #{ticket_request.state}, #{ticket_request.zip_code}
-            %br
-            = ticket_request.country_name
+        - if event.admin?(current_user) && ticket_request.admin_notes.present?
+          %tr
+            %td.text-end.small.text-muted.text-nowrap Admin Notes
+            %td
+              %strong= ticket_request.admin_notes
 
-  - if event.require_role
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Role:"
-      %td
-        %strong
-          = TicketRequest::ROLES[ticket_request.role]
-          - if ticket_request.role_explanation.present?
-            %blockquote= ticket_request.role_explanation
+  -# Right column — addons & assistance
+  .col-12.col-xl-6
+    -# Financial Assistance
+    %table.table.tb-table.tb-detail-table.mb-3
+      %thead
+        %tr
+          %th{colspan: 2} Financial Assistance
+      %tbody
+        %tr
+          %td.tb-label Financial Assistance
+          %td.tb-value
+            - if ticket_request.needs_assistance
+              %strong Requested
+            - else
+              %span.text-muted Not Requested
+        - if ticket_request.needs_assistance
+          %tr
+            %td.tb-label Reason
+            %td.tb-value= ticket_request.notes.presence || ""
+          %tr
+            %td.tb-label Admin's Response
+            %td.tb-value
+              - if ticket_request.admin_notes.present?
+                %strong{style: "color: #1D4ED8;"}= ticket_request.admin_notes
 
-  - if ticket_request.needs_assistance
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Financial Assistance Requested?:"
-      %td
-        %strong.bg-warning
-          Yes, assistance requested.
+    -# Event Addons
+    - if event.active_event_addons?
+      - camp_addons = event.active_event_addons_by_category(Addon::CATEGORY_CAMP)
+      - pass_addons = event.active_event_addons_by_category(Addon::CATEGORY_PASS)
 
+      - if camp_addons.any?
+        %table.table.tb-table.tb-detail-table.mb-3
+          %thead
+            %tr
+              %th{colspan: 2} Camping Permits
+          %tbody
+            - camp_addons.each do |event_addon|
+              - tr_addon = ticket_request.ticket_request_event_addons.find { |tra| tra.event_addon_id == event_addon.id }
+              - qty = tr_addon&.quantity || 0
+              - cost = tr_addon ? tr_addon.calculate_cost : 0
+              %tr
+                %td.tb-label
+                  = "#{event_addon.addon.name} (#{number_to_currency(event_addon.price, precision: 0)})"
+                %td.tb-value
+                  - if qty > 0
+                    %strong
+                      = "#{qty} #{'Permit'.pluralize(qty)} &mdash; #{number_to_currency(cost, precision: 0)}".html_safe
+                  - else
+                    %span.text-muted Not Requested
 
-  - if ticket_request.notes.present?
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Notes:"
-      %td
-        %strong
-          = ticket_request.notes
-
-  - if ticket_request.guest_count > 0
-    %tr
-      %td
-      %td
-        %hr
-    %tr.align-middle
-      %td.text-end.small.p-2.px-4.text-nowrap= 'Guest'.pluralize(ticket_request.guest_count) + ':'
-      %td
-        %em
-          - ticket_request.guest_count.times do |guest_id|
-            .text-nowrap.small
-              = Array(ticket_request.guests)[guest_id] || 'Unspecified'
-              %br
-    %tr
-      %td
-      %td
-        %hr
-
-  - if event.admin?(current_user) && ticket_request.admin_notes.present?
-    %tr
-      %td.text-end.small.p-2.px-4.text-nowrap= "Notes:"
-      %td
-        %strong Ticket Coordinator Notes:
-        %p.small
-          = ticket_request.admin_notes
+      - if pass_addons.any?
+        %table.table.tb-table.tb-detail-table.mb-3
+          %thead
+            %tr
+              %th{colspan: 2} Event Passes
+          %tbody
+            - pass_addons.each do |event_addon|
+              - tr_addon = ticket_request.ticket_request_event_addons.find { |tra| tra.event_addon_id == event_addon.id }
+              - qty = tr_addon&.quantity || 0
+              - cost = tr_addon ? tr_addon.calculate_cost : 0
+              %tr
+                %td.tb-label
+                  = "#{event_addon.addon.name} (#{number_to_currency(event_addon.price, precision: 0)})"
+                %td.tb-value
+                  - if qty > 0
+                    %strong
+                      = "#{qty} #{'Pass'.pluralize(qty)} &mdash; #{number_to_currency(cost, precision: 0)}".html_safe
+                  - else
+                    %span.text-muted Not Requested

@@ -45,3 +45,4 @@ newrelic_agent.log
 .terraform.lock.hcl
 **/.terraform/*
 *.bak
+package-lock.json

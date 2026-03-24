@@ -48,7 +48,7 @@ module TicketBooth
                end
 
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.1
+    config.load_defaults 8.1
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
@@ -90,7 +90,7 @@ module TicketBooth
       max_threads: 3,
       idletime:    30.seconds
 
-    config.cache_store = :mem_cache_store, '127.0.0.1:11211', { pool: { size: 10 } }
+    config.cache_store = :solid_cache_store
 
     config.action_mailer.preview_paths << Rails.root.join('lib/mailer_previews').to_s
   end

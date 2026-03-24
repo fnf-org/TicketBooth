@@ -8,7 +8,8 @@
     %meta{:name => "turbo-visit-control", content: "reload" }/
     %link{:href => "/icons/android-chrome-192x192.png", :rel => "shortcut icon", :type => "image/png"}/
     %link{:href => "https://fonts.googleapis.com", :rel => "preconnect"}/
-    %link{:href => "https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&family=Oswald:wght@200..700&display=swap", :rel => "stylesheet"}/
+    %link{:href => "https://fonts.gstatic.com", :rel => "preconnect", :crossorigin => "anonymous"}/
+    %link{:href => "https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Syne:wght@400;500;600;700;800&display=swap", :rel => "stylesheet"}/
     - if defined?(@stripe_enabled) && @stripe_enabled
       %script{src: "https://js.stripe.com/v3/", crossorigin: "anonymous"}
 
@@ -29,7 +30,7 @@
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
     = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
 
-  %body.m-0.p-0
+  %body.m-0.p-0.d-flex.flex-column.min-vh-100
     = render partial: "shared/nav_main"
     -# .container-fluid.main-container.align-content-center.m-0.p-0
     -#   .row
@@ -38,7 +39,7 @@
     %turbo-frame#flash_container{"data-controller": "flash", "data-flash-target": "flash"}
       = render "shared/flash"
 
-    .container-fluid.main-container.align-content-center
+    .container-fluid.main-container.align-content-center.flex-grow-1
       .row
         .col-12#columns-container
           = yield

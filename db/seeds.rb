@@ -20,7 +20,7 @@ module FnF
     # rubocop: disable Rails/Output
     class Seeds
       unless defined?(SITE_ADMIN_PASSWORD)
-        SITE_ADMIN_PASSWORD = 'fubar!'
+        SITE_ADMIN_PASSWORD = 'siteAdmin@2026%!'
         SITE_ADMIN_EMAIL    = 'site-admin@fnf.org'
         DEFAULT_USER_COUNT  = 10
         DEFAULT_EVENT_COUNT = 3
@@ -86,7 +86,7 @@ module FnF
         current_users = User.all.to_a
 
         (0..user_count).to_a.each do |index|
-          password = Faker::Internet.password
+          password = Faker::Internet.password(min_length: 12, mix_case: true, special_characters: true)
           new_user = true
 
           if current_users[index]

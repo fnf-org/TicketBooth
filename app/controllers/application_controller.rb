@@ -32,18 +32,22 @@ class ApplicationController < ActionController::Base
   end
 
   def set_event
-    Rails.logger.debug { "#set_event() permitted params: #{permitted_params.inspect}" }
+    param = permitted_params[:event_id].to_s
 
-    event_id = permitted_params[:event_id].to_i
-    Rails.logger.debug { "#set_event() => event_id = #{event_id}, params[:event_id] => #{permitted_params[:event_id]}" }
-
-    event_not_found = lambda do |eid, flash|
-      flash.now[:error] = "Event with id #{eid} was not found."
-      redirect_to root_path
+    # Try secret_token lookup first (format: "g91afjf0-event-name")
+    # Secret tokens are exactly 8 alphanumeric chars
+    if param.match?(/\A[a-z0-9]{8}-/)
+      token = param[0, 8]
+      @event = Event.find_by(secret_token: token)
     end
 
-    @event = Event.where(id: event_id).first
-    event_not_found[event_id, flash] if @event.nil?
+    # Fall back to ID-based lookup (format: "4-event-name")
+    @event ||= Event.find_by(id: param.to_i) if param.to_i > 0
+
+    if @event.nil?
+      flash.now[:error] = 'Event was not found.'
+      redirect_to root_path
+    end
   end
 
   def ticket_request_id

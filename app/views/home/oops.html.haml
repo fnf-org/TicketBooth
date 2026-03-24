@@ -1,6 +1,116 @@
-.hero-unit
-  %h1
-    #{@error_description || "Please ask your administrator to do so if you'd like to party soon." }
-  .vertical-20
+- content_for(:title, "Ticket Booth — Your Event Starts Here")
 
-  = render 'shared/marketing'
+#vanta-bg.landing-vanta
+
+.landing-hero
+  .container.text-center.position-relative
+    .landing-logo-glow
+      = image_tag 'logos/fnf-transparent.png', class: 'landing-logo', alt: 'FnF'
+    %h1.landing-title
+      %span.landing-accent Ticket Booth
+    %p.landing-subtitle
+      Event ticketing, payments &amp; coordination for community gatherings.
+    .landing-cta
+      - unless signed_in?
+        = link_to new_user_session_path, class: 'btn btn-disco btn-lg me-3' do
+          %i.bi.bi-box-arrow-in-right.me-1
+          Log In
+        = link_to new_user_registration_path, class: 'btn btn-disco-outline btn-lg' do
+          %i.bi.bi-person-plus.me-1
+          Register
+    - if @error_description.present?
+      .landing-notice.mt-4
+        %i.bi.bi-info-circle.me-2
+        = @error_description
+
+.landing-features
+  .container
+    %h2.text-center.mb-5.disco-heading
+      %i.bi.bi-stars.me-2
+      Everything you need to run your event
+    .row.g-4.justify-content-center
+      .col-sm-12.col-md-6.col-lg-4
+        .feature-card
+          .feature-icon
+            %i.bi.bi-ticket-perforated
+          %h3 Ticketing
+          %p
+            Multi-step approval workflow with support for adults,
+            kids, and custom pricing tiers.
+      .col-sm-12.col-md-6.col-lg-4
+        .feature-card
+          .feature-icon
+            %i.bi.bi-credit-card
+          %h3 Payments
+          %p
+            Secure Stripe payments with built-in refund support
+            and real-time financial tracking.
+      .col-sm-12.col-md-6.col-lg-4
+        .feature-card
+          .feature-icon
+            %i.bi.bi-megaphone
+          %h3 Communications
+          %p
+            Email attendees directly, send payment reminders,
+            and manage guest lists effortlessly.
+      .col-sm-12.col-md-6.col-lg-4
+        .feature-card
+          .feature-icon
+            %i.bi.bi-people
+          %h3 Volunteer Coordination
+          %p
+            Organize jobs, time slots, and shifts. Let attendees
+            sign up for the roles they want.
+      .col-sm-12.col-md-6.col-lg-4
+        .feature-card
+          .feature-icon
+            %i.bi.bi-shield-check
+          %h3 Access Control
+          %p
+            Role-based admin system with site-wide and per-event
+            permissions. Everyone sees only what they need.
+      .col-sm-12.col-md-6.col-lg-4
+        .feature-card
+          .feature-icon
+            %i.bi.bi-cart-plus
+          %h3 Event Add-ons
+          %p
+            Sell camping permits, passes, and extras alongside
+            tickets with flexible per-item pricing.
+
+.landing-how
+  .container.text-center
+    %h2.mb-4.disco-heading How It Works
+    .row.g-4.justify-content-center
+      .col-md-4
+        .step-circle 1
+        %h5 Request
+        %p.step-text An attendee fills out the ticket request form.
+      .col-md-4
+        .step-circle 2
+        %h5 Approve
+        %p.step-text Event admins review and approve at their discretion.
+      .col-md-4
+        .step-circle 3
+        %h5 Pay &amp; Attend
+        %p.step-text Pay securely via Stripe and receive confirmation.
+
+%script{src: "https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"}
+%script{src: "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.halo.min.js"}
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof VANTA !== 'undefined') {
+      VANTA.HALO({
+        el: "#vanta-bg",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        baseColor: 0xea580c,
+        backgroundColor: 0x0a0a0a,
+        amplitudeFactor: 1.5,
+        size: 1.5
+      });
+    }
+  });

@@ -1,33 +1,33 @@
-%div.w-100#footer
-  .card-body.bg-primary-subtle.text-center.small
-    %table#footer-table.w-100.m-0
-      %tbody.w-100.m-0
-        %tr.w-100.m-0
-          %td.w-100.p-2.m-0.align-content-center.text-center.bg-body-secondary{colspan: 2}
-            Crafted with ♡ in San Francisco &mdash;
-            &copy; CFAEA 2010-#{Date.current.strftime('%Y')}
-            All rights reserved.
-        %tr
-          %td.text-end.bg-transparent.w-50 App Version
-          %td.text-start.bg-transparent.w-50.px-2 #{TicketBooth::Application::VERSION}
-        %tr
-          %td.text-end.bg-transparent.w-50 Rails Version
-          %td.text-start.bg-transparent.w-50.px-2 #{Rails.version}
-        %tr
-          %td.text-end.bg-transparent.w-50 Ruby Version
-          %td.text-start.bg-transparent.w-50.px-2 #{RUBY_VERSION}
-        %tr
-          %td.text-end.bg-transparent.w-50 Rails Env
-          %td.text-start.bg-transparent.w-50.px-2 #{Rails.env.to_s.capitalize}
-        %tr
-          %td.text-end.bg-transparent.w-50 Revision
-          %td.text-start.bg-transparent.w-50.px-2
+%footer.w-100#footer{style: "position: relative; overflow: hidden;"}
+  #footer-vanta-bg
+  .py-3.text-center.position-relative{style: "z-index: 1;"}
+    %p.mb-2
+      Crafted with &hearts; in San Francisco &mdash;
+      &copy; CFAEA 2010-#{Date.current.strftime('%Y')}
+    .container
+      .row.g-2.justify-content-center
+        .col-4.text-center
+          %small
+            %strong App
+            = TicketBooth::Application::VERSION
+        .col-4.text-center
+          %small
+            %strong Rails
+            = Rails.version
+        .col-4.text-center
+          %small
+            %strong Ruby
+            = RUBY_VERSION
+        .col-4.text-center
+          %small
+            %strong Env
+            = Rails.env.to_s.capitalize
+        .col-4.text-center
+          %small
+            %strong Rev
             %a{href: "https://github.com/fnf-org/TicketBooth/commit/#{TicketBooth::Application::REVISION}", target: "_blank" }
-              = TicketBooth::Application::REVISION
-        %tr
-          %td.text-end.bg-transparent.w-50 Support
-          %td.text-start.bg-transparent.w-50.px-2
-            = mail_to 'ticket-support@fnf.org', 'Ticket Booth Support', subject: 'Ticket Booth Support'
-
-
+              = TicketBooth::Application::REVISION[0..7]
+        .col-4.text-center
+          %small
+            = mail_to 'ticket-support@fnf.org', 'Support', subject: 'Ticket Booth Support'
 

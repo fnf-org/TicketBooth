@@ -180,7 +180,8 @@ CREATE TABLE public.events (
     ticket_sales_end_time timestamp without time zone,
     ticket_requests_end_time timestamp without time zone,
     slug text,
-    require_role boolean DEFAULT true NOT NULL
+    require_role boolean DEFAULT true NOT NULL,
+    secret_token character varying
 );
 
 
@@ -799,6 +800,13 @@ CREATE INDEX index_event_admins_on_user_id ON public.event_admins USING btree (u
 
 
 --
+-- Name: index_events_on_secret_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_events_on_secret_token ON public.events USING btree (secret_token);
+
+
+--
 -- Name: index_jobs_on_event_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -935,6 +943,7 @@ ALTER TABLE ONLY public.ticket_request_event_addons
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260322022800'),
 ('20240902171200'),
 ('20240806011401'),
 ('20240729210234'),

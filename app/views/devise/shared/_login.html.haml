@@ -1,25 +1,20 @@
-%h2 Log in
-
-= form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: false } ) do |f|
-  = hidden_field_tag :authenticity_token, form_authenticity_token
-  .row
-    .col-md-6.col-sm-12
-      .field
-        %p
-          %strong= f.label :email
-        %p= f.email_field :email, autofocus: true, autocomplete: "email", required: true
-    .col-md-6.col-sm-12
-      .field
-        %p
-          %strong= f.label :password
-        %p= f.password_field :password, autocomplete: "current-password", required: true
-
-        - if defined?(redirect_to)
-          = hidden_field_tag :redirect_to, redirect_to
-
-  .row
-    .col-12
-      .btn-group-md
+.login-panel-wrapper
+  .login-panel
+    %h2.text-center.mb-4 Log in
+    = form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: false } ) do |f|
+      = hidden_field_tag :authenticity_token, form_authenticity_token
+      .mb-3
+        %label.form-label.fw-bold Email
+        = f.email_field :email, autofocus: true, autocomplete: "email", required: true, class: "form-control form-control-lg inset-field"
+      .mb-3
+        %label.form-label.fw-bold Password
+        = f.password_field :password, autocomplete: "current-password", required: true, class: "form-control form-control-lg inset-field"
+      - if defined?(redirect_to)
+        = hidden_field_tag :redirect_to, redirect_to
+      .d-flex.justify-content-end.mt-4
         = f.submit "Log in", class: 'btn btn-primary btn-lg'
-        = render partial: "devise/shared/links", layout: false, locals: { resource: devise_mapping.singular, resource_name: devise_mapping.name, redirect_to: redirect_to }
-
+    %hr.my-3
+    .d-flex.justify-content-between.align-items-center
+      = link_to "Forgot password?", new_password_path(resource_name), class: "small"
+      %span.text-muted |
+      = link_to "Sign Up", new_registration_path(resource_name), class: "small"

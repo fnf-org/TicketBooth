@@ -1,49 +1,60 @@
-// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-// eslint-disable @typescript-eslint
-
 import {Controller} from '@hotwired/stimulus'
 
 // Connects to data-controller="flash"
 export default class FlashController extends Controller {
     static targets = ['flash']
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+
     connect = () => {
-        // .alert only appears if the contents has a message
-        if ($('#flash').html().includes('alert')) {
+        const flashEl = document.getElementById('flash')
+        if (flashEl && flashEl.innerHTML.includes('alert')) {
             this.showFlash()
         } else {
-            this.hideFlash()
+            this.hideFlash(0)
         }
 
-        addEventListener('turbo:render', (event) => {
-            this.showFlash()
-        })
-        addEventListener('turbo:frame-render', (event) => {
-            this.showFlash()
-        })
+        addEventListener('turbo:render', () => this.showFlash())
+        addEventListener('turbo:frame-render', () => this.showFlash())
     }
 
     showFlash = () => {
-        $('#flash_container').show('fast')
-        this.hideFlashAfter()
+        const container = document.getElementById('flash_container')
+        if (!container) return
+
+        // Show the container and fade in (300ms via CSS)
+        container.style.display = 'block'
+        // Force reflow so the transition triggers
+        container.offsetHeight
+        container.classList.add('flash-visible')
+
+        // Stay visible for 5 seconds, then fade out over 1 second
+        this.hideFlashAfter(5000)
     }
 
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    hideFlash = (hideDelay = 'fast') => {
-        $("#flash").html('')
-        $('#flash_container').hide(hideDelay)
+    hideFlash = (delay = 0) => {
+        const container = document.getElementById('flash_container')
+        if (!container) return
+
+        // Remove the visible class (triggers 1s fade-out via CSS)
+        container.classList.remove('flash-visible')
+
+        // After the fade-out completes, hide and clear
+        const flashEl = document.getElementById('flash')
+        setTimeout(() => {
+            container.style.display = 'none'
+            // Clear server-rendered flash content (safe — this is our own template output)
+            if (flashEl) flashEl.textContent = ''
+        }, delay === 0 ? 0 : 1000)
     }
 
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    hideFlashAfter = (delay = 3000) => {
-        const self = this
-        setTimeout(function () {
-            self.hideFlash('slow')
-        }, delay)
+    hideFlashAfter = (delay = 5000) => {
+        if (this._hideTimer) clearTimeout(this._hideTimer)
+        this._hideTimer = setTimeout(() => this.hideFlash(1000), delay)
     }
 
     showError = (error) => {
-        $("#flash").html(error)
+        // showError is called internally with trusted content from our own controllers
+        const flashEl = document.getElementById('flash')
+        if (flashEl) flashEl.textContent = error
         this.showFlash()
     }
 }

@@ -1,43 +1,34 @@
-// Hide navbar text for small screens
-@media (min-width: 0px) and (max-width: 600px) {
+@media (max-width: 600px) {
   body {
+    font-size: 0.9em !important;
+
     #columns-container {
-      margin: 20px auto;
+      margin: 0.75rem auto;
       width: 100% !important;
     }
 
-    %ul.navbar-nav {
-      float: right;
-    }
-
     .main-container {
-      padding: 0 !important;
+      padding: 0.5rem !important;
       margin-top: 0 !important;
-      width: 90% !important;
     }
 
     .container-fluid,
     .container {
       margin-top: 0 !important;
-      padding-left: 0 !important;
+      padding-left: 0.5rem !important;
+      padding-right: 0.5rem !important;
     }
-
-    %nav {
-      top: 0px !important;
-    }
-
-    font-size: 0.9em !important;
 
     td.ticket-user {
       a {
-        font-size: 0.9em !important;
-        white-space: wrap;
+        font-size: 0.85em !important;
+        white-space: normal;
       }
     }
 
     td.ticket-status {
-      font-size: 0.6em;
-      white-space: wrap;
+      font-size: 0.75em;
+      white-space: normal;
     }
 
     img.event-preview {
@@ -46,78 +37,59 @@
     }
 
     .event-admins {
-      padding-left: 0px;
+      padding-left: 0;
     }
 
     ul.event-tabs {
       font-size: 0.8em;
-      margin-top: -10px;
-      margin-bottom: -10px !important;
+      margin-top: -0.5rem;
+      margin-bottom: -0.5rem !important;
 
-      a.nav-link.active {
-        background-color: $primary-bg-subtle;
+      .nav-link.active {
+        font-weight: 600;
       }
     }
 
     .btn {
-      font-size: 10pt !important;
+      font-size: 0.8125rem !important;
     }
 
-    h1 {
-      font-size: 20pt;
-    }
-
-    h2 {
-      font-size: 15pt;
-    }
-
-    h3 {
-      font-size: 13pt;
-      margin: 15px auto;
-      text-shadow: 1px 1px 2px #000;
-      color: #999 !important;
-    }
-
-    h4 {
-      font-size: 12pt;
-      margin: 10px auto;
-    }
-
-    h5 {
-      font-size: 11pt;
-      margin: 5px auto;
-    }
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.25rem; }
+    h3 { font-size: 1.125rem; margin: 0.75rem auto; }
+    h4 { font-size: 1rem; margin: 0.5rem auto; }
+    h5 { font-size: 0.9375rem; margin: 0.25rem auto; }
 
     .container-fluid,
     .container {
       padding: 0;
 
-      .event-admins {
-        a {
-          font-size: 1em;
-        }
+      .event-admins a {
+        font-size: 1em;
       }
 
       .card {
         margin-left: 0;
         margin-right: 0;
-        overflow-y: scroll;
+        border-radius: $border-radius-sm;
+      }
+
+      .card.event-nav {
+        overflow: visible;
       }
 
       table.event-summary {
-        font-size: 0.7em;
+        font-size: 0.75em;
       }
 
       .event-dates {
-        font-size: 0.6em;
+        font-size: 0.7em;
       }
-
     }
   }
 
   table {
     tr {
-
       td.optional,
       th.optional {
         display: none !important;
@@ -136,10 +108,8 @@
   }
 
   table#ticket-request-summary {
-    tr {
-      td {
-        font-size: 0.875em !important;
-      }
+    tr td {
+      font-size: 0.875em !important;
     }
   }
 
@@ -152,7 +122,7 @@
   }
 
   .card-footer {
-    font-size: 0.775em !important;
-    padding-top: 20px !important;
+    font-size: 0.8125rem !important;
+    padding-top: 1rem !important;
   }
 }

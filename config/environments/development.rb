@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'socket'
 require 'active_support/core_ext/integer/time'
 
 BULLET_ENABLED = false
@@ -27,6 +28,7 @@ Rails.application.configure do
     config.action_controller.perform_caching               = true
     config.action_controller.enable_fragment_cache_logging = true
     config.public_file_server.headers = { 'Cache-Control' => "public, max-age=#{2.days.to_i}" }
+    config.cache_store = :solid_cache_store
   else
     config.action_controller.perform_caching = false
     config.cache_store                       = :null_store
@@ -105,6 +107,10 @@ Rails.application.configure do
 
   config.hosts = %w[localhost 127.0.0.1 127.0.0.1:3000 127.0.0.1:8080 0.0.0.0:8080 0.0.0.0:9292]
   config.hosts << 'tickets-local.fnf.org:8080'
+  local_ips = Socket.ip_address_list.select(&:ipv4?).map(&:ip_address) - ['127.0.0.1']
+  local_ips.each do |ip|
+    config.hosts << "#{ip}:8080"
+  end
 
   config.log_tags  = [:request_id]
   config.log_level = :debug

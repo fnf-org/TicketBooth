@@ -309,4 +309,117 @@ describe Payment do
       end.to raise_error(StandardError)
     end
   end
+
+  describe '#status_name' do
+    subject { payment.status_name }
+
+    context 'when status is new' do
+      let(:payment) { build(:payment, status: 'new') }
+
+      it { is_expected.to eq 'New' }
+    end
+
+    context 'when status is in_progress' do
+      let(:payment) { build(:payment, status: 'in_progress') }
+
+      it { is_expected.to eq 'In progress' }
+    end
+
+    context 'when status is received' do
+      let(:payment) { build(:payment, status: 'received') }
+
+      it { is_expected.to eq 'Received' }
+    end
+  end
+
+  describe '#in_progress?' do
+    subject { payment.in_progress? }
+
+    context 'when status is in_progress' do
+      let(:payment) { build(:payment, status: 'in_progress') }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when status is new' do
+      let(:payment) { build(:payment, status: 'new') }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#received?' do
+    subject { payment.received? }
+
+    context 'when payment is stripe and received' do
+      let(:payment) { build(:payment, provider: 'stripe', status: 'received') }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when payment is received but not stripe provider' do
+      let(:payment) { build(:payment, provider: 'other', status: 'received') }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when payment is stripe but not received' do
+      let(:payment) { build(:payment, provider: 'stripe', status: 'new') }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#payment_in_progress?' do
+    subject { payment.payment_in_progress? }
+
+    context 'when payment_intent present and status in_progress' do
+      let(:payment) { build(:payment, status: 'in_progress') }
+
+      before { payment.payment_intent = double('intent') }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when no payment_intent' do
+      let(:payment) { build(:payment, status: 'in_progress') }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#mark_received' do
+    let(:payment) { create(:payment) }
+
+    it 'changes status to received' do
+      expect { payment.mark_received }.to change(payment, :status).to('received')
+    end
+  end
+
+  describe '#modifying_forbidden_attributes?' do
+    let(:payment) { build(:payment) }
+
+    it 'rejects non-donation attributes via nested attributes' do
+      expect(payment.send(:modifying_forbidden_attributes?, { 'status' => 'received' })).to be true
+    end
+
+    it 'allows donation attribute' do
+      expect(payment.send(:modifying_forbidden_attributes?, { 'donation' => '10' })).to be false
+    end
+
+    it 'allows id attribute' do
+      expect(payment.send(:modifying_forbidden_attributes?, { 'id' => '1' })).to be false
+    end
+  end
+
+  describe 'uniqueness validation' do
+    let(:ticket_request) { create(:ticket_request) }
+    let!(:existing_payment) { create(:payment, ticket_request:) }
+
+    it 'does not allow duplicate payments for the same ticket request' do
+      duplicate = build(:payment, ticket_request:)
+      expect(duplicate).not_to be_valid
+      expect(duplicate.errors[:ticket_request]).to include('ticket request has already been paid')
+    end
+  end
 end

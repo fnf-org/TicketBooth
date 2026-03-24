@@ -165,4 +165,202 @@ describe EventsController, type: :controller do
       end
     end
   end
+
+  describe 'GET #index' do
+    subject { get :index }
+
+    context 'when viewer is not signed in' do
+      it { is_expected.to have_http_status(:redirect) }
+    end
+
+    context 'when viewer is a site admin' do
+      let(:viewer) { create(:site_admin).user }
+
+      before { event }
+
+      it { is_expected.to have_http_status(:ok) }
+    end
+
+    context 'when viewer is an event admin' do
+      let(:viewer) { create(:event_admin, event:).user }
+
+      it { is_expected.to have_http_status(:ok) }
+    end
+
+    context 'when viewer is a regular user (not admin)' do
+      let(:viewer) { create(:user) }
+
+      it { is_expected.to redirect_to(root_path) }
+    end
+  end
+
+  describe 'GET #edit' do
+    subject { get :edit, params: { id: event.to_param } }
+
+    context 'when viewer is not signed in' do
+      it { is_expected.to have_http_status(:redirect) }
+    end
+
+    context 'when viewer is an event admin' do
+      let(:viewer) { create(:event_admin, event:).user }
+
+      it { succeeds }
+    end
+
+    context 'when viewer is a site admin' do
+      let(:viewer) { create(:site_admin).user }
+
+      it { succeeds }
+    end
+
+    context 'when viewer is a regular user' do
+      let(:viewer) { create(:user) }
+
+      it { is_expected.to have_http_status(:redirect) }
+    end
+  end
+
+  describe 'PATCH #update' do
+    subject { patch :update, params: { id: event.to_param, event: update_params } }
+
+    let(:update_params) { { name: 'Updated Event Name' } }
+
+    context 'when viewer is not signed in' do
+      it { is_expected.to have_http_status(:redirect) }
+    end
+
+    context 'when viewer is an event admin' do
+      let(:viewer) { create(:event_admin, event:).user }
+
+      it { is_expected.to have_http_status(:redirect) }
+
+      it 'updates the event name' do
+        subject
+        expect(event.reload.name).to eq 'Updated Event Name'
+      end
+    end
+
+    context 'when viewer is a site admin' do
+      let(:viewer) { create(:site_admin).user }
+
+      it { is_expected.to have_http_status(:redirect) }
+    end
+
+    context 'when update fails with invalid params' do
+      let(:viewer) { create(:event_admin, event:).user }
+      let(:update_params) { { name: '' } }
+
+      it { is_expected.to have_http_status(:ok) }
+    end
+  end
+
+  describe 'DELETE #destroy' do
+    subject { delete :destroy, params: { id: event.to_param } }
+
+    context 'when viewer is an event admin' do
+      let(:viewer) { create(:event_admin, event:).user }
+
+      it 'destroys the event' do
+        event # ensure it exists
+        expect { subject }.to change(Event, :count).by(-1)
+      end
+
+      it { is_expected.to redirect_to(events_url) }
+    end
+  end
+
+  describe 'GET #guest_list' do
+    subject { get :guest_list, params: { id: event.to_param } }
+
+    context 'when viewer is an event admin' do
+      let(:viewer) { create(:event_admin, event:).user }
+
+      before do
+        create(:ticket_request, :completed, event:)
+        create(:ticket_request, :approved, event:)
+      end
+
+      it { succeeds }
+    end
+
+    context 'when viewer is not an admin' do
+      let(:viewer) { create(:user) }
+
+      it { is_expected.to have_http_status(:redirect) }
+    end
+  end
+
+  describe 'GET #active_ticket_requests' do
+    subject { get :active_ticket_requests, params: { id: event.to_param } }
+
+    context 'when viewer is an event admin' do
+      let(:viewer) { create(:event_admin, event:).user }
+
+      before do
+        create(:ticket_request, :completed, event:)
+        create(:ticket_request, :pending, event:)
+      end
+
+      it { succeeds }
+    end
+  end
+
+  describe 'POST #add_admin' do
+    subject { post :add_admin, params: { id: event.to_param, user_email: new_admin.email } }
+
+    let(:new_admin) { create(:user) }
+
+    context 'when viewer is an event admin' do
+      let(:viewer) { create(:event_admin, event:).user }
+
+      it 'adds the user as an admin' do
+        expect { subject }.to change { event.admins.count }.by(1)
+      end
+
+      it { is_expected.to redirect_to(event) }
+    end
+
+    context 'when user email does not exist' do
+      subject { post :add_admin, params: { id: event.to_param, user_email: 'nonexistent@test.com' } }
+
+      let(:viewer) { create(:event_admin, event:).user }
+
+      it { is_expected.to have_http_status(:ok) }
+    end
+
+    context 'when viewer is not an admin' do
+      let(:viewer) { create(:user) }
+
+      it { is_expected.to have_http_status(:redirect) }
+    end
+  end
+
+  describe 'POST #remove_admin' do
+    subject { post :remove_admin, params: { id: event.to_param, user_id: admin_to_remove.user_id } }
+
+    let(:admin_to_remove) { create(:event_admin, event:) }
+
+    context 'when viewer is an event admin' do
+      let(:viewer) { create(:event_admin, event:).user }
+
+      it 'removes the admin' do
+        admin_to_remove # ensure created
+        expect { subject }.to change { event.event_admins.count }.by(-1)
+      end
+
+      it { is_expected.to redirect_to(event) }
+    end
+
+    context 'when user_id does not match any event admin' do
+      # redirect_to :back raises a NoMethodError for back_url in Rails 8
+      # because :back redirect is deprecated and there is no HTTP_REFERER
+      subject { post :remove_admin, params: { id: event.to_param, user_id: 999_999 } }
+
+      let(:viewer) { create(:event_admin, event:).user }
+
+      it 'raises an error due to missing referer' do
+        expect { subject }.to raise_error(NoMethodError, /back_url/)
+      end
+    end
+  end
 end

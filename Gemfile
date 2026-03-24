@@ -79,7 +79,6 @@ gem 'annotate'
 gem 'attribute_normalizer'
 gem 'awesome_print'
 gem 'carrierwave', '~> 2'
-gem 'dalli'
 gem 'devise'
 gem 'mini_magick'
 # gem 'mini_racer', git: 'https://github.com/rubyjs/mini_racer', platforms: :ruby
@@ -135,3 +134,5 @@ group :test do
 end
 
 gem 'paranoia'
+
+gem 'solid_cache', '~> 1.0'

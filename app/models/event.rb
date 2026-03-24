@@ -24,6 +24,11 @@
 #  ticket_requests_end_time      :datetime
 #  slug                          :text
 #  require_role                  :boolean          default(TRUE), not null
+#  secret_token                  :string
+#
+# Indexes
+#
+#  index_events_on_secret_token  (secret_token) UNIQUE
 #
 
 class Event < ApplicationRecord
@@ -53,6 +58,7 @@ class Event < ApplicationRecord
 
   before_validation :generate_slug!
   before_validation :ensure_require_role_set_default
+  before_create :generate_secret_token!
 
   validates :name, presence: true, length: { maximum: MAX_NAME_LENGTH }
   validates :start_time, presence: true
@@ -177,7 +183,11 @@ class Event < ApplicationRecord
   def to_param
     return nil unless persisted?
 
-    [id, slug].join('-') # 1-summer-campout-xii
+    if secret_token.present?
+      "#{secret_token}-#{slug}"
+    else
+      [id, slug].join('-')
+    end
   end
 
   def build_event_addons_from_params(build_params)
@@ -254,6 +264,15 @@ class Event < ApplicationRecord
 
   def generate_slug!
     self.slug = name&.parameterize
+  end
+
+  def generate_secret_token!
+    return if secret_token.present?
+
+    loop do
+      self.secret_token = SecureRandom.alphanumeric(8).downcase
+      break unless Event.exists?(secret_token:)
+    end
   end
 
   def end_time_after_start_time

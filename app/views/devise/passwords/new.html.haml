@@ -1,15 +1,15 @@
-%h2 Forgot your password?
-
-.row
-  .col-7
+.login-panel-wrapper
+  .login-panel
+    %h2.text-center.mb-4 Forgot your password?
     = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }, data: { turbo: false } ) do |f|
-
       = render "devise/shared/error_messages", resource: resource
-
-      .field
-        %p= f.label :email
-        %p= f.email_field :email, autofocus: true, autocomplete: "email", required: true
-
-      .actions.btn-group-sm
-        = f.submit "Send me password reset instructions", class: 'btn btn-primary btn-large'
-        = render "devise/shared/links"
+      .mb-3
+        %label.form-label.fw-bold Email
+        = f.email_field :email, autofocus: true, autocomplete: "email", required: true, class: "form-control form-control-lg inset-field"
+      .d-flex.justify-content-end.mt-4
+        = f.submit "Send reset instructions", class: 'btn btn-primary btn-lg'
+    %hr.my-3
+    .d-flex.justify-content-between.align-items-center
+      = link_to "Log in", new_session_path(resource_name), class: "small"
+      %span.text-muted |
+      = link_to "Sign Up", new_registration_path(resource_name), class: "small"

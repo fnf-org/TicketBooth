@@ -1,21 +1,282 @@
-.hero-unit {
-  padding: 0 !important;
-  margin: 0 auto !important;
-  text-align: center;
+// ============================================================
+// Landing Page — Disco / Party Vibe
+// ============================================================
+
+// Vanta.js animated background
+.landing-vanta {
+  position: fixed;
+  top: -50px;
+  left: 0;
+  width: 100%;
+  height: calc(100% + 50px);
+  z-index: -1;
 }
 
-.marketing {
-  color: #5a5a5a;
+// --- Hero ---
+.landing-hero {
+  padding: 5rem 1rem 4rem;
+  text-align: center;
+  position: relative;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .feature {
-    text-align: center;
+.landing-logo-glow {
+  margin: 0 auto 1.5rem;
+  position: relative;
+  display: inline-block;
 
-    img {
-      width: 40%;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba($tb-orange, 0.4) 0%, transparent 70%);
+    animation: logo-pulse 3s ease-in-out infinite;
+    z-index: -1;
+  }
+}
+
+.landing-logo {
+  width: 120px;
+  height: 120px;
+  filter: drop-shadow(0 0 20px rgba($tb-orange, 0.6))
+          drop-shadow(0 0 60px rgba(147, 51, 234, 0.3));
+  animation: logo-float 4s ease-in-out infinite;
+}
+
+.landing-title {
+  @include heading-font-extra-bold;
+  font-size: 4rem;
+  color: #fff !important;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 0 40px rgba($tb-orange, 0.4);
+}
+
+.landing-accent {
+  background: linear-gradient(135deg, $tb-orange 0%, #f59e0b 40%, #9333ea 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.75));
+}
+
+.landing-subtitle {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.7) !important;
+  max-width: 36em;
+  margin: 0 auto 2rem;
+  @include body-font;
+  filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.75));
+}
+
+// CTA Buttons
+.btn-disco {
+  background: linear-gradient(135deg, $tb-orange, #d946ef) !important;
+  border: none !important;
+  color: #fff !important;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 3rem;
+  box-shadow: 0 4px 20px rgba($tb-orange, 0.4),
+              2px 2px 3px rgba(0, 0, 0, 0.75);
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translate(-0.5px, -0.5px) scale(1.03);
+    box-shadow: 0 6px 30px rgba($tb-orange, 0.5),
+                2.5px 2.5px 3px rgba(0, 0, 0, 0.75);
+  }
+
+  &:active {
+    transform: translate(2px, 2px) scale(0.98);
+    box-shadow: 0 2px 10px rgba($tb-orange, 0.3),
+                -1px -1px 2px rgba(0, 0, 0, 0);
+  }
+}
+
+.btn-disco-outline {
+  background: transparent !important;
+  border: 2px solid rgba(255, 255, 255, 0.4) !important;
+  color: #fff !important;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 3rem;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.75);
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $tb-orange !important;
+    background: rgba($tb-orange, 0.15) !important;
+    transform: translate(-0.5px, -0.5px);
+    box-shadow: 0 0 20px rgba($tb-orange, 0.2),
+                2.5px 2.5px 3px rgba(0, 0, 0, 0.75);
+  }
+
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: -1px -1px 2px rgba(0, 0, 0, 0);
+  }
+}
+
+// Notice callout
+.landing-notice {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 2rem;
+  padding: 0.5rem 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9375rem;
+  filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.75));
+}
+
+// --- Features ---
+.landing-features {
+  background: #0a0a0a;
+  padding: 5rem 1rem;
+  position: relative;
+}
+
+.disco-heading {
+  @include heading-font-bold;
+  color: #fff !important;
+  text-shadow: 0 0 30px rgba($tb-orange, 0.3);
+}
+
+.feature-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $border-radius-lg;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  height: 100%;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba($tb-orange, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba($tb-orange, 0.1);
+  }
+
+  .feature-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, rgba($tb-orange, 0.2), rgba(147, 51, 234, 0.2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i {
+      font-size: 1.75rem;
+      background: linear-gradient(135deg, $tb-orange, #d946ef);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
   }
 
-  .contact {
-    text-align: center;
+  h3 {
+    @include heading-font;
+    font-size: 1.25rem;
+    color: #fff !important;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+// --- How It Works ---
+.landing-how {
+  background: #0a0a0a;
+  padding: 4rem 1rem 6rem;
+  position: relative;
+
+  h5 {
+    color: #fff !important;
+    @include heading-font;
+  }
+
+  .step-text {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9375rem;
+  }
+}
+
+.step-circle {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $tb-orange, #d946ef);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include heading-font-extra-bold;
+  font-size: 1.5rem;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba($tb-orange, 0.35);
+}
+
+// --- Animations ---
+@keyframes logo-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes logo-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+// --- Responsive ---
+@media (max-width: 768px) {
+  .landing-title {
+    font-size: 2.5rem;
+  }
+
+  .landing-logo {
+    width: 80px;
+    height: 80px;
+  }
+
+  .landing-hero {
+    padding: 3rem 1rem 2rem;
+    min-height: 60vh;
+  }
+}
+
+// --- Override body/nav/footer for dark landing page ---
+body:has(.landing-vanta) {
+  nav#main_nav {
+    display: none !important;
+  }
+  #footer {
+    background-color: #0a0a0a !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+
+    p, small, strong, a, td {
+      color: rgba(255, 255, 255, 0.4) !important;
+    }
+
+    a:hover {
+      color: $tb-orange !important;
+    }
+  }
+
+  .main-container {
+    padding: 0 !important;
   }
 }

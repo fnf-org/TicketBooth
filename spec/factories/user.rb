@@ -6,7 +6,7 @@ FactoryBot.define do
     last { Faker::Name.last_name }
     name { "#{first} #{last}" }
     email { Faker::Internet.email }
-    password { Faker::Internet.password(min_length: 8) }
+    password { "T3st!ng#{Faker::Internet.password(min_length: 8, mix_case: true, special_characters: true)}" }
     confirmed_at { Time.current }
 
     trait :site_admin do

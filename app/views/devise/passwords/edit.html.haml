@@ -1,19 +1,20 @@
-%h3 Change your password
-= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }, data: { turbo: false } ) do |f|
-  = render "devise/shared/error_messages", resource: resource
-  = f.hidden_field :reset_password_token
-  .field
-    %br
-    %strong= "New Password"
-    %small.fst-italic.text-nowrap
-      = "  (6 characters minimum)"
-    %p= f.password_field :password, autofocus: true, autocomplete: "new-password", required: true, min_length: 6
-  .field
-    %br
-    %strong= "New Password Confirmation"
-    %small.fst-italic.text-nowrap
-      = "  (6 characters minimum)"
-    %p= f.password_field :password_confirmation, autocomplete: "new-password", required: true, min_length: 6
-  .actions
-    = f.submit "Change my password", class: 'btn btn-primary btn-large'
-= render "devise/shared/links"
+.login-panel-wrapper
+  .login-panel
+    %h2.text-center.mb-4 Change Your Password
+    %small.text-muted.d-block.text-center.mb-4= t('password.hint')
+    = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }, data: { turbo: false } ) do |f|
+      = render "devise/shared/error_messages", resource: resource
+      = f.hidden_field :reset_password_token
+      .mb-3
+        %label.form-label.fw-bold New Password
+        = f.password_field :password, autofocus: true, autocomplete: "new-password", required: true, minlength: 12, class: "form-control form-control-lg inset-field"
+      .mb-3
+        %label.form-label.fw-bold Confirm New Password
+        = f.password_field :password_confirmation, autocomplete: "new-password", required: true, minlength: 12, class: "form-control form-control-lg inset-field"
+      .d-flex.justify-content-end.mt-4
+        = f.submit "Change my password", class: 'btn btn-primary btn-lg'
+    %hr.my-3
+    .d-flex.justify-content-between.align-items-center
+      = link_to "Log in", new_session_path(resource_name), class: "small"
+      %span.text-muted |
+      = link_to "Sign Up", new_registration_path(resource_name), class: "small"

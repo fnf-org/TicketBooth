@@ -123,4 +123,7 @@ bundle exec cap production deploy
 - ShellCheck for shell scripts
 - Annotate gem for model schema comments
 
+## Next Steps
+
+See the document [PLAN.md](PLAN.md) for the list of bugs/issues and other changes proposed and being worked on by Claude.
 
