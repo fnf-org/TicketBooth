@@ -15,7 +15,7 @@ gem 'rails-html-sanitizer'
 #  Use postgresql as the database for Active Record
 gem 'pg'
 # Use the Puma web server [https://github.com/puma/puma]
-gem 'puma', '~> 6'
+gem 'puma', '~> 8'
 gem 'puma-status'
 
 # replace sprockets with propshaft
