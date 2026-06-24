@@ -13,7 +13,7 @@ set :bundle_env_variables, { nokogiri_use_system_libraries: 1 }
 set :branch, 'main'
 set :remote_user, 'fnf'
 set :user_home, '/home/fnf'
-set :deploy_to, "#{fetch(:user_home)}/apps/tickets"
+set :deploy_to, "#{fetch(:user_home)}/apps/tickets-2.0"
 
 # Default value for :format is :pretty
 set :format, :airbrussh
